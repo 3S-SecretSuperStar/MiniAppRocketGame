@@ -306,9 +306,52 @@ const MainPage = () => {
     navigate("/userInfo");
   }
 
+  const ensureOffScreenInput = () => {
+    let elem = document.querySelector("#__fake_input1");
+    if (!elem) {
+      elem = document.createElement("input");
+      elem.style.position = "fixed";
+      elem.style.top = "500px";
+      elem.style.opacity = "0.1";
+      elem.style.width = "10px";
+      elem.style.height = "10px";
+      elem.style.transform = "translateX(-1000px)";
+      elem.type = "text";
+      elem.id = "__fake_input1";
+      document.body.appendChild(elem);
+    }
+    return elem;
+  }
+
+  var node = document.querySelector("#inputBet")
+  var fakeInput = ensureOffScreenInput();
+  
+  const handleFocus = (event) => {
+    fakeInput.focus();
+    let last = event.target.getBoundingClientRect().top;
+    setTimeout(() => {
+      function detectMovement() {
+        const now = event.target.getBoundingClientRect().top;
+        const dist = Math.abs(last - now);
+        console.log(last, " ", now, " ", dist)
+        // Once any animations have stabilized, do your thing
+        if (dist > 0.01) {
+          requestAnimationFrame(detectMovement);
+          last = now;
+        } else {
+          event.target.focus();
+          event.target.addEventListener("focus", handleFocus, { once: true });
+        }
+      }
+      requestAnimationFrame(detectMovement);
+    }, 50);
+  }
+  console.log(node)  
+  node && node.addEventListener("focus", handleFocus, { once: true });
+
   return (
-    <div className="h-screen p-4 absolute w-full bottom-0 overflow-hidden">
-      <div id='index-operations' className={`flex flex-col relative h-full w-full gap-4 justify-between ${autoMode ? 'auto-mode' : ''} transition flex flex-col gap-4 ${isAction === "start" ? "pb-0" : "pb-[76px]"}`}>
+    <div className="mainPage h-screen p-4 fixed w-full bottom-0 overflow-hidden">
+      <div id='index-operations' className={`flex flex-col relative h-full w -full gap-4 justify-between ${autoMode ? 'auto-mode' : ''} transition flex flex-col gap-4 ${isAction === "start" ? "pb-0" : "pb-[76px]"}`}>
         <div className={`flex w-full absolute bg-white_20 justify-between transition transform duration-200 p-2 rounded-[10px] text-white text-base leading-5 ${isAction === "start" ? "-translate-y-24" : ""} `} onClick={goToUserInfo}>
           <div className="flex gap-2.5">
             <img src={avatar.avatar1} width="64px" height="64px" className="max-w-16 h-16" alt="avatar" />
@@ -344,13 +387,13 @@ const MainPage = () => {
             <div className={`transition duration-300 ${autoMode && "hidden"} flex gap-4`}>
               <div className="flex flex-col w-1/2 gap-1">
                 <div className="text-sm leading-5">Bet</div>
-                <InputNumber InputProps={{ value: bet, min: 1, step: 1, disabled: isAction === "start", onChange: e => setBet(parseFloat(e.target.value)) }} />
+                <InputNumber  InputProps={{ value: bet, min: 1, step: 1,id : "inputBet", disabled: isAction === "start", onChange: e => setBet(parseFloat(e.target.value)) }} />
                 <div className="text-xs leading-[14px] text-[#FFFFFFCC]">Minimal Bet is 0.1 Coin</div>
               </div>
 
               <div className="flex flex-col w-1/2 gap-1">
                 <div className="text-sm leading-5">Auto Stop</div>
-                <InputNumber InputProps={{ value: autoStop, min: 1.01, max: 100, step: 1, disabled: isAction === "start", type: "xWithNumber", onChange: e => { stopGame(); setAutoStop(e.target.value) } }} />
+                <InputNumber InputProps={{ value: autoStop, min: 1.01, max: 100, step: 1, disabled: isAction === "start",id : "inputAutoStop", type: "xWithNumber", onChange: e => { stopGame(); setAutoStop(e.target.value) } }} />
                 <div className="text-xs leading-[14px] text-[#FFFFFFCC]">Auto Cash Out when this amount will be reached</div>
               </div>
             </div>
