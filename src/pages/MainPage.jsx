@@ -48,7 +48,8 @@ const MainPage = () => {
   const [winCoefficient, setWinCoefficient] = useState(1);
   const [lostCoefficient, setLostCoefficient] = useState(1);
   const [isAction, setActionState] = useAtom(isActionState);
-
+  const [osInfo, setOsInfo] = useState("");
+ 
   // Refs for mutable state
   const balanceRef = useRef(balance);
   const historyGamesRef = useRef(historyGames);
@@ -134,6 +135,13 @@ const MainPage = () => {
       isMounted = true;
     }
   }, [realGame, cookies.name]);
+
+  useEffect(()=>{
+    const platform = window.navigator?.userAgentData?.platform || window.navigator.platform;
+    const iosPlatforms = ['iPhone', 'iPad','iPod'];
+    if(iosPlatforms.indexOf(platform)!==-1) setOsInfo("iOS");
+    console.log(platform);
+  },[]);
 
   // useEffect(() => {
   //   let isMounted = true
@@ -306,12 +314,14 @@ const MainPage = () => {
     navigate("/userInfo");
   }
 
+  
+  
   const ensureOffScreenInput = () => {
     let elem = document.querySelector("#__fake_input1");
     if (!elem) {
       elem = document.createElement("input");
       elem.style.position = "fixed";
-      elem.style.top = "500px";
+      elem.style.top = "0px";
       elem.style.opacity = "0.1";
       elem.style.width = "10px";
       elem.style.height = "10px";
@@ -324,7 +334,7 @@ const MainPage = () => {
   }
 
   return (
-    <div className="mainPage h-screen p-4 fixed w-full bottom-0 overflow-hidden">
+    <div className="mainPage h-screen p-4 absolute w-full  overflow-hidden">
       <div id='index-operations' className={`flex flex-col relative h-full w -full gap-4 justify-between ${autoMode ? 'auto-mode' : ''} transition flex flex-col gap-4 ${isAction === "start" ? "pb-0" : "pb-[76px]"}`}>
         <div className={`flex w-full absolute bg-white_20 justify-between transition transform duration-200 p-2 rounded-[10px] text-white text-base leading-5 ${isAction === "start" ? "-translate-y-24" : ""} `} onClick={goToUserInfo}>
           <div className="flex gap-2.5">
@@ -403,7 +413,7 @@ const MainPage = () => {
           }
 
           <SettingModal icon={<NavPlay />} title="Auto Launch" isOpen={isModalOpen} setIsOpen={setIsModalOpen}>
-            <div className="flex flex-col justify-between max-h-screen pt-2 px-4 pb-4 h-[calc(100vh-60px)]" >
+            <div className="settingModal flex flex-col absolute justify-between max-h-screen pt-2 px-4 pb-4 h-[calc(100vh-60px)]" >
               <div className="flex flex-col gap-[15px]" >
                 <div className="flex gap-4">
                   <div className="flex flex-col w-1/2 gap-1">
@@ -439,7 +449,7 @@ const MainPage = () => {
 
                   <div className="flex flex-col w-full gap-1">
                     <div className="text-sm leading-5 text-[#FFFFFF99]">Coefficeent</div>
-                    <InputNumber InputProps={{ value: winCoefficient, min: 1.01, max: 100, step: 1, type: "xWithNumber", disabled: operationAfterWin === "Return to base Bet", onChange: e => { stopGame(); setWinCoefficient(e.target.value) } }} />
+                    <InputNumber InputProps={{ value: winCoefficient, id : "inputWinCoefficient", min: 1.01, max: 100, step: 1, type: "xWithNumber", disabled: operationAfterWin === "Return to base Bet", onChange: e => { stopGame(); setWinCoefficient(e.target.value) } }} />
                   </div>
                 </div>
               </div>
