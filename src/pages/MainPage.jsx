@@ -452,7 +452,7 @@ const MainPage = () => {
           }
 
           <SettingModal icon={<NavPlay />} title="Auto Launch" isOpen={isModalOpen} setIsOpen={setIsModalOpen}>
-            <div className="settingModal flex flex-col absolute justify-between max-h-screen pt-2 px-4 pb-4 h-[calc(100vh-60px)]" >
+            <div className="settingModal w-full flex flex-col absolute justify-between max-h-screen pt-2 px-4 pb-4 h-[calc(100vh-60px)]" >
               <div className="flex flex-col gap-[15px]" >
                 <div className="flex gap-4">
                   <div className="flex flex-col w-1/2 gap-1">
