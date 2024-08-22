@@ -333,45 +333,6 @@ const MainPage = () => {
     return elem;
   }
 
-  var node = document.querySelector("#inputBet")
-  var fakeInput = ensureOffScreenInput();
-  console.log(osInfo)
-  const handleFocus = (event) => {
-    fakeInput.focus();
-    let last = event.target.getBoundingClientRect().top;
-    setTimeout(() => {
-      function detectMovement() {
-        const now = event.target.getBoundingClientRect().top;
-        const dist = Math.abs(last - now);
-        console.log(last, " ", now, " ", dist)
-        // Once any animations have stabilized, do your thing
-        if (dist > 0.01) {
-          requestAnimationFrame(detectMovement);
-          last = now;
-        } else {
-          event.target.focus();
-          event.target.addEventListener("focus", handleFocus, { once: true });
-        }
-      }
-      requestAnimationFrame(detectMovement);
-    }, 50);
-  }
-  node && node.addEventListener("focus", handleFocus, { once: true });
-  if(osInfo ==='iOS'){
-  const handleFocusWinCoefficient = (event)=>{
-    const element = document.querySelector('.settingModal');
-    element.style.bottom = "10px";
-  }
-  const handleBlurWinCoefficient = (event)=>{
-    const element = document.querySelector('.settingModal');
-    element.style.bottom = "0px";
-  }
-  let inputWinCoefficient = document.querySelector("#inputWinCoefficient");
-  inputWinCoefficient && inputWinCoefficient.addEventListener("focus",handleFocusWinCoefficient); 
-  inputWinCoefficient && inputWinCoefficient.addEventListener("blur",handleBlurWinCoefficient); 
-
-}
-
   return (
     <div className="mainPage h-screen p-4 absolute w-full  overflow-hidden">
       <div id='index-operations' className={`flex flex-col relative h-full w -full gap-4 justify-between ${autoMode ? 'auto-mode' : ''} transition flex flex-col gap-4 ${isAction === "start" ? "pb-0" : "pb-[76px]"}`}>

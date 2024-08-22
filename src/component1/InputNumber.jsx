@@ -27,14 +27,31 @@ const InputNumber = memo(({ InputProps }) => {
     }
   };
 
-  const inputElement = useRef(null);
+  const inputRef = useRef(null);
 
-  useEffect(() => {
-    inputElement.current.onfocus = () => {
-      window.scrollTo(0, 0);
-      document.body.scrollTop = 0;
+  useEffect(() => {  
+    const inputElement = inputRef.current;    
+    let focusStat = false;
+    const handleFocus = (e) => {
+      focusStat = false;
+      setTimeout(() => {
+        focusStat = true;
+      }, 1000);
+    }
+    const handleScroll = (e) => {          
+      if( focusStat ){
+        inputElement.blur();
+      }
     };
-  }, [inputElement]);
+    if (inputElement) {
+    }
+    document.addEventListener('scroll', handleScroll);
+    inputElement.addEventListener('focus', handleFocus);
+    return () => {
+      document.removeEventListener('scroll', handleScroll);
+      inputElement.addEventListener('focus', handleFocus);
+    };
+  }, []);
 
   const handleChange = (e) => {
     const newValue = e.target.value;
@@ -65,7 +82,7 @@ const InputNumber = memo(({ InputProps }) => {
         className={`input-number absolute w-full h-11 top-0 left-0 box-border rounded-xl pl-4 ${InputProps.disabled ? "text-[#FFFFFF99] bg-white_20 cursor-none contain-none select-none" : ""}`}
         id={InputProps.id}
         type='number'
-        ref={inputElement}
+        ref={inputRef}
         value={value}
         inputMode='decimal'
         pattern='[0-9]*'
