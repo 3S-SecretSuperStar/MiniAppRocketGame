@@ -281,6 +281,7 @@ const MainPage = () => {
     setWins(wins + 1);
     setWinstate(true);
     adjustBetAfterWin();
+    if(data.profit > 0){
     toast(`${data.profit} coins added to your balance`,
       {
         position: "top-center",
@@ -295,7 +296,7 @@ const MainPage = () => {
           justifyItems:'start'
         },
       }
-    )
+    )}
   };
 
   const handleGameCrashed = (data) => {
@@ -306,6 +307,7 @@ const MainPage = () => {
     setGames(games + 1);
     setLosses(losses + 1);
     adjustBetAfterLoss();
+    if(data.profit > 0){
     toast(`You lost ${data.profit} coin`,
       {
         position: "top-center",
@@ -319,6 +321,7 @@ const MainPage = () => {
         },
       }
     )
+  }
   };
 
   const updateGameHistory = (data, status) => {

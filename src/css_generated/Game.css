@@ -32,8 +32,8 @@
   bottom: 10px;
 }
 #game #game-rocket.explosed {
-  width: 90px;
-  height: 100px;
+  width: 140px;
+  height: 140px;
   left: 50%;
   top:50%;
   margin-left: -32px;
