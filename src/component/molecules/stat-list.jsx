@@ -17,7 +17,7 @@ const StatList = () => {
   const convertFormatData = (date) => {
     const nowDate = moment().utc();
     const selectedDate = moment(date);
-    const diffDate = Math.floor((nowDate - selectedDate) / (24 * 60 * 60 * 1000));
+    const diffDate = nowDate.diff(selectedDate,'days');
     console.log("now: ",nowDate,"selectedDate ",selectedDate,"diffDate ",diffDate)
     if (diffDate === 0) return "Today";
     if (diffDate === 1) return "Yesterday";
