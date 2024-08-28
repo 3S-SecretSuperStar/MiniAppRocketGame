@@ -15,9 +15,10 @@ const StatList = () => {
   const userName = user.UserName;
 
   const convertFormatData = (date) => {
-    const nowDate = moment().toISOString( new Date());
-    const selectedDate = new Date(date);
+    const nowDate = moment().utc();
+    const selectedDate = moment(date);
     const diffDate = Math.floor((nowDate - selectedDate) / (24 * 60 * 60 * 1000));
+    console.log(diffDate)
     if (diffDate === 0) return "Today";
     if (diffDate === 1) return "Yesterday";
     return date;
