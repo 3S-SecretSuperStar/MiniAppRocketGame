@@ -270,6 +270,7 @@ const MainPage = () => {
   };
 
   const handleGameStopped = (data = { stop: 'x', profit: '0' }) => {
+    setWinstate(false);
     setFinalResult(data.stop);
     setGamePhase('stopped');
     updateGameHistory(data, 'stopped');
@@ -279,9 +280,10 @@ const MainPage = () => {
     updateBalance(data.profit);
     setGames(games + 1);
     setWins(wins + 1);
-    setWinstate(true);
+    
     adjustBetAfterWin();
     if(data.profit > 0){
+      setWinstate(true);
     toast(`${data.profit} coins added to your balance`,
       {
         position: "top-center",

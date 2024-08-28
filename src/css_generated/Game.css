@@ -36,7 +36,8 @@
   height: 140px;
   left: 50%;
   top:50%;
-  margin-left: -32px;
+  margin-left: -70px;
+  margin-top : -70px
 }
 #game .shaking {
   animation: shake 3s infinite ease-in-out both;
