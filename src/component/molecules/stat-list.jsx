@@ -19,7 +19,9 @@ const StatList = () => {
     console.log( "current monent", moment())
     const selectedDate = moment(date).utc();
     const diffDate = nowDate.diff(selectedDate,'days');
-    console.log("now: ",nowDate,"selectedDate ",selectedDate,"diffDate ",diffDate)
+    console.log("now: ",nowDate)
+    console.log("selectedDate ",selectedDate)
+    console.log("diffDate ",diffDate)
     if (diffDate === 0) return "Today";
     if (diffDate === 1) return "Yesterday";
     return date;
