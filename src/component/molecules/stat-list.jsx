@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import moment from "moment/moment";
 import { useAtom } from "jotai";
 import StatInfo from "../atom/stat-info";
 import { realGameState, userData } from "../../store";
@@ -14,7 +15,7 @@ const StatList = () => {
   const userName = user.UserName;
 
   const convertFormatData = (date) => {
-    const nowDate = new Date();
+    const nowDate = moment().toISOString( new Date());
     const selectedDate = new Date(date);
     const diffDate = Math.floor((nowDate - selectedDate) / (24 * 60 * 60 * 1000));
     if (diffDate === 0) return "Today";

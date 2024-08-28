@@ -13,8 +13,6 @@ const serverUrl = REACT_APP_SERVER;
 
 const GenerateTask = ({ task, stateTask, index }) => {
 
-  console.log(task, stateTask);
-
   const [isClaim, setIsClaim] = useState(false);
   const [user,] = useAtom(userData);
 
@@ -111,7 +109,7 @@ const TaskList = () => {
           fetch(`${serverUrl}/get_task`, { method: 'POST', body: JSON.stringify({}), headers })
             .then(res => Promise.all([res.status, res.json()]))
             .then(([status, data]) => {
-              console.log(data)
+              
               try {
                 setTaskData(prevState => {
                   let newState = [...prevState];
@@ -135,7 +133,7 @@ const TaskList = () => {
         }
       })
   }
-  console.log(taskData)
+
 
   useEffect(() => {
     let isMounted = true
@@ -145,7 +143,7 @@ const TaskList = () => {
     return () => { isMounted = false }
   }, [])
 
-  console.log(taskData)
+
   return (
     <div className="flex flex-col gap-2 text-[14px] overflow-auto pb-4" style={{ height: "calc(100vh - 200px)" }}>
       {
