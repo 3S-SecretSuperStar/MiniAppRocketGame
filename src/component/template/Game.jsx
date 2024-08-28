@@ -9,18 +9,18 @@ import "../../css/Game.css"
 
 export default memo(function Game({ gamePhase, finalResult, amount = 10.00,
   className, bet, autoStop, socketFlag, realGame, isWin, setInfoState }) {
-  let comment;
-  let score = finalResult === 'Crashed...' ? 'Crashed...' : finalResult
-  const context = useContext(AppContext);
-  const [currentResult, setCurrentResult] = useState(1)
-  const [user,] = useAtom(userData)
-  const [timerHandler, setTimerHandler] = useState();
-  const [countTimeHandler, setCountTimeHandler] = useState();
-  const [counterNumber, setCounterNumber] = useState(0);
-  const [timerRounded, setTimerRounded] = useState(0);
-  const [counterFlag, setCounterFlag] = useState(false);
-  const [isImgShow, setIsImgShow] = useState(false);
-  const counterItem = [Img.go, Img.counter1, Img.counter2, Img.counter3];
+    const context = useContext(AppContext);
+    const [currentResult, setCurrentResult] = useState(1)
+    const [user,] = useAtom(userData)
+    const [timerHandler, setTimerHandler] = useState();
+    const [countTimeHandler, setCountTimeHandler] = useState();
+    const [counterNumber, setCounterNumber] = useState(0);
+    const [timerRounded, setTimerRounded] = useState(0);
+    const [counterFlag, setCounterFlag] = useState(false);
+    const [isImgShow, setIsImgShow] = useState(false);
+    const counterItem = [Img.go, Img.counter1, Img.counter2, Img.counter3];
+    let comment;
+    let score = finalResult === 'Crashed...' ? 'Crashed...' : finalResult ||currentResult
 
   if (gamePhase === 'stopped') {
     clearInterval(timerHandler)

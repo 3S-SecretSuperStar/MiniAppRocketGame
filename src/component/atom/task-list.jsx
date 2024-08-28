@@ -16,7 +16,7 @@ const GenerateTask = ({ task, stateTask, index }) => {
   console.log(task, stateTask);
 
   const [isClaim, setIsClaim] = useState(false);
-  const [user, setUser] = useAtom(userData);
+  const [user,] = useAtom(userData);
 
   const goClaim = () => {
     setIsClaim(true);
@@ -57,13 +57,13 @@ const GenerateTask = ({ task, stateTask, index }) => {
         </div>
       </div>
       {
-        task.status == 0 ?
+        task.status === 0 ?
           <Link to={'/play'}>
             <button className="rounded-lg w-[61px] py-1 px-0 h-7 bg-[#3861FB] text-white text-center text-[14px]" >
               Start
             </button>
           </Link> :
-          task.status == 1 ?
+          task.status === 1 ?
             <button
               className="rounded-lg w-[61px] py-1 px-0 h-7 bg-white text-[#080888] text-center text-[14px]"
               onClick={goClaim}
@@ -101,14 +101,13 @@ const TaskList = () => {
           const performtask = data.task.achieve_task
           const doneTask = data.task.done_task
           taskState = [0, 0, 0, 0, 0]
-          performtask.map((item) => {
+          performtask.forEach(item => {
             taskState[item] = 1;
           })
-          doneTask.map((item) => {
+          doneTask.forEach(item => {
             taskState[item] = 2;
           })
 
-          console.log(taskState)
           fetch(`${serverUrl}/get_task`, { method: 'POST', body: JSON.stringify({}), headers })
             .then(res => Promise.all([res.status, res.json()]))
             .then(([status, data]) => {

@@ -56,7 +56,7 @@ const UserInfo = () => {
     setRankingIndex(((rankingIndex - 1) + RANKINGDATA.length) % RANKINGDATA.length);
   }
 
-
+// eslint-disable-next-line no-self-assign
   useEffect(() => {
     const webapp = window.Telegram.WebApp.initDataUnsafe;
     let isMounted = true

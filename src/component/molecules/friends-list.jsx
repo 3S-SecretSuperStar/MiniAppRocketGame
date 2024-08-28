@@ -1,4 +1,3 @@
-import AtomLabel from "../atom/atom-label";
 import FriendInfo from "../atom/friend-info";
 
 const FriendsList = ({ friendData }) => {

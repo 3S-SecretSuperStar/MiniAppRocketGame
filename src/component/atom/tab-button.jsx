@@ -4,7 +4,7 @@ const TabButton = ({ tabList, tabNo, setTabNo }) => {
             {
                 tabList.map((_tab, _index) => (
                     <div
-                        className={`rounded-lg items-center  py-1 w-1/2 ${tabNo == _tab.id && 'bg-[#3861FB99]'}`}
+                        className={`rounded-lg items-center  py-1 w-1/2 ${tabNo === _tab.id && 'bg-[#3861FB99]'}`}
                         onClick={() => setTabNo(_tab.id)}
                         key={_index}
                     >
@@ -12,6 +12,7 @@ const TabButton = ({ tabList, tabNo, setTabNo }) => {
                             <img
                                 src={`image/${_tab.src}`}
                                 className="w-6 h-6"
+                                alt="tab items"
                             />
                             <div>{_tab.amount}</div>
                         </div>

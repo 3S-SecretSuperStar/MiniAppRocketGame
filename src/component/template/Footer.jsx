@@ -10,9 +10,9 @@ import NavStats from "../svg/nav-stats";
 import NavWallet from "../svg/nav_wallet";
 
 const footerData = [
+  { img: <NavPlay color="white" />, text: "play" },
   { img: <NavEarn color="white" />, text: "earn" },
   { img: <NavFriends color="white" />, text: "friends" },
-  { img: <NavPlay color="white" />, text: "play" },
   { img: <NavStats color="white" />, text: "stats" },
   { img: <NavWallet color="white" />, text: "wallet" },
 ]

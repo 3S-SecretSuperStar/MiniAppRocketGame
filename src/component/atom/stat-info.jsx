@@ -6,7 +6,7 @@ const StatInfo = ({ data }) => {
             </div>
             {
                 data.data.map((_data, _index) => (
-                    <div className={`px-4 py-2 w-full justify-between rounded-[8px] text-white items-center flex ${_index % 2 != 0 && "bg-[#0000001A]"}`} key={_index}>
+                    <div className={`px-4 py-2 w-full justify-between rounded-[8px] text-white items-center flex ${_index % 2 !== 0 && "bg-[#0000001A]"}`} key={_index}>
                         <div>{Number(_data.bet).toFixed(2)}</div>
                         <div>
                             {
