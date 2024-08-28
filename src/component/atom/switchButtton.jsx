@@ -1,13 +1,11 @@
-import React,{useState} from "react";
-import  "../../css_generated/Switch.css"
+import "../../css/Switch.css"
 
 
-const SwitchButton = (props) =>{
-  const [ isSelected, setSelected ] = useState(false);
-  
+const SwitchButton = (props) => {
+
   return (
     <label className="switch">
-      <input type="checkbox" {...props}/>
+      <input type="checkbox" {...props} />
       <span className="slider"></span>
     </label>
   )

@@ -1,4 +1,4 @@
-const StatInfo = ({data}) => {
+const StatInfo = ({ data }) => {
     return (
         <div>
             <div className="text-blueFaded border-b border-white_20 px-4 py-2">
@@ -11,19 +11,19 @@ const StatInfo = ({data}) => {
                         <div>
                             {
                                 _data.stop > 0 ?
-                                `x${Number(_data.stop).toFixed(2)}` :
-                                <img 
-                                    src="/image/icon/cross.svg" 
-                                    alt="" 
-                                    className="w-4 h-4"
-                                />
+                                    `x${Number(_data.stop).toFixed(2)}` :
+                                    <img
+                                        src="/image/icon/cross.svg"
+                                        alt=""
+                                        className="w-4 h-4"
+                                    />
                             }
                         </div>
                         <div className={`${_data.stop > 0 ? "text-[#84CB69]" : "text-[#F56D63]"}`}>
                             {
                                 _data.stop > 0 ?
-                                `+${((_data.stop-1) * _data.bet).toFixed(2)}` :
-                                `-${_data.bet}`
+                                    `+${((_data.stop - 1) * _data.bet).toFixed(2)}` :
+                                    `-${_data.bet}`
                             }
                         </div>
                     </div>

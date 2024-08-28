@@ -1,44 +1,43 @@
-import React, { useEffect, useRef, useState,useContext } from 'react';
-import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
-import MainPage from "./pages/MainPage"
-import Footer from './component1/Footer';
+import React, { useEffect, useRef, useState } from 'react';
+import { Toaster } from 'react-hot-toast';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import Layout from './component/atom/layoutmain.jsx';
+import AppContext from './component/template/AppContext';
+import Footer from './component/template/Footer';
+import Stars from './component/template/Stars';
 import Earned from './pages/Earned';
 import Friends from './pages/Friends';
-import Stats from './pages/Stats';
-import Wallet from './pages/Wallet';
-import { Toaster } from 'react-hot-toast';
-import UserInfo from './pages/UserInfo';
-import Stars from './component1/Stars';
-import Loading from './pages/Loading';
-import Layout from './component/atom/layoutmain.jsx';
-import JotaiProvider from "./providers/jotaiProvider"
-import AppContext from './component1/AppContext';
-import { REACT_APP_WS_SERVER } from './utils/privateData.js';
 import Help from './pages/Help.jsx';
+import Loading from './pages/Loading';
+import MainPage from "./pages/MainPage"
+import Stats from './pages/Stats';
+import UserInfo from './pages/UserInfo';
+import Wallet from './pages/Wallet';
+import JotaiProvider from "./providers/jotaiProvider"
+import { REACT_APP_WS_SERVER } from './utils/privateData.js';
 
 const wsServerUrl = REACT_APP_WS_SERVER;
 
 function App() {
   const [isLoading, setLoadingState] = useState(true);
-
   const [socket, setSocket] = useState();
-  
-  const handleLoadingState = (loading) =>{
-     setLoadingState(loading); 
+
+  const handleLoadingState = (loading) => {
+    setLoadingState(loading);
   }
 
   useEffect(() => {
-    const adjustHeight = () =>{
+    const adjustHeight = () => {
       const vh = window.innerHeight * 0.01;
       document.documentElement.style.setProperty('--vh', `${vh}px`);
     }
 
     adjustHeight();
     window.addEventListener('resize', adjustHeight);
-    return () =>{
-      window.removeEventListener('resize',adjustHeight);
+    return () => {
+      window.removeEventListener('resize', adjustHeight);
     };
-  },[]);
+  }, []);
   // useEffect(()=>{
   //   location.search
   //     .substr(1)
@@ -49,24 +48,24 @@ function App() {
   //     })
   // }, [])
 
-  useEffect (() => {
+  useEffect(() => {
     let socket
-    try{
+    try {
       socket = new WebSocket(wsServerUrl)
-    }catch (e) {
+    } catch (e) {
       //eslint-disable-next-line no-self-assign
       document.location.href = document.location.href
     }
     setSocket(socket);
-    return () => socket.close();    
-  },[])
-  
+    return () => socket.close();
+  }, [])
+
   useEffect(() => {
     let isMounted = true
-    if(isMounted) {
+    if (isMounted) {
       const installGoogleAds = () => {
         const elem = document.createElement('script')
-        elem.src = 
+        elem.src =
           '//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js'
         elem.async = true
         elem.defer = true
@@ -74,16 +73,16 @@ function App() {
       }
       installGoogleAds()
     }
-    return () =>{ isMounted = false }
+    return () => { isMounted = false }
   }, [])
 
 
   const adsRef = useRef(false)
 
-  if(!adsRef.current && typeof adsbygoogle !=='undefined') {
+  if (!adsRef.current && typeof adsbygoogle !== 'undefined') {
     adsRef.current = true
-    //eslint-disable-next-line no-undef
-    (adsbygoogle = window.adsbygoogle || []).push({})
+      //eslint-disable-next-line no-undef
+      (adsbygoogle = window.adsbygoogle || []).push({})
   }
 
   const overlayRef = useRef()
@@ -93,37 +92,36 @@ function App() {
   }
 
 
-  
+
   return (
     <AppContext.Provider value={contextValues}>
-    <JotaiProvider>
-    <div className="App h-screen overflow-hidden flex flex-col relative">
-      
-      {!isLoading?
-          ( <>
-          <Stars/>
-          <BrowserRouter>
-            <Toaster />
-           
-              <Routes>  
-                <Route path="/" element={<MainPage />} />
-                <Route path='/play' element={<MainPage />} />
-                <Route path='/earn' element={<Layout><Earned /></Layout>} />
-                <Route path='/friends' element={<Layout><Friends /></Layout>} />
-                <Route path='/stats' element={<Layout><Stats /></Layout>} />
-                <Route path='/wallet' element={<Layout><Wallet /></Layout>} />
-                <Route path='/userInfo' element={<Layout><UserInfo /></Layout>} />
-                <Route path='/help' element={<Layout><Help /></Layout>} />
-              </Routes>
-            
-            <Footer />
-          </BrowserRouter>
-          </>)
-      : <Loading setLoading ={handleLoadingState} />
-      
-      }
-    </div>
-    </JotaiProvider>
+      <JotaiProvider>
+        <div className="App h-screen overflow-hidden flex flex-col relative">
+
+          {!isLoading ?
+            (<>
+              <Stars />
+              <BrowserRouter>
+                <Toaster />
+                <Routes>
+                  <Route path="/" element={<MainPage />} />
+                  <Route path='/play' element={<MainPage />} />
+                  <Route path='/earn' element={<Layout><Earned /></Layout>} />
+                  <Route path='/friends' element={<Layout><Friends /></Layout>} />
+                  <Route path='/stats' element={<Layout><Stats /></Layout>} />
+                  <Route path='/wallet' element={<Layout><Wallet /></Layout>} />
+                  <Route path='/userInfo' element={<Layout><UserInfo /></Layout>} />
+                  <Route path='/help' element={<Layout><Help /></Layout>} />
+                </Routes>
+
+                <Footer />
+              </BrowserRouter>
+            </>)
+            : <Loading setLoading={handleLoadingState} />
+
+          }
+        </div>
+      </JotaiProvider>
     </AppContext.Provider>
   );
 }

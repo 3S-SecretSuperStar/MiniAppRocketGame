@@ -2,16 +2,16 @@ import React from "react";
 import { Link } from "react-router-dom";
 
 const ToggleButton = ({
-  className, 
-  disabled, 
-  bgColor, 
+  className,
+  disabled,
+  bgColor,
   textColor,
-  text, 
-  img, 
+  text,
+  img,
   fgColor
 }) => {
   return (
-    <Link 
+    <Link
       to={`/${text}`}
       className={`${className ? className : ""} 
         ${(disabled) ? (bgColor + " " + textColor) : (fgColor + " text-[#ACC1D9]")}
@@ -19,9 +19,7 @@ const ToggleButton = ({
       }
     >
       <div className="w-6 h-6">
-      {
-        img
-      }
+        {img}
       </div>
       <div className="capitalize">{text}</div>
     </Link>

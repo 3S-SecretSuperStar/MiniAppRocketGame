@@ -1,7 +1,7 @@
 import ShadowButton from "../component/atom/shadow-btn";
 import SwitchButton from "../component/atom/switchButtton";
 import SwitchButtonOption from "../component/atom/switchButtonOption";
-import InputNumber from "../component1/InputNumber";
+import InputNumber from "../component/template/InputNumber";
 import TgIcon from "../assets/icon/tg-icon";
 import TgTwitter from "../assets/icon/tg-twitter";
 import TgYout from "../assets/icon/tg-yout";
@@ -9,7 +9,7 @@ import TgInst from "../assets/icon/tg-inst";
 
 const Help = () => {
     const operationOption = ['Increase Bet by', 'Return to base Bet'];
-    const setData = () => {}
+    const setData = () => { }
 
     return (
         <div className="flex flex-col gap-8 items-center h-[90vh] pb-4 overflow-y-auto">
@@ -47,7 +47,7 @@ const Help = () => {
                         <div className="flex flex-col gap-1 w-full">
                             <div className="flex flex-col w-full gap-1">
                                 <div className="text-sm leading-5 text-white">If Lose</div>
-                                <SwitchButtonOption contents={operationOption} slot={"Increase Bet by"} setSlot={setData}/>
+                                <SwitchButtonOption contents={operationOption} slot={"Increase Bet by"} setSlot={setData} />
                             </div>
                             <div className="flex flex-col w-full gap-1">
                                 <div className="text-sm leading-5 text-white">Coefficeent</div>
@@ -57,7 +57,7 @@ const Help = () => {
                         <div className="flex flex-col gap-1 w-full">
                             <div className="flex flex-col w-full gap-1">
                                 <div className="text-sm leading-5 text-white">If Win</div>
-                                <SwitchButtonOption contents={operationOption} slot={"Increase Bet by"} setSlot={setData}/>
+                                <SwitchButtonOption contents={operationOption} slot={"Increase Bet by"} setSlot={setData} />
                             </div>
                             <div className="flex flex-col w-full gap-1">
                                 <div className="text-sm leading-5 text-[#FFFFFF99]">Coefficeent</div>

@@ -1,70 +1,67 @@
 import React, { useState, useContext, useRef, useEffect } from "react";
 import { useNavigate } from "react-router";
-import SwitchButton from "../component/atom/switchButtton.jsx";
-import InputNumber from "../component1/InputNumber";
-import Game from '../component1/Game.jsx'
-import PannelScore from "../component/atom/PannelScore";
-import { Img } from "../assets/image";
-import { avatar } from "../assets/avatar/index.js";
-import NavPlay from "../component/svg/nav_play.jsx";
-import ShadowButton from "../component/atom/shadow-btn.jsx";
-import "../css_generated/Style.css"
-import SettingButton from "../component/svg/button_setting.jsx";
-import { useAtom } from "jotai";
-import { isActionState, realGameState, userInfo } from "../store";
-import SwitchButtonOption from "../component/atom/switchButtonOption.jsx";
-import SettingModal from "../component/atom/setting-modal.jsx";
-import GoogleAds from "../component1/GoogleAds.jsx"
-import AppContext from "../component1/AppContext.jsx";
-import { cn } from "../utils/index.js";
-import { userData } from "../store";
-import { REACT_APP_SERVER } from "../utils/privateData.js";
-import { RANKINGDATA } from "../utils/globals.js";
-import InfoModal from "../component/atom/infoModel.jsx";
 import { Link } from "react-router-dom";
+import toast from "react-hot-toast";
+import { useAtom } from "jotai";
+import InfoModal from "../component/atom/infoModel.jsx";
+import PannelScore from "../component/atom/PannelScore";
+import SettingModal from "../component/atom/setting-modal.jsx";
+import ShadowButton from "../component/atom/shadow-btn.jsx";
+import SwitchButton from "../component/atom/switchButtton.jsx";
+import SwitchButtonOption from "../component/atom/switchButtonOption.jsx";
+import SettingButton from "../component/svg/button_setting.jsx";
+import NavPlay from "../component/svg/nav_play.jsx";
+import AppContext from "../component/template/AppContext.jsx";
+import InputNumber from "../component/template/InputNumber";
+import Game from '../component/template/Game.jsx'
+import { cn } from "../utils/index.js";
+import { isActionState, realGameState, userData } from "../store";
+import { avatar } from "../assets/avatar/index.js";
+import { Img } from "../assets/image";
+import { RANKINGDATA } from "../utils/globals.js";
+import { REACT_APP_SERVER } from "../utils/privateData.js";
 import TgIcon from "../assets/icon/tg-icon";
+import TgInst from "../assets/icon/tg-inst";
 import TgTwitter from "../assets/icon/tg-twitter";
 import TgYout from "../assets/icon/tg-yout";
-import TgInst from "../assets/icon/tg-inst";
-import toast from "react-hot-toast";
 import rewardBG from "../assets/image/reward_bg.png"
+import "../css/Style.css"
 
 
 
 const MainPage = () => {
 
-  const modalRef = useRef();
   const serverUrl = REACT_APP_SERVER;
+  const operationOption = ['Return to base Bet', 'Increase Bet by'];
   // State variables
-  const [stopWasPressed, setStopWasPressed] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [autoMode, setAutoMode] = useState(false);
-  const [gamePhase, setGamePhase] = useState();
-  const [bet, setBet] = useState(1);
   const [autoStop, setAutoStop] = useState(5);
-  const [finalResult, setFinalResult] = useState(0);
-  const [historyGames, setHistoryGames] = useState([]);
   const [balance, setBalance] = useState(userData.balance);
-  const [expiration, setExpiration] = useState(0);
-  const [loaderIsShown, setLoaderIsShown] = useState();
-  const [operationAfterWin, setOperationAfterWin] = useState('Return to base Bet');
-  const [valueAfterWin, setValueAfterWin] = useState(1);
-  const [operationAfterLoss, setOperationAfterLoss] = useState('Increase Bet by');
-  const [valueAfterLoss, setValueAfterLoss] = useState(2);
-  const [games, setGames] = useState(0);
-  const [wins, setWins] = useState(0);
-  const [losses, setLosses] = useState(0);
-  const [winCoefficient, setWinCoefficient] = useState(1);
-  const [lostCoefficient, setLostCoefficient] = useState(1);
-  const [isAction, setActionState] = useAtom(isActionState);
+  const [bet, setBet] = useState(1);
   const context = useContext(AppContext);
+  const [finalResult, setFinalResult] = useState(0);
+  const [firstLogin, setFirstLogin] = useState(false);
+  const [gamePhase, setGamePhase] = useState();
+  const [games, setGames] = useState(0);
+  const [historyGames, setHistoryGames] = useState([]);
+  const [isAction, setActionState] = useAtom(isActionState);
+  const [infoState, setInfoState] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [losses, setLosses] = useState(0);
+  const [lostCoefficient,] = useState(1);
+  const [, setLoaderIsShown] = useState();
+  const [operationAfterLoss, setOperationAfterLoss] = useState('Increase Bet by');
+  const [operationAfterWin, setOperationAfterWin] = useState('Return to base Bet');
+  const [rewardState, setRewardState] = useState(false);
+  const [stopWasPressed, setStopWasPressed] = useState(false);
+  const [valueAfterLoss, setValueAfterLoss] = useState(2);
+  const [valueAfterWin, setValueAfterWin] = useState(1);
+  const [winCoefficient, setWinCoefficient] = useState(1);
+  const [wins, setWins] = useState(0);
   const [socketStart, setSocketStart] = useState(false);
   const [isReal, setRealGame] = useAtom(realGameState);
   const [user, setUser] = useAtom(userData);
   const [winState, setWinstate] = useState(false);
-  const [firstLogin, setFirstLogin] = useState(false);
-  const [infoState, setInfoState] = useState(false);
-  const [rewardState, setRewardState] = useState(false);
 
 
   // Refs for mutable state
@@ -76,13 +73,6 @@ const MainPage = () => {
   const operationAfterLossRef = useRef(operationAfterLoss);
   const valueAfterLossRef = useRef(valueAfterLoss);
   const navigate = useNavigate();
-  const counterItem = [Img.counter1, Img.counter2, Img.counter3, Img.go];
-  const imgSettingButton = () => {
-    return (
-      <img src={Img.imgSetting} width={24} height={24} alt="setting" />
-    )
-  }
-  const operationOption = ['Return to base Bet', 'Increase Bet by'];
 
   const handleModalButton = () => {
     startGame();
@@ -103,7 +93,7 @@ const MainPage = () => {
       setAutoStop(100)
     }
 
-    if (balance == 0) {
+    if (balance === 0) {
       setBalance('0.00')
     }
 
@@ -143,8 +133,6 @@ const MainPage = () => {
             autoStop,
             isReal: isReal,
             userName: user.UserName
-            // userID: cookies.user_id, // ------------------------
-            // session: cookies.session // ------------------------
           }))
         } catch (e) {
 
@@ -167,7 +155,6 @@ const MainPage = () => {
       const headers = new Headers()
       headers.append('Content-Type', 'application/json')
       if (isMounted) {
-        console.log(gamePhase, "1               ", isReal)
         fetch(`${serverUrl}/users_info`, { method: 'POST', body: JSON.stringify({ historySize: 100, realName: realName, userName: userName }), headers })
           .then(res => Promise.all([res.status, res.json()]))
           .then(([status, data]) => {
@@ -280,25 +267,26 @@ const MainPage = () => {
     updateBalance(data.profit);
     setGames(games + 1);
     setWins(wins + 1);
-    
+
     adjustBetAfterWin();
-    if(data.profit > 0){
+    if (data.profit > 0) {
       setWinstate(true);
-    toast(`${data.profit} coins added to your balance`,
-      {
-        position: "top-center",
-        icon: "🥳",
-        style: {
-          borderRadius: '8px',
-          background: '#84CB69',
-          color: '#0D1421',
-          width: '90vw',
-          textAlign:'start',
-          justifyContent:'start',
-          justifyItems:'start'
-        },
-      }
-    )}
+      toast(`${data.profit} coins added to your balance`,
+        {
+          position: "top-center",
+          icon: "🥳",
+          style: {
+            borderRadius: '8px',
+            background: '#84CB69',
+            color: '#0D1421',
+            width: '90vw',
+            textAlign: 'start',
+            justifyContent: 'start',
+            justifyItems: 'start'
+          },
+        }
+      )
+    }
   };
 
   const handleGameCrashed = (data) => {
@@ -309,21 +297,21 @@ const MainPage = () => {
     setGames(games + 1);
     setLosses(losses + 1);
     adjustBetAfterLoss();
-    if(data.profit > 0){
-    toast(`You lost ${data.profit} coin`,
-      {
-        position: "top-center",
-        icon: "😱",
-        style: {
-          borderRadius: '8px',
-          background: '#F56D63',
-          color: '#FFFFFF',
-          width: '90vw',
+    if (data.profit > 0) {
+      toast(`You lost ${data.profit} coin`,
+        {
+          position: "top-center",
+          icon: "😱",
+          style: {
+            borderRadius: '8px',
+            background: '#F56D63',
+            color: '#FFFFFF',
+            width: '90vw',
 
-        },
-      }
-    )
-  }
+          },
+        }
+      )
+    }
   };
 
   const updateGameHistory = (data, status) => {
@@ -410,21 +398,21 @@ const MainPage = () => {
           </div>
 
 
-          <div className={` transform translate-y-[100px] bg-cover bg-center bg-opacity-20 justify-between flex gap-2 px-4 py-2 items-center reward-bg h-[76px] rounded-[10px] ${rewardState?"":"hidden"}`} style={{background:`url(${rewardBG})`}}>
+          <div className={` transform translate-y-[100px] bg-cover bg-center bg-opacity-20 justify-between flex gap-2 px-4 py-2 items-center reward-bg h-[76px] rounded-[10px] ${rewardState ? "" : "hidden"}`} style={{ background: `url(${rewardBG})` }}>
             <div>
-              <img src="/image/cup.png" width={48} height={48} className="max-w-12 h-12"></img>
+              <img src="/image/cup.png" width={48} height={48} className="max-w-12 h-12" alt='cup'></img>
             </div>
-            
+
             <div className="text-[15px] w-1/2 leading-5 tracking-[-2%] text-white">You have uncompleted tasks that you can get rewards for.</div>
-            <ShadowButton 
-              content="Get Rewards" 
+            <ShadowButton
+              content="Get Rewards"
               className={`relative px-3 py-1 bg-[#84CB69] text-[#080888] shadow-btn-custom-border h-7 text-sm leading-5 w-[108px] font-medium `}
-              action={()=>setRewardState(false)} 
+              action={() => setRewardState(false)}
             />
-            <div className="absolute w-[30px], h-[30px]  top-0 right-0" onClick={()=>setRewardState(false)}>
-              <img src="/image/icon/CloseButton.svg" width={30} height={30} className="max-w-[30px] h-[30px]" alt="close"/>
+            <div className="absolute w-[30px], h-[30px]  top-0 right-0" onClick={() => setRewardState(false)}>
+              <img src="/image/icon/CloseButton.svg" width={30} height={30} className="max-w-[30px] h-[30px]" alt="close" />
             </div>
-            
+
           </div>
           <Game className={`transition-all ${isAction !== "start" ? "mt-24" : "mt-0"} `} finalResult={finalResult} gamePhase={gamePhase} isWin={winState}
             setLoaderIsShown={setLoaderIsShown} amount={balance} bet={bet} autoStop={autoStop} socketFlag={socketStart} realGame={isReal} setInfoState={(e) => setInfoState(e)} />

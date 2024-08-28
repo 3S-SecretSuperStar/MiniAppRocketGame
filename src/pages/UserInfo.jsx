@@ -1,49 +1,21 @@
-import { useState, useCallback, useEffect } from "react";
-import TabButton from "../component/atom/tab-button";
-import { avatar } from "../assets/avatar/index.js";
-import PannelScore from "../component/atom/PannelScore";
-import { Img } from "../assets/image";
-import FriendRanking from "../component/atom/friend-ranking.jsx";
-import React, { Component } from 'react';
-import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
+import React, { useState, useEffect } from "react";
 import { Carousel } from 'react-responsive-carousel';
-import "../css_generated/userInfo.css"
-import { Button } from "bootstrap";
-import ArrowRight from "../component/svg/arrow-right.jsx";
-import ArrowLeft from "../component/svg/arrow-left.jsx";
 import { useAtom } from "jotai";
-import { userData } from "../store/userData.jsx";
+import FriendRanking from "../component/atom/friend-ranking.jsx";
+import PannelScore from "../component/atom/PannelScore";
+import TabButton from "../component/atom/tab-button";
+import ArrowLeft from "../component/svg/arrow-left.jsx";
+import ArrowRight from "../component/svg/arrow-right.jsx";
+import { avatar } from "../assets/avatar/index.js";
 import { RANKINGDATA } from "../utils/globals.js";
 import { REACT_APP_SERVER } from "../utils/privateData.js";
-
-
-const fadeAnimationHandler = (props, state) => {
-  const transitionTime = props.transitionTime + 'ms';
-  const transitionTimingFunction = 'ease-in-out';
-
-  let slideStyle = {
-    position: 'absolute',
-    display: 'block',
-    zIndex: -2,
-    minHeight: '100%',
-    opacity: 0,
-    top: 0,
-    right: 0,
-    left: 0,
-    bottom: 0,
-    transitionTimingFunction: transitionTimingFunction,
-    msTransitionTimingFunction: transitionTimingFunction,
-    MozTransitionTimingFunction: transitionTimingFunction,
-    WebkitTransitionTimingFunction: transitionTimingFunction,
-    OTransitionTimingFunction: transitionTimingFunction,
-  };
+import { userData } from "../store/userData.jsx";
+import { Img } from "../assets/image";
+import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
+import "../css/userInfo.css"
 
 
 
-  return {
-    slideStyle
-  };
-};
 
 
 
@@ -115,7 +87,6 @@ const UserInfo = () => {
                   ranking: data.rank
                 }
               })
-              console.log(filterData)
               setFriendData(filterData)
 
             } catch (e) {
@@ -129,7 +100,6 @@ const UserInfo = () => {
     }
 
   }, [rankingIndex])
-  console.log(rankingIndex)
   return (
     <div className="flex flex-col gap-4 items-center text-white text-base">
       <div className="font-semibold">{user.RealName}</div>

@@ -11,10 +11,10 @@ const serverUrl = REACT_APP_SERVER;
 
 
 
-const GenerateTask = ({task, stateTask, index}) => {
+const GenerateTask = ({ task, stateTask, index }) => {
 
   console.log(task, stateTask);
-  
+
   const [isClaim, setIsClaim] = useState(false);
   const [user, setUser] = useAtom(userData);
 

@@ -1,54 +1,42 @@
 import { useState, useEffect } from "react";
+import toast from "react-hot-toast";
+import { initUtils } from '@telegram-apps/sdk'
+import ScrollModal from "../component/atom/scroll-modal";
+import ShadowButton from "../component/atom/shadow-btn";
 import FriendComment from "../component/molecules/friend-comment";
 import FriendEarned from "../component/molecules/friend-earned";
 import FriendsList from "../component/molecules/friends-list";
-import ScrollModal from "../component/atom/scroll-modal";
-import NavFriends from "../component/svg/nav_friends";
-import ShadowButton from "../component/atom/shadow-btn";
 import CheckMark from "../component/svg/check-mark";
-import toast from "react-hot-toast";
-import { initUtils } from '@telegram-apps/sdk'
-import { CopyToClipboard } from "react-copy-to-clipboard"
-import { REACT_APP_SERVER } from "../utils/privateData.js";
+import NavFriends from "../component/svg/nav_friends";
 import { RANKINGDATA } from "../utils/globals.js";
-
-
-const friendData = []
+import { REACT_APP_SERVER } from "../utils/privateData.js";
 
 const Friends = () => {
+  const [friendList, setFriendList] = useState([]);
+  const [isOpen, setIsOpen] = useState(false);
+  const serverUrl = REACT_APP_SERVER;
   const webapp = window.Telegram.WebApp.initDataUnsafe;
   const userId = webapp["user"]["username"];;
   const utils = initUtils();
 
-  const [friendList, setFriendList] = useState([]);
-  const [isOpen, setIsOpen] = useState(false);
-  const [isClosing, setIsClosing] = useState(false);
-  const [fullURL, setFullURL] = useState("");
-  const serverUrl = REACT_APP_SERVER;
-
   useEffect(() => {
-    const webapp = window.Telegram.WebApp.initDataUnsafe;
     let isMounted = true
+    const webapp = window.Telegram.WebApp.initDataUnsafe;
     if (webapp) {
 
-      const realName = webapp["user"]["first_name"] + " " + webapp["user"]["last_name"];
       const userName = webapp["user"]["username"];
-
       const headers = new Headers()
+
       headers.append('Content-Type', 'application/json')
       if (isMounted) {
         fetch(`${serverUrl}/get_friend`, { method: 'POST', body: JSON.stringify({ userName: userName }), headers })
           .then(res => Promise.all([res.status, res.json()]))
           .then(([status, data]) => {
             try {
-              console.log(data)
               const myData = data.friendData
                 .sort((a, b) => b.balance.real - a.balance.real)
                 .map((i, index) => { i.rank = index + 1; return i })
-              console.log(myData)
               const friendData = myData.map((data) => {
-                console.log(RANKINGDATA.indexOf(data.ranking))
-                console.log(RANKINGDATA.indexOf(data.ranking)+1)
                 return {
                   url: "john.svg",
                   name: data.name,
@@ -64,8 +52,6 @@ const Friends = () => {
 
             } catch (e) {
               console.log(e)
-              // eslint-disable-next-line no-self-assign
-              // document.location.href = document.location.href
             }
           })
         return () => { isMounted = false }
@@ -113,17 +99,11 @@ const Friends = () => {
       document.execCommand('copy');
       parentElement.removeChild(textField);
       console.log("success");
-      // setCopySuccess('Copied!');
     } catch (err) {
       console.log(err);
-      // setCopySuccess('Failed to copy!');
     }
   }
 
-  const sendInvite = () => {
-    setIsOpen(false);
-    setFriendList(friendData);
-  }
 
   return (
     <div className="flex flex-col h-full gap-4 pb-[76px] justify-between">

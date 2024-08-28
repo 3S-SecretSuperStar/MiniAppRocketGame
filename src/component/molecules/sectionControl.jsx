@@ -1,12 +1,12 @@
 import React, { useState, useContext, useRef, useEffect } from "react";
 import SwitchButton from "../atom/switchButtton";
-import InputNumber from "../../component1/InputNumber";
-import AppContext from "../../component1/AppContext";
-import Game from '../../component1/Game.jsx'
+import InputNumber from "../../component/template/InputNumber";
+import AppContext from "../../component/template/AppContext";
+import Game from '../../component/template/Game.jsx'
 import { useCookies } from 'react-cookie';
-import DropDown from "../../component1/DropDown";
-import '../../css_generated/DropDown.css';
-import "../../css_generated/Style.css";
+import DropDown from "../../component/template/DropDown";
+import '../../css/DropDown.css';
+import "../../css/Style.css";
 import PannelScore from "../atom/PannelScore";
 import { Img } from "../../assets/image";
 import { avatar } from "../../assets/avatar"
@@ -17,7 +17,7 @@ const SectionControl = () => {
   const [cookies] = !context.ssrFlag ? cookiesData : [context.cookies];
 
   const modalRef = useRef();
-  
+
   // State variables
   const [stopWasPressed, setStopWasPressed] = useState(false);
   const [realGame, setRealGame] = useState(false);
@@ -248,21 +248,21 @@ const SectionControl = () => {
     <div id='index-operations' className={`"flex flex-col w-full gap-4  justify-between"${autoMode ? 'auto-mode' : ''} flex flex-col gap-4`}>
       <div className="flex w-full bg-white_20 justify-between p-2 rounded-[10px] text-white text-base leading-5">
         <div className="flex gap-2.5">
-          <img src={avatar.avatar1} width="64px" height="64px" className="max-w-16 h-16"  alt = "avatar" />
+          <img src={avatar.avatar1} width="64px" height="64px" className="max-w-16 h-16" alt="avatar" />
           <div className="flex flex-col w-full gap-0.5">
             <p className="font-semibold">Sergei Kovtun</p>
             <p className="font-semibold">Beginner · 1/10</p>
             <p>1808944</p>
           </div>
         </div>
-        
-        <div className="flex flex-col gap-2">
-          <PannelScore img = {Img.agree} text2 = {"Won"} text3={"48"}/>
-          <PannelScore img = {Img.disagree} text2 = {"Lost"} text3={"32"}/>
-        </div>
-    </div>
 
-<Game finalResult={finalResult} gamePhase={gamePhase} realGame={realGame} setRealGame={setRealGame} setLoaderIsShown={setLoaderIsShown}/>
+        <div className="flex flex-col gap-2">
+          <PannelScore img={Img.agree} text2={"Won"} text3={"48"} />
+          <PannelScore img={Img.disagree} text2={"Lost"} text3={"32"} />
+        </div>
+      </div>
+
+      <Game finalResult={finalResult} gamePhase={gamePhase} realGame={realGame} setRealGame={setRealGame} setLoaderIsShown={setLoaderIsShown} />
       <div className="flex flex-row text-white justify-center">
         <span className={!autoMode ? 'selected' : ''} onClick={() => setAutoMode(false)}>Manual</span>
         <SwitchButton checked={autoMode} onChange={e => setAutoMode(e.target.checked)} />
@@ -294,7 +294,7 @@ const SectionControl = () => {
           <div className='index-operations-top'>{operationAfterLoss === 'Increase Bet by' ? 'Coefficient' : 'Base Bet'}</div>
           <DropDown label={operationAfterLoss} content={['Return to base Bet']} onChange={e => setOperationAfterLoss(e)} />
           <InputNumber InputProps={{ value: valueAfterLoss, min: 1, step: 1, onChange: e => setValueAfterLoss(parseFloat(e.target.value)) }} />
-          
+
           <div className='index-operations-top'>If Win</div>
           <div className='index-operations-top'>{operationAfterWin === 'Increase Bet by' ? 'Coefficient' : 'Base Bet'}</div>
           <DropDown label={operationAfterWin} content={['Increase Bet by']} onChange={e => setOperationAfterWin(e)} />

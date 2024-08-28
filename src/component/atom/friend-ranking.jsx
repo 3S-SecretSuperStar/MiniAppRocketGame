@@ -1,8 +1,8 @@
-const FriendRanking = ( { data }) => {
+const FriendRanking = ({ data }) => {
     return (
         <div className="flex justify-between rounded-[10px] bg-[#0000001A] py-2 px-4 items-center">
             <div className="flex gap-2 items-center">
-                <img 
+                <img
                     src={`/image/avatar/${data.url}`}
                     alt=""
                     className="w-8 h-8"

@@ -1,15 +1,12 @@
 import { useState } from "react";
-import AtomLabel from "../component/atom/atom-label";
+import { useAtom } from "jotai";
 import TabButton from "../component/atom/tab-button";
 import StatList from "../component/molecules/stat-list";
-import { useAtom } from "jotai";
 import { userData } from "../store";
 
-
-
 const Stats = () => {
-    const [ tabId, setTabId ] = useState(1);
-    const [user,] =useAtom(userData)
+    const [tabId, setTabId] = useState(1);
+    const [user,] = useAtom(userData)
     const statsList = [
         {
             src: "coin-y.svg",

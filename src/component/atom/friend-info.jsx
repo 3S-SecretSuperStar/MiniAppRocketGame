@@ -1,8 +1,8 @@
-const FriendInfo = ( { data }) => {
+const FriendInfo = ({ data }) => {
     return (
         <div className="flex justify-between rounded-[10px] bg-[#0000001A] py-2 px-4 items-center">
             <div className="flex gap-2 items-center">
-                <img 
+                <img
                     src={`/image/avatar/${data.url}`}
                     alt=""
                     className="w-8 h-8"
@@ -15,7 +15,7 @@ const FriendInfo = ( { data }) => {
             </div>
             <div className="flex flex-col justify-between items-end text-white" >
                 <div className="flex items-center gap-2 text-[14px] font-medium">
-                    <img 
+                    <img
                         src="/image/coin-y.svg"
                         alt=""
                         className="w-6 h-6"

@@ -1,7 +1,7 @@
 import { cn } from "../../utils";
 
 const LoadingSpinner = (
-    { className } 
+    { className }
 ) => (
     <svg
         xmlns="http://www.w3.org/2000/svg"

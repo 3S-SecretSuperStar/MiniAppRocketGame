@@ -1,9 +1,9 @@
 import React, { memo, useState, useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import "../css_generated/InputNumber.css";
-import UpArrow from '../component/svg/up-arrow';
-import DownArrow from '../component/svg/down-arrow';
-import { cn } from '../utils';
+import "../../css/InputNumber.css";
+import UpArrow from '../../component/svg/up-arrow';
+import DownArrow from '../../component/svg/down-arrow';
+import { cn } from '../../utils';
 
 const InputNumber = memo(({ InputProps }) => {
   const [value, setValue] = useState(InputProps.value);
