@@ -15,7 +15,7 @@ const StatList = () => {
   const userName = user.UserName;
 
   const convertFormatData = (date) => {
-    const nowDate = moment().utcOffset("+00:00");
+    const nowDate = moment().utc();
     console.log( "current monent", moment())
     const selectedDate = moment(date).utc();
     const diffDate = nowDate.diff(selectedDate,'days');
@@ -24,7 +24,7 @@ const StatList = () => {
     console.log("diffDate ",diffDate)
     if (diffDate === 0) return "Today";
     if (diffDate === 1) return "Yesterday";
-    return date;
+    return selectedDate.format('L');
   }
   useEffect(() => {
     let isMounted = true
