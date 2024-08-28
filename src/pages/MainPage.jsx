@@ -246,6 +246,7 @@ const MainPage = () => {
   };
 
   const handleGameStarted = () => {
+    setFirstLogin(false)
     setWinstate(false)
     const animation = document.getElementById('stars').style.animation
     document.getElementById('stars').style.animation = 'none'
