@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Toaster } from 'react-hot-toast';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Layout from './component/atom/layoutmain.jsx';
@@ -38,15 +38,6 @@ function App() {
       window.removeEventListener('resize', adjustHeight);
     };
   }, []);
-  // useEffect(()=>{
-  //   location.search
-  //     .substr(1)
-  //     .split('&')
-  //     .foreach(function (item) {
-  //       const tmp = item.split('=')
-  //         if(tmp[0] == 'ref') localStorage.setItem('referral',decodeURIComponent(tmp[1]))
-  //     })
-  // }, [])
 
   useEffect(() => {
     let socket
@@ -60,38 +51,7 @@ function App() {
     return () => socket.close();
   }, [])
 
-  useEffect(() => {
-    let isMounted = true
-    if (isMounted) {
-      const installGoogleAds = () => {
-        const elem = document.createElement('script')
-        elem.src =
-          '//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js'
-        elem.async = true
-        elem.defer = true
-        document.body.insertBefore(elem, document.body.firstChild)
-      }
-      installGoogleAds()
-    }
-    return () => { isMounted = false }
-  }, [])
-
-
-  const adsRef = useRef(false)
-
-  if (!adsRef.current && typeof adsbygoogle !== 'undefined') {
-    adsRef.current = true
-      //eslint-disable-next-line no-undef
-      (adsbygoogle = window.adsbygoogle || []).push({})
-  }
-
-  const overlayRef = useRef()
-  const contextValues = {
-    socket,
-    overlayRef
-  }
-
-
+  const contextValues = { socket }
 
   return (
     <AppContext.Provider value={contextValues}>
@@ -118,7 +78,6 @@ function App() {
               </BrowserRouter>
             </>)
             : <Loading setLoading={handleLoadingState} />
-
           }
         </div>
       </JotaiProvider>
