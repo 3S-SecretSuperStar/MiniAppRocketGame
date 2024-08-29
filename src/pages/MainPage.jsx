@@ -74,6 +74,10 @@ const MainPage = () => {
   const valueAfterLossRef = useRef(valueAfterLoss);
   const navigate = useNavigate();
 
+  const avatarData = [avatar.avatarBeginner, avatar.avatarPilot, avatar.avatarExplorer,
+    avatar.avatarAstronaut, avatar.avatarCaptain, avatar.avatarCommander, avatar.avatarAdmiral,
+    avatar.avatarLegend, avatar.avatarMasterOfTheUniverse, avatar.avatarGodOfSpace]
+
   const handleModalButton = () => {
     startGame();
     setIsModalOpen(false);
@@ -300,7 +304,7 @@ const MainPage = () => {
     setGames(games + 1);
     setLosses(losses + 1);
     adjustBetAfterLoss();
-    if (data.profit > 0) {
+    
       toast(`You lost ${data.profit} coin`,
         {
           position: "top-center",
@@ -314,7 +318,7 @@ const MainPage = () => {
           },
         }
       )
-    }
+    
   };
 
   const updateGameHistory = (data, status) => {
@@ -385,7 +389,7 @@ const MainPage = () => {
           <div className={`flex w-full absolute bg-white_20 justify-between transition transform duration-200 p-2 rounded-[10px] text-white text-base leading-5 ${isAction === "start" ? "-translate-y-24" : ""} `} onClick={goToUserInfo}>
 
             <div className="flex gap-2.5">
-              <img src={avatar.avatar1} width="64px" height="64px" className="max-w-16 h-16" alt="avatar" />
+              <img src={avatarData[RANKINGDATA.indexOf(user.Ranking)]} width="64px" height="64px" className="max-w-16 h-16" alt="avatar" />
               <div className="flex flex-col w-full gap-0.5">
                 <p className="font-semibold">{user.RealName}</p>
                 <p className="font-semibold">{user.Ranking} · {RANKINGDATA.indexOf(user.Ranking) + 1}/10</p>
