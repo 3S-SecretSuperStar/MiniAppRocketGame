@@ -228,23 +228,7 @@ const MainPage = () => {
 
   }, [isReal, gamePhase]) // --------------------------------  
 
-  // const register = (realName, userName) => {
-  //   if (validateInput()) {
-  //     const headers = new Headers()
-  //     headers.append('Content-Type', 'application/json')
-  //     fetch(`${serverUrl}/register`, {
-  //       method: 'POST',
-  //       body: JSON.stringify({ name: realName, user_name: userName }),
-  //       headers
-  //     })
-  //       .then(res => Promise.all([res.status, res.json()]))
-  //       .catch(err => alert(err))
-  //   }
-  // }
-
-  // useEffect(() => () => { 
-  //   overlayRef.current.style.display = 'none' 
-  // }, []) 
+  
   // Function to start the game
   const startGame = () => {
     setStopWasPressed(false);
