@@ -40,7 +40,7 @@ const StatList = () => {
               if (!_statsData[currentDate]) {
                 _statsData[currentDate] =
                 {
-                  date: convertFormatData(currentDate),
+                  date: currentDate,
                   data: []
                 }
               }
