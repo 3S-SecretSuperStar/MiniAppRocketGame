@@ -42,7 +42,7 @@ const UserInfo = () => {
   ]
   const rankingItems = RANKINGDATA.map((data, index) => {
     return (
-      <div className="w-full left-3" key={index}>
+      <div className="w-full" key={index}>
         <p>Ranking:{data}</p>
       </div>
 
