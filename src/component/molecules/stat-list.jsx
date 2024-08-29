@@ -34,14 +34,15 @@ const StatList = () => {
             const myData = data.gamesHistory
             const newHistoryGames = isReal ? myData.real.reverse() : myData.virtual.reverse()
             const groupedData = newHistoryGames.reduce((_statsData, current) => {
-              if (!_statsData[current.date]) {
-                _statsData[current.date] =
+              const currentDate = convertFormatData(currentDate)
+              if (!_statsData[currentDate]) {
+                _statsData[currentDate] =
                 {
-                  date: convertFormatData(current.date),
+                  date: convertFormatData(currentDate),
                   data: []
                 }
               }
-              _statsData[current.date].data.push(
+              _statsData[currentDate].data.push(
                 { bet: current.bet, stop: current.stop === 'x' ? 0 : current.stop }
               )
               return _statsData;
