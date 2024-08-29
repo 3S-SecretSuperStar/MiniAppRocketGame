@@ -78,6 +78,20 @@ const MainPage = () => {
     avatar.avatarAstronaut, avatar.avatarCaptain, avatar.avatarCommander, avatar.avatarAdmiral,
     avatar.avatarLegend, avatar.avatarMasterOfTheUniverse, avatar.avatarGodOfSpace]
 
+    const statsList = [
+      {
+        src: "coin-y.svg",
+        amount: user.Balance,
+        id: 1
+      },
+      {
+        src: "token.png",
+        amount: "0",
+        id: 2
+      }
+    ]
+    const [tabId, setTabId] = useState(1);
+
   const handleModalButton = () => {
     startGame();
     setIsModalOpen(false);
@@ -435,6 +449,7 @@ const MainPage = () => {
             </div>
 
           </div>
+          <TabButton tabList={statsList} tabNo={tabId} setTabNo={setTabId} />
           <Game className={`transition-all ${isAction !== "start" ? "mt-24" : "mt-0"} `} finalResult={finalResult} gamePhase={gamePhase} isWin={winState}
             setLoaderIsShown={setLoaderIsShown} amount={balance} bet={bet} autoStop={autoStop} socketFlag={socketStart} realGame={isReal} setInfoState={(e) => setInfoState(e)} />
 
