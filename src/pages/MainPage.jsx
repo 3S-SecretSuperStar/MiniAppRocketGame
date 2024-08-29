@@ -53,7 +53,7 @@ const MainPage = () => {
   const [, setLoaderIsShown] = useState();
   const [operationAfterLoss, setOperationAfterLoss] = useState('Increase Bet by');
   const [operationAfterWin, setOperationAfterWin] = useState('Return to base Bet');
-  const [rewardState, setRewardState] = useState(true);
+  const [rewardState, setRewardState] = useState(false);
   const [stopWasPressed, setStopWasPressed] = useState(false);
   const [valueAfterLoss, setValueAfterLoss] = useState(2);
   const [valueAfterWin, setValueAfterWin] = useState(1);
@@ -226,7 +226,7 @@ const MainPage = () => {
     }
     return () => { isMounted = false }
 
-  }, [isReal, gamePhase]) // --------------------------------  
+  }, [isReal, gamePhase])  
 
   
   // Function to start the game
@@ -386,15 +386,6 @@ const MainPage = () => {
 
   return (
     <>
-      {
-        <div className={cn("absolute top-10 right-4 transform z-50 -translate-y-1/2", isAction !== 'start' || isModalOpen ? 'hidden' : '')} onClick={stopGame}>
-          <img
-            src="/image/icon/close-button.svg"
-            alt="Close Button"
-            className="w-[30px] h-[30px]"
-          />
-        </div>
-      }
       <div className="flex-auto p-4">
 
         <div id='index-operations' className={`flex flex-col relative h-full w-full gap-4 justify-between ${autoMode ? 'auto-mode' : ''} transition flex flex-col gap-4 ${isAction === "start" ? "pb-0" : "pb-[76px]"}`}>
@@ -416,6 +407,7 @@ const MainPage = () => {
               <PannelScore img={Img.agree} text2={"Won"} text3={user.GameWon} />
               <PannelScore img={Img.disagree} text2={"Lost"} text3={user.GameLost} />
             </div>
+            
           </div>
 
 
@@ -435,7 +427,7 @@ const MainPage = () => {
             </div>
 
           </div>
-          <TabButton className = " transform translate-y-[100px]" tabList={statsList} tabNo={tabId} setTabNo={setTabId} />
+          <TabButton className = {`transform translate-y-[100px] ${isAction === "start" ? "-translate-y-[150px]" : ""} `} tabList={statsList} tabNo={tabId} setTabNo={setTabId} />
           <Game className={`transition-all ${isAction !== "start" ? "mt-24" : "mt-0"} `} finalResult={finalResult} gamePhase={gamePhase} isWin={winState}
             setLoaderIsShown={setLoaderIsShown} amount={balance} bet={bet} autoStop={autoStop} socketFlag={socketStart} realGame={isReal} setInfoState={(e) => setInfoState(e)} />
 
