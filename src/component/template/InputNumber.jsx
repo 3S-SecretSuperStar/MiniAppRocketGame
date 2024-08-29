@@ -71,7 +71,7 @@ const InputNumber = memo(({ InputProps }) => {
         onChange={handleChange}
         onKeyPress={handleKeyPress}
         disabled={InputProps.disabled}
-        min={1}
+        min={InputProps.min}
       />
       {InputProps.type === "xWithNumber" && <div className='absolute left-2 top-1/2 transfrom -translate-y-1/2'>x</div>}
       <div className='absolute right-2.5 top-1/2 transform -translate-y-1/2'>

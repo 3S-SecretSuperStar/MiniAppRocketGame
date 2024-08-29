@@ -26,6 +26,7 @@ import TgTwitter from "../assets/icon/tg-twitter";
 import TgYout from "../assets/icon/tg-yout";
 import rewardBG from "../assets/image/reward_bg.png"
 import "../css/Style.css"
+import EarningTab from "../component/molecules/earning-tab.jsx";
 
 
 
@@ -73,6 +74,19 @@ const MainPage = () => {
   const operationAfterLossRef = useRef(operationAfterLoss);
   const valueAfterLossRef = useRef(valueAfterLoss);
   const navigate = useNavigate();
+
+  const tabList = [
+    {
+      id: 1,
+      src: "coin-y.svg",
+      amount: user.Balance
+    },
+    {
+      id: 2,
+      src: "ton.svg",
+      amount: 0
+    }
+  ]
 
   const handleModalButton = () => {
     startGame();
@@ -216,6 +230,7 @@ const MainPage = () => {
     setStopWasPressed(false);
     setGamePhase('started')
     setSocketStart(false);
+    setActionState("start");
 
     context.socket.onmessage = async e => {
       const data = JSON.parse(e.data);
@@ -245,7 +260,6 @@ const MainPage = () => {
   };
 
   const handleGameStarted = () => {
-    setActionState("start");
     setFirstLogin(false)
     setWinstate(false)
     const animation = document.getElementById('stars').style.animation
@@ -368,15 +382,6 @@ const MainPage = () => {
 
   return (
     <>
-      {
-        <div className={cn("absolute top-10 right-4 transform z-50 -translate-y-1/2", isAction !== 'start' || isModalOpen ? 'hidden' : '')} onClick={stopGame}>
-          <img
-            src="/image/icon/close-button.svg"
-            alt="Close Button"
-            className="w-[30px] h-[30px]"
-          />
-        </div>
-      }
       <div className="flex-auto p-4">
 
         <div id='index-operations' className={`flex flex-col relative h-full w-full gap-4 justify-between ${autoMode ? 'auto-mode' : ''} transition flex flex-col gap-4 ${isAction === "start" ? "pb-0" : "pb-[76px]"}`}>
@@ -417,6 +422,7 @@ const MainPage = () => {
             </div>
 
           </div>
+          <EarningTab tabList={tabList} tabId={tabId} setTabId={setTabId} />
           <Game className={`transition-all ${isAction !== "start" ? "mt-24" : "mt-0"} `} finalResult={finalResult} gamePhase={gamePhase} isWin={winState}
             setLoaderIsShown={setLoaderIsShown} amount={balance} bet={bet} autoStop={autoStop} socketFlag={socketStart} realGame={isReal} setInfoState={(e) => setInfoState(e)} />
 
@@ -484,7 +490,7 @@ const MainPage = () => {
 
                     <div className="flex flex-col w-1/2 gap-1">
                       <div className="text-sm leading-5">Auto Stop</div>
-                      <InputNumber InputProps={{ value: autoStop, min: 1.01, max: 100, step: 1, type: "xWithNumber", onChange: e => { stopGame(); setAutoStop(e.target.value) } }} />
+                      <InputNumber InputProps={{ value: autoStop, min: 2, max: 100, step: 1, type: "xWithNumber", onChange: e => { stopGame(); setAutoStop(e.target.value) } }} />
                       <div className="text-xs leading-[14px] text-[#FFFFFFCC]">Auto Cash Out when this amount will be reached</div>
                     </div>
                   </div>
@@ -497,7 +503,7 @@ const MainPage = () => {
 
                     <div className="flex flex-col w-full gap-1">
                       <div className="text-sm leading-5">Coefficient</div>
-                      <InputNumber InputProps={{ value: lostCoefficient, min: 1.01, max: 100, step: 1, type: "xWithNumber", disabled: operationAfterLoss === "Return to base Bet", onChange: e => { stopGame(); setWinCoefficient(parseFloat(e.target.value)) } }} />
+                      <InputNumber InputProps={{ value: lostCoefficient, min: 2, max: 100, step: 1, type: "xWithNumber", disabled: operationAfterLoss === "Return to base Bet", onChange: e => { stopGame(); setWinCoefficient(parseFloat(e.target.value)) } }} />
                     </div>
                   </div>
 
@@ -509,7 +515,7 @@ const MainPage = () => {
 
                     <div className="flex flex-col w-full gap-1">
                       <div className="text-sm leading-5 text-[#FFFFFF99]">Coefficeent</div>
-                      <InputNumber InputProps={{ value: winCoefficient, min: 1.01, max: 100, step: 1, type: "xWithNumber", disabled: operationAfterWin === "Return to base Bet", onChange: e => { stopGame(); setWinCoefficient(e.target.value) } }} />
+                      <InputNumber InputProps={{ value: winCoefficient, min: 2, max: 100, step: 1, type: "xWithNumber", disabled: operationAfterWin === "Return to base Bet", onChange: e => { stopGame(); setWinCoefficient(e.target.value) } }} />
                     </div>
                   </div>
                 </div>
