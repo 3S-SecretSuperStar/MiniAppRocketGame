@@ -527,7 +527,7 @@ const MainPage = () => {
 
                     <div className="flex flex-col w-full gap-1">
                       <div className="text-sm leading-5 text-[#FFFFFF99]">Coefficeent</div>
-                      <InputNumber InputProps={{ value: winCoefficient, min: 2, max: 100, step: 1, type: "xWithNumber", disabled: operationAfterWin === "Return to base Bet", onChange: e => { stopGame(); setWinCoefficient(e.target.value) } }} />
+                      <InputNumber InputProps={{ value: winCoefficient, min: 2, max: 100, step: 1, type: "xWithNumber", disabled: operationAfterWin === "Return to base Bet", onChange: e => { stopGame(); setWinCoefficient(e.target.value<2?2:e.target.value) } }} />
                     </div>
                   </div>
                 </div>
@@ -539,7 +539,7 @@ const MainPage = () => {
                         action={handleModalButton}
                         content={"Start"}
                         disabled={
-                          balance === '0.00' || bet < 1 || autoStop < 1.01 ||
+                          balance === '0.00' || bet < 1 || autoStop < 2 ||
                           balance < 1 || isNaN(bet) || isNaN(autoStop) || isNaN(valueAfterWin)
                           || isNaN(valueAfterLoss)
                         }
