@@ -472,7 +472,7 @@ const MainPage = () => {
 
                 <div className="flex flex-col w-1/2 gap-1">
                   <div className="text-sm leading-5">Auto Stop</div>
-                  <InputNumber InputProps={{ value: autoStop, min: 2, max: 100, step: 1, disabled: gamePhase === 'started', type: "xWithNumber", onChange: e => { stopGame(); setAutoStop(e.target.value) } }} />
+                  <InputNumber InputProps={{ value: autoStop, min: 1.1, max: 100, step: 1, disabled: gamePhase === 'started', type: "xWithNumber", onChange: e => { stopGame(); setAutoStop(e.target.value) } }} />
                   <div className="text-xs leading-[14px] text-[#FFFFFFCC]">Auto Cash Out when this amount will be reached</div>
                 </div>
               </div>
@@ -519,7 +519,7 @@ const MainPage = () => {
 
                     <div className="flex flex-col w-1/2 gap-1">
                       <div className="text-sm leading-5">Auto Stop</div>
-                      <InputNumber InputProps={{ value: autoStop, min: 2, max: 100, step: 1, type: "xWithNumber", onChange: e => { stopGame(); setAutoStop(e.target.value) } }} />
+                      <InputNumber InputProps={{ value: autoStop, min: 1.1, max: 100, step: 1, type: "xWithNumber", onChange: e => { stopGame(); setAutoStop(e.target.value) } }} />
                       <div className="text-xs leading-[14px] text-[#FFFFFFCC]">Auto Cash Out when this amount will be reached</div>
                     </div>
                   </div>
