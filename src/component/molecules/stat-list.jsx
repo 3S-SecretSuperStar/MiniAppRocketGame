@@ -34,7 +34,9 @@ const StatList = () => {
             const myData = data.gamesHistory
             const newHistoryGames = isReal ? myData.real.reverse() : myData.virtual.reverse()
             const groupedData = newHistoryGames.reduce((_statsData, current) => {
+              console.log("database date", current.date)
               const currentDate = convertFormatData(current.date)
+              console.log(currentDate)
               if (!_statsData[currentDate]) {
                 _statsData[currentDate] =
                 {
