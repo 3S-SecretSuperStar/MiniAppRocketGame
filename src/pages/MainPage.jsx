@@ -471,6 +471,7 @@ const MainPage = () => {
                       action={() => setIsModalOpen(true)}
                     />}
                     <ShadowButton
+                    className="w-full"
                       action={startGame}
                       content={"Start"}
                       disabled={
@@ -572,7 +573,7 @@ const MainPage = () => {
                   💥 But be careful, because the rocket can crash at any moment, and if it does, you'll lose your bet!
                 </div>
               </div>
-              <div className="flex gap-4">
+              <div className="w-full flex gap-4">
                 <Link to={'/help'} className="w-1/2">
                   <ShadowButton className=" bg-white text-[#3861FB] invite-btn-setting !border-[#F3E3E3]" content="learn more" />
                 </Link>
