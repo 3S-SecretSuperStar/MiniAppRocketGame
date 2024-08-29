@@ -26,6 +26,7 @@ import TgTwitter from "../assets/icon/tg-twitter";
 import TgYout from "../assets/icon/tg-yout";
 import rewardBG from "../assets/image/reward_bg.png"
 import "../css/Style.css"
+import TabButton from "../component/atom/tab-button.jsx";
 
 
 
