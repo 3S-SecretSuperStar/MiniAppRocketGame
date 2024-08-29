@@ -44,7 +44,7 @@ const Friends = () => {
                   rate: (RANKINGDATA.indexOf(data.ranking) + 1),
                   id: data.balance.real,
                   coin: 100,
-                  ton: 0
+                  token: 0
                 }
               })
               console.log(friendData)

@@ -14,7 +14,7 @@ const Stats = () => {
             id: 1
         },
         {
-            src: "ton.svg",
+            src: "token.svg",
             amount: "0",
             id: 2
         }

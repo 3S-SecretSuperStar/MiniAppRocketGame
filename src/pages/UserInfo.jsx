@@ -6,20 +6,13 @@ import PannelScore from "../component/atom/PannelScore";
 import TabButton from "../component/atom/tab-button";
 import ArrowLeft from "../component/svg/arrow-left.jsx";
 import ArrowRight from "../component/svg/arrow-right.jsx";
-import { avatar } from "../assets/avatar/index.js";
+import { avatar } from "../assets/avatar";
 import { RANKINGDATA } from "../utils/globals.js";
 import { REACT_APP_SERVER } from "../utils/privateData.js";
 import { userData } from "../store/userData.jsx";
 import { Img } from "../assets/image";
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
 import "../css/userInfo.css"
-
-
-
-
-
-
-
 
 
 const UserInfo = () => {
@@ -35,11 +28,16 @@ const UserInfo = () => {
       id: 1
     },
     {
-      src: "ton.svg",
+      src: "token.svg",
       amount: "0",
       id: 2
     }
   ]
+
+  const avatarData = [avatar.avatarBeginner, avatar.avatarPilot, avatar.avatarExplorer,
+    avatar.avatarAstronaut, avatar.avatarCaptain, avatar.avatarCommander, avatar.avatarAdmiral,
+    avatar.avatarLegend, avatar.avatarMasterOfTheUniverse, avatar.avatarGodOfSpace]
+
   const rankingItems = RANKINGDATA.map((data, index) => {
     return (
       <div className="w-full" key={index}>
@@ -112,7 +110,7 @@ const UserInfo = () => {
 
         </div>
         <div className="flex flex-col items-center gap-2">
-          <img src={avatar.avatar1} width="200px" height="200px" className="max-w-[200px] h-[200px]" alt="avatar" />
+          <img src={avatarData[RANKINGDATA.indexOf(user.Ranking)]} width="200px" height="200px" className="max-w-[200px] h-[200px]" alt="avatar" />
           <div className="rounded-[8px] border-[3px] border-[#56D0EA] py-2 w-[200px] text-center text-white">
             {user.Ranking}
           </div>

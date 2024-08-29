@@ -25,7 +25,7 @@ const FriendInfo = ({ data }) => {
                     </div>
                 </div>
                 <div>
-                    {data.ton > 0 ? `+${data.ton}` : 0}
+                    {data.token > 0 ? `+${data.token}` : 0}
                 </div>
             </div>
         </div>

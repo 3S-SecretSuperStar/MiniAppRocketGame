@@ -24,7 +24,7 @@ const Wallet = () => {
                         className="h-full max-w-[200px]"
                     />
                     <div className="text-[15px] text-white">
-                        Connect your TON wallet to be able to play with TON and receive rewards from the platform.
+                        Connect your Token wallet to be able to play with Token and receive rewards from the platform.
                     </div>
                 </div>
             </div>
@@ -40,7 +40,7 @@ const Wallet = () => {
             </div>
             <InfoModal title="Coming soon!" isOpen={infoState} setIsOpen={() => setInfoState(false)} height="h-[280px]">
               <div className="flex items-center justify-center">
-                <img src='/image/icon/rocketx.svg' width="48px" height="48px" className="max-w-[48px] h-[48px]" alt="avatar" />
+                <img src='/image/icon/rocketx.svg' width="48px" height="48px" className="max-w-[48px] h-[48px]" alt="token" />
               </div>
               <div className="flex flex-col gap-6 text-black text-center text-[15px] font-normal leading-5 tracking-[-2%]">
                 <div>

@@ -16,7 +16,7 @@ import InputNumber from "../component/template/InputNumber";
 import Game from '../component/template/Game.jsx'
 import { cn } from "../utils/index.js";
 import { isActionState, realGameState, userData } from "../store";
-import { avatar } from "../assets/avatar/index.js";
+import { avatar } from "../assets/avatar";
 import { Img } from "../assets/image";
 import { RANKINGDATA } from "../utils/globals.js";
 import { REACT_APP_SERVER } from "../utils/privateData.js";
