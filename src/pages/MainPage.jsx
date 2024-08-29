@@ -83,7 +83,7 @@ const MainPage = () => {
     const statsList = [
       {
         src: "coin-y.svg",
-        amount: user.Balance.Real,
+        amount: user.Balance,
         id: 1
       },
       {
