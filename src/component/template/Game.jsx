@@ -6,21 +6,22 @@ import { Img } from '../../assets/image'
 import { ACCELERATION } from '../../utils/globals'
 import { userData } from '../../store'
 import "../../css/Game.css"
+import { Link } from 'react-router-dom'
 
 export default memo(function Game({ gamePhase, finalResult, amount = 10.00,
   className, bet, autoStop, socketFlag, realGame, isWin, setInfoState }) {
-    const context = useContext(AppContext);
-    const [currentResult, setCurrentResult] = useState(1)
-    const [user,] = useAtom(userData)
-    const [timerHandler, setTimerHandler] = useState();
-    const [countTimeHandler, setCountTimeHandler] = useState();
-    const [counterNumber, setCounterNumber] = useState(0);
-    const [timerRounded, setTimerRounded] = useState(0);
-    const [counterFlag, setCounterFlag] = useState(false);
-    const [isImgShow, setIsImgShow] = useState(false);
-    const counterItem = [Img.go, Img.counter1, Img.counter2, Img.counter3];
-    let comment;
-    let score = finalResult === 'Crashed...' ? 'Crashed...' : finalResult ||currentResult
+  const context = useContext(AppContext);
+  const [currentResult, setCurrentResult] = useState(1)
+  const [user,] = useAtom(userData)
+  const [timerHandler, setTimerHandler] = useState();
+  const [countTimeHandler, setCountTimeHandler] = useState();
+  const [counterNumber, setCounterNumber] = useState(0);
+  const [timerRounded, setTimerRounded] = useState(0);
+  const [counterFlag, setCounterFlag] = useState(false);
+  const [isImgShow, setIsImgShow] = useState(false);
+  const counterItem = [Img.go, Img.counter1, Img.counter2, Img.counter3];
+  let comment;
+  let score = finalResult === 'Crashed...' ? 'Crashed...' : finalResult || currentResult
 
   if (gamePhase === 'stopped') {
     clearInterval(timerHandler)
@@ -236,9 +237,9 @@ export default memo(function Game({ gamePhase, finalResult, amount = 10.00,
         <div className="flex gap-2 items-center justify-center font-extrabold ">
           <img src={Img.coin} width={44} height={44} className="max-w-11 h-11" alt="coin" />
           <p className="text-[40px] text-white font-extrabold">{parseFloat(amount).toFixed(2)}</p>
-          <div className='bg-[#3434DA] w-8 h-8 rounded-lg p-1' onClick={setInfoState}>
+          <Link to='/help' className='bg-[#3434DA] w-8 h-8 rounded-lg p-1' >
             <img src="/image/icon/info.svg" width={24} height={24} className='max-w-6 h-6' alt="info" />
-          </div>
+          </Link>
         </div>
         {
           counterNumber > 0 && counterNumber < 1.2 ?

@@ -214,7 +214,6 @@ const MainPage = () => {
   // Function to start the game
   const startGame = () => {
     setStopWasPressed(false);
-    setActionState("start");
     setGamePhase('started')
     setSocketStart(false);
 
@@ -246,6 +245,7 @@ const MainPage = () => {
   };
 
   const handleGameStarted = () => {
+    setActionState("start");
     setFirstLogin(false)
     setWinstate(false)
     const animation = document.getElementById('stars').style.animation
@@ -258,6 +258,7 @@ const MainPage = () => {
   };
 
   const handleGameStopped = (data = { stop: 'x', profit: '0' }) => {
+    setActionState("stop");
     setWinstate(false);
     setFinalResult(data.stop);
     setGamePhase('stopped');
@@ -291,6 +292,7 @@ const MainPage = () => {
   };
 
   const handleGameCrashed = (data) => {
+    setActionState("stop");
     setFinalResult('Crashed...');
     setGamePhase('crashed');
     updateGameHistory(data, 'crashed');
