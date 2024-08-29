@@ -23,7 +23,7 @@ const FriendEarned = ({ setIsModalOpen }) => {
                 <div className="w-1/2">
                     <div className="mx-auto flex gap-[2.5px] w-fit py-2">
                         <img
-                            src="/image/token.svg"
+                            src="/image/token.png"
                             alt=""
                             className="w-6 h-6"
                         />

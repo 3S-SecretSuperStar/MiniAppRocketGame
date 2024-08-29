@@ -131,13 +131,27 @@ const MainPage = () => {
     if (gamePhase !== 'started' && autoMode && !stopWasPressed && balanceRef.current >= betRef.current && betRef.current) {
       if (isMounted) {
         try {
-          context.socket.send(JSON.stringify({
-            operation: 'start',
-            bet: betRef.current,
-            autoStop,
-            isReal: isReal,
-            userName: user.UserName
-          }))
+          setStopWasPressed(false);
+          setGamePhase('started')
+          setSocketStart(false);
+          setActionState("start");
+          context.socket.onmessage = async e => {
+            const data = JSON.parse(e.data);
+            switch (data.operation) {
+              case 'started':
+                setSocketStart(true)
+                handleGameStarted();
+                break;
+              case 'stopped':
+                handleGameStopped(data);
+                break;
+              case 'crashed':
+                handleGameCrashed(data);
+                break;
+              default:
+                break;
+            }
+          };
         } catch (e) {
 
           // eslint-disable-next-line no-self-assign

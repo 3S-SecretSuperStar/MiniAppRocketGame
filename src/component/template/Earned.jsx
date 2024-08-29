@@ -16,7 +16,7 @@ const Earned = () => {
         },
         {
             id: 2,
-            src: "token.svg",
+            src: "token.png",
             amount: 0
         }
     ]
