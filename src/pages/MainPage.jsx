@@ -14,19 +14,15 @@ import NavPlay from "../component/svg/nav_play.jsx";
 import AppContext from "../component/template/AppContext.jsx";
 import InputNumber from "../component/template/InputNumber";
 import Game from '../component/template/Game.jsx'
-import { cn } from "../utils/index.js";
 import { isActionState, realGameState, userData } from "../store";
 import { avatar } from "../assets/avatar/index.js";
 import { Img } from "../assets/image";
 import { RANKINGDATA } from "../utils/globals.js";
 import { REACT_APP_SERVER } from "../utils/privateData.js";
-import TgIcon from "../assets/icon/tg-icon";
-import TgInst from "../assets/icon/tg-inst";
-import TgTwitter from "../assets/icon/tg-twitter";
-import TgYout from "../assets/icon/tg-yout";
 import rewardBG from "../assets/image/reward_bg.png"
 import "../css/Style.css"
 import EarningTab from "../component/molecules/earning-tab.jsx";
+
 
 
 
@@ -46,7 +42,6 @@ const MainPage = () => {
   const [games, setGames] = useState(0);
   const [historyGames, setHistoryGames] = useState([]);
   const [isAction, setActionState] = useAtom(isActionState);
-  const [infoState, setInfoState] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [losses, setLosses] = useState(0);
   const [lostCoefficient,] = useState(1);
@@ -63,6 +58,7 @@ const MainPage = () => {
   const [isReal, setRealGame] = useAtom(realGameState);
   const [user, setUser] = useAtom(userData);
   const [winState, setWinstate] = useState(false);
+  const [tabId, setTabId] = useState(1);
 
 
   // Refs for mutable state
@@ -424,7 +420,7 @@ const MainPage = () => {
           </div>
           <EarningTab tabList={tabList} tabId={tabId} setTabId={setTabId} />
           <Game className={`transition-all ${isAction !== "start" ? "mt-24" : "mt-0"} `} finalResult={finalResult} gamePhase={gamePhase} isWin={winState}
-            setLoaderIsShown={setLoaderIsShown} amount={balance} bet={bet} autoStop={autoStop} socketFlag={socketStart} realGame={isReal} setInfoState={(e) => setInfoState(e)} />
+            setLoaderIsShown={setLoaderIsShown} amount={balance} bet={bet} autoStop={autoStop} socketFlag={socketStart} realGame={isReal} />
 
           <div className="flex flex-col text-white gap-4">
             <div >
@@ -567,26 +563,7 @@ const MainPage = () => {
 
               </div>
             </InfoModal>
-            <InfoModal title="Coming soon!" isOpen={infoState} setIsOpen={() => setInfoState(false)} height="h-[280px]">
-              <div className="flex items-center justify-center">
-                <img src='/image/icon/rocketx.svg' width="48px" height="48px" className="max-w-[48px] h-[48px]" alt="avatar" />
-              </div>
-              <div className="flex flex-col gap-6 text-black text-center text-[15px] font-normal leading-5 tracking-[-2%]">
-                <div>
-                  🛠 Our token is under development!
-                </div>
-                <div>
-                  📢 Join our social media to stay up to date.
-                </div>
-                <div className="px-8 flex justify-between w-full">
-                  <ShadowButton className={"w-8 h-8 flex justify-center p-0 items-center rounded-lg"} content={<TgIcon />}></ShadowButton>
-                  <ShadowButton className={"w-8 h-8 flex justify-center p-0 items-center rounded-lg"} content={<TgTwitter />}></ShadowButton>
-                  <ShadowButton className={"w-8 h-8 flex justify-center p-0 items-center rounded-lg"} content={<TgInst />}></ShadowButton>
-                  <ShadowButton className={"w-8 h-8 flex justify-center p-0 items-center rounded-lg"} content={<TgYout />}></ShadowButton>
-                </div>
-              </div>
-
-            </InfoModal>
+            
           </div>
         </div>
       </div>

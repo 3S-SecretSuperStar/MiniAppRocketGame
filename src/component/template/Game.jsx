@@ -9,7 +9,7 @@ import "../../css/Game.css"
 import { Link } from 'react-router-dom'
 
 export default memo(function Game({ gamePhase, finalResult, amount = 10.00,
-  className, bet, autoStop, socketFlag, realGame, isWin, setInfoState }) {
+  className, bet, autoStop, socketFlag, realGame, isWin }) {
     const context = useContext(AppContext);
     const [currentResult, setCurrentResult] = useState(1)
     const [user,] = useAtom(userData)
