@@ -28,6 +28,9 @@ import imgImpressive from "./Impressive.png";
 import imgUnstoppable from "./unstoppable.png"
 import imgGotThis from "./got_this.png";
 import imgFire from "./fire.png";
+import imgAfterAction from "./img_After_Action.png"
+import imgButtons from "./img_Buttons.png"
+import imgSelectButton from "./img_Select_Button.png"
 
 export const Img = {
   agree, disagree,counter1, counter2, counter3, 
@@ -36,5 +39,6 @@ export const Img = {
   youWon, wow, crash ,go, imgSetting, loadingTitle,
   imgAmazing, imgIncredible, imgFantastic, imgGreat,
   imgRockrtStar, imgBrilliant, imgCrushing, imgGenius, 
-  imgImpressive, imgUnstoppable, imgGotThis, imgFire
+  imgImpressive, imgUnstoppable, imgGotThis, imgFire,
+  imgAfterAction, imgButtons, imgSelectButton
 }; 

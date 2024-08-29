@@ -53,7 +53,7 @@ const MainPage = () => {
   const [, setLoaderIsShown] = useState();
   const [operationAfterLoss, setOperationAfterLoss] = useState('Increase Bet by');
   const [operationAfterWin, setOperationAfterWin] = useState('Return to base Bet');
-  const [rewardState, setRewardState] = useState(false);
+  const [rewardState, setRewardState] = useState(true);
   const [stopWasPressed, setStopWasPressed] = useState(false);
   const [valueAfterLoss, setValueAfterLoss] = useState(2);
   const [valueAfterWin, setValueAfterWin] = useState(1);
@@ -74,6 +74,7 @@ const MainPage = () => {
   const operationAfterLossRef = useRef(operationAfterLoss);
   const valueAfterLossRef = useRef(valueAfterLoss);
   const navigate = useNavigate();
+  const [tabId, setTabId] = useState(1);
 
   const avatarData = [avatar.avatarBeginner, avatar.avatarPilot, avatar.avatarExplorer,
     avatar.avatarAstronaut, avatar.avatarCaptain, avatar.avatarCommander, avatar.avatarAdmiral,
@@ -82,16 +83,16 @@ const MainPage = () => {
     const statsList = [
       {
         src: "coin-y.svg",
-        amount: user.Balance,
+        amount: user.Balance.Real,
         id: 1
       },
       {
         src: "token.png",
-        amount: "0",
+        amount: 0,
         id: 2
       }
     ]
-    const [tabId, setTabId] = useState(1);
+    
 
   const handleModalButton = () => {
     startGame();
@@ -450,7 +451,7 @@ const MainPage = () => {
             </div>
 
           </div>
-          <TabButton tabList={statsList} tabNo={tabId} setTabNo={setTabId} />
+          <TabButton className = " transform translate-y-[100px]" tabList={statsList} tabNo={tabId} setTabNo={setTabId} />
           <Game className={`transition-all ${isAction !== "start" ? "mt-24" : "mt-0"} `} finalResult={finalResult} gamePhase={gamePhase} isWin={winState}
             setLoaderIsShown={setLoaderIsShown} amount={balance} bet={bet} autoStop={autoStop} socketFlag={socketStart} realGame={isReal} setInfoState={(e) => setInfoState(e)} />
 

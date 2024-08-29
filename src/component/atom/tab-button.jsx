@@ -1,6 +1,8 @@
-const TabButton = ({ tabList, tabNo, setTabNo }) => {
+import { cn } from "../../utils";
+
+const TabButton = ({className, tabList, tabNo, setTabNo }) => {
     return (
-        <div className="flex w-full p-1 gap-1 justify-between rounded-xl text-base font-bold bg-[#1414AA] text-white">
+        <div className={cn(className,`flex w-full p-1 gap-1 justify-between rounded-xl text-base font-bold bg-[#1414AA] text-white`)}>
             {
                 tabList.map((_tab, _index) => (
                     <div

@@ -24,7 +24,7 @@ const UserInfo = () => {
   const statsList = [
     {
       src: "coin-y.svg",
-      amount: user.Balance,
+      amount: user.Balance.Real,
       id: 1
     },
     {
