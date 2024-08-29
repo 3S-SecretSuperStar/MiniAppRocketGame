@@ -40,21 +40,21 @@ const InputNumber = memo(({ InputProps }) => {
     const newValue = e.target.value;
     // Validate input: Only allow numbers and decimal points
     if (/^\d*\.?\d*$/.test(newValue)) {
-      newValue >= 0 || newValue === '' ? setValue(newValue) : setValue(0.1);
+      newValue >= 0 || newValue === '' ? setValue(newValue) : setValue(InputProps.min);
       InputProps.onChange && InputProps.onChange({ target: { value: newValue } });
     }
 
   };
 
   const incrementValue = () => {
-    const newValue = (parseFloat(value) || 0.1) + 1;
-    newValue >= 0.1 ? setValue(newValue) : setValue(0.1);
+    const newValue = (parseFloat(value) ||InputProps.min) + 1;
+    newValue >=InputProps.min ? setValue(newValue) : setValue(InputProps.min);
     InputProps.onChange && InputProps.onChange({ target: { value: newValue } });
   };
 
   const decrementValue = () => {
-    const newValue = (parseFloat(value) || 0.1) - 1;
-    newValue >= 0.1 || newValue === '' ? setValue(newValue) : setValue(0.1);
+    const newValue = (parseFloat(value) ||InputProps.min) - 1;
+    newValue >=InputProps.min || newValue === '' ? setValue(newValue) : setValue(InputProps.min);
     InputProps.onChange && InputProps.onChange({ target: { value: newValue } });
   };
 
@@ -71,7 +71,6 @@ const InputNumber = memo(({ InputProps }) => {
         onChange={handleChange}
         onKeyPress={handleKeyPress}
         disabled={InputProps.disabled}
-        min={InputProps.min}
       />
       {InputProps.type === "xWithNumber" && <div className='absolute left-2 top-1/2 transfrom -translate-y-1/2'>x</div>}
       <div className='absolute right-2.5 top-1/2 transform -translate-y-1/2'>
