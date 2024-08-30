@@ -107,8 +107,8 @@ const MainPage = () => {
       setBet(parseFloat(balance));
     }
 
-    if (autoStop < 1) {
-      setAutoStop(1.01)
+    if (autoStop < 1.1) {
+      setAutoStop(1.1)
     } else if (autoStop > 100) {
       setAutoStop(100)
     }
@@ -446,7 +446,7 @@ const MainPage = () => {
                 <div className="flex flex-col w-1/2 gap-1">
                   <div className="text-sm leading-5">Bet</div>
                   <InputNumber InputProps={{ value: bet, min: 1, step: 1, disabled: gamePhase === 'started', onChange: e => setBet(parseFloat(e.target.value)) }} />
-                  <div className="text-xs leading-[14px] text-[#FFFFFFCC]">Minimal Bet is 0.1 Coin</div>
+                  <div className="text-xs leading-[14px] text-[#FFFFFFCC]">Minimal Bet is 1 Coin</div>
                 </div>
 
                 <div className="flex flex-col w-1/2 gap-1">
@@ -470,8 +470,8 @@ const MainPage = () => {
                       content={"Start"}
                       disabled={
                         balance === '0.00' ||
-                        bet < 0.1 || autoStop < 1.01 ||
-                        balance < 0.1 || isNaN(bet) || isNaN(autoStop) || isNaN(valueAfterWin)
+                        bet < 1 || autoStop < 1.1 ||
+                        balance < 1 || isNaN(bet) || isNaN(autoStop) || isNaN(valueAfterWin)
                         || isNaN(valueAfterLoss)
                       }
                     />
@@ -493,7 +493,7 @@ const MainPage = () => {
                     <div className="flex flex-col w-1/2 gap-1">
                       <div className="text-sm leading-5">Bet</div>
                       <InputNumber InputProps={{ value: bet, min: 1, step: 1, onChange: e => setBet(parseFloat(e.target.value)) }} />
-                      <div className="text-xs leading-[14px] text-[#FFFFFFCC]">Minimal Bet is 0.1 Coin</div>
+                      <div className="text-xs leading-[14px] text-[#FFFFFFCC]">Minimal Bet is 1 Coin</div>
                     </div>
 
                     <div className="flex flex-col w-1/2 gap-1">

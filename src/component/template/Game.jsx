@@ -237,7 +237,7 @@ export default memo(function Game({ gamePhase, finalResult, amount = 10.00,
         <div className="flex gap-2 items-center justify-center font-extrabold ">
           <img src={Img.coin} width={44} height={44} className="max-w-11 h-11" alt="coin" />
           <p className="text-[40px] text-white font-extrabold">{parseFloat(amount).toFixed(2)}</p>
-          <Link to = '/help' className='bg-[#3434DA] w-8 h-8 rounded-lg p-1' >
+          <Link to = '/help' className={`bg-[#3434DA] w-8 h-8 rounded-lg p-1 ${gamePhase==='start'&&'hidden'}`} >
             <img src="/image/icon/info.svg" width={24} height={24} className='max-w-6 h-6' alt="info" />
           </Link>
         </div>

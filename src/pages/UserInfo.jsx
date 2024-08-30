@@ -41,7 +41,7 @@ const UserInfo = () => {
   const rankingItems = RANKINGDATA.map((data, index) => {
     return (
       <div className="w-full" key={index}>
-        <p>Ranking:{data}</p>
+        <p>Ranking: {data}</p>
       </div>
 
     )
@@ -80,7 +80,7 @@ const UserInfo = () => {
                   url: "john.svg",
                   name: data.name,
                   label: data.ranking,
-                  rate: RANKINGDATA.indexOf(user.Ranking) + 1,
+                  rate: RANKINGDATA.indexOf(data.Ranking) + 1,
                   id: data.balance.real,
                   ranking: data.rank
                 }
@@ -101,7 +101,7 @@ const UserInfo = () => {
   return (
     <div className="flex flex-col gap-4 items-center text-white text-base">
       <div className="font-semibold">{user.RealName}</div>
-      <TabButton tabList={statsList} tabNo={tabId} setTabNo={setTabId} />
+      <TabButton tabList={statsList}  />
       <div className="flex flex-col gap-4 overflow-auto w-full " style={{ height: "calc(100vh - 200px)" }}>
         <div className="flex gap-[41px] text-blueFaded text-sm justify-center">
 
