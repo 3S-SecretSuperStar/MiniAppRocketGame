@@ -442,7 +442,7 @@ const MainPage = () => {
               <div className={`transition duration-300 ${autoMode && "hidden"} flex gap-4`}>
                 <div className="flex flex-col w-1/2 gap-1">
                   <div className="text-sm leading-5">Bet</div>
-                  <InputNumber InputProps={{ value: bet, min: 0.1, step: 1, disabled: gamePhase === 'started', onChange: e => setBet(parseFloat(e.target.value)) }} />
+                  <InputNumber InputProps={{ value: bet, min: 1, step: 1, disabled: gamePhase === 'started', onChange: e => setBet(parseFloat(e.target.value)) }} />
                   <div className="text-xs leading-[14px] text-[#FFFFFFCC]">Minimal Bet is 0.1 Coin</div>
                 </div>
 
@@ -508,7 +508,7 @@ const MainPage = () => {
 
                     <div className="flex flex-col w-full gap-1">
                       <div className="text-sm leading-5">Coefficient</div>
-                      <InputNumber InputProps={{ value: lostCoefficient, min: 0.1, max: 100, step: 1, type: "xWithNumber", disabled: operationAfterLoss === "Return to base Bet", onChange: e => { stopGame(); setWinCoefficient(parseFloat(e.target.value)) } }} />
+                      <InputNumber InputProps={{ value: lostCoefficient, min: 1, max: 100, step: 1, type: "xWithNumber", disabled: operationAfterLoss === "Return to base Bet", onChange: e => { stopGame(); setWinCoefficient(parseFloat(e.target.value)) } }} />
                     </div>
                   </div>
 
@@ -520,7 +520,7 @@ const MainPage = () => {
 
                     <div className="flex flex-col w-full gap-1">
                       <div className="text-sm leading-5 text-[#FFFFFF99]">Coefficeent</div>
-                      <InputNumber InputProps={{ value: winCoefficient, min: 0.1, max: 100, step: 1, type: "xWithNumber", disabled: operationAfterWin === "Return to base Bet", onChange: e => { stopGame(); setWinCoefficient(e.target.value<2?2:e.target.value) } }} />
+                      <InputNumber InputProps={{ value: winCoefficient, min: 1, max: 100, step: 1, type: "xWithNumber", disabled: operationAfterWin === "Return to base Bet", onChange: e => { stopGame(); setWinCoefficient(e.target.value<2?2:e.target.value) } }} />
                     </div>
                   </div>
                 </div>

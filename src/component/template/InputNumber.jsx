@@ -40,6 +40,16 @@ const InputNumber = memo(({ InputProps }) => {
     const newValue = e.target.value;
     // Validate input: Only allow numbers and decimal points
     if (/^\d*\.?\d*$/.test(newValue)) {
+      // newValue >= InputProps.min || newValue === '' ? setValue(newValue) : setValue(InputProps.min);
+      InputProps.onChange && InputProps.onChange({ target: { value: newValue } });
+    }
+
+  };
+
+  const handleBulr = (e) => {
+    const newValue = e.target.value;
+    // Validate input: Only allow numbers and decimal points
+    if (/^\d*\.?\d*$/.test(newValue)) {
       newValue >= InputProps.min || newValue === '' ? setValue(newValue) : setValue(InputProps.min);
       InputProps.onChange && InputProps.onChange({ target: { value: newValue } });
     }
@@ -71,6 +81,7 @@ const InputNumber = memo(({ InputProps }) => {
         onChange={handleChange}
         onKeyPress={handleKeyPress}
         disabled={InputProps.disabled}
+        onBlur={handleBulr}
       />
       {InputProps.type === "xWithNumber" && <div className='absolute left-2 top-1/2 transfrom -translate-y-1/2'>x</div>}
       <div className='absolute right-2.5 top-1/2 transform -translate-y-1/2'>
