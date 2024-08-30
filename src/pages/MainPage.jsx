@@ -383,7 +383,10 @@ const MainPage = () => {
   const goToUserInfo = () => {
     navigate("/userInfo");
   }
-
+  if(tabId===1) {
+    setTabId(0);
+    setInfoState(true)
+  }
   return (
     <>
       <div className="flex-auto p-4">
