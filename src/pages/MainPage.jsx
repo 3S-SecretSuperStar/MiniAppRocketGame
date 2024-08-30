@@ -151,7 +151,8 @@ const MainPage = () => {
     if (gamePhase !== 'started' && autoMode && !stopWasPressed && balanceRef.current >= betRef.current && betRef.current) {
       if (isMounted) {
         try {
-          setStopWasPressed(false);
+          setTimeout(()=>{
+            setStopWasPressed(false);
           setGamePhase('started')
           setSocketStart(false);
           setActionState("start");
@@ -172,6 +173,9 @@ const MainPage = () => {
                 break;
             }
           };
+          },1000)
+          
+          
         } catch (e) {
 
           // eslint-disable-next-line no-self-assign
