@@ -50,14 +50,12 @@ const MainPage = () => {
   const [infoState, setInfoState] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [losses, setLosses] = useState(0);
-  const [lostCoefficient,] = useState(1);
+  const [lostCoefficient, setLostCoefficient] = useState(1);
   const [, setLoaderIsShown] = useState();
   const [operationAfterLoss, setOperationAfterLoss] = useState('Increase Bet by');
   const [operationAfterWin, setOperationAfterWin] = useState('Return to base Bet');
   const [rewardState, setRewardState] = useState(false);
   const [stopWasPressed, setStopWasPressed] = useState(false);
-  const [valueAfterLoss, setValueAfterLoss] = useState(2);
-  const [valueAfterWin, setValueAfterWin] = useState(1);
   const [winCoefficient, setWinCoefficient] = useState(1);
   const [wins, setWins] = useState(0);
   const [socketStart, setSocketStart] = useState(false);
@@ -71,29 +69,29 @@ const MainPage = () => {
   const historyGamesRef = useRef(historyGames);
   const betRef = useRef(bet);
   const operationAfterWinRef = useRef(operationAfterWin);
-  const valueAfterWinRef = useRef(valueAfterWin);
+  const valueAfterWinRef = useRef(winCoefficient);
   const operationAfterLossRef = useRef(operationAfterLoss);
-  const valueAfterLossRef = useRef(valueAfterLoss);
+  const valueAfterLossRef = useRef(lostCoefficient);
   const navigate = useNavigate();
   const [tabId, setTabId] = useState(1);
 
   const avatarData = [avatar.avatarBeginner, avatar.avatarPilot, avatar.avatarExplorer,
-    avatar.avatarAstronaut, avatar.avatarCaptain, avatar.avatarCommander, avatar.avatarAdmiral,
-    avatar.avatarLegend, avatar.avatarMasterOfTheUniverse, avatar.avatarGodOfSpace]
+  avatar.avatarAstronaut, avatar.avatarCaptain, avatar.avatarCommander, avatar.avatarAdmiral,
+  avatar.avatarLegend, avatar.avatarMasterOfTheUniverse, avatar.avatarGodOfSpace]
 
-    const statsList = [
-      {
-        src: "coin-y.svg",
-        amount: user.Balance,
-        id: 1
-      },
-      {
-        src: "token.png",
-        amount: 0,
-        id: 2
-      }
-    ]
-    
+  const statsList = [
+    {
+      src: "coin-y.svg",
+      amount: user.Balance,
+      id: 1
+    },
+    {
+      src: "token.png",
+      amount: 0,
+      id: 2
+    }
+  ]
+
 
   const handleModalButton = () => {
     startGame();
@@ -108,7 +106,6 @@ const MainPage = () => {
     } else if (bet > balance && balance !== '0.00') {
       setBet(parseFloat(balance));
       betRef.current = parseFloat(balance)
-
     }
 
     if (autoStop < 1.1) {
@@ -121,63 +118,61 @@ const MainPage = () => {
       setBalance('0.00')
     }
 
-    if (valueAfterWin < 1) {
-      setValueAfterWin(1)
+    if (winCoefficient < 1) {
+      setWinCoefficient(1)
     }
 
-    if (valueAfterWin > 100) {
-      setValueAfterWin(100)
+    if (winCoefficient > 100) {
+      setWinCoefficient(100)
     }
 
-    if (valueAfterLoss < 1) {
-      setValueAfterLoss(1)
+    if (lostCoefficient < 1) {
+      setLostCoefficient(1)
     }
 
-    if (valueAfterLoss > 100) {
-      setValueAfterLoss(100)
+    if (lostCoefficient > 100) {
+      setLostCoefficient(100)
     }
 
-  }, [bet, autoStop, balance, valueAfterLoss, valueAfterWin]);
+  }, [bet, autoStop, balance, lostCoefficient, winCoefficient]);
 
   useEffect(() => {
     operationAfterWinRef.current = operationAfterWin;
-    valueAfterWinRef.current = valueAfterWin;
+    valueAfterWinRef.current = winCoefficient;
     operationAfterLossRef.current = operationAfterLoss;
-    valueAfterLossRef.current = valueAfterLoss;
-  }, [operationAfterWin, valueAfterWin, operationAfterLoss, valueAfterLoss]);
+    valueAfterLossRef.current = lostCoefficient;
+  }, [operationAfterWin, winCoefficient, operationAfterLoss, lostCoefficient]);
 
   useEffect(() => {
     let isMounted = true
     if (gamePhase !== 'started' && autoMode && !stopWasPressed && balanceRef.current >= betRef.current && betRef.current) {
       if (isMounted) {
         try {
-          setTimeout(()=>{
+          setTimeout(() => {
             setStopWasPressed(false);
-          setGamePhase('started')
-          setSocketStart(false);
-          setActionState("start");
-          context.socket.onmessage = async e => {
-            const data = JSON.parse(e.data);
-            switch (data.operation) {
-              case 'started':
-                setSocketStart(true)
-                handleGameStarted();
-                break;
-              case 'stopped':
-                handleGameStopped(data);
-                break;
-              case 'crashed':
-                handleGameCrashed(data);
-                break;
-              default:
-                break;
-            }
-          };
-          },1000)
-          
-          
+            setGamePhase('started')
+            setSocketStart(false);
+            setActionState("start");
+            context.socket.onmessage = async e => {
+              const data = JSON.parse(e.data);
+              console.log("Data", data.operation);
+              switch (data.operation) {
+                case 'started':
+                  setSocketStart(true)
+                  handleGameStarted();
+                  break;
+                case 'stopped':
+                  handleGameStopped(data);
+                  break;
+                case 'crashed':
+                  handleGameCrashed(data);
+                  break;
+                default:
+                  break;
+              }
+            };
+          }, 1000)
         } catch (e) {
-
           // eslint-disable-next-line no-self-assign
           document.location.href = document.location.href
         }
@@ -201,7 +196,6 @@ const MainPage = () => {
           .then(res => Promise.all([res.status, res.json()]))
           .then(([status, data]) => {
             try {
-
               const myData = data.allUsersData
                 .sort((a, b) => b.balance.real - a.balance.real)
                 .map((i, index) => { i.rank = index + 1; return i })
@@ -234,18 +228,18 @@ const MainPage = () => {
     }
     return () => { isMounted = false }
 
-  }, [isReal, gamePhase])  
+  }, [isReal, gamePhase])
 
-  
+
   // Function to start the game
   const startGame = () => {
     setStopWasPressed(false);
     setGamePhase('started')
     setSocketStart(false);
     setActionState("start");
-
     context.socket.onmessage = async e => {
       const data = JSON.parse(e.data);
+      console.log("start game", data.operation);
       switch (data.operation) {
         case 'started':
           setSocketStart(true)
@@ -326,21 +320,21 @@ const MainPage = () => {
     setGames(games + 1);
     setLosses(losses + 1);
     adjustBetAfterLoss();
-    
-      toast(`You lost ${data.profit} coin`,
-        {
-          position: "top-center",
-          icon: "😱",
-          style: {
-            borderRadius: '8px',
-            background: '#F56D63',
-            color: '#FFFFFF',
-            width: '90vw',
 
-          },
-        }
-      )
-    
+    toast(`You lost ${data.profit} coin`,
+      {
+        position: "top-center",
+        icon: "😱",
+        style: {
+          borderRadius: '8px',
+          background: '#F56D63',
+          color: '#FFFFFF',
+          width: '90vw',
+
+        },
+      }
+    )
+
   };
 
   const updateGameHistory = (data, status) => {
@@ -370,9 +364,9 @@ const MainPage = () => {
       setBet(betRef.current);
     }
   };
-  console.log("valueAfterWinRef.current",valueAfterWinRef.current)
-  console.log("balanceRef.current",balanceRef.current)
-  
+  console.log("valueAfterWinRef.current", valueAfterWinRef.current)
+  console.log("balanceRef.current", balanceRef.current)
+
   const adjustBetAfterLoss = () => {
     if (autoMode) {
       if (operationAfterLossRef.current === 'Increase Bet by') {
@@ -392,12 +386,12 @@ const MainPage = () => {
   const goToUserInfo = () => {
     navigate("/userInfo");
   }
-  if(tabId===2) {
+  if (tabId === 2) {
     setTabId(1);
     setInfoState(true)
   }
 
-  console.log("bet: ",bet," betRef: ",betRef.current);
+  console.log("bet: ", bet, " betRef: ", betRef.current);
   return (
     <>
       <div className="flex-auto p-4">
@@ -421,7 +415,7 @@ const MainPage = () => {
               <PannelScore img={Img.agree} text2={"Won"} text3={user.GameWon} />
               <PannelScore img={Img.disagree} text2={"Lost"} text3={user.GameLost} />
             </div>
-            
+
           </div>
 
 
@@ -441,7 +435,7 @@ const MainPage = () => {
             </div>
 
           </div>
-          <TabButton className = {`transform translate-y-[100px] ${isAction === "start" ? "-translate-y-[150px]" : ""} `} tabList={statsList} tabNo={tabId} setTabNo={setTabId} />
+          <TabButton className={`transform translate-y-[100px] ${isAction === "start" ? "-translate-y-[150px]" : ""} `} tabList={statsList} tabNo={tabId} setTabNo={setTabId} />
           <Game className={`transition-all ${isAction !== "start" ? "mt-24" : "mt-0"} `} finalResult={finalResult} gamePhase={gamePhase} isWin={winState}
             setLoaderIsShown={setLoaderIsShown} amount={balance} bet={bet} autoStop={autoStop} socketFlag={socketStart} realGame={isReal} setInfoState={(e) => setInfoState(e)} />
 
@@ -456,13 +450,13 @@ const MainPage = () => {
               <div className={`transition duration-300 ${autoMode && "hidden"} flex gap-4`}>
                 <div className="flex flex-col w-1/2 gap-1">
                   <div className="text-sm leading-5">Bet</div>
-                  <InputNumber InputProps={{ value: bet, min: 1, step: 1, disabled: gamePhase === 'started', onChange: e => {setBet(parseFloat(e.target.value)); betRef.current = e.target.value} }} />
+                  <InputNumber InputProps={{ value: bet, min: 1, step: 1, disabled: gamePhase === 'started', onChange: e => { setBet(parseFloat(e.target.value)); betRef.current = e.target.value } }} />
                   <div className="text-xs leading-[14px] text-[#FFFFFFCC]">Minimal Bet is 1 Coin</div>
                 </div>
 
                 <div className="flex flex-col w-1/2 gap-1">
                   <div className="text-sm leading-5">Auto Stop</div>
-                  <InputNumber InputProps={{ value: autoStop, min: 1.1, max: 100, step: 1, disabled: gamePhase === 'started', type: "xWithNumber", onChange: e => { stopGame(); setAutoStop(e.target.value) } }} />
+                  <InputNumber InputProps={{ value: autoStop, min: 1.1, max: 100, step: 1, disabled: gamePhase === 'started', type: "xWithNumber", onChange: e => { setAutoStop(e.target.value) } }} />
                   <div className="text-xs leading-[14px] text-[#FFFFFFCC]">Auto Cash Out when this amount will be reached</div>
                 </div>
               </div>
@@ -482,8 +476,8 @@ const MainPage = () => {
                       disabled={
                         balance === '0.00' ||
                         bet < 1 || autoStop < 1.1 ||
-                        balance < 1 || isNaN(bet) || isNaN(autoStop) || isNaN(valueAfterWin)
-                        || isNaN(valueAfterLoss)
+                        balance < 1 || isNaN(bet) || isNaN(autoStop) || isNaN(winCoefficient)
+                        || isNaN(lostCoefficient)
                       }
                     />
                   </div>
@@ -497,19 +491,19 @@ const MainPage = () => {
                 )
             }
 
-            <SettingModal icon={<AutoIcon/>} title="Auto Launch" isOpen={isModalOpen} setIsOpen={setIsModalOpen}>
+            <SettingModal icon={<AutoIcon />} title="Auto Launch" isOpen={isModalOpen} setIsOpen={setIsModalOpen}>
               <div className="flex flex-col justify-between max-h-screen pt-2 px-4 pb-4 h-[calc(100vh-60px)]" >
                 <div className="flex flex-col gap-[15px]" >
                   <div className="flex gap-4">
                     <div className="flex flex-col w-1/2 gap-1">
                       <div className="text-sm leading-5">Bet</div>
-                      <InputNumber InputProps={{ value: bet, min: 1, step: 1, onChange: e => {setBet(parseFloat(e.target.value)); betRef.current = e.target.value} }} />
+                      <InputNumber InputProps={{ value: bet, min: 1, step: 1, onChange: e => { setBet(parseFloat(e.target.value)); betRef.current = e.target.value } }} />
                       <div className="text-xs leading-[14px] text-[#FFFFFFCC]">Minimal Bet is 1 Coin</div>
                     </div>
 
                     <div className="flex flex-col w-1/2 gap-1">
                       <div className="text-sm leading-5">Auto Stop</div>
-                      <InputNumber InputProps={{ value: autoStop, min: 1.1, max: 100, step: 1, type: "xWithNumber", onChange: e => { stopGame(); setAutoStop(e.target.value) } }} />
+                      <InputNumber InputProps={{ value: autoStop, min: 1.1, max: 100, step: 1, type: "xWithNumber", onChange: e => { setAutoStop(e.target.value) } }} />
                       <div className="text-xs leading-[14px] text-[#FFFFFFCC]">Auto Cash Out when this amount will be reached</div>
                     </div>
                   </div>
@@ -522,7 +516,7 @@ const MainPage = () => {
 
                     <div className="flex flex-col w-full gap-1">
                       <div className="text-sm leading-5">Coefficient</div>
-                      <InputNumber InputProps={{ value: lostCoefficient, min: 1, max: 100, step: 1, type: "xWithNumber", disabled: operationAfterLoss === "Return to base Bet", onChange: e => { stopGame(); setWinCoefficient(parseFloat(e.target.value)) } }} />
+                      <InputNumber InputProps={{ value: lostCoefficient, min: 1, max: 100, step: 1, type: "xWithNumber", disabled: operationAfterLoss === "Return to base Bet", onChange: e => { setLostCoefficient(parseFloat(e.target.value)) } }} />
                     </div>
                   </div>
 
@@ -534,7 +528,7 @@ const MainPage = () => {
 
                     <div className="flex flex-col w-full gap-1">
                       <div className="text-sm leading-5 text-[#FFFFFF99]">Coefficeent</div>
-                      <InputNumber InputProps={{ value: winCoefficient, min: 1, max: 100, step: 1, type: "xWithNumber", disabled: operationAfterWin === "Return to base Bet", onChange: e => { stopGame(); setWinCoefficient(e.target.value) } }} />
+                      <InputNumber InputProps={{ value: winCoefficient, min: 1, max: 100, step: 1, type: "xWithNumber", disabled: operationAfterWin === "Return to base Bet", onChange: e => { setWinCoefficient(e.target.value) } }} />
                     </div>
                   </div>
                 </div>
@@ -547,8 +541,8 @@ const MainPage = () => {
                         content={"Start"}
                         disabled={
                           balance === '0.00' || bet < 1 || autoStop < 2 ||
-                          balance < 1 || isNaN(bet) || isNaN(autoStop) || isNaN(valueAfterWin)
-                          || isNaN(valueAfterLoss)
+                          balance < 1 || isNaN(bet) || isNaN(autoStop) || isNaN(winCoefficient)
+                          || isNaN(lostCoefficient)
                         }
                       />
                     ) :
