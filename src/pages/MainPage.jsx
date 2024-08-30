@@ -104,8 +104,11 @@ const MainPage = () => {
   useEffect(() => {
     if (bet < 1 || balance === '0.00' || balance < 1) {
       setBet(1);
+      betRef.current = 1;
     } else if (bet > balance && balance !== '0.00') {
       setBet(parseFloat(balance));
+      betRef.current = parseFloat(balance)
+
     }
 
     if (autoStop < 1.1) {
