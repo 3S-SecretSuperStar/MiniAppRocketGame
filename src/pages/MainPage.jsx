@@ -98,7 +98,7 @@ const MainPage = () => {
     startGame();
     setIsModalOpen(false);
   }
-  setRealGame(true)
+  setRealGame(false)
   // Effect to validate and adjust state values
   useEffect(() => {
     if (bet < 1 || balance === '0.00' || balance < 1) {
@@ -383,8 +383,8 @@ const MainPage = () => {
   const goToUserInfo = () => {
     navigate("/userInfo");
   }
-  if(tabId===1) {
-    setTabId(0);
+  if(tabId===2) {
+    setTabId(1);
     setInfoState(true)
   }
   return (
