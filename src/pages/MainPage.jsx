@@ -451,7 +451,7 @@ const MainPage = () => {
               <div className={`transition duration-300 ${autoMode && "hidden"} flex gap-4`}>
                 <div className="flex flex-col w-1/2 gap-1">
                   <div className="text-sm leading-5">Bet</div>
-                  <InputNumber InputProps={{ value: bet, min: 1, step: 1, disabled: gamePhase === 'started', onChange: e => setBet(parseFloat(e.target.value)) }} />
+                  <InputNumber InputProps={{ value: bet, min: 1, step: 1, disabled: gamePhase === 'started', onChange: e => {setBet(parseFloat(e.target.value)); betRef.current = e.target.value} }} />
                   <div className="text-xs leading-[14px] text-[#FFFFFFCC]">Minimal Bet is 1 Coin</div>
                 </div>
 
@@ -498,7 +498,7 @@ const MainPage = () => {
                   <div className="flex gap-4">
                     <div className="flex flex-col w-1/2 gap-1">
                       <div className="text-sm leading-5">Bet</div>
-                      <InputNumber InputProps={{ value: bet, min: 1, step: 1, onChange: e => setBet(parseFloat(e.target.value)) }} />
+                      <InputNumber InputProps={{ value: bet, min: 1, step: 1, onChange: e => {setBet(parseFloat(e.target.value)); betRef.current = e.target.value} }} />
                       <div className="text-xs leading-[14px] text-[#FFFFFFCC]">Minimal Bet is 1 Coin</div>
                     </div>
 
