@@ -15,9 +15,12 @@ const StatList = () => {
   const userName = user.UserName;
 
   const convertFormatData = (date) => {
-    const nowDate = moment.utc();
-    const selectedDate = moment(date);
+    const nowDate = moment.utc().format('L');
+    const selectedDate = moment(date).format('L');
+    console.log("nowDate : ",nowDate)
+    console.log("selected date : ",selectedDate)
     const diffDate = nowDate.diff(selectedDate, 'days');
+    console.log("diff date : ",diffDate)
     if (diffDate === 0) return "Today";
     if (diffDate === 1) return "Yesterday";
     return selectedDate.format('L');
