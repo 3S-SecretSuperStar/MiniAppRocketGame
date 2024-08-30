@@ -13,7 +13,7 @@ const Help = () => {
   const setData = () => { }
 
   return (
-    <div className="flex flex-col gap-8 items-center h-full pb-24 overflow-y-auto ">
+    <div className="flex flex-col gap-8 items-center h-full pb-[92px] overflow-y-auto ">
       <div className="flex flex-col gap-4 items-center">
         <div className="text-[20px] text-blueFaded">🎲 <span className="text-[17px]">How to play</span></div>
         <div className="text-white text-[15px]">Place your bet and press the Start button to launch the rocket! As the rocket flies, a multiplier increases your bet. Press the Stop button to get your profit! But be careful, because the rocket can crash at any moment, and if it does, you'll lose your bet!</div>
