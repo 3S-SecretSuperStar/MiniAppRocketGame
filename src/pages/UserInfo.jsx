@@ -41,8 +41,8 @@ const UserInfo = () => {
   ]
 
   const avatarData = [avatar.avatarBeginner, avatar.avatarPilot, avatar.avatarExplorer,
-    avatar.avatarAstronaut, avatar.avatarCaptain, avatar.avatarCommander, avatar.avatarAdmiral,
-    avatar.avatarLegend, avatar.avatarMasterOfTheUniverse, avatar.avatarGodOfSpace]
+  avatar.avatarAstronaut, avatar.avatarCaptain, avatar.avatarCommander, avatar.avatarAdmiral,
+  avatar.avatarLegend, avatar.avatarMasterOfTheUniverse, avatar.avatarGodOfSpace]
 
   const rankingItems = RANKINGDATA.map((data, index) => {
     return (
@@ -60,7 +60,7 @@ const UserInfo = () => {
     setRankingIndex(((rankingIndex - 1) + RANKINGDATA.length) % RANKINGDATA.length);
   }
 
-// eslint-disable-next-line no-self-assign
+  // eslint-disable-next-line no-self-assign
   useEffect(() => {
     const webapp = window.Telegram.WebApp.initDataUnsafe;
     let isMounted = true
@@ -77,18 +77,19 @@ const UserInfo = () => {
           if (isMounted) {
             try {
               const myData = data.allUsersData
-                .sort((a, b) => b.balance.real - a.balance.real)
+                .sort((a, b) => isReal ? (b.balance.real - a.balance.real) : (b.balance.virtual - a.balance.virtual))
                 .map((i, index) => { i.rank = index + 1; return i })
                 .filter(i => (i.ranking === RANKINGDATA[rankingIndex] && i.name !== realName)) //--------------------------
 
               const filterData = myData.map((data) => {
+                const ranking = isReal ? data.ranking.real : data.ranking.virtual;
                 return {
                   url: "john.svg",
                   name: data.name,
-                  label: data.ranking,
-                  rate: RANKINGDATA.indexOf(data.Ranking) + 1,
-                  id: data.balance.real,
-                  ranking: data.rank
+                  label: ranking,
+                  rate: RANKINGDATA.indexOf(ranking) + 1,
+                  id: isReal ? data.balance.real : data.balance.virtual,
+                  ranking: isReal ? data.rank.real : data.rank.virtual
                 }
               })
               setFriendData(filterData)
@@ -104,14 +105,14 @@ const UserInfo = () => {
     }
 
   }, [rankingIndex])
-  if(tabId===2) {
+  if (tabId === 2) {
     setTabId(1);
     setInfoState(true)
   }
   return (
     <div className="flex flex-col gap-4 items-center text-white text-base">
       <div className="font-semibold">{user.RealName}</div>
-      <TabButton  tabList={statsList} tabNo={tabId} setTabNo={setTabId} />
+      <TabButton tabList={statsList} tabNo={tabId} setTabNo={setTabId} />
       <div className="flex flex-col gap-4 overflow-auto w-full " style={{ height: "calc(100vh - 200px)" }}>
         <div className="flex gap-[41px] text-blueFaded text-sm justify-center">
 
@@ -170,25 +171,25 @@ const UserInfo = () => {
         </div>
       </div>
       <InfoModal title="Coming soon!" isOpen={infoState} setIsOpen={() => setInfoState(false)} height="h-[280px]">
-              <div className="flex items-center justify-center">
-                <img src='/image/icon/rocketx.svg' width="48px" height="48px" className="max-w-[48px] h-[48px]" alt="avatar" />
-              </div>
-              <div className="flex flex-col gap-6 text-black text-center text-[15px] font-normal leading-5 tracking-[-2%]">
-                <div>
-                  🛠 Our token is under development!
-                </div>
-                <div>
-                  📢 Join our social media to stay up to date.
-                </div>
-                <div className="px-8 flex justify-between w-full">
-                  <ShadowButton className={"w-8 h-8 flex justify-center p-0 items-center rounded-lg"} content={<TgIcon />}></ShadowButton>
-                  <ShadowButton className={"w-8 h-8 flex justify-center p-0 items-center rounded-lg"} content={<TgTwitter />}></ShadowButton>
-                  <ShadowButton className={"w-8 h-8 flex justify-center p-0 items-center rounded-lg"} content={<TgInst />}></ShadowButton>
-                  <ShadowButton className={"w-8 h-8 flex justify-center p-0 items-center rounded-lg"} content={<TgYout />}></ShadowButton>
-                </div>
-              </div>
+        <div className="flex items-center justify-center">
+          <img src='/image/icon/rocketx.svg' width="48px" height="48px" className="max-w-[48px] h-[48px]" alt="avatar" />
+        </div>
+        <div className="flex flex-col gap-6 text-black text-center text-[15px] font-normal leading-5 tracking-[-2%]">
+          <div>
+            🛠 Our token is under development!
+          </div>
+          <div>
+            📢 Join our social media to stay up to date.
+          </div>
+          <div className="px-8 flex justify-between w-full">
+            <ShadowButton className={"w-8 h-8 flex justify-center p-0 items-center rounded-lg"} content={<TgIcon />}></ShadowButton>
+            <ShadowButton className={"w-8 h-8 flex justify-center p-0 items-center rounded-lg"} content={<TgTwitter />}></ShadowButton>
+            <ShadowButton className={"w-8 h-8 flex justify-center p-0 items-center rounded-lg"} content={<TgInst />}></ShadowButton>
+            <ShadowButton className={"w-8 h-8 flex justify-center p-0 items-center rounded-lg"} content={<TgYout />}></ShadowButton>
+          </div>
+        </div>
 
-            </InfoModal>
+      </InfoModal>
     </div>
   )
 }

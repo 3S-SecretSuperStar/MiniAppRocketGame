@@ -4,8 +4,8 @@ import LoadingSpinner from "../svg/loading-spinner";
 import toast from "react-hot-toast";
 import { REACT_APP_SERVER } from "../../utils/privateData";
 import { useAtom } from "jotai";
-import { userData } from "../../store";
-import { Link } from "react-router-dom";
+import { realGameState, userData } from "../../store";
+import { Link, useActionData } from "react-router-dom";
 
 const serverUrl = REACT_APP_SERVER;
 
@@ -15,12 +15,13 @@ const GenerateTask = ({ task, stateTask, index }) => {
 
   const [isClaim, setIsClaim] = useState(false);
   const [user,] = useAtom(userData);
+  const [isReal, setIsReal] = useAtom(realGameState)
 
   const goClaim = () => {
     setIsClaim(true);
     const headers = new Headers()
     headers.append('Content-Type', 'application/json')
-    fetch(`${serverUrl}/task_balance`, { method: 'POST', body: JSON.stringify({ userName: user.UserName, amount: task.amount, task: index }), headers })
+    fetch(`${serverUrl}/task_balance`, { method: 'POST', body: JSON.stringify({ userName: user.UserName, amount: task.amount, task: index, isReal: isReal }), headers })
       .then(res => Promise.all([res.status, res.json()]))
       .then(() => {
         try {
@@ -86,19 +87,21 @@ const TaskList = () => {
   const [taskData, setTaskData] = useState([]);
 
   const [user,] = useAtom(userData);
+  const [isReal, setIsReal] = useAtom(realGameState)
 
   const stateTask = () => {
     const headers = new Headers()
     headers.append('Content-Type', 'application/json')
 
-    fetch(`${serverUrl}/task_perform`, { method: 'POST', body: JSON.stringify({ userName: user.UserName }), headers })
+    fetch(`${serverUrl}/task_perform`, { method: 'POST', body: JSON.stringify({ userName: user.UserName, isReal: isReal }), headers })
       .then(res => Promise.all([res.status, res.json()]))
       .then(([status, data]) => {
 
         try {
-          const performtask = data.task.achieve_task
-          const doneTask = data.task.done_task
-          taskState = [0, 0, 0, 0, 0]
+
+          const performtask = isReal ? data.task.real.achieve_task : data.task.real.achieve_task
+          const doneTask = isReal ? data.task.virtual.done_task : data.task.virtual.done_task
+          taskState = [0, 0, 0, 0, 0,]
           performtask.forEach(item => {
             taskState[item] = 1;
           })
@@ -109,18 +112,33 @@ const TaskList = () => {
           fetch(`${serverUrl}/get_task`, { method: 'POST', body: JSON.stringify({}), headers })
             .then(res => Promise.all([res.status, res.json()]))
             .then(([status, data]) => {
-              
+
               try {
-                setTaskData(prevState => {
-                  let newState = [...prevState];
-                  newState = data.task.map((item, index) => ({
-                    src: item.src,
-                    title: item.title,
-                    amount: item.amount,
-                    status: taskState[index],
-                  }));
-                  return newState;
-                });
+                if (isReal) {
+                  setTaskData(prevState => {
+                    let newState = [...prevState];
+                    newState = data.task.real.map((item, index) => ({
+                      src: item.src,
+                      title: item.title,
+                      amount: item.amount,
+                      status: taskState[index],
+                    }));
+                    return newState;
+                  });
+                }
+                else {
+                  setTaskData(prevState => {
+                    let newState = [...prevState];
+                    newState = data.task.virtual.map((item, index) => ({
+                      src: item.src,
+                      title: item.title,
+                      amount: item.amount,
+                      status: taskState[index],
+                    }));
+                    return newState;
+                  });
+                }
+
               } catch (e) {
                 console.log(e);
               }

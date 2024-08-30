@@ -78,22 +78,22 @@ const MainPage = () => {
   const [tabId, setTabId] = useState(1);
 
   const avatarData = [avatar.avatarBeginner, avatar.avatarPilot, avatar.avatarExplorer,
-    avatar.avatarAstronaut, avatar.avatarCaptain, avatar.avatarCommander, avatar.avatarAdmiral,
-    avatar.avatarLegend, avatar.avatarMasterOfTheUniverse, avatar.avatarGodOfSpace]
+  avatar.avatarAstronaut, avatar.avatarCaptain, avatar.avatarCommander, avatar.avatarAdmiral,
+  avatar.avatarLegend, avatar.avatarMasterOfTheUniverse, avatar.avatarGodOfSpace]
 
-    const statsList = [
-      {
-        src: "coin-y.svg",
-        amount: user.Balance,
-        id: 1
-      },
-      {
-        src: "token.png",
-        amount: 0,
-        id: 2
-      }
-    ]
-    
+  const statsList = [
+    {
+      src: "coin-y.svg",
+      amount: user.Balance,
+      id: 1
+    },
+    {
+      src: "token.png",
+      amount: 0,
+      id: 2
+    }
+  ]
+
 
   const handleModalButton = () => {
     startGame();
@@ -151,31 +151,31 @@ const MainPage = () => {
     if (gamePhase !== 'started' && autoMode && !stopWasPressed && balanceRef.current >= betRef.current && betRef.current) {
       if (isMounted) {
         try {
-          setTimeout(()=>{
+          setTimeout(() => {
             setStopWasPressed(false);
-          setGamePhase('started')
-          setSocketStart(false);
-          setActionState("start");
-          context.socket.onmessage = async e => {
-            const data = JSON.parse(e.data);
-            switch (data.operation) {
-              case 'started':
-                setSocketStart(true)
-                handleGameStarted();
-                break;
-              case 'stopped':
-                handleGameStopped(data);
-                break;
-              case 'crashed':
-                handleGameCrashed(data);
-                break;
-              default:
-                break;
-            }
-          };
-          },1000)
-          
-          
+            setGamePhase('started')
+            setSocketStart(false);
+            setActionState("start");
+            context.socket.onmessage = async e => {
+              const data = JSON.parse(e.data);
+              switch (data.operation) {
+                case 'started':
+                  setSocketStart(true)
+                  handleGameStarted();
+                  break;
+                case 'stopped':
+                  handleGameStopped(data);
+                  break;
+                case 'crashed':
+                  handleGameCrashed(data);
+                  break;
+                default:
+                  break;
+              }
+            };
+          }, 1000)
+
+
         } catch (e) {
 
           // eslint-disable-next-line no-self-assign
@@ -203,7 +203,7 @@ const MainPage = () => {
             try {
 
               const myData = data.allUsersData
-                .sort((a, b) => b.balance.real - a.balance.real)
+                .sort((a, b) => isReal ? (b.balance.real - a.balance.real) : (b.balance.virtual - a.balance.virtual))
                 .map((i, index) => { i.rank = index + 1; return i })
                 .filter(i => i.name === realName)[0] //--------------------------
               setGames(myData)
@@ -218,7 +218,8 @@ const MainPage = () => {
                 Balance: isReal ? myData.balance.real.toFixed(2) : myData.balance.virtual.toFixed(2),
                 GameWon: isReal ? myData.realWins : myData.virtualWins,
                 GameLost: isReal ? myData.realLosses : myData.virtualLosses,
-                Rank: myData.rank, Ranking: myData.ranking
+                Rank: isReal ? myData.real.rank : myData.virtual.rank, 
+                Ranking: isReal?myData.real.ranking:myData.virtual.ranking
               })
               const newHistoryGames = isReal ? myData.gamesHistory.real : myData.gamesHistory.virtual
               historyGamesRef.current = newHistoryGames
@@ -234,9 +235,9 @@ const MainPage = () => {
     }
     return () => { isMounted = false }
 
-  }, [isReal, gamePhase])  
+  }, [isReal, gamePhase])
 
-  
+
   // Function to start the game
   const startGame = () => {
     setStopWasPressed(false);
@@ -326,21 +327,21 @@ const MainPage = () => {
     setGames(games + 1);
     setLosses(losses + 1);
     adjustBetAfterLoss();
-    
-      toast(`You lost ${data.profit} coin`,
-        {
-          position: "top-center",
-          icon: "😱",
-          style: {
-            borderRadius: '8px',
-            background: '#F56D63',
-            color: '#FFFFFF',
-            width: '90vw',
 
-          },
-        }
-      )
-    
+    toast(`You lost ${data.profit} coin`,
+      {
+        position: "top-center",
+        icon: "😱",
+        style: {
+          borderRadius: '8px',
+          background: '#F56D63',
+          color: '#FFFFFF',
+          width: '90vw',
+
+        },
+      }
+    )
+
   };
 
   const updateGameHistory = (data, status) => {
@@ -370,9 +371,9 @@ const MainPage = () => {
       setBet(betRef.current);
     }
   };
-  console.log("valueAfterWinRef.current",valueAfterWinRef.current)
-  console.log("balanceRef.current",balanceRef.current)
-  
+  console.log("valueAfterWinRef.current", valueAfterWinRef.current)
+  console.log("balanceRef.current", balanceRef.current)
+
   const adjustBetAfterLoss = () => {
     if (autoMode) {
       if (operationAfterLossRef.current === 'Increase Bet by') {
@@ -392,12 +393,12 @@ const MainPage = () => {
   const goToUserInfo = () => {
     navigate("/userInfo");
   }
-  if(tabId===2) {
+  if (tabId === 2) {
     setTabId(1);
     setInfoState(true)
   }
 
-  console.log("bet: ",bet," betRef: ",betRef.current);
+  console.log("bet: ", bet, " betRef: ", betRef.current);
   return (
     <>
       <div className="flex-auto p-4">
@@ -421,7 +422,7 @@ const MainPage = () => {
               <PannelScore img={Img.agree} text2={"Won"} text3={user.GameWon} />
               <PannelScore img={Img.disagree} text2={"Lost"} text3={user.GameLost} />
             </div>
-            
+
           </div>
 
 
@@ -441,7 +442,7 @@ const MainPage = () => {
             </div>
 
           </div>
-          <TabButton className = {`transform translate-y-[100px] ${isAction === "start" ? "-translate-y-[150px]" : ""} `} tabList={statsList} tabNo={tabId} setTabNo={setTabId} />
+          <TabButton className={`transform translate-y-[100px] ${isAction === "start" ? "-translate-y-[150px]" : ""} `} tabList={statsList} tabNo={tabId} setTabNo={setTabId} />
           <Game className={`transition-all ${isAction !== "start" ? "mt-24" : "mt-0"} `} finalResult={finalResult} gamePhase={gamePhase} isWin={winState}
             setLoaderIsShown={setLoaderIsShown} amount={balance} bet={bet} autoStop={autoStop} socketFlag={socketStart} realGame={isReal} setInfoState={(e) => setInfoState(e)} />
 
@@ -456,7 +457,7 @@ const MainPage = () => {
               <div className={`transition duration-300 ${autoMode && "hidden"} flex gap-4`}>
                 <div className="flex flex-col w-1/2 gap-1">
                   <div className="text-sm leading-5">Bet</div>
-                  <InputNumber InputProps={{ value: bet, min: 1, step: 1, disabled: gamePhase === 'started', onChange: e => {setBet(parseFloat(e.target.value)); betRef.current = e.target.value} }} />
+                  <InputNumber InputProps={{ value: bet, min: 1, step: 1, disabled: gamePhase === 'started', onChange: e => { setBet(parseFloat(e.target.value)); betRef.current = e.target.value } }} />
                   <div className="text-xs leading-[14px] text-[#FFFFFFCC]">Minimal Bet is 1 Coin</div>
                 </div>
 
@@ -497,13 +498,13 @@ const MainPage = () => {
                 )
             }
 
-            <SettingModal icon={<AutoIcon/>} title="Auto Launch" isOpen={isModalOpen} setIsOpen={setIsModalOpen}>
+            <SettingModal icon={<AutoIcon />} title="Auto Launch" isOpen={isModalOpen} setIsOpen={setIsModalOpen}>
               <div className="flex flex-col justify-between max-h-screen pt-2 px-4 pb-4 h-[calc(100vh-60px)]" >
                 <div className="flex flex-col gap-[15px]" >
                   <div className="flex gap-4">
                     <div className="flex flex-col w-1/2 gap-1">
                       <div className="text-sm leading-5">Bet</div>
-                      <InputNumber InputProps={{ value: bet, min: 1, step: 1, onChange: e => {setBet(parseFloat(e.target.value)); betRef.current = e.target.value} }} />
+                      <InputNumber InputProps={{ value: bet, min: 1, step: 1, onChange: e => { setBet(parseFloat(e.target.value)); betRef.current = e.target.value } }} />
                       <div className="text-xs leading-[14px] text-[#FFFFFFCC]">Minimal Bet is 1 Coin</div>
                     </div>
 
