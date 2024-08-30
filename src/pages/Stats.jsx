@@ -35,7 +35,7 @@ const Stats = () => {
       <div className="mt-2">
         <TabButton tabList={statsList} tabNo={tabId} setTabNo={setTabId} />
       </div>
-      <div className="mt-4">
+      <div className="mt-4 mb-[92px]">
         <StatList />
       </div>
       <InfoModal title="Coming soon!" isOpen={infoState} setIsOpen={() => setInfoState(false)} height="h-[280px]">
