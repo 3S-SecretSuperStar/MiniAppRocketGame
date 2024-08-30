@@ -370,8 +370,9 @@ const MainPage = () => {
       setBet(betRef.current);
     }
   };
-
-
+  console.log("valueAfterWinRef.current",valueAfterWinRef.current)
+  console.log("balanceRef.current",balanceRef.current)
+  
   const adjustBetAfterLoss = () => {
     if (autoMode) {
       if (operationAfterLossRef.current === 'Increase Bet by') {
