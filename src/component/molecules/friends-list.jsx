@@ -3,7 +3,7 @@ import FriendInfo from "../atom/friend-info";
 const FriendsList = ({ friendData }) => {
   console.log(friendData)
   return (
-    <div className="flex-auto flex" style={{ height: "calc(100vh - 500px)" }}>
+    <div className="flex-auto flex w-full justify-center" style={{ height: "calc(100vh - 500px)" }}>
       {
         friendData.length > 0 ?
           (

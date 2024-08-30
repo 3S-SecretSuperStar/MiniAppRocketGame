@@ -98,7 +98,7 @@ const MainPage = () => {
     startGame();
     setIsModalOpen(false);
   }
-  setRealGame(false)
+  setRealGame(true)
   // Effect to validate and adjust state values
   useEffect(() => {
     if (bet < 1 || balance === '0.00' || balance < 1) {

@@ -23,7 +23,7 @@ const InputNumber = memo(({ InputProps }) => {
       e.preventDefault();
       const newValue = parseFloat(value).toFixed(1).slice(0, -1);
       // setValue(newValue);
-      InputProps.onChange && InputProps.onChange({ target: { value: newValue } });
+      // InputProps.onChange && InputProps.onChange({ target: { value: newValue } });
     }
   };
 
