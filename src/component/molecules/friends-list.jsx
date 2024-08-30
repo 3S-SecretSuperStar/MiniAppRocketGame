@@ -22,12 +22,12 @@ const FriendsList = ({ friendData }) => {
             <div className="flex flex-col items-center gap-4 text-center my-auto">
               <img
                 src="/image/main/friends.png"
-                alt=""
+                alt="friend"
                 className="max-w-auto"
                 style={{ maxHeight: "calc(100vh - 400px)" }}
               />
               <div className="text-[15px] text-white">
-                Invite a friend and you'll both get 100 points. Every time the invited person tops up their Token balance, you will receive 1% of the top-up amount.
+                Invite a friend and you'll both get 25 points.
               </div>
             </div>
           )

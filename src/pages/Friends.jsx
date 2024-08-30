@@ -62,7 +62,7 @@ const Friends = () => {
 
   // Function to generate an invite link
   const generateInviteLink = () => {
-    const tmpURL = `https://t.me/rocket_mini_bot?start=${userId}`;
+    const tmpURL = `https://t.me/GetYourRocketBot?start=${userId}`;
     const tmpTEXT = "Rocket Game: Play and Get Rewards.🚀💰🤑";
     const fullURL = `https://t.me/share/url?url=${tmpURL}&text=${tmpTEXT}`;
     return fullURL;
@@ -88,7 +88,11 @@ const Friends = () => {
         },
       }
     )
-    const link = generateInviteLink();
+    const tmpURL = `https://t.me/GetYourRocketBot?start=${userId}`;
+    const tmpTEXT = "Rocket Game: Play and Get Rewards.🚀💰🤑";
+    const link = `https://t.me/share/url?url=${tmpURL}\n${tmpTEXT}`;
+
+    
     console.log(link);
     try {
       const textField = document.createElement('textarea');
