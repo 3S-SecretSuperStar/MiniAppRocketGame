@@ -13,13 +13,19 @@ import { userData } from "../store/userData.jsx";
 import { Img } from "../assets/image";
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
 import "../css/userInfo.css"
-
+import InfoModal from "../component/atom/infoModel.jsx";
+import TgIcon from "../assets/icon/tg-icon";
+import TgInst from "../assets/icon/tg-inst";
+import TgTwitter from "../assets/icon/tg-twitter";
+import TgYout from "../assets/icon/tg-yout";
+import ShadowButton from "../component/atom/shadow-btn.jsx";
 
 const UserInfo = () => {
   const [user,] = useAtom(userData);
   const [tabId, setTabId] = useState(1);
   const [rankingIndex, setRankingIndex] = useState(0);
   const [friendData, setFriendData] = useState([])
+  const [infoState, setInfoState] = useState(false);
   const serverUrl = REACT_APP_SERVER
   const statsList = [
     {
@@ -98,10 +104,14 @@ const UserInfo = () => {
     }
 
   }, [rankingIndex])
+  if(tabId===2) {
+    setTabId(1);
+    setInfoState(true)
+  }
   return (
     <div className="flex flex-col gap-4 items-center text-white text-base">
       <div className="font-semibold">{user.RealName}</div>
-      <TabButton tabList={statsList}  />
+      <TabButton  tabList={statsList} tabNo={tabId} setTabNo={setTabId} />
       <div className="flex flex-col gap-4 overflow-auto w-full " style={{ height: "calc(100vh - 200px)" }}>
         <div className="flex gap-[41px] text-blueFaded text-sm justify-center">
 
@@ -159,6 +169,26 @@ const UserInfo = () => {
           </div>
         </div>
       </div>
+      <InfoModal title="Coming soon!" isOpen={infoState} setIsOpen={() => setInfoState(false)} height="h-[280px]">
+              <div className="flex items-center justify-center">
+                <img src='/image/icon/rocketx.svg' width="48px" height="48px" className="max-w-[48px] h-[48px]" alt="avatar" />
+              </div>
+              <div className="flex flex-col gap-6 text-black text-center text-[15px] font-normal leading-5 tracking-[-2%]">
+                <div>
+                  🛠 Our token is under development!
+                </div>
+                <div>
+                  📢 Join our social media to stay up to date.
+                </div>
+                <div className="px-8 flex justify-between w-full">
+                  <ShadowButton className={"w-8 h-8 flex justify-center p-0 items-center rounded-lg"} content={<TgIcon />}></ShadowButton>
+                  <ShadowButton className={"w-8 h-8 flex justify-center p-0 items-center rounded-lg"} content={<TgTwitter />}></ShadowButton>
+                  <ShadowButton className={"w-8 h-8 flex justify-center p-0 items-center rounded-lg"} content={<TgInst />}></ShadowButton>
+                  <ShadowButton className={"w-8 h-8 flex justify-center p-0 items-center rounded-lg"} content={<TgYout />}></ShadowButton>
+                </div>
+              </div>
+
+            </InfoModal>
     </div>
   )
 }

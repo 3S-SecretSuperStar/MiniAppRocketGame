@@ -27,6 +27,7 @@ import TgYout from "../assets/icon/tg-yout";
 import rewardBG from "../assets/image/reward_bg.png"
 import "../css/Style.css"
 import TabButton from "../component/atom/tab-button.jsx";
+import AutoIcon from "../component/svg/auto-icon.jsx";
 
 
 
@@ -387,6 +388,8 @@ const MainPage = () => {
     setTabId(1);
     setInfoState(true)
   }
+
+  console.log("bet: ",bet," betRef: ",betRef.current);
   return (
     <>
       <div className="flex-auto p-4">
@@ -486,7 +489,7 @@ const MainPage = () => {
                 )
             }
 
-            <SettingModal icon={<NavPlay />} title="🎛Auto Launch" isOpen={isModalOpen} setIsOpen={setIsModalOpen}>
+            <SettingModal icon={<AutoIcon/>} title="Auto Launch" isOpen={isModalOpen} setIsOpen={setIsModalOpen}>
               <div className="flex flex-col justify-between max-h-screen pt-2 px-4 pb-4 h-[calc(100vh-60px)]" >
                 <div className="flex flex-col gap-[15px]" >
                   <div className="flex gap-4">
