@@ -10,18 +10,18 @@ import { Link } from 'react-router-dom'
 
 export default memo(function Game({ gamePhase, finalResult, amount = 10.00,
   className, bet, autoStop, socketFlag, realGame, isWin }) {
-    const context = useContext(AppContext);
-    const [currentResult, setCurrentResult] = useState(1)
-    const [user,] = useAtom(userData)
-    const [timerHandler, setTimerHandler] = useState();
-    const [countTimeHandler, setCountTimeHandler] = useState();
-    const [counterNumber, setCounterNumber] = useState(0);
-    const [timerRounded, setTimerRounded] = useState(0);
-    const [counterFlag, setCounterFlag] = useState(false);
-    const [isImgShow, setIsImgShow] = useState(false);
-    const counterItem = [Img.go, Img.counter1, Img.counter2, Img.counter3];
-    let comment;
-    let score = finalResult === 'Crashed...' ? 'Crashed...' : finalResult ||currentResult
+  const context = useContext(AppContext);
+  const [currentResult, setCurrentResult] = useState(1)
+  const [user,] = useAtom(userData)
+  const [timerHandler, setTimerHandler] = useState();
+  const [countTimeHandler, setCountTimeHandler] = useState();
+  const [counterNumber, setCounterNumber] = useState(0);
+  const [timerRounded, setTimerRounded] = useState(0);
+  const [counterFlag, setCounterFlag] = useState(false);
+  const [isImgShow, setIsImgShow] = useState(false);
+  const counterItem = [Img.go, Img.counter1, Img.counter2, Img.counter3];
+  let comment;
+  let score = finalResult === 'Crashed...' ? 'Crashed...' : finalResult || currentResult
 
   if (gamePhase === 'stopped') {
     clearInterval(timerHandler)
@@ -237,7 +237,7 @@ export default memo(function Game({ gamePhase, finalResult, amount = 10.00,
         <div className="flex gap-2 items-center justify-center font-extrabold ">
           <img src={Img.coin} width={44} height={44} className="max-w-11 h-11" alt="coin" />
           <p className="text-[40px] text-white font-extrabold">{parseFloat(amount).toFixed(2)}</p>
-          <Link to = '/help' className={`bg-[#3434DA] w-8 h-8 rounded-lg p-1 ${gamePhase==='started'&&'hidden'}`} >
+          <Link to='/help' className={`bg-[#3434DA] w-8 h-8 rounded-lg p-1 ${gamePhase === 'started' && 'hidden'}`} >
             <img src="/image/icon/info.svg" width={24} height={24} className='max-w-6 h-6' alt="info" />
           </Link>
         </div>
@@ -277,7 +277,22 @@ export default memo(function Game({ gamePhase, finalResult, amount = 10.00,
 
 
       <div className='flex items-center'>
-        {counterNumber === 0 && gamePhase === 'started' && socketFlag
+        <img
+          src='/image/rocket-active.png'
+          className={`shaking game-rocket active ${(counterNumber === 0 && gamePhase === 'started' && socketFlag) ? 'block' : 'hidden'}`}
+          alt='active rocket'
+        />
+        <img
+          src='/image/rocket-explosed.png'
+          className={`game-rocket explosed ${(!(counterNumber === 0 && gamePhase === 'started' && socketFlag) && gamePhase === "crashed") ? 'block' : "hidden"}`}
+          alt='explosed rocket'
+        />
+        <img
+          src='/image/rocket-inactive.png'
+          className={`game-rocket inactive ${((counterNumber === 0 && gamePhase === 'started' && socketFlag) || gamePhase === "crashed") ? "hidden" : 'block'}`}
+          alt='inactive rocket' 
+        />
+        {/* {counterNumber === 0 && gamePhase === 'started' && socketFlag
           ? <img
             id='game-rocket'
             src='/image/rocket-active.png'
@@ -293,7 +308,7 @@ export default memo(function Game({ gamePhase, finalResult, amount = 10.00,
               id='game-rocket'
               src='/image/rocket-inactive.png'
               className='inactive'
-              alt='inactive rocket' />}
+              alt='inactive rocket' />} */}
       </div>
 
 

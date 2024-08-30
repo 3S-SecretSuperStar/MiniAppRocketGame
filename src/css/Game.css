@@ -20,18 +20,17 @@
 #game #game-toggle > span:hover {
   cursor: pointer;
 }
-#game #game-rocket {
-  display: block;
+#game .game-rocket {
   position: absolute;
   width: 64px;
   left: 50%;
 }
-#game #game-rocket.active, #game #game-rocket.inactive {
+#game .game-rocket.active, #game .game-rocket.inactive {
   width: 64;
   margin-left: -32px;
   bottom: 10px;
 }
-#game #game-rocket.explosed {
+#game .game-rocket.explosed {
   width: 140px;
   height: 140px;
   left: 50%;
