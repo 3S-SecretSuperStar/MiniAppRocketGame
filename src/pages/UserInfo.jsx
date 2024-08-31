@@ -29,6 +29,9 @@ const UserInfo = () => {
   const [infoState, setInfoState] = useState(false);
   const [isReal, setIsReal] = useAtom(realGameState)
   const serverUrl = REACT_APP_SERVER
+  const [gameData, setGameData] = useState({});
+  const [realName, setRealName] = useState("");
+  const [gameDataLength, setGameDataLength] = useState(0);
   const statsList = [
     {
       src: "coin-y.svg",
@@ -70,6 +73,7 @@ const UserInfo = () => {
 
       const realName = webapp["user"]["first_name"] + " " + webapp["user"]["last_name"];
       const userName = webapp["user"]["username"];
+      setRealName(realName)
 
       const headers = new Headers()
       headers.append('Content-Type', 'application/json')
@@ -78,24 +82,8 @@ const UserInfo = () => {
         .then(([status, data]) => {
           if (isMounted) {
             try {
-              const myData = data.allUsersData
-                .sort((a, b) => isReal ? (b.balance.real - a.balance.real) : (b.balance.virtual - a.balance.virtual))
-                .map((i, index) => { i.rank = index + 1; return i })
-                .filter(i => (i.ranking === RANKINGDATA[rankingIndex] && i.name !== realName)) //--------------------------
-
-              const filterData = myData.map((data) => {
-                const ranking = isReal ? data.ranking.real : data.ranking.virtual;
-                return {
-                  url: "john.svg",
-                  name: data.name,
-                  label: ranking,
-                  rate: RANKINGDATA.indexOf(ranking) + 1,
-                  id: isReal ? data.balance.real : data.balance.virtual,
-                  ranking: isReal ? data.rank.real : data.rank.virtual
-                }
-              })
-              setFriendData(filterData)
-
+              setGameData(data);
+              setGameDataLength(Object.keys(data).length)
             } catch (e) {
               // eslint-disable-next-line no-self-assign
               document.location.href = document.location.href
@@ -106,7 +94,33 @@ const UserInfo = () => {
 
     }
 
-  }, [rankingIndex])
+  }, [])
+
+  useEffect(() => {
+    if (gameDataLength) {
+      const currentRanking = RANKINGDATA[rankingIndex];
+      const myData = gameData.allUsersData
+        .sort((a, b) => isReal ? (b.balance.real - a.balance.real) : (b.balance.virtual - a.balance.virtual))
+        .map((i, index) => { i.rank = index + 1; return i })
+        .filter(i => (isReal ? i.ranking.real === currentRanking : i.ranking.virtual === currentRanking && i.name !== realName)) //--------------------------
+      console.log(myData)
+      const filterData = myData.map((data) => {
+        const ranking = isReal ? data.ranking.real : data.ranking.virtual;
+        return {
+          url: data.avatar_url,
+          name: data.name,
+          label: ranking,
+          rate: RANKINGDATA.indexOf(ranking) + 1,
+          balance: isReal ? data.balance.real : data.balance.virtual,
+          ranking: isReal ? data.rank.real : data.rank.virtual
+        }
+      })
+      setFriendData(filterData)
+    }
+  }, [rankingIndex, gameDataLength])
+
+
+
   if (tabId === 2) {
     setTabId(1);
     setInfoState(true)

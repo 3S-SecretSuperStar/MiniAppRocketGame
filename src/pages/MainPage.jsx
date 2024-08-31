@@ -97,7 +97,7 @@ const MainPage = () => {
     startGame();
     setIsModalOpen(false);
   }
-  setRealGame(true)
+  // setRealGame(true)
   // Effect to validate and adjust state values
   useEffect(() => {
     if (bet < 1 || balance === '0.00' || balance < 1) {
@@ -181,28 +181,51 @@ const MainPage = () => {
     return () => { isMounted = false }
   }, [historyGames])
 
-  useEffect(() => {
+  const getProfilePhotos = async (userId, bot_token) => {
+    try {
+      const profilesResponse = await fetch(`https://api.telegram.org/bot${bot_token}/getUserProfilePhotos?user_id=${userId}`);
+      const profiles = await profilesResponse.json();
+
+      if (profiles.result.photos.length > 0) {
+        const fileResponse = await fetch(`https://api.telegram.org/bot${bot_token}/getFile?file_id=${profiles.result.photos[0][2].file_id}`);
+        const filePath = await fileResponse.json();
+
+        const userAvatarUrl = `https://api.telegram.org/file/bot${bot_token}/${filePath.result.file_path}`;
+        return userAvatarUrl;
+      } else {
+        console.log('No profile photos found.');
+      }
+    } catch (error) {
+      console.error('Error fetching profile photos:', error);
+    }
+  };
+
+  useEffect( () => {
+    async function fetchData (){
     const webapp = window.Telegram.WebApp.initDataUnsafe;
     let isMounted = true
+    const bot_token = '7341383930:AAEQfK1yk6xbeeqCczE2MD9qgDewt88evX8'
     if (webapp) {
 
       const realName = webapp["user"]["first_name"] + " " + webapp["user"]["last_name"];
       const userName = webapp["user"]["username"];
-
+      const userId = webapp["user"]["id"];
       const headers = new Headers()
       headers.append('Content-Type', 'application/json')
       if (isMounted) {
-        fetch(`${serverUrl}/users_info`, { method: 'POST', body: JSON.stringify({ historySize: 100, realName: realName, userName: userName }), headers })
+        const userAvatarUrl = await getProfilePhotos(userId, bot_token);
+        console.log(userAvatarUrl)
+        fetch(`${serverUrl}/users_info`, { method: 'POST', body: JSON.stringify({ historySize: 100, realName: realName, userName: userName, userAvatarUrl: userAvatarUrl }), headers })
           .then(res => Promise.all([res.status, res.json()]))
           .then(([status, data]) => {
             try {
               const myData = data.allUsersData
-                .sort((a, b) => isReal?(b.balance.real - a.balance.real):(b.balance.virtual - a.balance.virtual))
+                .sort((a, b) => isReal ? (b.balance.real - a.balance.real) : (b.balance.virtual - a.balance.virtual))
                 .map((i, index) => { i.rank = index + 1; return i })
                 .filter(i => i.name === realName)[0] //--------------------------
               setGames(myData)
-
               const newBalance = parseFloat(isReal ? myData.balance.real : myData.balance.virtual).toFixed(2)
+              console.log("check balance : ", newBalance)
               balanceRef.current = newBalance
               setFirstLogin(myData.first_state !== "false");
               setRewardState(myData.first_state !== "false");
@@ -212,8 +235,8 @@ const MainPage = () => {
                 Balance: isReal ? myData.balance.real.toFixed(2) : myData.balance.virtual.toFixed(2),
                 GameWon: isReal ? myData.realWins : myData.virtualWins,
                 GameLost: isReal ? myData.realLosses : myData.virtualLosses,
-                Rank: myData.rank, 
-                Ranking: isReal ? myData.ranking.real: myData.ranking.virtual
+                Rank: myData.rank,
+                Ranking: isReal ? myData.ranking.real : myData.ranking.virtual
               })
               const newHistoryGames = isReal ? myData.gamesHistory.real : myData.gamesHistory.virtual
               historyGamesRef.current = newHistoryGames
@@ -225,9 +248,13 @@ const MainPage = () => {
             }
           })
         fetch(`${serverUrl}/check_first`, { method: 'POST', body: JSON.stringify({ userName: userName }), headers })
+
+
       }
     }
     return () => { isMounted = false }
+  }
+  fetchData()
 
   }, [isReal, gamePhase])
 
@@ -284,9 +311,9 @@ const MainPage = () => {
     setFinalResult(data.stop);
     setGamePhase('stopped');
     updateGameHistory(data, 'stopped');
-    const newBalance = (parseFloat(balanceRef.current) + parseFloat(data.profit)).toFixed(2)
-    setBalance(newBalance)
-    balanceRef.current = newBalance
+    // const newBalance = (parseFloat(balanceRef.current) + parseFloat(data.profit)).toFixed(2)
+    // setBalance(newBalance)
+    // balanceRef.current = newBalance
     updateBalance(data.profit);
     setGames(games + 1);
     setWins(wins + 1);
@@ -357,10 +384,13 @@ const MainPage = () => {
 
   const adjustBetAfterWin = () => {
     if (autoMode) {
+      console.log("betRef.current ", betRef.current)
+      console.log("valueAfterWinRef ", valueAfterWinRef.current)
+      console.log("balanceRef ", balanceRef.current)
       if (operationAfterWinRef.current === 'Increase Bet by') {
         betRef.current = Math.min(betRef.current * valueAfterWinRef.current, balanceRef.current);
       } else {
-        betRef.current = Math.min(valueAfterWinRef.current, balanceRef.current);
+        betRef.current = Math.min(betRef.current, balanceRef.current);
       }
       setBet(betRef.current);
     }
@@ -373,7 +403,7 @@ const MainPage = () => {
       if (operationAfterLossRef.current === 'Increase Bet by') {
         betRef.current = Math.min(betRef.current * valueAfterLossRef.current, balanceRef.current);
       } else {
-        betRef.current = Math.min(valueAfterLossRef.current, balanceRef.current);
+        betRef.current = Math.min(betRef.current, balanceRef.current);
       }
       setBet(betRef.current);
     }
@@ -451,7 +481,7 @@ const MainPage = () => {
               <div className={`transition duration-300 ${autoMode && "hidden"} flex gap-4`}>
                 <div className="flex flex-col w-1/2 gap-1">
                   <div className="text-sm leading-5">Bet</div>
-                  <InputNumber InputProps={{ value: bet, min: 1, step: 1, disabled: gamePhase === 'started', onChange: e => { setBet(parseFloat(e.target.value)); betRef.current = e.target.value } }} />
+                  <InputNumber InputProps={{ value: bet, min: 1, step: 1, disabled: gamePhase === 'started', onChange: e => { setBet(parseFloat(e.target.value)); betRef.current = parseFloat(e.target.value) } }} />
                   <div className="text-xs leading-[14px] text-[#FFFFFFCC]">Minimal Bet is 1 Coin</div>
                 </div>
 
@@ -498,7 +528,7 @@ const MainPage = () => {
                   <div className="flex gap-4">
                     <div className="flex flex-col w-1/2 gap-1">
                       <div className="text-sm leading-5">Bet</div>
-                      <InputNumber InputProps={{ value: bet, min: 1, step: 1, onChange: e => { setBet(parseFloat(e.target.value)); betRef.current = e.target.value } }} />
+                      <InputNumber InputProps={{ value: betRef.current, min: 1, step: 1, onChange: e => { setBet(parseFloat(e.target.value)); betRef.current = parseFloat(e.target.value) } }} />
                       <div className="text-xs leading-[14px] text-[#FFFFFFCC]">Minimal Bet is 1 Coin</div>
                     </div>
 
@@ -541,7 +571,7 @@ const MainPage = () => {
                         action={handleModalButton}
                         content={"Start"}
                         disabled={
-                          balance === '0.00' || bet < 1 || autoStop < 2 ||
+                          balance === '0.00' || bet < 1 || autoStop < 1.1 ||
                           balance < 1 || isNaN(bet) || isNaN(autoStop) || isNaN(winCoefficient)
                           || isNaN(lostCoefficient)
                         }
@@ -583,7 +613,7 @@ const MainPage = () => {
             </InfoModal>
             <InfoModal title="Coming soon!" isOpen={infoState} setIsOpen={() => setInfoState(false)} height="h-[280px]">
               <div className="flex items-center justify-center">
-                <img src='/image/icon/rocketx.svg' width="48px" height="48px" className="max-w-[48px] h-[48px]" alt="avatar" />
+                <img src='image/icon/rocketx.svg' width="48px" height="48px" className="max-w-[48px] h-[48px]" alt="avatar" />
               </div>
               <div className="flex flex-col gap-6 text-black text-center text-[15px] font-normal leading-5 tracking-[-2%]">
                 <div>

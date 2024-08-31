@@ -93,7 +93,7 @@ const TaskList = () => {
     const headers = new Headers()
     headers.append('Content-Type', 'application/json')
 
-    fetch(`${serverUrl}/task_perform`, { method: 'POST', body: JSON.stringify({ userName: user.UserName, isReal: isReal }), headers })
+    fetch(`${serverUrl}/task_perform`, { method: 'POST', body: JSON.stringify({ userName: user.UserName }), headers })
       .then(res => Promise.all([res.status, res.json()]))
       .then(([status, data]) => {
 

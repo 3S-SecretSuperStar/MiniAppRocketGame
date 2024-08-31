@@ -38,7 +38,7 @@ const Friends = () => {
                 .map((i, index) => { i.rank = index + 1; return i })
               const friendData = myData.map((data) => {
                 return {
-                  url: "john.svg",
+                  url: data.avatar_url,
                   name: data.name,
                   label: data.ranking,
                   rate: (RANKINGDATA.indexOf(data.ranking) + 1),
@@ -88,9 +88,7 @@ const Friends = () => {
         },
       }
     )
-    const tmpURL = `https://t.me/GetYourRocketBot?start=${userId}`;
-    const tmpTEXT = "Rocket Game: Play and Get Rewards.🚀💰🤑";
-    const link = `https://t.me/share/url?url=${tmpURL}\n${tmpTEXT}`;
+    const link = `https://t.me/GetYourRocketBot?start=${userId}`;
 
     
     console.log(link);
