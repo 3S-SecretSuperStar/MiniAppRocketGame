@@ -29,7 +29,7 @@ const Friends = () => {
 
       headers.append('Content-Type', 'application/json')
       if (isMounted) {
-        fetch(`${serverUrl}/get_friend`, { method: 'POST', body: JSON.stringify({ userName: userName }), headers })
+        fetch(`${serverUrl}/get_friend`, { method: 'POST',mode:"no-cors", body: JSON.stringify({ userName: userName }), headers })
           .then(res => Promise.all([res.status, res.json()]))
           .then(([status, data]) => {
             try {

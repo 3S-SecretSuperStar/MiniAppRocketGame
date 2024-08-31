@@ -21,7 +21,7 @@ const GenerateTask = ({ task, stateTask, index }) => {
     setIsClaim(true);
     const headers = new Headers()
     headers.append('Content-Type', 'application/json')
-    fetch(`${serverUrl}/task_balance`, { method: 'POST', body: JSON.stringify({ userName: user.UserName, amount: task.amount, task: index, isReal: isReal }), headers })
+    fetch(`${serverUrl}/task_balance`, { method: 'POST',mode:"no-cors", body: JSON.stringify({ userName: user.UserName, amount: task.amount, task: index, isReal: isReal }), headers })
       .then(res => Promise.all([res.status, res.json()]))
       .then(() => {
         try {
@@ -93,14 +93,14 @@ const TaskList = () => {
     const headers = new Headers()
     headers.append('Content-Type', 'application/json')
 
-    fetch(`${serverUrl}/task_perform`, { method: 'POST', body: JSON.stringify({ userName: user.UserName, isReal: isReal }), headers })
+    fetch(`${serverUrl}/task_perform`, { method: 'POST',mode:"no-cors", body: JSON.stringify({ userName: user.UserName, isReal: isReal }), headers })
       .then(res => Promise.all([res.status, res.json()]))
       .then(([status, data]) => {
 
         try {
 
-          const performtask = isReal ? data.task.real.achieve_task : data.task.real.achieve_task
-          const doneTask = isReal ? data.task.virtual.done_task : data.task.virtual.done_task
+          const performtask = isReal ? data.task.real.achieve_task : data.task.virtual.achieve_task
+          const doneTask = isReal ? data.task.real.done_task : data.task.virtual.done_task
           taskState = [0, 0, 0, 0, 0,]
           performtask.forEach(item => {
             taskState[item] = 1;
@@ -109,7 +109,7 @@ const TaskList = () => {
             taskState[item] = 2;
           })
 
-          fetch(`${serverUrl}/get_task`, { method: 'POST', body: JSON.stringify({}), headers })
+          fetch(`${serverUrl}/get_task`, { method: 'POST',mode:"no-cors", body: JSON.stringify({}), headers })
             .then(res => Promise.all([res.status, res.json()]))
             .then(([status, data]) => {
 

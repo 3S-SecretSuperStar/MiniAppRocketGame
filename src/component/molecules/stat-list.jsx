@@ -31,7 +31,7 @@ const StatList = () => {
     let isMounted = true
     const headers = new Headers()
     headers.append('Content-Type', 'application/json')
-    fetch(`${serverUrl}/game_history`, { method: 'POST', body: JSON.stringify({ historySize: 100, realName: realName, userName: userName }), headers })
+    fetch(`${serverUrl}/game_history`, { method: 'POST',mode:"no-cors", body: JSON.stringify({ historySize: 100, realName: realName, userName: userName }), headers })
       .then(res => Promise.all([res.status, res.json()]))
       .then(([status, data]) => {
         if (isMounted) {
