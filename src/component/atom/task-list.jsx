@@ -21,7 +21,7 @@ const GenerateTask = ({ task, stateTask, index }) => {
     setIsClaim(true);
     const headers = new Headers()
     headers.append('Content-Type', 'application/json')
-    fetch(`${serverUrl}/task_balance`, { method: 'POST',mode:"no-cors", body: JSON.stringify({ userName: user.UserName, amount: task.amount, task: index, isReal: isReal }), headers })
+    fetch(`${serverUrl}/task_balance`, { method: 'POST', body: JSON.stringify({ userName: user.UserName, amount: task.amount, task: index, isReal: isReal }), headers })
       .then(res => Promise.all([res.status, res.json()]))
       .then(() => {
         try {
@@ -93,7 +93,7 @@ const TaskList = () => {
     const headers = new Headers()
     headers.append('Content-Type', 'application/json')
 
-    fetch(`${serverUrl}/task_perform`, { method: 'POST',mode:"no-cors", body: JSON.stringify({ userName: user.UserName, isReal: isReal }), headers })
+    fetch(`${serverUrl}/task_perform`, { method: 'POST', body: JSON.stringify({ userName: user.UserName, isReal: isReal }), headers })
       .then(res => Promise.all([res.status, res.json()]))
       .then(([status, data]) => {
 
@@ -109,7 +109,7 @@ const TaskList = () => {
             taskState[item] = 2;
           })
 
-          fetch(`${serverUrl}/get_task`, { method: 'POST',mode:"no-cors", body: JSON.stringify({}), headers })
+          fetch(`${serverUrl}/get_task`, { method: 'POST', body: JSON.stringify({}), headers })
             .then(res => Promise.all([res.status, res.json()]))
             .then(([status, data]) => {
 
