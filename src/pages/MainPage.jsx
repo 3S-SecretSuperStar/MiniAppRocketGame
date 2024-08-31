@@ -50,14 +50,12 @@ const MainPage = () => {
   const [infoState, setInfoState] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [losses, setLosses] = useState(0);
-  const [lostCoefficient,] = useState(1);
+  const [lostCoefficient, setLostCoefficient] = useState(1);
   const [, setLoaderIsShown] = useState();
   const [operationAfterLoss, setOperationAfterLoss] = useState('Increase Bet by');
   const [operationAfterWin, setOperationAfterWin] = useState('Return to base Bet');
   const [rewardState, setRewardState] = useState(false);
   const [stopWasPressed, setStopWasPressed] = useState(false);
-  const [valueAfterLoss, setValueAfterLoss] = useState(2);
-  const [valueAfterWin, setValueAfterWin] = useState(1);
   const [winCoefficient, setWinCoefficient] = useState(1);
   const [wins, setWins] = useState(0);
   const [socketStart, setSocketStart] = useState(false);
@@ -71,9 +69,9 @@ const MainPage = () => {
   const historyGamesRef = useRef(historyGames);
   const betRef = useRef(bet);
   const operationAfterWinRef = useRef(operationAfterWin);
-  const valueAfterWinRef = useRef(valueAfterWin);
+  const valueAfterWinRef = useRef(winCoefficient);
   const operationAfterLossRef = useRef(operationAfterLoss);
-  const valueAfterLossRef = useRef(valueAfterLoss);
+  const valueAfterLossRef = useRef(lostCoefficient);
   const navigate = useNavigate();
   const [tabId, setTabId] = useState(1);
 
@@ -108,7 +106,6 @@ const MainPage = () => {
     } else if (bet > balance && balance !== '0.00') {
       setBet(parseFloat(balance));
       betRef.current = parseFloat(balance)
-
     }
 
     if (autoStop < 1.1) {
@@ -121,30 +118,30 @@ const MainPage = () => {
       setBalance('0.00')
     }
 
-    if (valueAfterWin < 1) {
-      setValueAfterWin(1)
+    if (winCoefficient < 1) {
+      setWinCoefficient(1)
     }
 
-    if (valueAfterWin > 100) {
-      setValueAfterWin(100)
+    if (winCoefficient > 100) {
+      setWinCoefficient(100)
     }
 
-    if (valueAfterLoss < 1) {
-      setValueAfterLoss(1)
+    if (lostCoefficient < 1) {
+      setLostCoefficient(1)
     }
 
-    if (valueAfterLoss > 100) {
-      setValueAfterLoss(100)
+    if (lostCoefficient > 100) {
+      setLostCoefficient(100)
     }
 
-  }, [bet, autoStop, balance, valueAfterLoss, valueAfterWin]);
+  }, [bet, autoStop, balance, lostCoefficient, winCoefficient]);
 
   useEffect(() => {
     operationAfterWinRef.current = operationAfterWin;
-    valueAfterWinRef.current = valueAfterWin;
+    valueAfterWinRef.current = winCoefficient;
     operationAfterLossRef.current = operationAfterLoss;
-    valueAfterLossRef.current = valueAfterLoss;
-  }, [operationAfterWin, valueAfterWin, operationAfterLoss, valueAfterLoss]);
+    valueAfterLossRef.current = lostCoefficient;
+  }, [operationAfterWin, winCoefficient, operationAfterLoss, lostCoefficient]);
 
   useEffect(() => {
     let isMounted = true
@@ -158,6 +155,7 @@ const MainPage = () => {
             setActionState("start");
             context.socket.onmessage = async e => {
               const data = JSON.parse(e.data);
+              console.log("Data", data.operation);
               switch (data.operation) {
                 case 'started':
                   setSocketStart(true)
@@ -174,10 +172,7 @@ const MainPage = () => {
               }
             };
           }, 1000)
-
-
         } catch (e) {
-
           // eslint-disable-next-line no-self-assign
           document.location.href = document.location.href
         }
@@ -201,9 +196,8 @@ const MainPage = () => {
           .then(res => Promise.all([res.status, res.json()]))
           .then(([status, data]) => {
             try {
-
               const myData = data.allUsersData
-                .sort((a, b) => isReal ? (b.balance.real - a.balance.real) : (b.balance.virtual - a.balance.virtual))
+                .sort((a, b) => b.balance.real - a.balance.real)
                 .map((i, index) => { i.rank = index + 1; return i })
                 .filter(i => i.name === realName)[0] //--------------------------
               setGames(myData)
@@ -218,8 +212,7 @@ const MainPage = () => {
                 Balance: isReal ? myData.balance.real.toFixed(2) : myData.balance.virtual.toFixed(2),
                 GameWon: isReal ? myData.realWins : myData.virtualWins,
                 GameLost: isReal ? myData.realLosses : myData.virtualLosses,
-                Rank: isReal ? myData.real.rank : myData.virtual.rank, 
-                Ranking: isReal?myData.real.ranking:myData.virtual.ranking
+                Rank: myData.rank, Ranking: myData.ranking
               })
               const newHistoryGames = isReal ? myData.gamesHistory.real : myData.gamesHistory.virtual
               historyGamesRef.current = newHistoryGames
@@ -244,9 +237,9 @@ const MainPage = () => {
     setGamePhase('started')
     setSocketStart(false);
     setActionState("start");
-
     context.socket.onmessage = async e => {
       const data = JSON.parse(e.data);
+      console.log("start game", data.operation);
       switch (data.operation) {
         case 'started':
           setSocketStart(true)
@@ -463,7 +456,7 @@ const MainPage = () => {
 
                 <div className="flex flex-col w-1/2 gap-1">
                   <div className="text-sm leading-5">Auto Stop</div>
-                  <InputNumber InputProps={{ value: autoStop, min: 1.1, max: 100, step: 1, disabled: gamePhase === 'started', type: "xWithNumber", onChange: e => { stopGame(); setAutoStop(e.target.value) } }} />
+                  <InputNumber InputProps={{ value: autoStop, min: 1.1, max: 100, step: 1, disabled: gamePhase === 'started', type: "xWithNumber", onChange: e => { setAutoStop(e.target.value) } }} />
                   <div className="text-xs leading-[14px] text-[#FFFFFFCC]">Auto Cash Out when this amount will be reached</div>
                 </div>
               </div>
@@ -483,8 +476,8 @@ const MainPage = () => {
                       disabled={
                         balance === '0.00' ||
                         bet < 1 || autoStop < 1.1 ||
-                        balance < 1 || isNaN(bet) || isNaN(autoStop) || isNaN(valueAfterWin)
-                        || isNaN(valueAfterLoss)
+                        balance < 1 || isNaN(bet) || isNaN(autoStop) || isNaN(winCoefficient)
+                        || isNaN(lostCoefficient)
                       }
                     />
                   </div>
@@ -510,7 +503,7 @@ const MainPage = () => {
 
                     <div className="flex flex-col w-1/2 gap-1">
                       <div className="text-sm leading-5">Auto Stop</div>
-                      <InputNumber InputProps={{ value: autoStop, min: 1.1, max: 100, step: 1, type: "xWithNumber", onChange: e => { stopGame(); setAutoStop(e.target.value) } }} />
+                      <InputNumber InputProps={{ value: autoStop, min: 1.1, max: 100, step: 1, type: "xWithNumber", onChange: e => { setAutoStop(e.target.value) } }} />
                       <div className="text-xs leading-[14px] text-[#FFFFFFCC]">Auto Cash Out when this amount will be reached</div>
                     </div>
                   </div>
@@ -523,7 +516,7 @@ const MainPage = () => {
 
                     <div className="flex flex-col w-full gap-1">
                       <div className="text-sm leading-5">Coefficient</div>
-                      <InputNumber InputProps={{ value: lostCoefficient, min: 1, max: 100, step: 1, type: "xWithNumber", disabled: operationAfterLoss === "Return to base Bet", onChange: e => { stopGame(); setWinCoefficient(parseFloat(e.target.value)) } }} />
+                      <InputNumber InputProps={{ value: lostCoefficient, min: 1, max: 100, step: 1, type: "xWithNumber", disabled: operationAfterLoss === "Return to base Bet", onChange: e => { setLostCoefficient(parseFloat(e.target.value)) } }} />
                     </div>
                   </div>
 
@@ -535,7 +528,7 @@ const MainPage = () => {
 
                     <div className="flex flex-col w-full gap-1">
                       <div className="text-sm leading-5 text-[#FFFFFF99]">Coefficeent</div>
-                      <InputNumber InputProps={{ value: winCoefficient, min: 1, max: 100, step: 1, type: "xWithNumber", disabled: operationAfterWin === "Return to base Bet", onChange: e => { stopGame(); setWinCoefficient(e.target.value) } }} />
+                      <InputNumber InputProps={{ value: winCoefficient, min: 1, max: 100, step: 1, type: "xWithNumber", disabled: operationAfterWin === "Return to base Bet", onChange: e => { setWinCoefficient(e.target.value) } }} />
                     </div>
                   </div>
                 </div>
@@ -548,8 +541,8 @@ const MainPage = () => {
                         content={"Start"}
                         disabled={
                           balance === '0.00' || bet < 1 || autoStop < 2 ||
-                          balance < 1 || isNaN(bet) || isNaN(autoStop) || isNaN(valueAfterWin)
-                          || isNaN(valueAfterLoss)
+                          balance < 1 || isNaN(bet) || isNaN(autoStop) || isNaN(winCoefficient)
+                          || isNaN(lostCoefficient)
                         }
                       />
                     ) :
