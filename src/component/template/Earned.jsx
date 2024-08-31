@@ -1,6 +1,6 @@
 import { useState } from "react";
-import EarningTab from "../component/molecules/earning-tab";
-import EarningTask from "../component/molecules/earning-task";
+import EarningTab from "../molecules/earning-tab";
+import EarningTask from "../molecules/earning-task";
 import { useAtom } from "jotai";
 import { userData } from "../store";
 

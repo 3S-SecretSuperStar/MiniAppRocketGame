@@ -98,9 +98,9 @@ const TaskList = () => {
       .then(([status, data]) => {
 
         try {
-
           const performtask = isReal ? data.task.real.achieve_task : data.task.virtual.achieve_task
-          const doneTask = isReal ? data.task.real.done_task : data.task.virtual.done_task
+          const doneTask = isReal ?  data.task.real.done_task : data.task.virtual.done_task
+          console.log("perform task", performtask)
           taskState = [0, 0, 0, 0, 0,]
           performtask.forEach(item => {
             taskState[item] = 1;
@@ -114,10 +114,9 @@ const TaskList = () => {
             .then(([status, data]) => {
 
               try {
-                if (isReal) {
                   setTaskData(prevState => {
                     let newState = [...prevState];
-                    newState = data.task.real.map((item, index) => ({
+                    newState = data.task.map((item, index) => ({
                       src: item.src,
                       title: item.title,
                       amount: item.amount,
@@ -125,20 +124,7 @@ const TaskList = () => {
                     }));
                     return newState;
                   });
-                }
-                else {
-                  setTaskData(prevState => {
-                    let newState = [...prevState];
-                    newState = data.task.virtual.map((item, index) => ({
-                      src: item.src,
-                      title: item.title,
-                      amount: item.amount,
-                      status: taskState[index],
-                    }));
-                    return newState;
-                  });
-                }
-
+                
               } catch (e) {
                 console.log(e);
               }

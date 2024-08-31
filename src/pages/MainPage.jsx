@@ -197,7 +197,7 @@ const MainPage = () => {
           .then(([status, data]) => {
             try {
               const myData = data.allUsersData
-                .sort((a, b) => b.balance.real - a.balance.real)
+                .sort((a, b) => isReal?(b.balance.real - a.balance.real):(b.balance.virtual - a.balance.virtual))
                 .map((i, index) => { i.rank = index + 1; return i })
                 .filter(i => i.name === realName)[0] //--------------------------
               setGames(myData)
@@ -212,7 +212,8 @@ const MainPage = () => {
                 Balance: isReal ? myData.balance.real.toFixed(2) : myData.balance.virtual.toFixed(2),
                 GameWon: isReal ? myData.realWins : myData.virtualWins,
                 GameLost: isReal ? myData.realLosses : myData.virtualLosses,
-                Rank: myData.rank, Ranking: myData.ranking
+                Rank: myData.rank, 
+                Ranking: isReal ? myData.ranking.real: myData.ranking.virtual
               })
               const newHistoryGames = isReal ? myData.gamesHistory.real : myData.gamesHistory.virtual
               historyGamesRef.current = newHistoryGames
@@ -223,7 +224,7 @@ const MainPage = () => {
               document.location.href = document.location.href
             }
           })
-        fetch(`${serverUrl}/check_first`, { method: 'POST', mode:'no-cors', body: JSON.stringify({ userName: userName }), headers })
+        fetch(`${serverUrl}/check_first`, { method: 'POST', body: JSON.stringify({ userName: userName }), headers })
       }
     }
     return () => { isMounted = false }
@@ -406,7 +407,7 @@ const MainPage = () => {
               <div className="flex flex-col w-full gap-0.5">
                 <p className="font-semibold">{user.RealName}</p>
                 <p className="font-semibold">{user.Ranking} · {RANKINGDATA.indexOf(user.Ranking) + 1}/10</p>
-                <p>{user.Rank}</p>
+                <p className="text-[#ffffff99]">{user.Rank}</p>
               </div>
             </div>
 
