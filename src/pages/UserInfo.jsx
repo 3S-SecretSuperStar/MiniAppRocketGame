@@ -19,6 +19,7 @@ import TgInst from "../assets/icon/tg-inst";
 import TgTwitter from "../assets/icon/tg-twitter";
 import TgYout from "../assets/icon/tg-yout";
 import ShadowButton from "../component/atom/shadow-btn.jsx";
+import { realGameState } from "../store/realGameState.jsx";
 
 const UserInfo = () => {
   const [user,] = useAtom(userData);
@@ -26,6 +27,7 @@ const UserInfo = () => {
   const [rankingIndex, setRankingIndex] = useState(0);
   const [friendData, setFriendData] = useState([])
   const [infoState, setInfoState] = useState(false);
+  const [isReal, setIsReal] = useAtom(realGameState)
   const serverUrl = REACT_APP_SERVER
   const statsList = [
     {
