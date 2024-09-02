@@ -73,6 +73,7 @@ const MainPage = () => {
   const navigate = useNavigate();
   const [tabId, setTabId] = useState(1);
   const [loading, setLoading] = useState(true)
+  const [firstLoading,setFirstLoading]=useState(true);
 
   const avatarData = [avatar.avatarBeginner, avatar.avatarPilot, avatar.avatarExplorer,
   avatar.avatarAstronaut, avatar.avatarCaptain, avatar.avatarCommander, avatar.avatarAdmiral,
@@ -292,11 +293,12 @@ const MainPage = () => {
 
         setLoading(false)
         setActionState("ready")
+        setFirstLoading(false);
       }
     }
     fetchData()
   }, [isReal, gamePhase])
-  if (loading) {
+  if (loading && firstLoading) {
     setActionState("loading")
     return <FetchLoading />
   }
