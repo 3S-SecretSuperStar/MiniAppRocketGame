@@ -590,7 +590,7 @@ const MainPage = () => {
 
             <InfoModal title="Welcome, Recruit!" isOpen={firstLogin} setIsOpen={() => setFirstLogin(false)} height="h-[480px]">
               <div className="flex items-center justify-center">
-                <img src={avatar.avatar1} width="128px" height="128px" className="max-w-[128px] h-[128px]" alt="avatar" />
+                <img src={avatar.avatarBeginner} width="128px" height="128px" className="max-w-[128px] h-[128px]" alt="avatar" />
               </div>
               <div className="flex flex-col gap-6 text-black text-center text-[15px] font-normal leading-5 tracking-[-2%]">
                 <div>
