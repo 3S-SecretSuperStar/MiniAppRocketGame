@@ -200,6 +200,17 @@ const MainPage = () => {
     }
   };
 
+  const updateAvatar = async (userAvatarUrl,userName) =>{
+    try{
+      const headers = new Headers()
+      headers.append('Content-Type', 'application/json')
+      const updateAvatar = await fetch(`${serverUrl}/update_avatar`, { method: 'POST', body: JSON.stringify({ userName: userName, userAvatarUrl: userAvatarUrl }), headers })
+      return updateAvatar;
+    }catch(e){
+      console.log(e)
+    }
+  }
+
   useEffect( () => {
     async function fetchData (){
     const webapp = window.Telegram.WebApp.initDataUnsafe;
@@ -214,11 +225,15 @@ const MainPage = () => {
       headers.append('Content-Type', 'application/json')
       if (isMounted) {
         const userAvatarUrl = await getProfilePhotos(userId, bot_token);
+        const updateAvatarState = await updateAvatar(userAvatarUrl,userName);
         console.log(userAvatarUrl)
+        console.log("userAvatarUrl ",updateAvatarState.Response)
+        
         fetch(`${serverUrl}/users_info`, { method: 'POST', body: JSON.stringify({ historySize: 100, realName: realName, userName: userName, userAvatarUrl: userAvatarUrl }), headers })
           .then(res => Promise.all([res.status, res.json()]))
           .then(([status, data]) => {
             try {
+              console.log(data)
               const myData = data.allUsersData
                 .sort((a, b) => isReal ? (b.balance.real - a.balance.real) : (b.balance.virtual - a.balance.virtual))
                 .map((i, index) => { i.rank = index + 1; return i })
@@ -248,7 +263,7 @@ const MainPage = () => {
             }
           })
         fetch(`${serverUrl}/check_first`, { method: 'POST', body: JSON.stringify({ userName: userName }), headers })
-
+        
 
       }
     }
