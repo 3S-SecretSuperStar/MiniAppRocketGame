@@ -2,6 +2,7 @@
   width : 100%;
   height : 36px;
   background-color:transparent;
+  touch-action: none;
 }
 
 .carousel.carousel-slider{
@@ -9,17 +10,20 @@
   display: flex;
   justify-items: space-between;
   border-radius: 0px;
+  touch-action: none;
 }
 
 .carousel .control-next.control-arrow:before{
   position: absolute;
   right: 2px;
   transform: translateY(-50%);
+  touch-action: none;
 }
 .carousel .control-prev.control-arrow:before{
   position: absolute;
   left: 2px;
   transform: translateY(-50%);
+  touch-action: none;
 }
 .carousel .control-arrow{
   width: 50%;
@@ -28,13 +32,16 @@
 .carousel.carousel-slider .control-arrow:hover {
   background: transparent;
   align-items: center;
+  touch-action: none;
 }
 .carousel .slider-wrapper{
   align-items: center ;
   display : flex;
   height: 36px;
+  touch-action: none;
 }
 li.slide.selected{
   left: 16px;
+  touch-action: none;
 }
 

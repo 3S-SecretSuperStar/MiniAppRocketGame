@@ -51,8 +51,8 @@ const UserInfo = () => {
 
   const rankingItems = RANKINGDATA.map((data, index) => {
     return (
-      <div className="w-full" key={index}>
-        <p>Ranking: {data}</p>
+      <div className="text-center w-full" key={index}>
+        Ranking: {data}
       </div>
 
     )
@@ -71,7 +71,9 @@ const UserInfo = () => {
     let isMounted = true
     if (webapp) {
 
-      const realName = webapp["user"]["first_name"] + " " + webapp["user"]["last_name"];
+      const lastName = webapp["user"]["last_name"]&&(" " + webapp["user"]["last_name"]);
+
+      const realName = webapp["user"]["first_name"] + lastName;
       const userName = webapp["user"]["username"];
       setRealName(realName)
 
@@ -120,7 +122,7 @@ const UserInfo = () => {
       const filterData = myData.map((data) => {
         const ranking = isReal ? data.ranking.real : data.ranking.virtual;
         return {
-          url: data.avatar_url?data.avatar_url:avatarData[RANKINGDATA.indexOf(ranking)],
+          url: data.avatar_url ? data.avatar_url : avatarData[RANKINGDATA.indexOf(ranking)],
           name: data.name,
           label: ranking,
           rate: RANKINGDATA.indexOf(ranking) + 1,
@@ -157,18 +159,20 @@ const UserInfo = () => {
         </div>
         <div className="flex gap-4 w-full">
           <div className="w-1/2">
-            <PannelScore img={Img.agree} text2={"Won"} text3={nFormatter(user.GameWon,1)} className="w-full py-[10px]" />
+            <PannelScore img={Img.agree} text2={"Won"} text3={nFormatter(user.GameWon, 1)} className="w-full py-[10px]" />
           </div>
           <div className="w-1/2">
-            <PannelScore img={Img.disagree} text2={"Lost"} text3={nFormatter(user.GameLost,1)} className="w-full py-[10px]" />
+            <PannelScore img={Img.disagree} text2={"Lost"} text3={nFormatter(user.GameLost, 1)} className="w-full py-[10px]" />
           </div>
         </div>
 
-        <div className="h-9 text-center ">
+        <div className="h-9 text-center relative">
           <Carousel
             showThumbs={false} showStatus={false} showIndicators={false} infiniteLoop={true}
+            emulateTouch={false} useKeyboardArrows={false} swipeable={false}
+            centerSlidePercentage={100}
             renderArrowNext={(clickHandler, hasNext, labelNext) => (hasNext && <div
-              type="button" aria-level={labelNext} className="next flex"
+              type="button" aria-level={labelNext} className="absolute right-0 top-1/2 transform -translate-y-1/2 w-20 pl-12  z-10"
               onClick={() => {
                 clickHandler()
                 rankingNext()
@@ -176,7 +180,7 @@ const UserInfo = () => {
               <ArrowRight className={"w-4 h-4 m-auto"} />
             </div>)}
             renderArrowPrev={(clickHandler, hasPrev, labelPrev) => (hasPrev && <div
-              type="button" aria-level={labelPrev} className="prev flex"
+              type="button" aria-level={labelPrev} className="absolute left-0 top-1/2 w-20 transform -translate-y-1/2 pr-12 z-10"
               onClick={() => {
                 clickHandler()
                 rankingPrev()
