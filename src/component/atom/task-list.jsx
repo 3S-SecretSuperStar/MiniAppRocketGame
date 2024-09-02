@@ -6,6 +6,7 @@ import { REACT_APP_SERVER } from "../../utils/privateData";
 import { useAtom } from "jotai";
 import { realGameState, userData } from "../../store";
 import { Link, useActionData } from "react-router-dom";
+import moment from "moment";
 
 const serverUrl = REACT_APP_SERVER;
 
@@ -21,29 +22,55 @@ const GenerateTask = ({ task, stateTask, index }) => {
     setIsClaim(true);
     const headers = new Headers()
     headers.append('Content-Type', 'application/json')
-    fetch(`${serverUrl}/task_balance`, { method: 'POST', body: JSON.stringify({ userName: user.UserName, amount: task.amount, task: index, isReal: isReal }), headers })
-      .then(res => Promise.all([res.status, res.json()]))
-      .then(() => {
-        try {
-          toast(`${task.amount} coins added to your balance`,
-            {
-              position: "top-center",
-              icon: <CheckMark />,
-              style: {
-                borderRadius: '8px',
-                background: '#7886A0',
-                color: '#fff',
-                width: '90vw'
-              },
-            }
-          )
-        } catch (e) {
-          // eslint-disable-next-line no-self-assign
-          console.log(e);
-        }
-        setIsClaim(false)
-        stateTask()
-      })
+    if (index !== 0) {
+      fetch(`${serverUrl}/task_balance`, { method: 'POST', body: JSON.stringify({ userName: user.UserName, amount: task.amount, task: index, isReal: isReal }), headers })
+        .then(res => Promise.all([res.status, res.json()]))
+        .then(() => {
+          try {
+            toast(`${task.amount} coins added to your balance`,
+              {
+                position: "top-center",
+                icon: <CheckMark />,
+                style: {
+                  borderRadius: '8px',
+                  background: '#7886A0',
+                  color: '#fff',
+                  width: '90vw'
+                },
+              }
+            )
+          } catch (e) {
+            // eslint-disable-next-line no-self-assign
+            console.log(e);
+          }
+          setIsClaim(false)
+          stateTask()
+        })
+    } else {
+      fetch(`${serverUrl}/perform_dailyReward`, { method: 'POST', body: JSON.stringify({ userName: user.UserName, isReal: isReal }), headers })
+        .then(res => Promise.all([res.status, res.json()]))
+        .then(() => {
+          try {
+            toast(`${task.amount} coins added to your balance`,
+              {
+                position: "top-center",
+                icon: <CheckMark />,
+                style: {
+                  borderRadius: '8px',
+                  background: '#7886A0',
+                  color: '#fff',
+                  width: '90vw'
+                },
+              }
+            )
+          } catch (e) {
+            // eslint-disable-next-line no-self-assign
+            console.log(e);
+          }
+          setIsClaim(false)
+          stateTask()
+        })
+    }
   }
 
   return (
@@ -95,36 +122,60 @@ const TaskList = () => {
 
     fetch(`${serverUrl}/task_perform`, { method: 'POST', body: JSON.stringify({ userName: user.UserName }), headers })
       .then(res => Promise.all([res.status, res.json()]))
-      .then(([status, data]) => {
+      .then(async([status, data]) => {
 
         try {
           const performtask = isReal ? data.task.real.achieve_task : data.task.virtual.achieve_task
-          const doneTask = isReal ?  data.task.real.done_task : data.task.virtual.done_task
+          const doneTask = isReal ? data.task.real.done_task : data.task.virtual.done_task
           console.log("perform task", performtask)
-          taskState = [0, 0, 0, 0, 0,]
+          taskState = [0, 0, 0, 0, 0, 0,]
           performtask.forEach(item => {
             taskState[item] = 1;
           })
           doneTask.forEach(item => {
             taskState[item] = 2;
           })
+          await fetch(`${serverUrl}/check_dailyReward`, { method: 'POST', body: JSON.stringify({ userName: user.UserName }), headers })
+            .then(res => Promise.all([res.status, res.json()]))
+            .then(([status, data]) => {
+              try {
+                console.log(data)
+                console.log(data.dailyRewardDate)
+                const nowDate = moment().startOf('day');
+                if(data.dailyRewardDate==="") taskState[0]=1;
+                else{
+                  console.log("dailyRewardDate : ",data.dailyRewardDate)
+                const selectedDate = moment(data.dailyRewardDate).utc().local().startOf('day');
+                console.log("nowDate : ", nowDate)
+                console.log("selected date : ", selectedDate)
+                const diffDate = nowDate.diff(selectedDate, 'days');
+                console.log("diff date : ", diffDate)
+                console.log('taskstates',taskState)
+                if (diffDate >= 1) taskState[0] = 1;
+                else taskState[0] = 2;
+                }
+              } catch (e) {
+                console.log(e)
+              }
+            })
 
           fetch(`${serverUrl}/get_task`, { method: 'POST', body: JSON.stringify({}), headers })
             .then(res => Promise.all([res.status, res.json()]))
             .then(([status, data]) => {
 
               try {
-                  setTaskData(prevState => {
-                    let newState = [...prevState];
-                    newState = data.task.map((item, index) => ({
-                      src: item.src,
-                      title: item.title,
-                      amount: item.amount,
-                      status: taskState[index],
-                    }));
-                    return newState;
-                  });
-                
+                console.log('taskstates',taskState)
+                setTaskData(prevState => {
+                  let newState = [...prevState];
+                  newState = data.task.map((item, index) => ({
+                    src: item.src,
+                    title: item.title,
+                    amount: item.amount,
+                    status: taskState[index],
+                  }));
+                  return newState;
+                });
+
               } catch (e) {
                 console.log(e);
               }
@@ -136,6 +187,7 @@ const TaskList = () => {
           console.log(e);
         }
       })
+
   }
 
 

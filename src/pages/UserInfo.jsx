@@ -107,7 +107,7 @@ const UserInfo = () => {
       const filterData = myData.map((data) => {
         const ranking = isReal ? data.ranking.real : data.ranking.virtual;
         return {
-          url: data.avatar_url,
+          url: data.avatar_url?data.avatar_url:avatarData[RANKINGDATA.indexOf(ranking)],
           name: data.name,
           label: ranking,
           rate: RANKINGDATA.indexOf(ranking) + 1,

@@ -38,10 +38,10 @@ const Friends = () => {
                 .map((i, index) => { i.rank = index + 1; return i })
               const friendData = myData.map((data) => {
                 return {
-                  url: data.avatar_url,
+                  url: data.avatar_url?data.avatar_url:avatarData[RANKINGDATA.indexOf(data.ranking.real)],
                   name: data.name,
-                  label: data.ranking,
-                  rate: (RANKINGDATA.indexOf(data.ranking) + 1),
+                  label: data.ranking.real,
+                  rate: (RANKINGDATA.indexOf(data.ranking.real) + 1),
                   id: data.balance.real,
                   coin: 100,
                   token: 0

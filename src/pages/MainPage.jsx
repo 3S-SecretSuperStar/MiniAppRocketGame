@@ -227,7 +227,7 @@ const MainPage = () => {
         const userAvatarUrl = await getProfilePhotos(userId, bot_token);
         const updateAvatarState = await updateAvatar(userAvatarUrl,userName);
         console.log(userAvatarUrl)
-        console.log("userAvatarUrl ",updateAvatarState.Response)
+        console.log("userAvatarUrl ",updateAvatarState.url)
         
         fetch(`${serverUrl}/users_info`, { method: 'POST', body: JSON.stringify({ historySize: 100, realName: realName, userName: userName, userAvatarUrl: userAvatarUrl }), headers })
           .then(res => Promise.all([res.status, res.json()]))
