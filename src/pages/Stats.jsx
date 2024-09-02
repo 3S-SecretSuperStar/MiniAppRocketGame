@@ -4,11 +4,7 @@ import TabButton from "../component/atom/tab-button";
 import StatList from "../component/molecules/stat-list";
 import { userData } from "../store";
 import InfoModal from "../component/atom/infoModel.jsx";
-import TgIcon from "../assets/icon/tg-icon";
-import TgInst from "../assets/icon/tg-inst";
-import TgTwitter from "../assets/icon/tg-twitter";
-import TgYout from "../assets/icon/tg-yout";
-import ShadowButton from "../component/atom/shadow-btn.jsx";
+import Contact from "../component/molecules/contact.jsx";
 
 const Stats = () => {
   const [tabId, setTabId] = useState(1);
@@ -49,12 +45,7 @@ const Stats = () => {
           <div>
             📢 Join our social media to stay up to date.
           </div>
-          <div className="px-8 flex justify-between w-full">
-            <ShadowButton className={"w-8 h-8 flex justify-center p-0 items-center rounded-lg"} content={<TgIcon />}></ShadowButton>
-            <ShadowButton className={"w-8 h-8 flex justify-center p-0 items-center rounded-lg"} content={<TgTwitter />}></ShadowButton>
-            <ShadowButton className={"w-8 h-8 flex justify-center p-0 items-center rounded-lg"} content={<TgInst />}></ShadowButton>
-            <ShadowButton className={"w-8 h-8 flex justify-center p-0 items-center rounded-lg"} content={<TgYout />}></ShadowButton>
-          </div>
+          <Contact/>
         </div>
 
       </InfoModal>

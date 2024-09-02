@@ -20,10 +20,7 @@ import { avatar } from "../assets/avatar";
 import { Img } from "../assets/image";
 import { RANKINGDATA } from "../utils/globals.js";
 import { REACT_APP_SERVER } from "../utils/privateData.js";
-import TgIcon from "../assets/icon/tg-icon";
-import TgInst from "../assets/icon/tg-inst";
-import TgTwitter from "../assets/icon/tg-twitter";
-import TgYout from "../assets/icon/tg-yout";
+import Contact from "../component/molecules/contact.jsx";
 import rewardBG from "../assets/image/reward_bg.png"
 import "../css/Style.css"
 import TabButton from "../component/atom/tab-button.jsx";
@@ -222,6 +219,10 @@ const MainPage = () => {
       const realName = webapp["user"]["first_name"] + lastName;
       const userName = webapp["user"]["username"];
       const userId = webapp["user"]["id"];
+      const photoUrl = webapp["user"]["photo_url"];
+      const uerInfo = webapp["user"];
+      console.log("photourl: ",photoUrl)
+      console.log("uerInfo: ",uerInfo)
       const headers = new Headers()
       headers.append('Content-Type', 'application/json')
       if (isMounted) {
@@ -644,12 +645,7 @@ const MainPage = () => {
                 <div>
                   📢 Join our social media to stay up to date.
                 </div>
-                <div className="px-8 flex justify-between w-full">
-                  <ShadowButton className={"w-8 h-8 flex justify-center p-0 items-center rounded-lg"} content={<TgIcon />}></ShadowButton>
-                  <ShadowButton className={"w-8 h-8 flex justify-center p-0 items-center rounded-lg"} content={<TgTwitter />}></ShadowButton>
-                  <ShadowButton className={"w-8 h-8 flex justify-center p-0 items-center rounded-lg"} content={<TgInst />}></ShadowButton>
-                  <ShadowButton className={"w-8 h-8 flex justify-center p-0 items-center rounded-lg"} content={<TgYout />}></ShadowButton>
-                </div>
+                <Contact/>
               </div>
 
             </InfoModal>

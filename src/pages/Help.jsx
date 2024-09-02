@@ -1,12 +1,5 @@
-import ShadowButton from "../component/atom/shadow-btn";
-import SwitchButton from "../component/atom/switchButtton";
-import SwitchButtonOption from "../component/atom/switchButtonOption";
-import InputNumber from "../component/template/InputNumber";
-import TgIcon from "../assets/icon/tg-icon";
-import TgTwitter from "../assets/icon/tg-twitter";
-import TgYout from "../assets/icon/tg-yout";
-import TgInst from "../assets/icon/tg-inst";
 import { Img } from "../assets/image";
+import Contact from "../component/molecules/contact";
 
 const Help = () => {
   const operationOption = ['Increase Bet by', 'Return to base Bet'];
@@ -38,12 +31,7 @@ const Help = () => {
         <div className="flex flex-col gap-4 items-center w-full">
           <div className="text-[20px] text-blueFaded">📢 <span className="text-[17px]">Any questions?</span></div>
           <div className="text-white text-[15px]">Join our social media to stay up to date:</div>
-          <div className="px-8 flex justify-between w-full">
-            <ShadowButton className={"w-8 h-8 flex justify-center p-0 items-center rounded-lg"} content={<TgIcon />}></ShadowButton>
-            <ShadowButton className={"w-8 h-8 flex justify-center p-0 items-center rounded-lg"} content={<TgTwitter />}></ShadowButton>
-            <ShadowButton className={"w-8 h-8 flex justify-center p-0 items-center rounded-lg"} content={<TgInst />}></ShadowButton>
-            <ShadowButton className={"w-8 h-8 flex justify-center p-0 items-center rounded-lg"} content={<TgYout />}></ShadowButton>
-          </div>
+          <Contact/>
         </div>
       </div>
       </div>
