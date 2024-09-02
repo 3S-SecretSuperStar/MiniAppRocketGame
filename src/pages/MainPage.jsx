@@ -235,7 +235,7 @@ const MainPage = () => {
             try {
               console.log(data)
               console.log(realName);
-              const lankData = data.allUsersData
+              const myData = data.allUsersData
                 .sort((a, b) => isReal ? (b.balance.real - a.balance.real) : (b.balance.virtual - a.balance.virtual))
                 .map((i, index) => { i.rank = index + 1; return i })
                 .filter(i => i.name === realName);
