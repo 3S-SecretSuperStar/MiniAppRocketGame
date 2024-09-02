@@ -217,8 +217,9 @@ const MainPage = () => {
     let isMounted = true
     const bot_token = '7341383930:AAEQfK1yk6xbeeqCczE2MD9qgDewt88evX8'
     if (webapp) {
+      const lastName = webapp["user"]["last_name"]&&(" " + webapp["user"]["last_name"]);
 
-      const realName = webapp["user"]["first_name"] + webapp["user"]["last_name"]&&(" " + webapp["user"]["last_name"]);
+      const realName = webapp["user"]["first_name"] + lastName;
       const userName = webapp["user"]["username"];
       const userId = webapp["user"]["id"];
       const headers = new Headers()
@@ -234,11 +235,16 @@ const MainPage = () => {
           .then(([status, data]) => {
             try {
               console.log(data)
-              console.log(realName);
+              console.log(realName)
+              console.log(data.allUsersData[0].name)
+              console.log(realName===data.allUsersData[0].name );
+
               const myData = data.allUsersData
                 .sort((a, b) => isReal ? (b.balance.real - a.balance.real) : (b.balance.virtual - a.balance.virtual))
                 .map((i, index) => { i.rank = index + 1; return i })
-                .filter(i => i.name === realName);
+                .filter(i => i.name === realName)[0];
+                console.log(myData)
+
               setGames(myData)
               const newBalance = parseFloat(isReal ? myData.balance.real : myData.balance.virtual).toFixed(2)
               console.log("check balance : ", newBalance)
