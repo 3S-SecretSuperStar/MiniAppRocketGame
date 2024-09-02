@@ -10,6 +10,8 @@ import CheckMark from "../component/svg/check-mark";
 import NavFriends from "../component/svg/nav_friends";
 import { RANKINGDATA } from "../utils/globals.js";
 import { REACT_APP_SERVER } from "../utils/privateData.js";
+import { avatar } from "../assets/avatar/index.jsx";
+
 
 const Friends = () => {
   const [friendList, setFriendList] = useState([]);
@@ -18,6 +20,9 @@ const Friends = () => {
   const webapp = window.Telegram.WebApp.initDataUnsafe;
   const userId = webapp["user"]["username"];;
   const utils = initUtils();
+  const avatarData = [avatar.avatarBeginner, avatar.avatarPilot, avatar.avatarExplorer,
+    avatar.avatarAstronaut, avatar.avatarCaptain, avatar.avatarCommander, avatar.avatarAdmiral,
+    avatar.avatarLegend, avatar.avatarMasterOfTheUniverse, avatar.avatarGodOfSpace]
 
   useEffect(() => {
     let isMounted = true
