@@ -95,7 +95,20 @@ const UserInfo = () => {
     }
 
   }, [])
-
+  function nFormatter(num, digits) {
+    const lookup = [
+      { value: 1, symbol: "" },
+      { value: 1e3, symbol: "k" },
+      { value: 1e6, symbol: "M" },
+      { value: 1e9, symbol: "G" },
+      { value: 1e12, symbol: "T" },
+      { value: 1e15, symbol: "P" },
+      { value: 1e18, symbol: "E" }
+    ];
+    const regexp = /\.0+$|(?<=\.[0-9]*[1-9])0+$/;
+    const item = lookup.findLast(item => num >= item.value);
+    return item ? (num / item.value).toFixed(digits).replace(regexp, "").concat(item.symbol) : "0";
+  }
   useEffect(() => {
     if (gameDataLength) {
       const currentRanking = RANKINGDATA[rankingIndex];
@@ -144,10 +157,10 @@ const UserInfo = () => {
         </div>
         <div className="flex gap-4 w-full">
           <div className="w-1/2">
-            <PannelScore img={Img.agree} text2={"Won"} text3={user.GameWon} className="w-full py-[10px]" />
+            <PannelScore img={Img.agree} text2={"Won"} text3={nFormatter(user.GameWon)} className="w-full py-[10px]" />
           </div>
           <div className="w-1/2">
-            <PannelScore img={Img.disagree} text2={"Lost"} text3={user.GameLost} className="w-full py-[10px]" />
+            <PannelScore img={Img.disagree} text2={"Lost"} text3={nFormatter(user.GameLost)} className="w-full py-[10px]" />
           </div>
         </div>
 

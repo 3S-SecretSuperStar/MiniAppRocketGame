@@ -16,7 +16,7 @@ import { avatar } from "../assets/avatar/index.jsx";
 const Friends = () => {
   const [friendList, setFriendList] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
-  const serverUrl = REACT_APP_SERVER;
+  const serverUrl = REACT_APP_SERVER; 
   const webapp = window.Telegram.WebApp.initDataUnsafe;
   const userId = webapp["user"]["username"];;
   const utils = initUtils();

@@ -218,7 +218,7 @@ const MainPage = () => {
     const bot_token = '7341383930:AAEQfK1yk6xbeeqCczE2MD9qgDewt88evX8'
     if (webapp) {
 
-      const realName = webapp["user"]["first_name"] + " " + webapp["user"]["last_name"];
+      const realName = webapp["user"]["first_name"] + webapp["user"]["last_name"]&&(" " + webapp["user"]["last_name"]);
       const userName = webapp["user"]["username"];
       const userId = webapp["user"]["id"];
       const headers = new Headers()
@@ -234,10 +234,11 @@ const MainPage = () => {
           .then(([status, data]) => {
             try {
               console.log(data)
-              const myData = data.allUsersData
+              console.log(realName);
+              const lankData = data.allUsersData
                 .sort((a, b) => isReal ? (b.balance.real - a.balance.real) : (b.balance.virtual - a.balance.virtual))
                 .map((i, index) => { i.rank = index + 1; return i })
-                .filter(i => i.name === realName)[0] //--------------------------
+                .filter(i => i.name === realName);
               setGames(myData)
               const newBalance = parseFloat(isReal ? myData.balance.real : myData.balance.virtual).toFixed(2)
               console.log("check balance : ", newBalance)
