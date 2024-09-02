@@ -157,10 +157,10 @@ const UserInfo = () => {
         </div>
         <div className="flex gap-4 w-full">
           <div className="w-1/2">
-            <PannelScore img={Img.agree} text2={"Won"} text3={nFormatter(user.GameWon)} className="w-full py-[10px]" />
+            <PannelScore img={Img.agree} text2={"Won"} text3={nFormatter(user.GameWon,1)} className="w-full py-[10px]" />
           </div>
           <div className="w-1/2">
-            <PannelScore img={Img.disagree} text2={"Lost"} text3={nFormatter(user.GameLost)} className="w-full py-[10px]" />
+            <PannelScore img={Img.disagree} text2={"Lost"} text3={nFormatter(user.GameLost,1)} className="w-full py-[10px]" />
           </div>
         </div>
 
