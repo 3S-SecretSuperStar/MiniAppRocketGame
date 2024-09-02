@@ -39,16 +39,16 @@ const Friends = () => {
           .then(([status, data]) => {
             try {
               const myData = data.friendData
-                .sort((a, b) => b.balance.real - a.balance.real)
+                .sort((a, b) => b.balance.virtual - a.balance.virtual)
                 .map((i, index) => { i.rank = index + 1; return i })
               const friendData = myData.map((data) => {
                 return {
-                  url: data.avatar_url?data.avatar_url:avatarData[RANKINGDATA.indexOf(data.ranking.real)],
+                  url: data.avatar_url?data.avatar_url:avatarData[RANKINGDATA.indexOf(data.ranking.virtual)],
                   name: data.name,
-                  label: data.ranking.real,
-                  rate: (RANKINGDATA.indexOf(data.ranking.real) + 1),
-                  id: data.balance.real,
-                  coin: 100,
+                  label: data.ranking.virtual,
+                  rate: (RANKINGDATA.indexOf(data.ranking.virtual) + 1),
+                  id: data.balance.virtual,
+                  coin: 25,
                   token: 0
                 }
               })
