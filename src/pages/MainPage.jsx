@@ -25,6 +25,7 @@ import rewardBG from "../assets/image/reward_bg.png"
 import "../css/Style.css"
 import TabButton from "../component/atom/tab-button.jsx";
 import AutoIcon from "../component/svg/auto-icon.jsx";
+import FetchLoading from "../component/template/FetchLoading.jsx";
 
 
 
@@ -71,6 +72,7 @@ const MainPage = () => {
   const valueAfterLossRef = useRef(lostCoefficient);
   const navigate = useNavigate();
   const [tabId, setTabId] = useState(1);
+  const [loading, setLoading] = useState(true)
 
   const avatarData = [avatar.avatarBeginner, avatar.avatarPilot, avatar.avatarExplorer,
   avatar.avatarAstronaut, avatar.avatarCaptain, avatar.avatarCommander, avatar.avatarAdmiral,
@@ -186,7 +188,7 @@ const MainPage = () => {
       if (profiles.result.photos.length > 0) {
         const fileResponse = await fetch(`https://api.telegram.org/bot${bot_token}/getFile?file_id=${profiles.result.photos[0][2].file_id}`);
         const filePath = await fileResponse.json();
-
+        console.log("fileInfo:", filePath)
         const userAvatarUrl = `https://api.telegram.org/file/bot${bot_token}/${filePath.result.file_path}`;
         return userAvatarUrl;
       } else {
@@ -197,90 +199,108 @@ const MainPage = () => {
     }
   };
 
-  const updateAvatar = async (userAvatarUrl,userName) =>{
-    try{
+  const updateAvatar = async (userAvatarUrl, userName) => {
+    try {
       const headers = new Headers()
       headers.append('Content-Type', 'application/json')
       const updateAvatar = await fetch(`${serverUrl}/update_avatar`, { method: 'POST', body: JSON.stringify({ userName: userName, userAvatarUrl: userAvatarUrl }), headers })
       return updateAvatar;
-    }catch(e){
+    } catch (e) {
       console.log(e)
     }
   }
 
-  useEffect( () => {
-    async function fetchData (){
-    const webapp = window.Telegram.WebApp.initDataUnsafe;
-    let isMounted = true
-    const bot_token = '7341383930:AAEQfK1yk6xbeeqCczE2MD9qgDewt88evX8'
-    if (webapp) {
-      const lastName = webapp["user"]["last_name"]&&(" " + webapp["user"]["last_name"]);
 
-      const realName = webapp["user"]["first_name"] + lastName;
-      const userName = webapp["user"]["username"];
-      const userId = webapp["user"]["id"];
-      const photoUrl = webapp["user"]["photo_url"];
-      const uerInfo = webapp["user"];
-      console.log("photourl: ",photoUrl)
-      console.log("uerInfo: ",uerInfo)
-      const headers = new Headers()
-      headers.append('Content-Type', 'application/json')
-      if (isMounted) {
-        const userAvatarUrl = await getProfilePhotos(userId, bot_token);
-        const updateAvatarState = await updateAvatar(userAvatarUrl,userName);
-        console.log(userAvatarUrl)
-        console.log("userAvatarUrl ",updateAvatarState.url)
-        
-        fetch(`${serverUrl}/users_info`, { method: 'POST', body: JSON.stringify({ historySize: 100, realName: realName, userName: userName, userAvatarUrl: userAvatarUrl }), headers })
-          .then(res => Promise.all([res.status, res.json()]))
-          .then(([status, data]) => {
-            try {
-              console.log(data)
-              console.log(realName)
-              console.log(data.allUsersData[0].name)
-              console.log(realName===data.allUsersData[0].name );
+  useEffect(() => {
+    setLoading(true)
+    async function fetchData() {
+      try {
+        const webapp = window.Telegram.WebApp.initDataUnsafe;
+        let isMounted = true
+        const bot_token = '7379750890:AAGYFlyXnjrC8kbyxRdYhUbisoTbCWdPCg8'
+        if (webapp) {
+          const lastName = webapp["user"]["last_name"] && (" " + webapp["user"]["last_name"]);
 
-              const myData = data.allUsersData
-                .sort((a, b) => isReal ? (b.balance.real - a.balance.real) : (b.balance.virtual - a.balance.virtual))
-                .map((i, index) => { i.rank = index + 1; return i })
-                .filter(i => i.name === realName)[0];
-                console.log(myData)
+          const realName = webapp["user"]["first_name"] + lastName;
+          const userName = webapp["user"]["username"];
+          const userId = webapp["user"]["id"];
+          const photoUrl = webapp["user"]["photo_url"];
+          const userInfo = webapp["user"];
+          console.log(userInfo)
+          console.log("photourl: ", photoUrl)
+          console.log("uerInfo: ", userInfo)
+          const headers = new Headers()
+          headers.append('Content-Type', 'application/json')
+          if (isMounted) {
+            const userAvatarUrl = await getProfilePhotos(userId, bot_token);
+            const updateAvatarState = await updateAvatar(userAvatarUrl, userName);
+            console.log(userAvatarUrl)
+            console.log("userAvatarUrl ", updateAvatarState.url)
 
-              setGames(myData)
-              const newBalance = parseFloat(isReal ? myData.balance.real : myData.balance.virtual).toFixed(2)
-              console.log("check balance : ", newBalance)
-              balanceRef.current = newBalance
-              setFirstLogin(myData.first_state !== "false");
-              setRewardState(myData.first_state !== "false");
-              setBalance(newBalance)
-              setUser({
-                RealName: realName, UserName: userName,
-                Balance: isReal ? myData.balance.real.toFixed(2) : myData.balance.virtual.toFixed(2),
-                GameWon: isReal ? myData.realWins : myData.virtualWins,
-                GameLost: isReal ? myData.realLosses : myData.virtualLosses,
-                Rank: myData.rank,
-                Ranking: isReal ? myData.ranking.real : myData.ranking.virtual
+            fetch(`${serverUrl}/users_info`, { method: 'POST', body: JSON.stringify({ historySize: 100, realName: realName, userName: userName, userAvatarUrl: userAvatarUrl }), headers })
+              .then(res => Promise.all([res.status, res.json()]))
+              .then(([status, data]) => {
+                try {
+                  console.log(data)
+                  console.log(realName)
+                  console.log(data.allUsersData[0].name)
+                  console.log(realName === data.allUsersData[0].name);
+
+                  const myData = data.allUsersData
+                    .sort((a, b) => isReal ? (b.balance.real - a.balance.real) : (b.balance.virtual - a.balance.virtual))
+                    .map((i, index) => { i.rank = index + 1; return i })
+                    .filter(i => i.name === realName)[0];
+                  console.log(myData)
+
+                  setGames(myData)
+                  const newBalance = parseFloat(isReal ? myData.balance.real : myData.balance.virtual).toFixed(2)
+                  console.log("check balance : ", newBalance)
+                  balanceRef.current = newBalance
+                  setFirstLogin(myData.first_state !== "false");
+                  setRewardState(myData.first_state !== "false");
+                  setBalance(newBalance)
+                  setUser({
+                    RealName: realName, UserName: userName,
+                    Balance: isReal ? myData.balance.real.toFixed(2) : myData.balance.virtual.toFixed(2),
+                    GameWon: isReal ? myData.realWins : myData.virtualWins,
+                    GameLost: isReal ? myData.realLosses : myData.virtualLosses,
+                    Rank: myData.rank,
+                    Ranking: isReal ? myData.ranking.real : myData.ranking.virtual
+                  })
+                  const newHistoryGames = isReal ? myData.gamesHistory.real : myData.gamesHistory.virtual
+                  historyGamesRef.current = newHistoryGames
+                  setHistoryGames(newHistoryGames)
+                  setLoaderIsShown(false)
+                } catch (e) {
+                  // eslint-disable-next-line no-self-assign
+                  document.location.href = document.location.href
+                }
               })
-              const newHistoryGames = isReal ? myData.gamesHistory.real : myData.gamesHistory.virtual
-              historyGamesRef.current = newHistoryGames
-              setHistoryGames(newHistoryGames)
-              setLoaderIsShown(false)
-            } catch (e) {
-              // eslint-disable-next-line no-self-assign
-              document.location.href = document.location.href
-            }
-          })
-        fetch(`${serverUrl}/check_first`, { method: 'POST', body: JSON.stringify({ userName: userName }), headers })
-        
+            await fetch(`${serverUrl}/check_first`, { method: 'POST', body: JSON.stringify({ userName: userName }), headers })
 
+
+          }
+        }
+        return () => {
+          isMounted = false
+        }
+      }
+      catch (e) {
+        console.log(e)
+      }
+      finally {
+
+        setLoading(false)
+        setActionState("ready")
       }
     }
-    return () => { isMounted = false }
-  }
-  fetchData()
-
+    fetchData()
   }, [isReal, gamePhase])
-
+  if (loading) {
+    setActionState("loading")
+    return <FetchLoading />
+  }
+  console.log(loading)
 
   // Function to start the game
   const startGame = () => {
@@ -645,7 +665,7 @@ const MainPage = () => {
                 <div>
                   📢 Join our social media to stay up to date.
                 </div>
-                <Contact/>
+                <Contact />
               </div>
 
             </InfoModal>
