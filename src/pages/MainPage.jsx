@@ -213,7 +213,7 @@ const MainPage = () => {
 
 
   useEffect(() => {
-    setLoading(true)
+    // setLoading(true)
     async function fetchData() {
       try {
         const webapp = window.Telegram.WebApp.initDataUnsafe;
@@ -292,14 +292,14 @@ const MainPage = () => {
       finally {
 
         setLoading(false)
-        setActionState("ready")
+        firstLoading && setActionState("ready")
         setFirstLoading(false);
       }
     }
     fetchData()
   }, [isReal, gamePhase])
   if (loading && firstLoading) {
-    setActionState("loading")
+    setActionState("start")
     return <FetchLoading />
   }
   console.log(loading)
