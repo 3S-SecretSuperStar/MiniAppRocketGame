@@ -4,7 +4,7 @@ import LoadingSpinner from "../svg/loading-spinner";
 import toast from "react-hot-toast";
 import { REACT_APP_SERVER } from "../../utils/privateData";
 import { useAtom } from "jotai";
-import { realGameState, userData } from "../../store";
+import { realGameState, TaskContent, userData } from "../../store";
 import { Link, useActionData } from "react-router-dom";
 import moment from "moment";
 
@@ -16,7 +16,7 @@ const GenerateTask = ({ task, stateTask, index }) => {
 
   const [isClaim, setIsClaim] = useState(false);
   const [user,] = useAtom(userData);
-  const [isReal, setIsReal] = useAtom(realGameState)
+  const [isReal, setIsReal] = useAtom(realGameState);
 
   const goClaim = () => {
     setIsClaim(true);
@@ -118,6 +118,7 @@ const TaskList = () => {
 
   const [user,] = useAtom(userData);
   const [isReal, setIsReal] = useAtom(realGameState)
+  const [taskList, setTaskList] = useAtom(TaskContent)
 
   const stateTask = () => {
     const headers = new Headers()
@@ -165,12 +166,12 @@ const TaskList = () => {
           fetch(`${serverUrl}/get_task`, { method: 'POST', body: JSON.stringify({}), headers })
             .then(res => Promise.all([res.status, res.json()]))
             .then(([status, data]) => {
-
+              console.log("task data",data)
               try {
                 console.log('taskstates',taskState)
                 setTaskData(prevState => {
                   let newState = [...prevState];
-                  newState = data.task.map((item, index) => ({
+                  newState = data.task.display.map((item, index) => ({
                     src: item.src,
                     title: item.title,
                     amount: item.amount,
@@ -178,7 +179,8 @@ const TaskList = () => {
                   }));
                   return newState;
                 });
-
+                setTaskList(data.content)
+                console.log("task content : ",data.content)
               } catch (e) {
                 console.log(e);
               }
