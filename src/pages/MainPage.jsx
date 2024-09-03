@@ -307,6 +307,7 @@ const MainPage = () => {
 
   // Function to start the game
   const startGame = () => {
+    setRewardState(false)
     setStopWasPressed(false);
     setGamePhase('started')
     setSocketStart(false);
@@ -342,7 +343,7 @@ const MainPage = () => {
   const handleGameStarted = () => {
     setFirstLogin(false)
     setWinstate(false)
-    setRewardState(false)
+    
     const animation = document.getElementById('stars').style.animation
     document.getElementById('stars').style.animation = 'none'
     setTimeout(() => {
