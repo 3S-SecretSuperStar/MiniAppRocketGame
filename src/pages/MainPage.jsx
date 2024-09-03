@@ -341,6 +341,7 @@ const MainPage = () => {
   const handleGameStarted = () => {
     setFirstLogin(false)
     setWinstate(false)
+    setRewardState(false)
     const animation = document.getElementById('stars').style.animation
     document.getElementById('stars').style.animation = 'none'
     setTimeout(() => {
@@ -460,6 +461,7 @@ const MainPage = () => {
   }
 
   const goToUserInfo = () => {
+    stopGame();
     navigate("/userInfo");
   }
   if (tabId === 2) {

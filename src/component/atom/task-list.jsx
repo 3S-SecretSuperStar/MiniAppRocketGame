@@ -23,6 +23,7 @@ const GenerateTask = ({ task, stateTask, index }) => {
     const headers = new Headers()
     headers.append('Content-Type', 'application/json')
     if (index !== 0) {
+      console.log("index : ",index)
       fetch(`${serverUrl}/task_balance`, { method: 'POST', body: JSON.stringify({ userName: user.UserName, amount: task.amount, task: index, isReal: isReal }), headers })
         .then(res => Promise.all([res.status, res.json()]))
         .then(() => {
@@ -47,6 +48,8 @@ const GenerateTask = ({ task, stateTask, index }) => {
           stateTask()
         })
     } else {
+      
+      console.log("index daily: ",index)
       fetch(`${serverUrl}/perform_dailyReward`, { method: 'POST', body: JSON.stringify({ userName: user.UserName, isReal: isReal }), headers })
         .then(res => Promise.all([res.status, res.json()]))
         .then(() => {
