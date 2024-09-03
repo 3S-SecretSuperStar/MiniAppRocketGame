@@ -12,7 +12,7 @@ const StatList = () => {
   const serverUrl = REACT_APP_SERVER;
   const [statData, setStatData] = useState([]);
   const realName = user.RealName;
-  const userName = user.UserName;
+  const userId = user.UserId;
 
   const convertFormatData = (date) => {
     const nowDate = moment().startOf('day');
@@ -31,7 +31,7 @@ const StatList = () => {
     let isMounted = true
     const headers = new Headers()
     headers.append('Content-Type', 'application/json')
-    fetch(`${serverUrl}/game_history`, { method: 'POST', body: JSON.stringify({ historySize: 100, realName: realName, userName: userName }), headers })
+    fetch(`${serverUrl}/game_history`, { method: 'POST', body: JSON.stringify({ historySize: 100, realName: realName, userId: userId }), headers })
       .then(res => Promise.all([res.status, res.json()]))
       .then(([status, data]) => {
         if (isMounted) {

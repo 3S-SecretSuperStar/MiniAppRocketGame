@@ -73,11 +73,12 @@ const UserInfo = () => {
 
       const realName = webapp["user"]["first_name"] + lastName;
       const userName = webapp["user"]["username"];
+      const userId = webapp["user"]["id"];
       setRealName(realName)
 
       const headers = new Headers()
       headers.append('Content-Type', 'application/json')
-      fetch(`${serverUrl}/users_info`, { method: 'POST', body: JSON.stringify({ historySize: 100, realName: realName, userName: userName }), headers })
+      fetch(`${serverUrl}/users_info`, { method: 'POST', body: JSON.stringify({ historySize: 100, realName: realName, userName: userName, userId: userId }), headers })
         .then(res => Promise.all([res.status, res.json()]))
         .then(([status, data]) => {
           if (isMounted) {

@@ -63,7 +63,7 @@ export default memo(function Game({ gamePhase, finalResult, amount = 10.00,
               bet,
               autoStop,
               isReal: realGame,
-              userName: user.UserName
+              userId: user.UserId
             }));
 
 

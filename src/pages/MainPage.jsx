@@ -201,11 +201,11 @@ const MainPage = () => {
     }
   };
 
-  const updateAvatar = async (userAvatarUrl, userName) => {
+  const updateAvatar = async (userAvatarUrl, userId) => {
     try {
       const headers = new Headers()
       headers.append('Content-Type', 'application/json')
-      const updateAvatar = await fetch(`${serverUrl}/update_avatar`, { method: 'POST', body: JSON.stringify({ userName: userName, userAvatarUrl: userAvatarUrl }), headers })
+      const updateAvatar = await fetch(`${serverUrl}/update_avatar`, { method: 'POST', body: JSON.stringify({ userId: userId, userAvatarUrl: userAvatarUrl }), headers })
       return updateAvatar;
     } catch (e) {
       console.log(e)
@@ -226,20 +226,17 @@ const MainPage = () => {
           const realName = webapp["user"]["first_name"] + lastName;
           const userName = webapp["user"]["username"];
           const userId = webapp["user"]["id"];
-          const photoUrl = webapp["user"]["photo_url"];
           const userInfo = webapp["user"];
-          console.log(userInfo)
-          console.log("photourl: ", photoUrl)
           console.log("uerInfo: ", userInfo)
           const headers = new Headers()
           headers.append('Content-Type', 'application/json')
           if (isMounted) {
             const userAvatarUrl = await getProfilePhotos(userId, bot_token);
-            const updateAvatarState = await updateAvatar(userAvatarUrl, userName);
+            const updateAvatarState = await updateAvatar(userAvatarUrl, userId);
             console.log(userAvatarUrl)
             console.log("userAvatarUrl ", updateAvatarState.url)
 
-            fetch(`${serverUrl}/users_info`, { method: 'POST', body: JSON.stringify({ historySize: 100, realName: realName, userName: userName, userAvatarUrl: userAvatarUrl }), headers })
+            fetch(`${serverUrl}/users_info`, { method: 'POST', body: JSON.stringify({ historySize: 100, realName: realName, userName: userName, userAvatarUrl: userAvatarUrl, userId: userId }), headers })
               .then(res => Promise.all([res.status, res.json()]))
               .then(([status, data]) => {
                 try {
@@ -262,7 +259,7 @@ const MainPage = () => {
                   setRewardState(myData.first_state !== "false");
                   setBalance(newBalance)
                   setUser({
-                    RealName: realName, UserName: userName,
+                    RealName: realName, UserName: userName, UserId:userId,
                     Balance: isReal ? myData.balance.real.toFixed(2) : myData.balance.virtual.toFixed(2),
                     GameWon: isReal ? myData.realWins : myData.virtualWins,
                     GameLost: isReal ? myData.realLosses : myData.virtualLosses,
@@ -278,7 +275,7 @@ const MainPage = () => {
                   document.location.href = document.location.href
                 }
               })
-            await fetch(`${serverUrl}/check_first`, { method: 'POST', body: JSON.stringify({ userName: userName }), headers })
+            await fetch(`${serverUrl}/check_first`, { method: 'POST', body: JSON.stringify({ userId: userId }), headers })
 
 
           }

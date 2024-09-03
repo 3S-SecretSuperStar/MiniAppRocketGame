@@ -20,7 +20,7 @@ const Friends = () => {
   const [isOpen, setIsOpen] = useState(false);
   const serverUrl = REACT_APP_SERVER; 
   const webapp = window.Telegram.WebApp.initDataUnsafe;
-  const userId = webapp["user"]["username"];
+  const userId = webapp["user"]["id"];
   const [actionState, setActionState] = useAtom(isActionState)
   const utils = initUtils();
   const avatarData = [avatar.avatarBeginner, avatar.avatarPilot, avatar.avatarExplorer,
@@ -32,12 +32,12 @@ const Friends = () => {
     const webapp = window.Telegram.WebApp.initDataUnsafe;
     if (webapp) {
 
-      const userName = webapp["user"]["username"];
+      const userId = webapp["user"]["id"];
       const headers = new Headers()
 
       headers.append('Content-Type', 'application/json')
       if (isMounted) {
-        fetch(`${serverUrl}/get_friend`, { method: 'POST', body: JSON.stringify({ userName: userName }), headers })
+        fetch(`${serverUrl}/get_friend`, { method: 'POST', body: JSON.stringify({ userId: userId }), headers })
           .then(res => Promise.all([res.status, res.json()]))
           .then(([status, data]) => {
             try {

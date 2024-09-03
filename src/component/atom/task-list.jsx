@@ -24,7 +24,7 @@ const GenerateTask = ({ task, stateTask, index }) => {
     headers.append('Content-Type', 'application/json')
     if (index !== 0) {
       console.log("index : ",index)
-      fetch(`${serverUrl}/task_balance`, { method: 'POST', body: JSON.stringify({ userName: user.UserName, amount: task.amount, task: index, isReal: isReal }), headers })
+      fetch(`${serverUrl}/task_balance`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, amount: task.amount, task: index, isReal: isReal }), headers })
         .then(res => Promise.all([res.status, res.json()]))
         .then(() => {
           try {
@@ -50,7 +50,7 @@ const GenerateTask = ({ task, stateTask, index }) => {
     } else {
       
       console.log("index daily: ",index)
-      fetch(`${serverUrl}/perform_dailyReward`, { method: 'POST', body: JSON.stringify({ userName: user.UserName, isReal: isReal }), headers })
+      fetch(`${serverUrl}/perform_dailyReward`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, isReal: isReal }), headers })
         .then(res => Promise.all([res.status, res.json()]))
         .then(() => {
           try {
@@ -123,7 +123,7 @@ const TaskList = () => {
     const headers = new Headers()
     headers.append('Content-Type', 'application/json')
 
-    fetch(`${serverUrl}/task_perform`, { method: 'POST', body: JSON.stringify({ userName: user.UserName }), headers })
+    fetch(`${serverUrl}/task_perform`, { method: 'POST', body: JSON.stringify({ userId: user.UserId }), headers })
       .then(res => Promise.all([res.status, res.json()]))
       .then(async([status, data]) => {
 
@@ -138,7 +138,7 @@ const TaskList = () => {
           doneTask.forEach(item => {
             taskState[item] = 2;
           })
-          await fetch(`${serverUrl}/check_dailyReward`, { method: 'POST', body: JSON.stringify({ userName: user.UserName }), headers })
+          await fetch(`${serverUrl}/check_dailyReward`, { method: 'POST', body: JSON.stringify({ userId: user.UserId }), headers })
             .then(res => Promise.all([res.status, res.json()]))
             .then(([status, data]) => {
               try {
