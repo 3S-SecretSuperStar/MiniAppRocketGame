@@ -2,34 +2,36 @@ import { useState } from "react";
 import EarningTab from "../component/molecules/earning-tab";
 import EarningTask from "../component/molecules/earning-task";
 import { useAtom } from "jotai";
-import { userData } from "../store";
+import { isActionState, userData } from "../store";
 import InfoModal from "../component/atom/infoModel.jsx";
 import Contact from "../component/molecules/contact.jsx";
 
 
 
 const Earned = () => {
+    const [actionState, setActionState] = useAtom(isActionState);
     const [user,] = useAtom(userData)
     const tabList = [
-        {
-            id: 1,
-            src: "coin-y.svg",
-            amount: user.Balance
-        },
-        {
-            id: 2,
-            src: "token.png",
-            amount: 0
-        }
+      {
+        id: 1,
+        src: "coin-y.svg",
+        amount: user.Balance
+      },
+      {
+        id: 2,
+        src: "token.png",
+        amount: 0
+      }
     ]
-
+    
     const [tabId, setTabId] = useState(1);
     const [infoState, setInfoState] = useState(false);
     if(tabId===2) {
-        setTabId(1);
-        setInfoState(true)
-      }
-
+      setTabId(1);
+      setInfoState(true)
+    }
+    
+    setActionState('stop')
     return (
         <div className="flex flex-col h-full gap-4">
             <EarningTab tabList={tabList} tabId={tabId} setTabId={setTabId} />

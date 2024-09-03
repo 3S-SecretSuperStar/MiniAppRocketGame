@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useAtom } from "jotai";
 import TabButton from "../component/atom/tab-button";
 import StatList from "../component/molecules/stat-list";
-import { userData } from "../store";
+import { isActionState, userData } from "../store";
 import InfoModal from "../component/atom/infoModel.jsx";
 import Contact from "../component/molecules/contact.jsx";
 
@@ -10,6 +10,7 @@ const Stats = () => {
   const [tabId, setTabId] = useState(1);
   const [user,] = useAtom(userData)
   const [infoState, setInfoState] = useState(false);
+  const [actionState, setActionState] = useAtom(isActionState);
   const statsList = [
     {
       src: "coin-y.svg",
@@ -26,6 +27,7 @@ const Stats = () => {
     setTabId(1);
     setInfoState(true)
   }
+  setActionState('stop');
   return (
     <div className="flex flex-col">
       <div className="mt-2">

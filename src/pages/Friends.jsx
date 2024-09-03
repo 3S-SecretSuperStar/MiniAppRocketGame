@@ -11,6 +11,8 @@ import NavFriends from "../component/svg/nav_friends";
 import { RANKINGDATA } from "../utils/globals.js";
 import { REACT_APP_SERVER } from "../utils/privateData.js";
 import { avatar } from "../assets/avatar/index.jsx";
+import { isActionState } from "../store/actionState.jsx";
+import { useAtom } from "jotai";
 
 
 const Friends = () => {
@@ -18,12 +20,13 @@ const Friends = () => {
   const [isOpen, setIsOpen] = useState(false);
   const serverUrl = REACT_APP_SERVER; 
   const webapp = window.Telegram.WebApp.initDataUnsafe;
-  const userId = webapp["user"]["username"];;
+  const userId = webapp["user"]["username"];
+  const [actionState, setActionState] = useAtom(isActionState)
   const utils = initUtils();
   const avatarData = [avatar.avatarBeginner, avatar.avatarPilot, avatar.avatarExplorer,
     avatar.avatarAstronaut, avatar.avatarCaptain, avatar.avatarCommander, avatar.avatarAdmiral,
     avatar.avatarLegend, avatar.avatarMasterOfTheUniverse, avatar.avatarGodOfSpace]
-
+  setActionState('stop')
   useEffect(() => {
     let isMounted = true
     const webapp = window.Telegram.WebApp.initDataUnsafe;

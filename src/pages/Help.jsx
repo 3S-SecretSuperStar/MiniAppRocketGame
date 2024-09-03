@@ -2,9 +2,6 @@ import { Img } from "../assets/image";
 import Contact from "../component/molecules/contact";
 
 const Help = () => {
-  const operationOption = ['Increase Bet by', 'Return to base Bet'];
-  const setData = () => { }
-
   return (
     <div className="flex flex-col gap-8 items-center h-full pb-[92px] overflow-y-auto ">
       <div className="flex flex-col gap-4 items-center">

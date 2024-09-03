@@ -16,6 +16,7 @@ import "../css/userInfo.css"
 import InfoModal from "../component/atom/infoModel.jsx";
 import { realGameState } from "../store/realGameState.jsx";
 import Contact from "../component/molecules/contact.jsx";
+import { isActionState } from "../store/actionState.jsx";
 
 const UserInfo = () => {
   const [user,] = useAtom(userData);
@@ -28,6 +29,7 @@ const UserInfo = () => {
   const [gameData, setGameData] = useState({});
   const [realName, setRealName] = useState("");
   const [gameDataLength, setGameDataLength] = useState(0);
+  const [, setActionState]= useAtom(isActionState);
   const statsList = [
     {
       src: "coin-y.svg",
@@ -40,7 +42,7 @@ const UserInfo = () => {
       id: 2
     }
   ]
-
+  setActionState('stop')
   const avatarData = [avatar.avatarBeginner, avatar.avatarPilot, avatar.avatarExplorer,
   avatar.avatarAstronaut, avatar.avatarCaptain, avatar.avatarCommander, avatar.avatarAdmiral,
   avatar.avatarLegend, avatar.avatarMasterOfTheUniverse, avatar.avatarGodOfSpace]

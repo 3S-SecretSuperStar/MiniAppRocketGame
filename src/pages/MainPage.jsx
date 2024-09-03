@@ -142,7 +142,8 @@ const MainPage = () => {
     operationAfterLossRef.current = operationAfterLoss;
     valueAfterLossRef.current = lostCoefficient;
   }, [operationAfterWin, winCoefficient, operationAfterLoss, lostCoefficient]);
-
+  
+  
   useEffect(() => {
     let isMounted = true
     if (gamePhase !== 'started' && autoMode && !stopWasPressed && balanceRef.current >= betRef.current && betRef.current) {

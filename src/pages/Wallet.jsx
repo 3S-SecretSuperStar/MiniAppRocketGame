@@ -4,13 +4,16 @@ import AtomLabel from "../component/atom/atom-label";
 import ShadowButton from "../component/atom/shadow-btn";
 
 import Contact from "../component/molecules/contact";
+import { useAtom } from "jotai";
+import { isActionState } from "../store";
 
 
 const Wallet = () => {
 
   // const [walletAddress, setWalletAddress] = useState("");
   const [infoState, setInfoState] = useState(false)
-
+  const[,setActionState]= useAtom(isActionState);
+  setActionState('stop')
   return (
     <div className="h-full pb-[76px] flex flex-col">
       <div className="flex-auto flex" style={{ height: "calc(100vh - 320px)" }}>
