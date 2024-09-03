@@ -31,7 +31,7 @@ const Earned = () => {
       setInfoState(true)
     }
     
-    setActionState('stop')
+
     return (
         <div className="flex flex-col h-full gap-4">
             <EarningTab tabList={tabList} tabId={tabId} setTabId={setTabId} />

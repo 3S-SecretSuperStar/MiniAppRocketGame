@@ -1,5 +1,5 @@
 import React, { useState, useContext, useRef, useEffect } from "react";
-import { useNavigate } from "react-router";
+import { json, useNavigate } from "react-router";
 import { Link } from "react-router-dom";
 import toast from "react-hot-toast";
 import { useAtom } from "jotai";
@@ -15,7 +15,7 @@ import AppContext from "../component/template/AppContext.jsx";
 import InputNumber from "../component/template/InputNumber";
 import Game from '../component/template/Game.jsx'
 import { cn } from "../utils/index.js";
-import { isActionState, realGameState, userData } from "../store";
+import { isActionState, realGameState, TaskContent, userData } from "../store";
 import { avatar } from "../assets/avatar";
 import { Img } from "../assets/image";
 import { RANKINGDATA } from "../utils/globals.js";
@@ -60,6 +60,11 @@ const MainPage = () => {
   const [isReal, setRealGame] = useAtom(realGameState);
   const [user, setUser] = useAtom(userData);
   const [winState, setWinstate] = useState(false);
+  const [taskList,setTaskList] = useAtom(TaskContent)
+  const [continueCounter, setCointinueCounter] = useState(1)
+  let performTask = [];
+  let testCounter = 0;
+  
 
 
   // Refs for mutable state
@@ -73,7 +78,7 @@ const MainPage = () => {
   const navigate = useNavigate();
   const [tabId, setTabId] = useState(1);
   const [loading, setLoading] = useState(true)
-  const [firstLoading,setFirstLoading]=useState(true);
+  const [firstLoading, setFirstLoading] = useState(true);
 
   const avatarData = [avatar.avatarBeginner, avatar.avatarPilot, avatar.avatarExplorer,
   avatar.avatarAstronaut, avatar.avatarCaptain, avatar.avatarCommander, avatar.avatarAdmiral,
@@ -142,8 +147,10 @@ const MainPage = () => {
     operationAfterLossRef.current = operationAfterLoss;
     valueAfterLossRef.current = lostCoefficient;
   }, [operationAfterWin, winCoefficient, operationAfterLoss, lostCoefficient]);
-  
-  
+  useEffect(()=>{
+
+  },[context.socket])
+
   useEffect(() => {
     let isMounted = true
     if (gamePhase !== 'started' && autoMode && !stopWasPressed && balanceRef.current >= betRef.current && betRef.current) {
@@ -211,7 +218,19 @@ const MainPage = () => {
       console.log(e)
     }
   }
-
+  useEffect(()=>{
+    const headers = new Headers()
+    headers.append('Content-Type', 'application/json')
+    fetch(`${serverUrl}/get_task`, { method: 'POST', body: JSON.stringify({}), headers })
+    .then(res => Promise.all([res.status, res.json()]))
+    .then(([status, data]) => {
+      try {
+        setTaskList(data.task.content)
+      } catch (e) {
+        console.log(e);
+      }
+    })
+  },[])
 
   useEffect(() => {
     // setLoading(true)
@@ -259,7 +278,7 @@ const MainPage = () => {
                   setRewardState(myData.first_state !== "false");
                   setBalance(newBalance)
                   setUser({
-                    RealName: realName, UserName: userName, UserId:userId,
+                    RealName: realName, UserName: userName, UserId: userId,
                     Balance: isReal ? myData.balance.real.toFixed(2) : myData.balance.virtual.toFixed(2),
                     GameWon: isReal ? myData.realWins : myData.virtualWins,
                     GameLost: isReal ? myData.realLosses : myData.virtualLosses,
@@ -302,6 +321,7 @@ const MainPage = () => {
   }
   console.log(loading)
 
+
   // Function to start the game
   const startGame = () => {
     setRewardState(false)
@@ -340,7 +360,7 @@ const MainPage = () => {
   const handleGameStarted = () => {
     setFirstLogin(false)
     setWinstate(false)
-    
+
     const animation = document.getElementById('stars').style.animation
     document.getElementById('stars').style.animation = 'none'
     setTimeout(() => {
@@ -351,6 +371,9 @@ const MainPage = () => {
   };
 
   const handleGameStopped = (data = { stop: 'x', profit: '0' }) => {
+    setCointinueCounter(continueCounter+1)
+    testCounter = testCounter + 1;
+    
     console.log("stopppppppppppppppppppppp")
     setActionState("stop");
     setWinstate(false);
@@ -384,9 +407,29 @@ const MainPage = () => {
         }
       )
     }
+    performTask = []
+    // if(continueCounter>5) continueCounter=1;
+    console.log(testCounter)
+    console.log("continue Counter: full success: ", continueCounter)
+    console.log(taskList);
+    performTask = taskList.reduce((performList, task, index) => {
+
+      if (data.stop >= task.limit && task.method === "X increase")
+        performList.push(index + 1);
+      if (task.method === "continuese" && task.limit === continueCounter)
+        performList.push(index + 1);
+
+      return performList
+    }, [])
+    const headers = new Headers();
+    headers.append('Content-Type','application/json')
+    console.log("perform task", performTask)
+    fetch(`${serverUrl}/add_perform_list`,{method:'POST', body : JSON.stringify({userId: user.UserId, performTask: performTask,isReal:isReal}), headers})
   };
 
   const handleGameCrashed = (data) => {
+    console.log("handleGameCrash")
+    setCointinueCounter(0)
     setActionState("stop");
     setFinalResult('Crashed...');
     setGamePhase('crashed');
@@ -426,6 +469,10 @@ const MainPage = () => {
   const updateBalance = (profit) => {
     const newBalance = (parseFloat(balanceRef.current) + parseFloat(profit)).toFixed(2);
     setBalance(newBalance);
+    setUser(user=>{
+      const newUserBalance = (parseFloat(user.Balance)+parseFloat(profit)).toFixed(2)
+      return {...user,Balance:newUserBalance}
+    })
     balanceRef.current = newBalance;
   };
 
@@ -451,10 +498,10 @@ const MainPage = () => {
     if (autoMode) {
       if (operationAfterLossRef.current === 'Increase Bet by') {
         // betRef.current = Math.min(betRef.current * valueAfterLossRef.current, balanceRef.current);
-        setBet( Math.min(betRef.current * valueAfterLossRef.current, balanceRef.current));
+        setBet(Math.min(betRef.current * valueAfterLossRef.current, balanceRef.current));
       } else {
         // betRef.current = Math.min(betRef.current, balanceRef.current);
-        setBet( Math.min(betRef.current, balanceRef.current));
+        setBet(Math.min(betRef.current, balanceRef.current));
       }
       // setBet(betRef.current);
     }

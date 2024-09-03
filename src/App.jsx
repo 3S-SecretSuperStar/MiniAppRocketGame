@@ -15,6 +15,7 @@ import UserInfo from './pages/UserInfo';
 import Wallet from './pages/Wallet';
 import JotaiProvider from "./providers/jotaiProvider"
 import { REACT_APP_WS_SERVER } from './utils/privateData.js';
+import ReconnectingWebSocket from 'reconnecting-websocket';
 
 const wsServerUrl = REACT_APP_WS_SERVER;
 
@@ -42,7 +43,7 @@ function App() {
   useEffect(() => {
     let socket
     try {
-      socket = new WebSocket(wsServerUrl)
+      socket = new ReconnectingWebSocket(wsServerUrl)
     } catch (e) {
       //eslint-disable-next-line no-self-assign
       document.location.href = document.location.href
