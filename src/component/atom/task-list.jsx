@@ -10,13 +10,20 @@ import moment from "moment";
 
 const serverUrl = REACT_APP_SERVER;
 
-
-
 const GenerateTask = ({ task, stateTask, index }) => {
+  
 
   const [isClaim, setIsClaim] = useState(false);
-  const [user,] = useAtom(userData);
   const [isReal, setIsReal] = useAtom(realGameState);
+  const [user,setUser] = useAtom(userData)
+
+
+const updateBalance = (profit) => {
+  setUser(user=>{
+    const newUserBalance = (parseFloat(user.Balance)+parseFloat(profit)).toFixed(2)
+    return {...user,Balance:newUserBalance}
+  })
+};
 
   const goClaim = () => {
     setIsClaim(true);
@@ -25,6 +32,32 @@ const GenerateTask = ({ task, stateTask, index }) => {
     if (index !== 0) {
       console.log("index : ",index)
       fetch(`${serverUrl}/task_balance`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, amount: task.amount, task: index, isReal: isReal }), headers })
+      .then(res => Promise.all([res.status, res.json()]))
+      .then(() => {
+        try {
+          toast(`${task.amount} coins added to your balance`,
+            {
+                position: "top-center",
+                icon: <CheckMark />,
+                style: {
+                  borderRadius: '8px',
+                  background: '#7886A0',
+                  color: '#fff',
+                  width: '90vw'
+                },
+              }
+            )
+            updateBalance(parseFloat(task.amount))
+          } catch (e) {
+            // eslint-disable-next-line no-self-assign
+            console.log(e);
+          }
+          stateTask()
+          setIsClaim(false)
+        })
+      } else {
+        console.log("index daily: ",index)
+        fetch(`${serverUrl}/perform_dailyReward`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, isReal: isReal }), headers })
         .then(res => Promise.all([res.status, res.json()]))
         .then(() => {
           try {
@@ -40,42 +73,17 @@ const GenerateTask = ({ task, stateTask, index }) => {
                 },
               }
             )
+            updateBalance(10)
           } catch (e) {
             // eslint-disable-next-line no-self-assign
             console.log(e);
           }
-          setIsClaim(false)
           stateTask()
-        })
-    } else {
-      
-      console.log("index daily: ",index)
-      fetch(`${serverUrl}/perform_dailyReward`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, isReal: isReal }), headers })
-        .then(res => Promise.all([res.status, res.json()]))
-        .then(() => {
-          try {
-            toast(`${task.amount} coins added to your balance`,
-              {
-                position: "top-center",
-                icon: <CheckMark />,
-                style: {
-                  borderRadius: '8px',
-                  background: '#7886A0',
-                  color: '#fff',
-                  width: '90vw'
-                },
-              }
-            )
-          } catch (e) {
-            // eslint-disable-next-line no-self-assign
-            console.log(e);
-          }
           setIsClaim(false)
-          stateTask()
-        })
+      })
     }
   }
-
+  
   return (
     <div className="bg-[#0000001A] rounded-lg flex justify-between items-center py-2 pl-2 pr-4 text-[14px]">
       <div className="flex gap-2 items-center">
@@ -115,10 +123,18 @@ const TaskList = () => {
   let taskState = [];
 
   const [taskData, setTaskData] = useState([]);
-
-  const [user,] = useAtom(userData);
   const [isReal, setIsReal] = useAtom(realGameState)
   const [taskList, setTaskList] = useAtom(TaskContent)
+  const [user,setUser] = useAtom(userData)
+
+
+const updateBalance = (profit) => {
+  setUser(user=>{
+    const newUserBalance = (parseFloat(user.Balance)+parseFloat(profit)).toFixed(2)
+    return {...user,Balance:newUserBalance}
+  })
+};
+
 
   const stateTask = () => {
     const headers = new Headers()
@@ -179,7 +195,7 @@ const TaskList = () => {
                   }));
                   return newState;
                 });
-                setTaskList(data.content)
+                setTaskList(data.task.content)
                 console.log("task content : ",data.content)
               } catch (e) {
                 console.log(e);
