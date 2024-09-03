@@ -354,6 +354,7 @@ const MainPage = () => {
   };
 
   const handleGameStopped = (data = { stop: 'x', profit: '0' }) => {
+    console.log("stopppppppppppppppppppppp")
     setActionState("stop");
     setWinstate(false);
     setFinalResult(data.stop);
@@ -362,11 +363,12 @@ const MainPage = () => {
     // const newBalance = (parseFloat(balanceRef.current) + parseFloat(data.profit)).toFixed(2)
     // setBalance(newBalance)
     // balanceRef.current = newBalance
+    console.log("stopppppp update")
     updateBalance(data.profit);
     setGames(games + 1);
     setWins(wins + 1);
-
     adjustBetAfterWin();
+    console.log("dsfsdfds")
     if (data.profit > 0) {
       setWinstate(true);
       toast(`${data.profit} coins added to your balance`,
@@ -436,11 +438,13 @@ const MainPage = () => {
       console.log("valueAfterWinRef ", valueAfterWinRef.current)
       console.log("balanceRef ", balanceRef.current)
       if (operationAfterWinRef.current === 'Increase Bet by') {
-        betRef.current = Math.min(betRef.current * valueAfterWinRef.current, balanceRef.current);
+        setBet(Math.min(betRef.current * valueAfterWinRef.current, balanceRef.current));
+        // betRef.current = Math.min(betRef.current * valueAfterWinRef.current, balanceRef.current);
       } else {
-        betRef.current = Math.min(betRef.current, balanceRef.current);
+        setBet(Math.min(betRef.current, balanceRef.current));
+        // betRef.current = Math.min(betRef.current, balanceRef.current);
       }
-      setBet(betRef.current);
+      // setBet(betRef.current);
     }
   };
   console.log("valueAfterWinRef.current", valueAfterWinRef.current)
@@ -449,11 +453,13 @@ const MainPage = () => {
   const adjustBetAfterLoss = () => {
     if (autoMode) {
       if (operationAfterLossRef.current === 'Increase Bet by') {
-        betRef.current = Math.min(betRef.current * valueAfterLossRef.current, balanceRef.current);
+        // betRef.current = Math.min(betRef.current * valueAfterLossRef.current, balanceRef.current);
+        setBet( Math.min(betRef.current * valueAfterLossRef.current, balanceRef.current));
       } else {
-        betRef.current = Math.min(betRef.current, balanceRef.current);
+        // betRef.current = Math.min(betRef.current, balanceRef.current);
+        setBet( Math.min(betRef.current, balanceRef.current));
       }
-      setBet(betRef.current);
+      // setBet(betRef.current);
     }
   };
 
