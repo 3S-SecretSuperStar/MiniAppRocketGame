@@ -429,7 +429,7 @@ const MainPage = () => {
 
   const handleGameCrashed = (data) => {
     console.log("handleGameCrash")
-    setCointinueCounter(0)
+    setCointinueCounter(1)
     setActionState("stop");
     setFinalResult('Crashed...');
     setGamePhase('crashed');
