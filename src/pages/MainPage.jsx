@@ -360,7 +360,7 @@ const MainPage = () => {
   const handleGameStarted = () => {
     setFirstLogin(false)
     setWinstate(false)
-
+    updateBalance(-1*bet)
     const animation = document.getElementById('stars').style.animation
     document.getElementById('stars').style.animation = 'none'
     setTimeout(() => {
@@ -434,7 +434,7 @@ const MainPage = () => {
     setFinalResult('Crashed...');
     setGamePhase('crashed');
     updateGameHistory(data, 'crashed');
-    updateBalance(data.profit);
+    // updateBalance(data.profit);
     setGames(games + 1);
     setLosses(losses + 1);
     adjustBetAfterLoss();
@@ -469,11 +469,11 @@ const MainPage = () => {
   const updateBalance = (profit) => {
     const newBalance = (parseFloat(balanceRef.current) + parseFloat(profit)).toFixed(2);
     setBalance(newBalance);
+    balanceRef.current = newBalance;
     setUser(user=>{
       const newUserBalance = (parseFloat(user.Balance)+parseFloat(profit)).toFixed(2)
       return {...user,Balance:newUserBalance}
     })
-    balanceRef.current = newBalance;
   };
 
   const adjustBetAfterWin = () => {
