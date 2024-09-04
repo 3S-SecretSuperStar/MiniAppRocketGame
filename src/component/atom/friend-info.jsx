@@ -20,13 +20,12 @@ const FriendInfo = ({ data }) => {
                         alt=""
                         className="w-6 h-6"
                     />
-                    <div>
-                        {data.coin}
-                    </div>
+                    <div>+25</div>
                 </div>
-                {/* <div>
-                    {data.token > 0 ? `+${data.token}` : 0}
-                </div> */}
+                <div>
+                    {data.coin}
+                    {/* {data.token > 0 ? `+${data.token}` : 0} */}
+                </div>
             </div>
         </div>
     )

@@ -3,7 +3,7 @@ import AtomLabel from "../atom/atom-label";
 import ShadowButton from "../atom/shadow-btn";
 import { userData } from "../../store";
 
-const FriendEarned = ({ setIsModalOpen }) => {
+const FriendEarned = ({ setIsModalOpen,friendNumber }) => {
     const [user,] = useAtom(userData)
 
     return (
@@ -17,7 +17,7 @@ const FriendEarned = ({ setIsModalOpen }) => {
                             alt=""
                             className="w-6 h-6"
                         />
-                        <span className="font-bold text-base text-white">{user.Balance}</span>
+                        <span className="font-bold text-base text-white">+{25*friendNumber}</span>
                     </div>
                 </div>
                 <div className="w-1/2">
