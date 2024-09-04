@@ -31,12 +31,9 @@ const Friends = () => {
 
     const lookup = [
       { value: 1, symbol: "" },
-      { value: 1e3, symbol: "k" },
+      { value: 1e3, symbol: "K" },
       { value: 1e6, symbol: "M" },
-      { value: 1e9, symbol: "G" },
-      { value: 1e12, symbol: "T" },
-      { value: 1e15, symbol: "P" },
-      { value: 1e18, symbol: "E" }
+      { value: 1e9, symbol: "B" }
     ];
     const regexp = /\.0+$|(?<=\.[0-9]*[1-9])0+$/;
     const item = lookup.findLast(item => num >= item.value);
@@ -59,6 +56,7 @@ const Friends = () => {
               const myData = data.friendData
                 .sort((a, b) => b.balance.virtual - a.balance.virtual)
                 .map((i, index) => { i.rank = index + 1; return i })
+                .filter(i => parseInt(i.friend) === userId)
               const friendData = myData.map((data) => {
                 return {
                   url: data.avatar_url?data.avatar_url:avatarData[RANKINGDATA.indexOf(data.ranking.virtual)],
