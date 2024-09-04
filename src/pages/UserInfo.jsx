@@ -125,8 +125,9 @@ const UserInfo = () => {
           name: data.name,
           label: ranking,
           rate: RANKINGDATA.indexOf(ranking) + 1,
-          balance: isReal ? data.balance.real : data.balance.virtual,
-          ranking: isReal ? data.rank.real : data.rank.virtual
+          balance: nFormatter( isReal ? data.balance.real : data.balance.virtual,2),
+          ranking: data.rank
+  
         }
       })
       setFriendData(filterData)

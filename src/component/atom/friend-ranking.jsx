@@ -1,5 +1,5 @@
 const FriendRanking = ({ data }) => {
-    
+    console.log(data)
 
     return (
         <div className="flex justify-between rounded-[10px] bg-[#0000001A] py-2 px-4 items-center">
@@ -12,12 +12,19 @@ const FriendRanking = ({ data }) => {
                 <div className="flex flex-col text-[14px] text-white font-bold">
                     <div>{data.name}</div>
                     <div>{`${data.label} · ${data.rate}/10`}</div>
-                    <div className="text-[#ffffff99] font-normal">{parseFloat(data.balance).toFixed(2)}</div>
+                    <div className="text-[#ffffff99] font-normal">{data.ranking}</div>
                 </div>
             </div>
-            <div className="text-2xl" >
-                {data.ranking}
-            </div>
+            <div className="flex items-center gap-2 text-[14px] font-medium">
+                    <img
+                        src="/image/coin-y.svg"
+                        alt=""
+                        className="w-6 h-6"
+                    />
+                    <div>
+                        {data.balance}
+                    </div>
+                </div>
         </div>
     )
 }

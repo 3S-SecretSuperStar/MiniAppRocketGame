@@ -27,6 +27,21 @@ const Friends = () => {
     avatar.avatarAstronaut, avatar.avatarCaptain, avatar.avatarCommander, avatar.avatarAdmiral,
     avatar.avatarLegend, avatar.avatarMasterOfTheUniverse, avatar.avatarGodOfSpace]
   setActionState('stop')
+  function nFormatter(num, digits) {
+
+    const lookup = [
+      { value: 1, symbol: "" },
+      { value: 1e3, symbol: "k" },
+      { value: 1e6, symbol: "M" },
+      { value: 1e9, symbol: "G" },
+      { value: 1e12, symbol: "T" },
+      { value: 1e15, symbol: "P" },
+      { value: 1e18, symbol: "E" }
+    ];
+    const regexp = /\.0+$|(?<=\.[0-9]*[1-9])0+$/;
+    const item = lookup.findLast(item => num >= item.value);
+    return item ? (num / item.value).toFixed(digits).replace(regexp, "").concat(item.symbol) : "0";
+  }
   useEffect(() => {
     let isMounted = true
     const webapp = window.Telegram.WebApp.initDataUnsafe;
@@ -50,9 +65,9 @@ const Friends = () => {
                   name: data.name,
                   label: data.ranking.virtual,
                   rate: (RANKINGDATA.indexOf(data.ranking.virtual) + 1),
-                  id: data.balance.virtual,
-                  coin: 25,
-                  token: 0
+                  id: data.rank,
+                  coin: nFormatter(data.balance.virtual,2),
+                  token: ""
                 }
               })
               console.log(friendData)
