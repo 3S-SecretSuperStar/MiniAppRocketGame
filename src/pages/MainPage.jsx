@@ -60,17 +60,20 @@ const MainPage = () => {
   const [isReal, setRealGame] = useAtom(realGameState);
   const [user, setUser] = useAtom(userData);
   const [winState, setWinstate] = useState(false);
-  const [taskList,setTaskList] = useAtom(TaskContent)
+  const [taskList, setTaskList] = useAtom(TaskContent)
   const [continueCounter, setCointinueCounter] = useState(1)
+  const [autoStopAM, setAutoStopAM] = useState(autoStop);
+  const [autoStopManual, setAutoStopManual] = useState(autoStop);
   let performTask = [];
   let testCounter = 0;
-  
+
 
 
   // Refs for mutable state
   const balanceRef = useRef(balance);
   const historyGamesRef = useRef(historyGames);
-  const betRef = useRef(bet);
+  const betAutoRef = useRef(bet);
+  const betManualRef = useRef(bet)
   const operationAfterWinRef = useRef(operationAfterWin);
   const valueAfterWinRef = useRef(winCoefficient);
   const operationAfterLossRef = useRef(operationAfterLoss);
@@ -107,10 +110,12 @@ const MainPage = () => {
   useEffect(() => {
     if (bet < 1 || balance === '0.00' || balance < 1) {
       setBet(1);
-      betRef.current = 1;
+      betAutoRef.current = 1;
+      betManualRef.current = 1;
     } else if (bet > balance && balance !== '0.00') {
       setBet(parseFloat(balance));
-      betRef.current = parseFloat(balance)
+      betAutoRef.current = parseFloat(balance)
+      betManualRef.current = parseFloat(balance)
     }
 
     if (autoStop < 1.1) {
@@ -141,19 +146,21 @@ const MainPage = () => {
 
   }, [bet, autoStop, balance, lostCoefficient, winCoefficient]);
 
+
+
   useEffect(() => {
     operationAfterWinRef.current = operationAfterWin;
     valueAfterWinRef.current = winCoefficient;
     operationAfterLossRef.current = operationAfterLoss;
     valueAfterLossRef.current = lostCoefficient;
   }, [operationAfterWin, winCoefficient, operationAfterLoss, lostCoefficient]);
-  useEffect(()=>{
+  useEffect(() => {
 
-  },[context.socket])
+  }, [context.socket])
 
   useEffect(() => {
     let isMounted = true
-    if (gamePhase !== 'started' && autoMode && !stopWasPressed && balanceRef.current >= betRef.current && betRef.current) {
+    if (gamePhase !== 'started' && autoMode && !stopWasPressed && balanceRef.current >= betAutoRef.current && betAutoRef.current) {
       if (isMounted) {
         try {
           setTimeout(() => {
@@ -218,19 +225,19 @@ const MainPage = () => {
       console.log(e)
     }
   }
-  useEffect(()=>{
+  useEffect(() => {
     const headers = new Headers()
     headers.append('Content-Type', 'application/json')
     fetch(`${serverUrl}/get_task`, { method: 'POST', body: JSON.stringify({}), headers })
-    .then(res => Promise.all([res.status, res.json()]))
-    .then(([status, data]) => {
-      try {
-        setTaskList(data.task.content)
-      } catch (e) {
-        console.log(e);
-      }
-    })
-  },[])
+      .then(res => Promise.all([res.status, res.json()]))
+      .then(([status, data]) => {
+        try {
+          setTaskList(data.task.content)
+        } catch (e) {
+          console.log(e);
+        }
+      })
+  }, [])
 
   useEffect(() => {
     // setLoading(true)
@@ -324,6 +331,14 @@ const MainPage = () => {
 
   // Function to start the game
   const startGame = () => {
+    if (autoMode) {
+      setBet(betAutoRef.current)
+      setAutoStop(autoStopAM)
+    }
+    else {
+      setBet(betManualRef.current)
+      setAutoStop(autoStopManual)
+    }
     setRewardState(false)
     setStopWasPressed(false);
     setGamePhase('started')
@@ -360,7 +375,7 @@ const MainPage = () => {
   const handleGameStarted = () => {
     setFirstLogin(false)
     setWinstate(false)
-    updateBalance(-1*bet)
+    updateBalance(-1 * bet)
     const animation = document.getElementById('stars').style.animation
     document.getElementById('stars').style.animation = 'none'
     setTimeout(() => {
@@ -371,9 +386,9 @@ const MainPage = () => {
   };
 
   const handleGameStopped = (data = { stop: 'x', profit: '0' }) => {
-    setCointinueCounter(continueCounter+1)
+    setCointinueCounter(continueCounter + 1)
     testCounter = testCounter + 1;
-    
+
     console.log("stopppppppppppppppppppppp")
     setActionState("stop");
     setWinstate(false);
@@ -422,9 +437,9 @@ const MainPage = () => {
       return performList
     }, [])
     const headers = new Headers();
-    headers.append('Content-Type','application/json')
+    headers.append('Content-Type', 'application/json')
     console.log("perform task", performTask)
-    fetch(`${serverUrl}/add_perform_list`,{method:'POST', body : JSON.stringify({userId: user.UserId, performTask: performTask,isReal:isReal}), headers})
+    fetch(`${serverUrl}/add_perform_list`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, performTask: performTask, isReal: isReal }), headers })
   };
 
   const handleGameCrashed = (data) => {
@@ -470,25 +485,25 @@ const MainPage = () => {
     const newBalance = (parseFloat(balanceRef.current) + parseFloat(profit)).toFixed(2);
     setBalance(newBalance);
     balanceRef.current = newBalance;
-    setUser(user=>{
-      const newUserBalance = (parseFloat(user.Balance)+parseFloat(profit)).toFixed(2)
-      return {...user,Balance:newUserBalance}
+    setUser(user => {
+      const newUserBalance = (parseFloat(user.Balance) + parseFloat(profit)).toFixed(2)
+      return { ...user, Balance: newUserBalance }
     })
   };
 
   const adjustBetAfterWin = () => {
     if (autoMode) {
-      console.log("betRef.current ", betRef.current)
+      console.log("betAutoRef.current ", betAutoRef.current)
       console.log("valueAfterWinRef ", valueAfterWinRef.current)
       console.log("balanceRef ", balanceRef.current)
       if (operationAfterWinRef.current === 'Increase Bet by') {
-        setBet(Math.min(betRef.current * valueAfterWinRef.current, balanceRef.current));
-        // betRef.current = Math.min(betRef.current * valueAfterWinRef.current, balanceRef.current);
+        setBet(Math.min(betAutoRef.current * valueAfterWinRef.current, balanceRef.current));
+        // betAutoRef.current = Math.min(betAutoRef.current * valueAfterWinRef.current, balanceRef.current);
       } else {
-        setBet(Math.min(betRef.current, balanceRef.current));
-        // betRef.current = Math.min(betRef.current, balanceRef.current);
+        setBet(Math.min(betAutoRef.current, balanceRef.current));
+        // betAutoRef.current = Math.min(betAutoRef.current, balanceRef.current);
       }
-      // setBet(betRef.current);
+      // setBet(betAutoRef.current);
     }
   };
   console.log("valueAfterWinRef.current", valueAfterWinRef.current)
@@ -497,13 +512,13 @@ const MainPage = () => {
   const adjustBetAfterLoss = () => {
     if (autoMode) {
       if (operationAfterLossRef.current === 'Increase Bet by') {
-        // betRef.current = Math.min(betRef.current * valueAfterLossRef.current, balanceRef.current);
-        setBet(Math.min(betRef.current * valueAfterLossRef.current, balanceRef.current));
+        // betAutoRef.current = Math.min(betAutoRef.current * valueAfterLossRef.current, balanceRef.current);
+        setBet(Math.min(betAutoRef.current * valueAfterLossRef.current, balanceRef.current));
       } else {
-        // betRef.current = Math.min(betRef.current, balanceRef.current);
-        setBet(Math.min(betRef.current, balanceRef.current));
+        // betAutoRef.current = Math.min(betAutoRef.current, balanceRef.current);
+        setBet(Math.min(betAutoRef.current, balanceRef.current));
       }
-      // setBet(betRef.current);
+      // setBet(betAutoRef.current);
     }
   };
 
@@ -521,7 +536,7 @@ const MainPage = () => {
     setInfoState(true)
   }
 
-  console.log("bet: ", bet, " betRef: ", betRef.current);
+  console.log("bet: ", bet, " betAutoRef: ", betAutoRef.current);
   return (
     <>
       <div className="flex-auto p-4">
@@ -580,13 +595,13 @@ const MainPage = () => {
               <div className={`transition duration-300 ${autoMode && "hidden"} flex gap-4`}>
                 <div className="flex flex-col w-1/2 gap-1">
                   <div className="text-sm leading-5">Bet</div>
-                  <InputNumber InputProps={{ value: bet, min: 1, step: 1, disabled: gamePhase === 'started', onChange: e => { setBet(parseFloat(e.target.value)); betRef.current = parseFloat(e.target.value) } }} />
+                  <InputNumber InputProps={{ value: betManualRef.current, min: 1, step: 1, disabled: gamePhase === 'started', onChange: e => { setBet(parseFloat(e.target.value)); betManualRef.current = parseFloat(e.target.value) } }} />
                   <div className="text-xs leading-[14px] text-[#FFFFFFCC]">Minimal Bet is 1 Coin</div>
                 </div>
 
                 <div className="flex flex-col w-1/2 gap-1">
                   <div className="text-sm leading-5">Auto Stop</div>
-                  <InputNumber InputProps={{ value: autoStop, min: 1.1, max: 100, step: 1, disabled: gamePhase === 'started', type: "xWithNumber", onChange: e => { setAutoStop(e.target.value) } }} />
+                  <InputNumber InputProps={{ value: autoStopManual, min: 1.1, max: 100, step: 1, disabled: gamePhase === 'started', type: "xWithNumber", onChange: e => { setAutoStopManual(e.target.value) } }} />
                   <div className="text-xs leading-[14px] text-[#FFFFFFCC]">Auto Cash Out when this amount will be reached</div>
                 </div>
               </div>
@@ -627,13 +642,13 @@ const MainPage = () => {
                   <div className="flex gap-4">
                     <div className="flex flex-col w-1/2 gap-1">
                       <div className="text-sm leading-5">Bet</div>
-                      <InputNumber InputProps={{ value: betRef.current, min: 1, step: 1, onChange: e => { setBet(parseFloat(e.target.value)); betRef.current = parseFloat(e.target.value) } }} />
+                      <InputNumber InputProps={{ value: betAutoRef.current, min: 1, step: 1, onChange: e => { setBet(parseFloat(e.target.value)); betAutoRef.current = parseFloat(e.target.value) } }} />
                       <div className="text-xs leading-[14px] text-[#FFFFFFCC]">Minimal Bet is 1 Coin</div>
                     </div>
 
                     <div className="flex flex-col w-1/2 gap-1">
                       <div className="text-sm leading-5">Auto Stop</div>
-                      <InputNumber InputProps={{ value: autoStop, min: 1.1, max: 100, step: 1, type: "xWithNumber", onChange: e => { setAutoStop(e.target.value) } }} />
+                      <InputNumber InputProps={{ value: autoStopAM, min: 1.1, max: 100, step: 1, type: "xWithNumber", onChange: e => { setAutoStopAM(e.target.value) } }} />
                       <div className="text-xs leading-[14px] text-[#FFFFFFCC]">Auto Cash Out when this amount will be reached</div>
                     </div>
                   </div>
