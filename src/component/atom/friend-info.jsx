@@ -1,7 +1,7 @@
 const FriendInfo = ({ data }) => {
     return (
         <div className="flex justify-between rounded-[10px] bg-[#0000001A] py-2 px-4 items-center">
-            <div className="flex gap-2 items-center">
+            <div className="flex gap-1 items-center">
                 <img
                     src={data.url}
                     alt=""
@@ -20,9 +20,9 @@ const FriendInfo = ({ data }) => {
                         alt=""
                         className="w-6 h-6"
                     />
-                    <div>+25</div>
+                    <div className="font-bold">+25</div>
                 </div>
-                <div>
+                <div className="text-[#ffffff99] font-normal">
                     {data.coin}
                     {/* {data.token > 0 ? `+${data.token}` : 0} */}
                 </div>

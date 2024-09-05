@@ -3,7 +3,7 @@ const FriendRanking = ({ data }) => {
 
     return (
         <div className="flex justify-between rounded-[10px] bg-[#0000001A] py-2 px-4 items-center">
-            <div className="flex gap-2 items-center">
+            <div className="flex gap-1 items-center">
                 <img
                     src={data.url}
                     alt=""
