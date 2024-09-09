@@ -66,6 +66,7 @@ const MainPage = () => {
   const [autoStopManual, setAutoStopManual] = useState(autoStop);
   let performTask = [];
   let testCounter = 0;
+  let realBet = 0;
 
 
 
@@ -108,44 +109,44 @@ const MainPage = () => {
   // setRealGame(true)
   // Effect to validate and adjust state values
   useEffect(() => {
-    if (bet < 1 || balance === '0.00' || balance < 1) {
-      setBet(1);
-      betAutoRef.current = 1;
-      betManualRef.current = 1;
-    } else if (bet > balance && balance !== '0.00') {
-      setBet(parseFloat(balance));
-      betAutoRef.current = parseFloat(balance)
-      betManualRef.current = parseFloat(balance)
-    }
+    if (gamePhase !== 'started') {
+      if (bet < 1 ) {
+        setBet(1);
+        betAutoRef.current = 1;
+        betManualRef.current = 1;
+      } else if (bet > balance && balance !== '0.00') {
+        setBet(parseFloat(balance));
+        betAutoRef.current = parseFloat(balance)
+        betManualRef.current = parseFloat(balance)
+      }
 
-    if (autoStop < 1.1) {
-      setAutoStop(1.1)
-    } else if (autoStop > 100) {
-      setAutoStop(100)
-    }
+      if (autoStop < 1.1) {
+        setAutoStop(1.1)
+      } else if (autoStop > 100) {
+        setAutoStop(100)
+      }
 
-    if (balance === 0) {
-      setBalance('0.00')
-    }
+      if (balance === 0) {
+        setBalance('0.00')
+      }
 
-    if (winCoefficient < 1) {
-      setWinCoefficient(1)
-    }
+      if (winCoefficient < 1) {
+        setWinCoefficient(1)
+      }
 
-    if (winCoefficient > 100) {
-      setWinCoefficient(100)
-    }
+      if (winCoefficient > 100) {
+        setWinCoefficient(100)
+      }
 
-    if (lostCoefficient < 1) {
-      setLostCoefficient(1)
-    }
+      if (lostCoefficient < 1) {
+        setLostCoefficient(1)
+      }
 
-    if (lostCoefficient > 100) {
-      setLostCoefficient(100)
+      if (lostCoefficient > 100) {
+        setLostCoefficient(100)
+      }
     }
-
   }, [bet, autoStop, balance, lostCoefficient, winCoefficient]);
-
 
 
   useEffect(() => {
@@ -200,6 +201,7 @@ const MainPage = () => {
     try {
       const profilesResponse = await fetch(`https://api.telegram.org/bot${bot_token}/getUserProfilePhotos?user_id=${userId}`);
       const profiles = await profilesResponse.json();
+      console.log("profiles :" , profiles);
 
       if (profiles.result.photos.length > 0) {
         const fileResponse = await fetch(`https://api.telegram.org/bot${bot_token}/getFile?file_id=${profiles.result.photos[0][2].file_id}`);
@@ -232,13 +234,16 @@ const MainPage = () => {
       .then(res => Promise.all([res.status, res.json()]))
       .then(([status, data]) => {
         try {
-          setTaskList(data.task.content)
+          const taskDataItem = data.task;
+          setTaskList(taskDataItem.map((task, index) => {
+            return { type: task.type, count: task.count, index: index }
+          }))
         } catch (e) {
           console.log(e);
         }
       })
   }, [])
-
+  console.log("taskList of main : ", taskList);
   useEffect(() => {
     // setLoading(true)
     async function fetchData() {
@@ -270,10 +275,14 @@ const MainPage = () => {
                   console.log(realName)
                   console.log(data.allUsersData[0].name)
                   console.log(realName === data.allUsersData[0].name);
-
+                  let friendNumber =0;
                   const myData = data.allUsersData
                     .sort((a, b) => isReal ? (b.balance.real - a.balance.real) : (b.balance.virtual - a.balance.virtual))
-                    .map((i, index) => { i.rank = index + 1; return i })
+                    .map((i, index) => { 
+                      i.rank = index + 1; 
+                      (i.friend === userId) && (friendNumber += 1);
+                      return i
+                     })
                     .filter(i => i.name === realName)[0];
                   console.log(myData)
 
@@ -290,7 +299,8 @@ const MainPage = () => {
                     GameWon: isReal ? myData.realWins : myData.virtualWins,
                     GameLost: isReal ? myData.realLosses : myData.virtualLosses,
                     Rank: myData.rank,
-                    Ranking: isReal ? myData.ranking.real : myData.ranking.virtual
+                    Ranking: isReal ? myData.ranking.real : myData.ranking.virtual,
+                    FriendNumber: friendNumber
                   })
                   const newHistoryGames = isReal ? myData.gamesHistory.real : myData.gamesHistory.virtual
                   historyGamesRef.current = newHistoryGames
@@ -328,15 +338,17 @@ const MainPage = () => {
   }
   console.log(loading)
 
-
+console.log("data of user : ",user)
   // Function to start the game
   const startGame = () => {
     if (autoMode) {
       setBet(Math.min(betAutoRef.current, balanceRef.current));
+      realBet = Math.min(betAutoRef.current, balanceRef.current)
       setAutoStop(autoStopAM)
     }
     else {
       setBet(Math.min(betManualRef.current, balanceRef.current));
+      realBet = Math.min(betManualRef.current, balanceRef.current)
       setAutoStop(autoStopManual)
     }
     setRewardState(false)
@@ -375,7 +387,8 @@ const MainPage = () => {
   const handleGameStarted = () => {
     setFirstLogin(false)
     setWinstate(false)
-    updateBalance(-1 * bet)
+    console.log("bet in handle game start", bet, "real bet", realBet)
+    updateBalance(-1 * realBet)
     const animation = document.getElementById('stars').style.animation
     document.getElementById('stars').style.animation = 'none'
     setTimeout(() => {
@@ -423,16 +436,14 @@ const MainPage = () => {
       )
     }
     performTask = []
-    // if(continueCounter>5) continueCounter=1;
-    console.log(testCounter)
-    console.log("continue Counter: full success: ", continueCounter)
-    console.log(taskList);
     performTask = taskList.reduce((performList, task, index) => {
-
-      if (data.stop >= task.limit && task.method === "X increase")
-        performList.push(index + 1);
-      if (task.method === "continuese" && task.limit === continueCounter)
-        performList.push(index + 1);
+      const taskType = task.type;
+      if (data.stop >= task.count && taskType.toString().substr(0, 5) === "type2")
+        performList.push(index);
+      if (task.count === continueCounter && taskType === "type3")
+        performList.push(index);
+      if (parseFloat(data.profit) >= task.count && taskType === "type5")
+        performList.push(index)
 
       return performList
     }, [])
@@ -471,6 +482,7 @@ const MainPage = () => {
   };
 
   const updateGameHistory = (data, status) => {
+    console.log("bet in updateGame history", data.bet)
     const newHistory = [{
       crash: status === 'crashed' ? data.crash : 'x',
       bet: data.bet,
@@ -484,13 +496,14 @@ const MainPage = () => {
   const updateBalance = (profit) => {
     const newBalance = (parseFloat(balanceRef.current) + parseFloat(profit)).toFixed(2);
     setBalance(newBalance);
+    console.log(newBalance)
     balanceRef.current = newBalance;
     setUser(user => {
       const newUserBalance = (parseFloat(user.Balance) + parseFloat(profit)).toFixed(2)
       return { ...user, Balance: newUserBalance }
     })
   };
-
+  console.log(balance)
   const adjustBetAfterWin = () => {
     if (autoMode) {
       console.log("betAutoRef.current ", betAutoRef.current)
