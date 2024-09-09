@@ -15,7 +15,7 @@ const Earned = () => {
       {
         id: 1,
         src: "coin-y.svg",
-        amount: user.Balance
+        amount: user.Balance.toFixed(2)
       },
       {
         id: 2,
