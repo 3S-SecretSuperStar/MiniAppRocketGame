@@ -78,7 +78,7 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData }) => 
                 },
               }
             )
-            updateBalance(10)
+            updateBalance(dailyAmount)
           } catch (e) {
             // eslint-disable-next-line no-self-assign
             console.log(e);
@@ -179,7 +179,9 @@ const TaskList = () => {
         console.log("fetch data")
 
         try {
-          const userBalance = isReal ? data.balance.real.toFixed(2) : data.balance.virtual.toFixed(2);
+          console.log("fetch data : ",data);
+          const userBalance = isReal ? parseFloat(data.balance.real.toFixed(2)) : parseFloat(data.balance.virtual.toFixed(2));
+          console.log(userBalance)
           setUser({ ...user, Balance: userBalance })
           const performtask = isReal ? data.task.real.achieve_task : data.task.virtual.achieve_task
           const doneTask = isReal ? data.task.real.done_task : data.task.virtual.done_task
