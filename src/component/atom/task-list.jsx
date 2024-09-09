@@ -246,7 +246,7 @@ const TaskList = () => {
                       case 'daily_reward': {
                         imgSrc = "DailyReward.png";
                         taskDescription = item.description
-                        dailyState = dailyDays > 10 ? 10 : dailyDays;
+                        dailyState = dailyDays > 30 ? 30 : dailyDays;
                         break;
                       }
                       case 'sub-tg': {
@@ -312,7 +312,7 @@ const TaskList = () => {
                     return ({
                       src: imgSrc,
                       title: (item.title),
-                      amount: (item.amount * Math.pow(2, (dailyState - 1)) + " Coins " + taskDescription),
+                      amount: (item.amount + (20* dailyState) + " Coins " + taskDescription),
                       status: taskState[index],
                       link: link
                     })
