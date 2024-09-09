@@ -182,7 +182,7 @@ const TaskList = () => {
           console.log("fetch data : ",data);
           const userBalance = isReal ? parseFloat(data.balance.real.toFixed(2)) : parseFloat(data.balance.virtual.toFixed(2));
           console.log(userBalance)
-          setUser({ ...user, Balance: userBalance })
+          setUser(user => ({ ...user, Balance: userBalance }))
           const performtask = isReal ? data.task.real.achieve_task : data.task.virtual.achieve_task
           const doneTask = isReal ? data.task.real.done_task : data.task.virtual.done_task
           console.log("perform task", performtask)
@@ -202,7 +202,7 @@ const TaskList = () => {
                 const dailyDate = data.dailyRewardInfo.date;
                 dailytaskIndex = taskList.findIndex(item => item.type === 'daily_reward')
                 dailyDays = data.dailyRewardInfo.consecutive_days + 1
-                setUser({ ...user, DailyConsecutiveDays: dailyDays });
+                setUser((user)=>({ ...user, DailyConsecutiveDays: dailyDays }));
                 const nowDate = moment().startOf('day');
                 if (dailyDate === "") taskState[dailytaskIndex] = 1;
                 else {
@@ -215,7 +215,7 @@ const TaskList = () => {
                   console.log('taskstates', taskState)
                   if (diffDate >= 1) taskState[dailytaskIndex] = 1;
                   else taskState[dailytaskIndex] = 2;
-                  if (diffDate >= 2) setUser({ ...user, DailyConsecutiveDays: 1 });
+                  if (diffDate >= 2) setUser((user)=>({ ...user, DailyConsecutiveDays: 1 }));
                 }
               } catch (e) {
                 console.log(e)
