@@ -26,6 +26,7 @@ const Earned = () => {
     
     const [tabId, setTabId] = useState(1);
     const [infoState, setInfoState] = useState(false);
+    setActionState('stop');
     if(tabId===2) {
       setTabId(1);
       setInfoState(true)
