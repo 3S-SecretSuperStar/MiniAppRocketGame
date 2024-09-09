@@ -235,7 +235,7 @@ const TaskList = () => {
                   newState = taskItemData.map((item, index) => {
                     let taskDescription = "";
                     let imgSrc = ""
-                    let dailyState = 1;
+                    let dailyState = 0;
                     let link = ""
                     switch (item.type) {
                       case 'type1-1':
