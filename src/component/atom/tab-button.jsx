@@ -16,7 +16,7 @@ const TabButton = ({className, tabList, tabNo, setTabNo }) => {
                                 className="w-6 h-6"
                                 alt="tab items"
                             />
-                            <div>{_tab.amount}</div>
+                            <div>{parseFloat(_tab.amount).toFixed(2)}</div>
                         </div>
                     </div>
                 ))
