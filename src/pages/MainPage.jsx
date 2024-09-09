@@ -560,7 +560,8 @@ console.log("data of user : ",user)
           <div className={`flex w-full absolute bg-white_20 justify-between transition transform duration-200 p-2 rounded-[10px] text-white text-base leading-5 ${isAction === "start" ? "-translate-y-24" : ""} `} onClick={goToUserInfo}>
 
             <div className="flex gap-2.5">
-              <img src={avatarData[RANKINGDATA.indexOf(user.Ranking)]} width="64px" height="64px" className="max-w-16 h-16" alt="avatar" />
+              {/* <img src={avatarData[RANKINGDATA.indexOf(user.Ranking)]} width="64px" height="64px" className="max-w-16 h-16" alt="avatar" /> */}
+              <img src="https://telegramminiapp-rocket-backend-lbyg.onrender.com/avatar/6977492118.jpg" width="64px" height="64px" className="max-w-16 h-16" alt="avatar" />
               <div className="flex flex-col w-full gap-0.5">
                 <p className="font-semibold">{user.RealName}</p>
                 <p className="font-semibold">{user.Ranking} · {RANKINGDATA.indexOf(user.Ranking) + 1}/10</p>

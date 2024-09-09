@@ -246,7 +246,7 @@ const TaskList = () => {
                       case 'daily_reward': {
                         imgSrc = "DailyReward.png";
                         taskDescription = item.description
-                        dailyState = dailyDays > 30 ? 30 : dailyDays;
+                        dailyState = dailyDays > item.count ? item.count : dailyDays;
                         break;
                       }
                       case 'sub-tg': {
