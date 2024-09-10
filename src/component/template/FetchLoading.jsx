@@ -2,7 +2,7 @@ import React from 'react';
 
 const FetchLoading = () => {
     return (
-        <div className="flex flex-col items-center justify-center h-screen bg-gray-100 bg-opacity-20">
+        <div className="absolute flex flex-col items-center top-0 right-0 w-full justify-center h-screen bg-gray-100 bg-opacity-20">
             <div className="loader"></div>
             {/* <p className="mt-4 text-lg text-blue-600">Loading...</p>   */}
 

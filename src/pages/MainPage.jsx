@@ -442,7 +442,7 @@ console.log("data of user : ",user)
         performList.push(index);
       if (task.count === continueCounter && taskType === "type3")
         performList.push(index);
-      if (parseFloat(data.profit) >= task.count && taskType === "type5")
+      if (parseFloat(data.profit-bet) >= task.count && taskType === "type5")
         performList.push(index)
 
       return performList

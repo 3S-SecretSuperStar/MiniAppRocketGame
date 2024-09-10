@@ -7,6 +7,8 @@ import { useAtom } from "jotai";
 import { realGameState, TaskContent, userData } from "../../store";
 import { Link, useActionData } from "react-router-dom";
 import moment from "moment";
+import FetchLoading from "../template/FetchLoading";
+import { isActionState } from "../../store";
 
 const serverUrl = REACT_APP_SERVER;
 
@@ -31,8 +33,9 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData }) => 
   const goClaim = () => {
     setIsClaim(true);
 
+    console.log("task index", index)
     if (index !== dailytaskIndex) {
-      console.log("index daily: ", index)
+      console.log("index indaily: ", index)
       fetch(`${serverUrl}/task_balance`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, amount: task.amount, task: index, isReal: isReal }), headers })
         .then(res => Promise.all([res.status, res.json()]))
         .then(() => {
@@ -157,13 +160,23 @@ const TaskList = () => {
   const [isReal, setIsReal] = useAtom(realGameState)
   const [taskList, setTaskList] = useAtom(TaskContent)
   const [user, setUser] = useAtom(userData)
+  const [loading, setLoading] = useState(true)
+  const [firstLoading, setFirstLoading] = useState(true);
+  const [isAction, setActionState] = useAtom(isActionState);
   let dailytaskIndex = 3
   let performTask = []
   let dailyDays = 1;
   const headers = new Headers()
   headers.append('Content-Type', 'application/json')
 
-
+  useEffect(() => {
+    let isMounted = true
+    if (isMounted) {
+      stateTask();
+    }
+    return () => { isMounted = false }
+  }, [])
+  
 
   const updateBalance = (profit) => {
     setUser(user => {
@@ -179,7 +192,7 @@ const TaskList = () => {
         console.log("fetch data")
 
         try {
-          console.log("fetch data : ",data);
+          console.log("fetch data : ", data);
           const userBalance = isReal ? parseFloat(data.balance.real.toFixed(2)) : parseFloat(data.balance.virtual.toFixed(2));
           console.log(userBalance)
           setUser(user => ({ ...user, Balance: userBalance }))
@@ -202,7 +215,7 @@ const TaskList = () => {
                 const dailyDate = data.dailyRewardInfo.date;
                 dailytaskIndex = taskList.findIndex(item => item.type === 'daily_reward')
                 dailyDays = data.dailyRewardInfo.consecutive_days + 1
-                setUser((user)=>({ ...user, DailyConsecutiveDays: dailyDays }));
+                setUser((user) => ({ ...user, DailyConsecutiveDays: dailyDays }));
                 const nowDate = moment().startOf('day');
                 if (dailyDate === "") taskState[dailytaskIndex] = 1;
                 else {
@@ -215,7 +228,7 @@ const TaskList = () => {
                   console.log('taskstates', taskState)
                   if (diffDate >= 1) taskState[dailytaskIndex] = 1;
                   else taskState[dailytaskIndex] = 2;
-                  if (diffDate >= 2) setUser((user)=>({ ...user, DailyConsecutiveDays: 1 }));
+                  if (diffDate >= 2) setUser((user) => ({ ...user, DailyConsecutiveDays: 1 }));
                 }
               } catch (e) {
                 console.log(e)
@@ -232,7 +245,8 @@ const TaskList = () => {
                 console.log('taskstates', taskState)
                 setTaskData(prevState => {
                   let newState = [...prevState];
-                  newState = taskItemData.map((item, index) => {
+                  newState = taskItemData
+                  .map((item, index) => {
                     let taskDescription = "";
                     let imgSrc = ""
                     let dailyState = 0;
@@ -312,7 +326,7 @@ const TaskList = () => {
                     return ({
                       src: imgSrc,
                       title: (item.title),
-                      amount: (item.amount + (20* dailyState) + " Coins " + taskDescription),
+                      amount: (item.amount + (20 * dailyState) + " Coins " + taskDescription),
                       status: taskState[index],
                       link: link
                     })
@@ -331,15 +345,17 @@ const TaskList = () => {
           // eslint-disable-next-line no-self-assign
           console.log(e);
         }
+        finally {
+          setLoading(false)
+          firstLoading && setActionState("ready")
+          setFirstLoading(false);
+        }
       })
 
   }
   // console.log("taskList: ", taskList)
   // console.log("friend number", user.FriendNumber)
   const stateTask = () => {
-
-
-
     performTask = []
     performTask = taskList.reduce((performList, task, index) => {
       const taskType = task.type;
@@ -360,24 +376,21 @@ const TaskList = () => {
 
     console.log("after fetch data")
 
-
-
   }
 
-
-  useEffect(() => {
-    let isMounted = true
-    if (isMounted) {
-      stateTask();
-    }
-    return () => { isMounted = false }
-  }, [])
+  if (loading && firstLoading) {
+    setActionState("start")
+    return <FetchLoading />
+  }
+  
   // console.log(user.FriendNumber)
   // console.log("user Info in taskList : ", user.DailyConsecutiveDays)
   return (
     <div className="flex flex-col gap-2 text-[14px] overflow-auto pb-4" style={{ height: "calc(100vh - 200px)" }}>
       {
-        taskData.map((_task, _index) => <GenerateTask task={_task} stateTask={stateTask} key={_index} index={_index} dailytaskIndex={dailytaskIndex} fetchData={fetchData} />)
+        taskData
+        // .sort((a,b)=>b.status-a.status)
+        .map((_task, _index) => <GenerateTask task={_task} stateTask={stateTask} key={_index} index={_index} dailytaskIndex={dailytaskIndex} fetchData={fetchData} />)
       }
     </div>
   )
