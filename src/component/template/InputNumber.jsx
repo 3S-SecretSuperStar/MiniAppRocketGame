@@ -51,7 +51,8 @@ const InputNumber = memo(({ InputProps }) => {
     // Validate input: Only allow numbers and decimal points
     if (/^\d*\.?\d*$/.test(newValue)) {
       newValue >= InputProps.min || newValue === '' ? setValue(newValue) : setValue(InputProps.min);
-      InputProps.onChange && InputProps.onChange({ target: { value: newValue } });
+      const outValue = newValue >= InputProps.min || newValue === ''? newValue:InputProps.min
+      InputProps.onChange && InputProps.onChange({ target: { value: outValue } });
     }
 
   };

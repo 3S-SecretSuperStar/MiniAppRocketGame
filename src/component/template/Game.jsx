@@ -124,7 +124,7 @@ export default memo(function Game({ gamePhase, finalResult, amount = 10.00,
     const second = first + price
     const third = second + price
     let isFirstWide = currentResult % 1 > 0.5
-    isFirstWide = currentResult < 1.01 ? true : isFirstWide
+    isFirstWide = currentResult < 1.1 ? true : isFirstWide
     const isThirdWide = isFirstWide
     const isSecondWide = !isFirstWide
     return (
@@ -292,23 +292,6 @@ export default memo(function Game({ gamePhase, finalResult, amount = 10.00,
           className={`game-rocket inactive ${((counterNumber === 0 && gamePhase === 'started' && socketFlag) || gamePhase === "crashed") ? "hidden" : 'block'}`}
           alt='inactive rocket' 
         />
-        {/* {counterNumber === 0 && gamePhase === 'started' && socketFlag
-          ? <img
-            id='game-rocket'
-            src='/image/rocket-active.png'
-            className='shaking active'
-            alt='active rocket' />
-          : gamePhase === 'crashed'
-            ? <img
-              id='game-rocket'
-              src='/image/rocket-explosed.png'
-              className='explosed'
-              alt='explosed rocket' />
-            : <img
-              id='game-rocket'
-              src='/image/rocket-inactive.png'
-              className='inactive'
-              alt='inactive rocket' />} */}
       </div>
 
 

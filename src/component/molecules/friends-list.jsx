@@ -1,3 +1,4 @@
+import { LazyLoadImage } from "react-lazy-load-image-component";
 import FriendInfo from "../atom/friend-info";
 
 const FriendsList = ({ friendData }) => {
@@ -12,7 +13,7 @@ const FriendsList = ({ friendData }) => {
                 {
                   friendData.map((_friend, _index) => {
                     return (
-                      
+
                       <FriendInfo key={_index} data={_friend} />
                     )
                   })
@@ -21,12 +22,18 @@ const FriendsList = ({ friendData }) => {
             </>
           ) : (
             <div className="flex flex-col items-center gap-4 text-center my-auto">
-              <img
-                src="/image/main/friends.png"
+              <LazyLoadImage
                 alt="friend"
-                className="max-w-auto"
-                style={{ maxHeight: "calc(100vh - 400px)" }}
-              />
+                effect="blur"
+                wrapperProps={{
+                  style: {
+                    transitionDelay: "1s",
+                    maxHeight: "calc(100vh - 400px)",
+                    maxWidth: 'auto'
+                  },
+                }}
+                src="/image/main/friends.png" />
+
               <div className="text-[15px] text-white">
                 Invite a friend and you'll both get 25 points.
               </div>

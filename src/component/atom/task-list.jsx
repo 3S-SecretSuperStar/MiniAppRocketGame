@@ -1,7 +1,7 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import CheckMark from "../svg/check-mark";
 import LoadingSpinner from "../svg/loading-spinner";
-import toast from "react-hot-toast";
+import toast, { useToasterStore } from "react-hot-toast";
 import { REACT_APP_SERVER } from "../../utils/privateData";
 import { useAtom } from "jotai";
 import { realGameState, TaskContent, userData } from "../../store";
@@ -33,10 +33,10 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData }) => 
   const goClaim = () => {
     setIsClaim(true);
 
-    console.log("task index", index)
-    if (index !== dailytaskIndex) {
+    console.log("task index", task.index)
+    if (task.index !== dailytaskIndex) {
       console.log("index indaily: ", index)
-      fetch(`${serverUrl}/task_balance`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, amount: task.amount, task: index, isReal: isReal }), headers })
+      fetch(`${serverUrl}/task_balance`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, amount: task.amount, task: task.index, isReal: isReal }), headers })
         .then(res => Promise.all([res.status, res.json()]))
         .then(() => {
           try {
@@ -63,6 +63,7 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData }) => 
     } else {
       let dailyAmount = parseFloat(task.amount.split(" ")[0])
       console.log("index : ", index)
+      console.log("task index : ", task.index)
       console.log("Daily Amount : ", dailyAmount)
 
       fetch(`${serverUrl}/perform_dailyReward`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, isReal: isReal, amount: dailyAmount }), headers })
@@ -156,16 +157,19 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData }) => 
 const TaskList = () => {
   let taskState = [];
 
-  const [taskData, setTaskData] = useState([]);
+  const [otherTaskData, setOtherTaskData] = useState([]);
   const [isReal, setIsReal] = useAtom(realGameState)
   const [taskList, setTaskList] = useAtom(TaskContent)
   const [user, setUser] = useAtom(userData)
   const [loading, setLoading] = useState(true)
   const [firstLoading, setFirstLoading] = useState(true);
   const [isAction, setActionState] = useAtom(isActionState);
+  const [dailyTaskData, setDailyTask] = useState({});
+
   let dailytaskIndex = 3
   let performTask = []
   let dailyDays = 1;
+  let dailyState = 1;
   const headers = new Headers()
   headers.append('Content-Type', 'application/json')
 
@@ -176,7 +180,7 @@ const TaskList = () => {
     }
     return () => { isMounted = false }
   }, [])
-  
+
 
   const updateBalance = (profit) => {
     setUser(user => {
@@ -213,11 +217,11 @@ const TaskList = () => {
                 console.log(data)
                 console.log(data.dailyRewardInfo)
                 const dailyDate = data.dailyRewardInfo.date;
-                dailytaskIndex = taskList.findIndex(item => item.type === 'daily_reward')
-                dailyDays = data.dailyRewardInfo.consecutive_days + 1
-                setUser((user) => ({ ...user, DailyConsecutiveDays: dailyDays }));
+                dailytaskIndex = taskList[taskList.findIndex(item => item.type === 'daily_reward')].index
+                dailyDays = data.dailyRewardInfo.consecutive_days
+                setUser((user) => ({ ...user, DailyConsecutiveDays: dailyDays + 1 }));
                 const nowDate = moment().startOf('day');
-                if (dailyDate === "") taskState[dailytaskIndex] = 1;
+                if (dailyDate === "") dailyState = 1;
                 else {
                   console.log("dailyRewardDate : ", dailyDate)
                   const selectedDate = moment(dailyDate).utc().local().startOf('day');
@@ -226,9 +230,12 @@ const TaskList = () => {
                   const diffDate = nowDate.diff(selectedDate, 'days');
                   console.log("diff date : ", diffDate)
                   console.log('taskstates', taskState)
-                  if (diffDate >= 1) taskState[dailytaskIndex] = 1;
-                  else taskState[dailytaskIndex] = 2;
-                  if (diffDate >= 2) setUser((user) => ({ ...user, DailyConsecutiveDays: 1 }));
+                  if (diffDate >= 1) dailyState = 1;
+                  else dailyState = 2;
+                  if (diffDate >= 2) {
+                    setUser((user) => ({ ...user, DailyConsecutiveDays: 1 }))
+                    dailyDays = 0;
+                  };
                 }
               } catch (e) {
                 console.log(e)
@@ -240,103 +247,57 @@ const TaskList = () => {
             .then(([status, data]) => {
               console.log("task data", data)
               const taskItemData = data.task;
+              const dailyData = taskItemData.find(item => item.type === "daily_reward");
+              if (dailyData) {
+                const dailyItemData = {
+                  src: "DailyReward.png",
+                  title: dailyData.title,
+                  amount: (dailyData.amount + (20 * dailyDays) + " Coins " + dailyData.description),
+                  status: dailyState,
+                  link: "",
+                  index: dailyData.index
+                }
+                setDailyTask(dailyItemData)
+              }
+              const otherTaskItems = taskItemData.filter(item => item.type !== "daily_reward");
 
-              try {
-                console.log('taskstates', taskState)
-                setTaskData(prevState => {
-                  let newState = [...prevState];
-                  newState = taskItemData
-                  .map((item, index) => {
-                    let taskDescription = "";
-                    let imgSrc = ""
-                    let dailyState = 0;
-                    let link = ""
-                    switch (item.type) {
-                      case 'type1-1':
-                      case 'type1-2': {
-                        imgSrc = "Type1.png";
-                        break;
-                      }
-                      case 'daily_reward': {
-                        imgSrc = "DailyReward.png";
-                        taskDescription = item.description
-                        dailyState = dailyDays > item.count ? item.count : dailyDays;
-                        break;
-                      }
-                      case 'sub-tg': {
-                        imgSrc = "Avatar-tg.png";
-                        link = "https://t.me/rocketton_official"
-                        break;
-                      }
-                      case 'join-tg': {
-                        imgSrc = "Avatar-tg.png";
-                        link = "https://t.me/RocketTON_Chat"
-                        break;
-                      }
-                      case 'sub-you': {
-                        imgSrc = "Avatar-you.png";
-                        link = "https://www.youtube.com/@RocketTON_Official"
-                        break;
-                      }
-                      case 'sub-X': {
-                        imgSrc = "Avatar-X.png";
-                        link = "https://x.com/RocketTON_Game"
-                        break;
-                      }
-                      case 'sub-ins': {
-                        imgSrc = "Avatar-ins.png";
-                        link = "https://www.instagram.com/rocketton_official"
-                        break;
-                      }
-                      case 'type2-2': {
-                        imgSrc = "Type2-2.png";
-                        break;
-                      }
-                      case 'type2-3': {
-                        imgSrc = "Type2-3.png";
-                        break;
-                      }
-                      case 'type2-5': {
-                        imgSrc = "Type2-5.png";
-                        break;
-                      }
-                      case 'type2-10': {
-                        imgSrc = "Type2-10.png";
-                        break;
-                      }
-                      case 'type2-25': {
-                        imgSrc = "Type2-25.png";
-                        break;
-                      }
-                      case 'type3': {
-                        imgSrc = "Type3.png";
-                        break;
-                      }
-                      case 'type4': {
-                        imgSrc = "Type4.png";
-                        break;
-                      }
-                      case 'type5': {
-                        imgSrc = "Type5.png";
-                        break;
-                      }
-                      default: break;
-                    }
+              if (otherTaskItems.length > 0) {
+                console.log('task states:', taskState);
 
-                    return ({
-                      src: imgSrc,
-                      title: (item.title),
-                      amount: (item.amount + (20 * dailyState) + " Coins " + taskDescription),
-                      status: taskState[index],
-                      link: link
-                    })
-                  });
-                  return newState;
+                const typeToImageMap = {
+                  'type1-1': { imgSrc: "Type1.png", link: "" },
+                  'type1-2': { imgSrc: "Type1.png", link: "" },
+                  'sub-tg': { imgSrc: "Avatar-tg.png", link: "https://t.me/rocketton_official" },
+                  'join-tg': { imgSrc: "Avatar-tg.png", link: "https://t.me/RocketTON_Chat" },
+                  'sub-you': { imgSrc: "Avatar-you.png", link: "https://www.youtube.com/@RocketTON_Official" },
+                  'sub-X': { imgSrc: "Avatar-X.png", link: "https://x.com/RocketTON_Game" },
+                  'sub-ins': { imgSrc: "Avatar-ins.png", link: "https://www.instagram.com/rocketton_official" },
+                  'type2-2': { imgSrc: "Type2-2.png", link: "" },
+                  'type2-3': { imgSrc: "Type2-3.png", link: "" },
+                  'type2-5': { imgSrc: "Type2-5.png", link: "" },
+                  'type2-10': { imgSrc: "Type2-10.png", link: "" },
+                  'type2-25': { imgSrc: "Type2-25.png", link: "" },
+                  'type3': { imgSrc: "Type3.png", link: "" },
+                  'type4': { imgSrc: "Type4.png", link: "" },
+                  'type5': { imgSrc: "Type5.png", link: "" }
+                };
+
+                const otherTaskData = otherTaskItems.map(item => {
+                  const { imgSrc, link } = typeToImageMap[item.type];
+
+                  console.log("item:", item);
+
+                  return {
+                    src: imgSrc,
+                    title: item.title,
+                    amount: (item.amount + " Coins"),
+                    status: taskState[item.index],
+                    link: link,
+                    index: item.index
+                  };
                 });
-                // setTaskList(type)
-                // console.log("task content : ", data.content)
-              } catch (e) {
-                console.log(e);
+
+                setOtherTaskData(otherTaskData);
               }
             })
 
@@ -346,9 +307,11 @@ const TaskList = () => {
           console.log(e);
         }
         finally {
+          // setTimeout(() => {
           setLoading(false)
           firstLoading && setActionState("ready")
           setFirstLoading(false);
+          // }, 500)
         }
       })
 
@@ -356,15 +319,23 @@ const TaskList = () => {
   // console.log("taskList: ", taskList)
   // console.log("friend number", user.FriendNumber)
   const stateTask = () => {
+    console.log("user in state task :", user)
     performTask = []
-    performTask = taskList.reduce((performList, task, index) => {
+    performTask = taskList.reduce((performList, task) => {
       const taskType = task.type;
-      if (taskType === "type1-1" && user.GameWon >= 1)
-        performList.push(index)
-      if ((user.GameLost + user.GameWon) >= task.count && taskType === "type1-2")
-        performList.push(index)
+      if (user.GameWon >= task.count && taskType === "type1-1") {
+        console.log("game won : ", user.GameWon)
+        console.log("task count : ", task.count)
+        console.log("task index : ", task.index)
+        console.log("state : ", user.GameWon >= task.count)
+        performList.push(task.index)
+      }
+      if ((user.GameLost + user.GameWon) >= task.count && taskType === "type1-2") {
+        performList.push(task.index)
+        console.log("state : ", (user.GameLost + user.GameWon) >= task.count)
+      }
       if (task.count <= user.FriendNumber && taskType === "type4")
-        performList.push(index);
+        performList.push(task.index);
       return performList
     }, [])
     fetch(`${serverUrl}/add_perform_list`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, performTask: performTask, isReal: isReal }), headers })
@@ -374,7 +345,7 @@ const TaskList = () => {
         fetchData()
       })
 
-    console.log("after fetch data")
+    // console.log("after fetch data")
 
   }
 
@@ -382,17 +353,22 @@ const TaskList = () => {
     setActionState("start")
     return <FetchLoading />
   }
-  
+  console.log("dailyTaskData : ", dailyTaskData)
+  console.log("otherTaskData : ", otherTaskData)
+  // console.log("task data of taskData : ", taskData)
   // console.log(user.FriendNumber)
   // console.log("user Info in taskList : ", user.DailyConsecutiveDays)
   return (
-    <div className="flex flex-col gap-2 text-[14px] overflow-auto pb-4" style={{ height: "calc(100vh - 200px)" }}>
-      {
-        taskData
-        // .sort((a,b)=>b.status-a.status)
-        .map((_task, _index) => <GenerateTask task={_task} stateTask={stateTask} key={_index} index={_index} dailytaskIndex={dailytaskIndex} fetchData={fetchData} />)
-      }
-    </div>
+    <Suspense fallback={<fetchData />}>
+      <div className="flex flex-col gap-2 text-[14px] overflow-auto pb-4" style={{ height: "calc(100vh - 200px)" }}>
+        {Object.keys(dailyTaskData).length && <GenerateTask task={dailyTaskData} stateTask={stateTask} key={0} index={0} dailytaskIndex={dailytaskIndex} fetchData={fetchData} />}
+        {
+          otherTaskData
+            .sort((a, b) => b.status - a.status)
+            .map((_task, _index) => <GenerateTask task={_task} stateTask={stateTask} key={_index} index={_index} dailytaskIndex={dailytaskIndex} fetchData={fetchData} />)
+        }
+      </div>
+    </Suspense>
   )
 }
 

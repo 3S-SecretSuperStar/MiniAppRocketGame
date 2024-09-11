@@ -1,4 +1,4 @@
-import React, { useState, useContext, useRef, useEffect } from "react";
+import React, { useState, useContext, useRef, useEffect, Suspense } from "react";
 import { json, useNavigate } from "react-router";
 import { Link } from "react-router-dom";
 import toast from "react-hot-toast";
@@ -26,8 +26,8 @@ import "../css/Style.css"
 import TabButton from "../component/atom/tab-button.jsx";
 import AutoIcon from "../component/svg/auto-icon.jsx";
 import FetchLoading from "../component/template/FetchLoading.jsx";
-
-
+import { LazyLoadImage } from "react-lazy-load-image-component";
+import 'react-lazy-load-image-component/src/effects/blur.css'
 
 const MainPage = () => {
 
@@ -110,7 +110,7 @@ const MainPage = () => {
   // Effect to validate and adjust state values
   useEffect(() => {
     if (gamePhase !== 'started') {
-      if (bet < 1 ) {
+      if (bet < 1) {
         setBet(1);
         betAutoRef.current = 1;
         betManualRef.current = 1;
@@ -201,7 +201,7 @@ const MainPage = () => {
     try {
       const profilesResponse = await fetch(`https://api.telegram.org/bot${bot_token}/getUserProfilePhotos?user_id=${userId}`);
       const profiles = await profilesResponse.json();
-      console.log("profiles :" , profiles);
+      console.log("profiles :", profiles);
 
       if (profiles.result.photos.length > 0) {
         const fileResponse = await fetch(`https://api.telegram.org/bot${bot_token}/getFile?file_id=${profiles.result.photos[0][2].file_id}`);
@@ -235,8 +235,8 @@ const MainPage = () => {
       .then(([status, data]) => {
         try {
           const taskDataItem = data.task;
-          setTaskList(taskDataItem.map((task, index) => {
-            return { type: task.type, count: task.count, index: index }
+          setTaskList(taskDataItem.map((task) => {
+            return { type: task.type, count: task.count, index: task.index }
           }))
         } catch (e) {
           console.log(e);
@@ -275,14 +275,14 @@ const MainPage = () => {
                   console.log(realName)
                   console.log(data.allUsersData[0].name)
                   console.log(realName === data.allUsersData[0].name);
-                  let friendNumber =0;
+                  let friendNumber = 0;
                   const myData = data.allUsersData
                     .sort((a, b) => isReal ? (b.balance.real - a.balance.real) : (b.balance.virtual - a.balance.virtual))
-                    .map((i, index) => { 
-                      i.rank = index + 1; 
+                    .map((i, index) => {
+                      i.rank = index + 1;
                       (i.friend === userId) && (friendNumber += 1);
                       return i
-                     })
+                    })
                     .filter(i => i.name === realName)[0];
                   console.log(myData)
 
@@ -325,9 +325,11 @@ const MainPage = () => {
       }
       finally {
 
-        setLoading(false)
-        firstLoading && setActionState("ready")
-        setFirstLoading(false);
+        setTimeout(() => {
+          setLoading(false)
+          firstLoading && setActionState("ready")
+          setFirstLoading(false);
+        }, 500)
       }
     }
     fetchData()
@@ -338,7 +340,7 @@ const MainPage = () => {
   }
   console.log(loading)
 
-console.log("data of user : ",user)
+  console.log("data of user : ", user)
   // Function to start the game
   const startGame = () => {
     if (autoMode) {
@@ -402,7 +404,7 @@ console.log("data of user : ",user)
     setCointinueCounter(continueCounter + 1)
     testCounter = testCounter + 1;
 
-    console.log("stopppppppppppppppppppppp")
+    console.log("stop")
     setActionState("stop");
     setWinstate(false);
     setFinalResult(data.stop);
@@ -439,11 +441,11 @@ console.log("data of user : ",user)
     performTask = taskList.reduce((performList, task, index) => {
       const taskType = task.type;
       if (data.stop >= task.count && taskType.toString().substr(0, 5) === "type2")
-        performList.push(index);
+        performList.push(task.index);
       if (task.count === continueCounter && taskType === "type3")
-        performList.push(index);
-      if (parseFloat(data.profit-bet) >= task.count && taskType === "type5")
-        performList.push(index)
+        performList.push(task.index);
+      if (parseFloat(data.profit - bet) >= task.count && taskType === "type5")
+        performList.push(task.index)
 
       return performList
     }, [])
@@ -552,211 +554,224 @@ console.log("data of user : ",user)
   console.log("bet: ", bet, " betAutoRef: ", betAutoRef.current);
   return (
     <>
-      <div className="flex-auto p-4">
+      <Suspense fallback={<FetchLoading />}>
+        <div className="flex-auto p-4">
 
-        <div id='index-operations' className={`flex flex-col relative h-full w-full gap-4 justify-between ${autoMode ? 'auto-mode' : ''} transition flex flex-col gap-4 ${isAction === "start" ? "pb-0" : "pb-[76px]"}`}>
-
-
-          <div className={`flex w-full absolute bg-white_20 justify-between transition transform duration-200 p-2 rounded-[10px] text-white text-base leading-5 ${isAction === "start" ? "-translate-y-24" : ""} `} onClick={goToUserInfo}>
-
-            <div className="flex gap-2.5">
-              {/* <img src={avatarData[RANKINGDATA.indexOf(user.Ranking)]} width="64px" height="64px" className="max-w-16 h-16" alt="avatar" /> */}
-              <img src={avatarData[RANKINGDATA.indexOf(user.Ranking)]} width="64px" height="64px" className="max-w-16 h-16" alt="avatar" />
-              <div className="flex flex-col w-full gap-0.5">
-                <p className="font-semibold">{user.RealName}</p>
-                <p className="font-semibold">{user.Ranking} · {RANKINGDATA.indexOf(user.Ranking) + 1}/10</p>
-                <p className="text-[#ffffff99]">{user.Rank}</p>
-              </div>
-            </div>
+          <div id='index-operations' className={`flex flex-col relative h-full w-full gap-4 justify-between ${autoMode ? 'auto-mode' : ''} transition flex flex-col gap-4 ${isAction === "start" ? "pb-0" : "pb-[76px]"}`}>
 
 
-            <div className="flex flex-col gap-2">
-              <PannelScore img={Img.agree} text2={"Won"} text3={user.GameWon} />
-              <PannelScore img={Img.disagree} text2={"Lost"} text3={user.GameLost} />
-            </div>
+            <div className={`flex w-full absolute bg-white_20 justify-between transition transform duration-200 p-2 rounded-[10px] text-white text-base leading-5 ${isAction === "start" ? "-translate-y-24" : ""} `} onClick={goToUserInfo}>
 
-          </div>
-
-
-          <div className={` transform translate-y-[100px] bg-cover bg-center bg-opacity-20 justify-between flex gap-2 px-4 py-2 items-center reward-bg h-[76px] rounded-[10px] ${rewardState ? "" : "hidden"}`} style={{ background: `url(${rewardBG})` }}>
-            <div>
-              <img src="/image/cup.png" width={48} height={48} className="max-w-12 h-12" alt='cup'></img>
-            </div>
-
-            <div className="text-[15px] w-1/2 leading-5 tracking-[-2%] text-white">You have uncompleted tasks that you can get rewards for.</div>
-            <ShadowButton
-              content="Get Rewards"
-              className={`relative px-3 py-1 bg-[#84CB69] text-[#080888] shadow-btn-custom-border h-7 text-sm leading-5 w-[108px] font-medium `}
-              action={() => setRewardState(false)}
-            />
-            <div className="absolute w-[30px], h-[30px]  top-0 right-0" onClick={() => setRewardState(false)}>
-              <img src="/image/icon/CloseButton.svg" width={30} height={30} className="max-w-[30px] h-[30px]" alt="close" />
-            </div>
-
-          </div>
-          <TabButton className={`transform translate-y-[100px] ${isAction === "start" ? "-translate-y-[150px]" : ""} `} tabList={statsList} tabNo={tabId} setTabNo={setTabId} />
-          <Game className={`transition-all ${isAction !== "start" ? "mt-24" : "mt-0"} `} finalResult={finalResult} gamePhase={gamePhase} isWin={winState}
-            setLoaderIsShown={setLoaderIsShown} amount={balance} bet={bet} autoStop={autoStop} socketFlag={socketStart} realGame={isReal} setInfoState={(e) => setInfoState(e)} />
-
-          <div className="flex flex-col text-white gap-4">
-            <div >
-              <div className={`flex flex-row justify-center text-base font-medium ${gamePhase === 'started' ? "opacity-20 !text-white" : ""}`}>
-                <span className={`text-[#3861FB] ${!autoMode ? 'selected text-white ' : ''}`} onClick={gamePhase !== 'started' ? e => setPlayMode(false) : undefined} >Manual</span>
-                <SwitchButton checked={autoMode} onChange={gamePhase !== 'started' ? (e => setPlayMode(e.target.checked)) : undefined} />
-                <span className={`text-[#3861FB] ${autoMode ? 'selected text-white ' : ''}`} onClick={gamePhase !== 'started' ? e => setPlayMode(true) : undefined} >Auto</span>
-              </div>
-
-              <div className={`transition duration-300 ${autoMode && "hidden"} flex gap-4`}>
-                <div className="flex flex-col w-1/2 gap-1">
-                  <div className="text-sm leading-5">Bet</div>
-                  <InputNumber InputProps={{ value: betManualRef.current, min: 1, step: 1, disabled: gamePhase === 'started', onChange: e => { setBet(parseFloat(e.target.value)); betManualRef.current = parseFloat(e.target.value) } }} />
-                  <div className="text-xs leading-[14px] text-[#FFFFFFCC]">Minimal Bet is 1 Coin</div>
-                </div>
-
-                <div className="flex flex-col w-1/2 gap-1">
-                  <div className="text-sm leading-5">Auto Stop</div>
-                  <InputNumber InputProps={{ value: autoStopManual, min: 1.1, max: 100, step: 1, disabled: gamePhase === 'started', type: "xWithNumber", onChange: e => { setAutoStopManual(e.target.value) } }} />
-                  <div className="text-xs leading-[14px] text-[#FFFFFFCC]">Auto Cash Out when this amount will be reached</div>
+              <div className="flex gap-2.5">
+                {/* <img src={avatarData[RANKINGDATA.indexOf(user.Ranking)]} width="64px" height="64px" className="max-w-16 h-16" alt="avatar" /> */}
+                 <LazyLoadImage
+                  alt="user ranking avatar"
+                  effect="blur"
+                  wrapperProps={{
+                    style: {
+                      // transitionDelay: "1s",
+                      height: "64px",
+                      width: "64px",
+                      maxWidth: "64px",
+                    },
+                  }}
+                  src={avatarData[RANKINGDATA.indexOf(user.Ranking)]} />
+                <div className="flex flex-col w-full gap-0.5">
+                  <p className="font-semibold">{user.RealName}</p>
+                  <p className="font-semibold">{user.Ranking} · {RANKINGDATA.indexOf(user.Ranking) + 1}/10</p>
+                  <p className="text-[#ffffff99]">{user.Rank}</p>
                 </div>
               </div>
+
+
+              <div className="flex flex-col gap-2">
+                <PannelScore img={Img.agree} text2={"Won"} text3={user.GameWon} />
+                <PannelScore img={Img.disagree} text2={"Lost"} text3={user.GameLost} />
+              </div>
+
             </div>
 
-            {
-              gamePhase !== 'started' ?
-                (
-                  <div className="flex gap-2 w-full justify-between">
-                    {autoMode && <ShadowButton className={`transition-all flex w-1/5 bg-white justify-center items-center invite-btn-setting border-white `}
-                      content={<SettingButton />}
-                      action={() => setIsModalOpen(true)}
-                    />}
-                    <ShadowButton
-                      action={startGame}
-                      content={"Start"}
-                      disabled={
-                        balance === '0.00' ||
-                        bet < 1 || autoStop < 1.1 ||
-                        balance < 1 || isNaN(bet) || isNaN(autoStop) || isNaN(winCoefficient)
-                        || isNaN(lostCoefficient)
-                      }
-                    />
-                  </div>
-                ) :
-                (
-                  <ShadowButton
-                    className={"bg-[#CC070A] shadow-btn-red-border invite-btn-red-shadow"}
-                    content={"Stop"}
-                    action={stopGame}
-                  />
-                )
-            }
 
-            <SettingModal icon={<AutoIcon />} title="Auto Launch" isOpen={isModalOpen} setIsOpen={setIsModalOpen}>
-              <div className="flex flex-col justify-between max-h-screen pt-2 px-4 pb-4 h-[calc(100vh-60px)]" >
-                <div className="flex flex-col gap-[15px]" >
-                  <div className="flex gap-4">
-                    <div className="flex flex-col w-1/2 gap-1">
-                      <div className="text-sm leading-5">Bet</div>
-                      <InputNumber InputProps={{ value: betAutoRef.current, min: 1, step: 1, onChange: e => { setBet(parseFloat(e.target.value)); betAutoRef.current = parseFloat(e.target.value) } }} />
-                      <div className="text-xs leading-[14px] text-[#FFFFFFCC]">Minimal Bet is 1 Coin</div>
-                    </div>
+            <div className={` transform translate-y-[100px] bg-cover bg-center bg-opacity-20 justify-between flex gap-2 px-4 py-2 items-center reward-bg h-[76px] rounded-[10px] ${rewardState ? "" : "hidden"}`} style={{ background: `url(${rewardBG})` }}>
+              <div>
+                <img src="/image/cup.png" width={48} height={48} className="max-w-12 h-12" alt='cup'></img>
+              </div>
 
-                    <div className="flex flex-col w-1/2 gap-1">
-                      <div className="text-sm leading-5">Auto Stop</div>
-                      <InputNumber InputProps={{ value: autoStopAM, min: 1.1, max: 100, step: 1, type: "xWithNumber", onChange: e => { setAutoStopAM(e.target.value) } }} />
-                      <div className="text-xs leading-[14px] text-[#FFFFFFCC]">Auto Cash Out when this amount will be reached</div>
-                    </div>
-                  </div>
+              <div className="text-[15px] w-1/2 leading-5 tracking-[-2%] text-white">You have uncompleted tasks that you can get rewards for.</div>
+              <ShadowButton
+                content="Get Rewards"
+                className={`relative px-3 py-1 bg-[#84CB69] text-[#080888] shadow-btn-custom-border h-7 text-sm leading-5 w-[108px] font-medium `}
+                action={() => setRewardState(false)}
+              />
+              <div className="absolute w-[30px], h-[30px]  top-0 right-0" onClick={() => setRewardState(false)}>
+                <img src="/image/icon/CloseButton.svg" width={30} height={30} className="max-w-[30px] h-[30px]" alt="close" />
+              </div>
 
-                  <div className="flex flex-col gap-[15px]">
-                    <div className="flex flex-col w-full gap-1">
-                      <div className="text-sm leading-5">If Lose</div>
-                      <SwitchButtonOption contents={operationOption} setSlot={(e) => setOperationAfterLoss(e)} slot={operationAfterLoss} />
-                    </div>
+            </div>
+            <TabButton className={`transform translate-y-[100px] ${isAction === "start" ? "-translate-y-[150px]" : ""} `} tabList={statsList} tabNo={tabId} setTabNo={setTabId} />
+            <Game className={`transition-all ${isAction !== "start" ? "mt-24" : "mt-0"} `} finalResult={finalResult} gamePhase={gamePhase} isWin={winState}
+              setLoaderIsShown={setLoaderIsShown} amount={balance} bet={bet} autoStop={autoStop} socketFlag={socketStart} realGame={isReal} setInfoState={(e) => setInfoState(e)} />
 
-                    <div className="flex flex-col w-full gap-1">
-                      <div className="text-sm leading-5">Coefficient</div>
-                      <InputNumber InputProps={{ value: lostCoefficient, min: 1, max: 100, step: 1, type: "xWithNumber", disabled: operationAfterLoss === "Return to base Bet", onChange: e => { setLostCoefficient(parseFloat(e.target.value)) } }} />
-                    </div>
-                  </div>
-
-                  <div className="flex flex-col gap-[15px]">
-                    <div className="flex flex-col w-full gap-1">
-                      <div className="text-sm leading-5">If Win</div>
-                      <SwitchButtonOption contents={operationOption} setSlot={(e) => setOperationAfterWin(e)} slot={operationAfterWin} />
-                    </div>
-
-                    <div className="flex flex-col w-full gap-1">
-                      <div className="text-sm leading-5 text-[#FFFFFF99]">Coefficeent</div>
-                      <InputNumber InputProps={{ value: winCoefficient, min: 1, max: 100, step: 1, type: "xWithNumber", disabled: operationAfterWin === "Return to base Bet", onChange: e => { setWinCoefficient(e.target.value) } }} />
-                    </div>
-                  </div>
+            <div className="flex flex-col text-white gap-4">
+              <div >
+                <div className={`flex flex-row justify-center text-base font-medium ${gamePhase === 'started' ? "opacity-20 !text-white" : ""}`}>
+                  <span className={`text-[#3861FB] ${!autoMode ? 'selected text-white ' : ''}`} onClick={gamePhase !== 'started' ? e => setPlayMode(false) : undefined} >Manual</span>
+                  <SwitchButton checked={autoMode} onChange={gamePhase !== 'started' ? (e => setPlayMode(e.target.checked)) : undefined} />
+                  <span className={`text-[#3861FB] ${autoMode ? 'selected text-white ' : ''}`} onClick={gamePhase !== 'started' ? e => setPlayMode(true) : undefined} >Auto</span>
                 </div>
 
-                {
-                  gamePhase !== 'started' ?
-                    (
+                <div className={`transition duration-300 ${autoMode && "hidden"} flex gap-4`}>
+                  <div className="flex flex-col w-1/2 gap-1">
+                    <div className="text-sm leading-5">Bet</div>
+                    <InputNumber InputProps={{ value: betManualRef.current, min: 1, step: 1, disabled: gamePhase === 'started', onChange: e => { setBet(parseFloat(e.target.value)); betManualRef.current = parseFloat(e.target.value) } }} />
+                    <div className="text-xs leading-[14px] text-[#FFFFFFCC]">Minimal Bet is 1 Coin</div>
+                  </div>
+
+                  <div className="flex flex-col w-1/2 gap-1">
+                    <div className="text-sm leading-5">Auto Stop</div>
+                    <InputNumber InputProps={{ value: autoStopManual, min: 1.1, max: 100, step: 1, disabled: gamePhase === 'started', type: "xWithNumber", onChange: e => { setAutoStopManual(e.target.value) } }} />
+                    <div className="text-xs leading-[14px] text-[#FFFFFFCC]">Auto Cash Out when this amount will be reached</div>
+                  </div>
+                </div>
+              </div>
+
+              {
+                gamePhase !== 'started' ?
+                  (
+                    <div className="flex gap-2 w-full justify-between">
+                      {autoMode && <ShadowButton className={`transition-all flex w-1/5 bg-white justify-center items-center invite-btn-setting border-white `}
+                        content={<SettingButton />}
+                        action={() => setIsModalOpen(true)}
+                      />}
                       <ShadowButton
-                        action={handleModalButton}
+                        action={startGame}
                         content={"Start"}
                         disabled={
-                          balance === '0.00' || bet < 1 || autoStop < 1.1 ||
+                          balance === '0.00' ||
+                          bet < 1 || autoStop < 1.1 ||
                           balance < 1 || isNaN(bet) || isNaN(autoStop) || isNaN(winCoefficient)
                           || isNaN(lostCoefficient)
                         }
                       />
-                    ) :
-                    (
-                      <ShadowButton
-                        className={"bg-[#CC070A] shadow-btn-red-border invite-btn-red-shadow"}
-                        content={"Stop"}
-                        action={stopGame}
-                      />
-                    )
-                }
-              </div>
-            </SettingModal>
+                    </div>
+                  ) :
+                  (
+                    <ShadowButton
+                      className={"bg-[#CC070A] shadow-btn-red-border invite-btn-red-shadow"}
+                      content={"Stop"}
+                      action={stopGame}
+                    />
+                  )
+              }
 
-            <InfoModal title="Welcome, Recruit!" isOpen={firstLogin} setIsOpen={() => setFirstLogin(false)} height="h-[480px]">
-              <div className="flex items-center justify-center">
-                <img src={avatar.avatarBeginner} width="128px" height="128px" className="max-w-[128px] h-[128px]" alt="avatar" />
-              </div>
-              <div className="flex flex-col gap-6 text-black text-center text-[15px] font-normal leading-5 tracking-[-2%]">
-                <div>
-                  🚀 Place your bet and press the Start button to launch the rocket!
-                </div>
-                <div>
-                  💰 As the rocket flies, a multiplier increases your bet. Press the Stop button to get your profit!
-                </div>
-                <div>
-                  💥 But be careful, because the rocket can crash at any moment, and if it does, you'll lose your bet!
-                </div>
-              </div>
-              <div className=" flex gap-4">
-                <Link to={'/help'} className="w-1/2">
-                  <ShadowButton className=" bg-white text-[#3861FB] invite-btn-setting !border-[#F3E3E3]" content="learn more" />
-                </Link>
-                <ShadowButton className="w-1/2" content="Got it!" action={() => setFirstLogin(false)} />
+              <SettingModal icon={<AutoIcon />} title="Auto Launch" isOpen={isModalOpen} setIsOpen={setIsModalOpen}>
+                <div className="flex flex-col justify-between max-h-screen pt-2 px-4 pb-4 h-[calc(100vh-60px)]" >
+                  <div className="flex flex-col gap-[15px]" >
+                    <div className="flex gap-4">
+                      <div className="flex flex-col w-1/2 gap-1">
+                        <div className="text-sm leading-5">Bet</div>
+                        <InputNumber InputProps={{ value: betAutoRef.current, min: 1, step: 1, onChange: e => { setBet(parseFloat(e.target.value)); betAutoRef.current = parseFloat(e.target.value) } }} />
+                        <div className="text-xs leading-[14px] text-[#FFFFFFCC]">Minimal Bet is 1 Coin</div>
+                      </div>
 
-              </div>
-            </InfoModal>
-            <InfoModal title="Coming soon!" isOpen={infoState} setIsOpen={() => setInfoState(false)} height="h-[280px]">
-              <div className="flex items-center justify-center">
-                <img src='image/icon/rocketx.svg' width="48px" height="48px" className="max-w-[48px] h-[48px]" alt="avatar" />
-              </div>
-              <div className="flex flex-col gap-6 text-black text-center text-[15px] font-normal leading-5 tracking-[-2%]">
-                <div>
-                  🛠 Our token is under development!
-                </div>
-                <div>
-                  📢 Join our social media to stay up to date.
-                </div>
-                <Contact />
-              </div>
+                      <div className="flex flex-col w-1/2 gap-1">
+                        <div className="text-sm leading-5">Auto Stop</div>
+                        <InputNumber InputProps={{ value: autoStopAM, min: 1.1, max: 100, step: 1, type: "xWithNumber", onChange: e => { setAutoStopAM(e.target.value) } }} />
+                        <div className="text-xs leading-[14px] text-[#FFFFFFCC]">Auto Cash Out when this amount will be reached</div>
+                      </div>
+                    </div>
 
-            </InfoModal>
+                    <div className="flex flex-col gap-[15px]">
+                      <div className="flex flex-col w-full gap-1">
+                        <div className="text-sm leading-5">If Lose</div>
+                        <SwitchButtonOption contents={operationOption} setSlot={(e) => setOperationAfterLoss(e)} slot={operationAfterLoss} />
+                      </div>
+
+                      <div className="flex flex-col w-full gap-1">
+                        <div className="text-sm leading-5">Coefficient</div>
+                        <InputNumber InputProps={{ value: lostCoefficient, min: 1, max: 100, step: 1, type: "xWithNumber", disabled: operationAfterLoss === "Return to base Bet", onChange: e => { setLostCoefficient(parseFloat(e.target.value)) } }} />
+                      </div>
+                    </div>
+
+                    <div className="flex flex-col gap-[15px]">
+                      <div className="flex flex-col w-full gap-1">
+                        <div className="text-sm leading-5">If Win</div>
+                        <SwitchButtonOption contents={operationOption} setSlot={(e) => setOperationAfterWin(e)} slot={operationAfterWin} />
+                      </div>
+
+                      <div className="flex flex-col w-full gap-1">
+                        <div className="text-sm leading-5 text-[#FFFFFF99]">Coefficeent</div>
+                        <InputNumber InputProps={{ value: winCoefficient, min: 1, max: 100, step: 1, type: "xWithNumber", disabled: operationAfterWin === "Return to base Bet", onChange: e => { setWinCoefficient(e.target.value) } }} />
+                      </div>
+                    </div>
+                  </div>
+
+                  {
+                    gamePhase !== 'started' ?
+                      (
+                        <ShadowButton
+                          action={handleModalButton}
+                          content={"Start"}
+                          disabled={
+                            balance === '0.00' || bet < 1 || autoStop < 1.1 ||
+                            balance < 1 || isNaN(bet) || isNaN(autoStop) || isNaN(winCoefficient)
+                            || isNaN(lostCoefficient)
+                          }
+                        />
+                      ) :
+                      (
+                        <ShadowButton
+                          className={"bg-[#CC070A] shadow-btn-red-border invite-btn-red-shadow"}
+                          content={"Stop"}
+                          action={stopGame}
+                        />
+                      )
+                  }
+                </div>
+              </SettingModal>
+
+              <InfoModal title="Welcome, Recruit!" isOpen={firstLogin} setIsOpen={() => setFirstLogin(false)} height="h-[480px]">
+                <div className="flex items-center justify-center">
+                  <img src={avatar.avatarBeginner} width="128px" height="128px" className="max-w-[128px] h-[128px]" alt="avatar" />
+                </div>
+                <div className="flex flex-col gap-6 text-black text-center text-[15px] font-normal leading-5 tracking-[-2%]">
+                  <div>
+                    🚀 Place your bet and press the Start button to launch the rocket!
+                  </div>
+                  <div>
+                    💰 As the rocket flies, a multiplier increases your bet. Press the Stop button to get your profit!
+                  </div>
+                  <div>
+                    💥 But be careful, because the rocket can crash at any moment, and if it does, you'll lose your bet!
+                  </div>
+                </div>
+                <div className=" flex gap-4">
+                  <Link to={'/help'} className="w-1/2">
+                    <ShadowButton className=" bg-white text-[#3861FB] invite-btn-setting !border-[#F3E3E3]" content="learn more" />
+                  </Link>
+                  <ShadowButton className="w-1/2" content="Got it!" action={() => setFirstLogin(false)} />
+
+                </div>
+              </InfoModal>
+              <InfoModal title="Coming soon!" isOpen={infoState} setIsOpen={() => setInfoState(false)} height="h-[280px]">
+                <div className="flex items-center justify-center">
+                  <img src='image/icon/rocketx.svg' width="48px" height="48px" className="max-w-[48px] h-[48px]" alt="avatar" />
+                </div>
+                <div className="flex flex-col gap-6 text-black text-center text-[15px] font-normal leading-5 tracking-[-2%]">
+                  <div>
+                    🛠 Our token is under development!
+                  </div>
+                  <div>
+                    📢 Join our social media to stay up to date.
+                  </div>
+                  <Contact />
+                </div>
+
+              </InfoModal>
+            </div>
           </div>
         </div>
-      </div>
+      </Suspense>
     </>
   );
 };

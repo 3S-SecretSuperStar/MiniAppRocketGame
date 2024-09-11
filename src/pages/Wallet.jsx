@@ -6,6 +6,7 @@ import ShadowButton from "../component/atom/shadow-btn";
 import Contact from "../component/molecules/contact";
 import { useAtom } from "jotai";
 import { isActionState } from "../store";
+import { LazyLoadImage } from "react-lazy-load-image-component";
 
 
 const Wallet = () => {
@@ -18,11 +19,18 @@ const Wallet = () => {
     <div className="h-full pb-[76px] flex flex-col">
       <div className="flex-auto flex" style={{ height: "calc(100vh - 320px)" }}>
         <div className="my-auto flex flex-col items-center text-center gap-4 h-fit">
-          <img
-            src="/image/main/ton.png"
-            alt=""
-            className="h-full max-w-[200px]"
-          />
+          
+          <LazyLoadImage
+                alt="wallet"
+                effect="blur"
+                wrapperProps={{
+                  style: {
+                    transitionDelay: "1s",
+                    maxHeight: "auto",
+                    maxWidth: '200px'
+                  },
+                }}
+                src="/image/main/ton.png" />
           <div className="text-[15px] text-white">
             Connect your Token wallet to be able to play with Token and receive rewards from the platform.
           </div>
