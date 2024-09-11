@@ -307,11 +307,11 @@ const TaskList = () => {
           console.log(e);
         }
         finally {
-          // setTimeout(() => {
+          setTimeout(() => {
           setLoading(false)
           firstLoading && setActionState("ready")
           setFirstLoading(false);
-          // }, 500)
+          }, 500)
         }
       })
 
@@ -361,7 +361,7 @@ const TaskList = () => {
   return (
     <Suspense fallback={<fetchData />}>
       <div className="flex flex-col gap-2 text-[14px] overflow-auto pb-4" style={{ height: "calc(100vh - 200px)" }}>
-        {Object.keys(dailyTaskData).length && <GenerateTask task={dailyTaskData} stateTask={stateTask} key={0} index={0} dailytaskIndex={dailytaskIndex} fetchData={fetchData} />}
+        {Object.keys(dailyTaskData).length>0 && <GenerateTask task={dailyTaskData} stateTask={stateTask} key={0} index={0} dailytaskIndex={dailytaskIndex} fetchData={fetchData} />}
         {
           otherTaskData
             .sort((a, b) => a.status - b.status)

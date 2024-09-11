@@ -22,7 +22,7 @@ const Wallet = () => {
           
           <LazyLoadImage
                 alt="wallet"
-                effect="blur"
+                effect="opacity"
                 wrapperProps={{
                   style: {
                     transitionDelay: "1s",
