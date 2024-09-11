@@ -364,7 +364,7 @@ const TaskList = () => {
         {Object.keys(dailyTaskData).length && <GenerateTask task={dailyTaskData} stateTask={stateTask} key={0} index={0} dailytaskIndex={dailytaskIndex} fetchData={fetchData} />}
         {
           otherTaskData
-            .sort((a, b) => b.status - a.status)
+            .sort((a, b) => a.status - b.status)
             .map((_task, _index) => <GenerateTask task={_task} stateTask={stateTask} key={_index} index={_index} dailytaskIndex={dailytaskIndex} fetchData={fetchData} />)
         }
       </div>
