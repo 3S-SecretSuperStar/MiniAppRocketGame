@@ -57,7 +57,7 @@ export default memo(function Game({ gamePhase, finalResult, amount = 10.00,
             clearInterval(newCountTimeHandler); // Clear the interval when counter reaches zero
             setCounterNumber(0);// Ensure counter is set to zero
             setCounterFlag(true)
-            console.log("bet in game",bet)
+            console.log("bet in game", bet)
             context.socket.send(JSON.stringify({
               operation: 'start',
               bet,
@@ -241,10 +241,9 @@ export default memo(function Game({ gamePhase, finalResult, amount = 10.00,
             <img src="/image/icon/info.svg" width={24} height={24} className='max-w-6 h-6' alt="info" />
           </Link>
         </div>
-        {
-          counterNumber > 0 && counterNumber < 1.2 ?
-            <img className='absolute top-1/3 z-10' src={counterItem[counterNumber - 1]} width={56} height={56} alt="counter number" /> : ""
-        }
+
+        <img className={`absolute top-1/3 z-10 max-w-[108px] ${counterNumber > 0 && counterNumber < 1.2 ? "" : "hidden"}`} src={counterItem[0]} width="108px" height="102px" alt="counter number" />
+
         {
           counterNumber < 5 &&
             counterNumber > 1.2 ?
@@ -290,7 +289,7 @@ export default memo(function Game({ gamePhase, finalResult, amount = 10.00,
         <img
           src='/image/rocket-inactive.png'
           className={`game-rocket inactive ${((counterNumber === 0 && gamePhase === 'started' && socketFlag) || gamePhase === "crashed") ? "hidden" : 'block'}`}
-          alt='inactive rocket' 
+          alt='inactive rocket'
         />
       </div>
 

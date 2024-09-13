@@ -13,7 +13,7 @@ import trailingButton from "./TrailingButton.png";
 import youWon from "./youwon.svg";
 import wow from "./wow.svg";
 import crash from "./crash.png";
-import go from "./Go.svg";
+import go from "./go.png"
 import imgSetting from "./img_setting.svg";
 import loadingTitle from "./loading_title.png";
 import imgAmazing from "./Amazing.png";

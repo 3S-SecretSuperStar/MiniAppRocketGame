@@ -43,10 +43,10 @@ function App() {
   useEffect(() => {
     let socket
     try {
-      socket = new WebSocket(wsServerUrl)
+      socket = new ReconnectingWebSocket(wsServerUrl)
       setInterval(()=>{
         socket.send(JSON.stringify({ operation: 'ping' }))
-      },60000)  
+      },10000)  
     } catch (e) {
       //eslint-disable-next-line no-self-assign
       document.location.href = document.location.href

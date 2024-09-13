@@ -343,6 +343,7 @@ const MainPage = () => {
   console.log("data of user : ", user)
   // Function to start the game
   const startGame = () => {
+    stopGame();
     if (autoMode) {
       setBet(Math.min(betAutoRef.current, balanceRef.current));
       realBet = Math.min(betAutoRef.current, balanceRef.current)
