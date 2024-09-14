@@ -139,7 +139,7 @@ const UserInfo = () => {
   }
   return (
     <div className="flex flex-col gap-4 items-center text-white text-base">
-      <div className="font-semibold">{user.RealName}</div>
+      <div className="font-semibold text-ellipsis overflow-hidden w-52 whitespace-nowrap">{user.RealName}</div>
       <TabButton tabList={statsList} tabNo={tabId} setTabNo={setTabId} />
       <div className="flex flex-col gap-4 overflow-auto w-full " style={{ height: "calc(100vh - 200px)" }}>
         <div className="flex gap-[41px] text-blueFaded text-sm justify-center">

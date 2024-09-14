@@ -10,7 +10,7 @@ const Contact = () => {
       <Link to='https://t.me/rocketton_official'>
         <ShadowButton className={"w-8 h-8 flex justify-center p-0 items-center rounded-lg"} content={<TgIcon />}></ShadowButton>
       </Link>
-      <Link to='https://x.com/RocketTON_Game'>
+      <Link to=' https://x.com/RocketTONGame'>
         <ShadowButton className={"w-8 h-8 flex justify-center p-0 items-center rounded-lg"} content={<TgTwitter />}></ShadowButton>
       </Link>
       <Link to='https://www.instagram.com/rocketton_official'>

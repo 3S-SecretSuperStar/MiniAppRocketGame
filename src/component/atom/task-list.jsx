@@ -177,7 +177,7 @@ const TaskList = () => {
     'sub-tg': { imgSrc: "Avatar-tg.png", link: "https://t.me/rocketton_official" },
     'join-tg': { imgSrc: "Avatar-tg.png", link: "https://t.me/RocketTON_Chat" },
     'sub-you': { imgSrc: "Avatar-you.png", link: "https://www.youtube.com/@RocketTON_Official" },
-    'sub-X': { imgSrc: "Avatar-X.png", link: "https://x.com/RocketTON_Game" },
+    'sub-X': { imgSrc: "Avatar-X.png", link: " https://x.com/RocketTONGame" },
     'sub-ins': { imgSrc: "Avatar-ins.png", link: "https://www.instagram.com/rocketton_official" },
     'type2-2': { imgSrc: "Type2-2.png", link: "" },
     'type2-3': { imgSrc: "Type2-3.png", link: "" },

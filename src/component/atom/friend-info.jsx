@@ -8,7 +8,7 @@ const FriendInfo = ({ data }) => {
                     className="w-8 h-8 rounded-full"
                 />
                 <div className="flex flex-col text-[14px] text-white font-bold">
-                    <div>{data.name}</div>
+                    <div className="text-ellipsis overflow-hidden w-32 whitespace-nowrap">{data.name}</div>
                     <div>{`${data.label} · ${data.rate}/10`}</div>
                     <div className="text-[#ffffff99] font-normal">{data.id}</div>
                 </div>

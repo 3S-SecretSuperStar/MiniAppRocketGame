@@ -294,8 +294,10 @@ const MainPage = () => {
                   setRewardState(myData.first_state !== "false");
                   setBalance(newBalance)
                   setUser({
-                    RealName: realName, UserName: userName, UserId: userId,
-                    Balance: isReal ? myData.balance.real.toFixed(2) : myData.balance.virtual.toFixed(2),
+                    RealName: realName ,
+                     UserName: userName,
+                     UserId: userId,
+                    Balance: isReal ? myData.balance.real.toFixed(2) : myData.balance.virtual.toFixed(2), 
                     GameWon: isReal ? myData.realWins : myData.virtualWins,
                     GameLost: isReal ? myData.realLosses : myData.virtualLosses,
                     Rank: myData.rank,
@@ -565,7 +567,7 @@ const MainPage = () => {
 
               <div className="flex gap-2.5">
                 {/* <img src={avatarData[RANKINGDATA.indexOf(user.Ranking)]} width="64px" height="64px" className="max-w-16 h-16" alt="avatar" /> */}
-                 <LazyLoadImage
+                <LazyLoadImage
                   alt="user ranking avatar"
                   effect="blur"
                   wrapperProps={{
@@ -578,7 +580,7 @@ const MainPage = () => {
                   }}
                   src={avatarData[RANKINGDATA.indexOf(user.Ranking)]} />
                 <div className="flex flex-col w-full gap-0.5">
-                  <p className="font-semibold">{user.RealName}</p>
+                  <p className="font-semibold text-ellipsis overflow-hidden w-32 whitespace-nowrap">{user.RealName}</p>
                   <p className="font-semibold">{user.Ranking} · {RANKINGDATA.indexOf(user.Ranking) + 1}/10</p>
                   <p className="text-[#ffffff99]">{user.Rank}</p>
                 </div>
