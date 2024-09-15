@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Suspense } from "react";
 import { Carousel } from 'react-responsive-carousel';
 import { useAtom } from "jotai";
 import FriendRanking from "../component/atom/friend-ranking.jsx";
@@ -17,6 +17,7 @@ import InfoModal from "../component/atom/infoModel.jsx";
 import { realGameState } from "../store/realGameState.jsx";
 import Contact from "../component/molecules/contact.jsx";
 import { isActionState } from "../store/actionState.jsx";
+import FetchLoading from "../component/template/FetchLoading.jsx";
 
 const UserInfo = () => {
   const [user,] = useAtom(userData);
@@ -30,6 +31,8 @@ const UserInfo = () => {
   const [realName, setRealName] = useState("");
   const [gameDataLength, setGameDataLength] = useState(0);
   const [, setActionState]= useAtom(isActionState);
+  const [loading, setLoading] = useState(true)
+  const [firstLoading, setFirstLoading] = useState(true);
   const statsList = [
     {
       src: "coin-y.svg",
@@ -89,6 +92,13 @@ const UserInfo = () => {
               // eslint-disable-next-line no-self-assign
               document.location.href = document.location.href
             }
+            finally {
+              setTimeout(() => {
+                setLoading(false)
+                firstLoading && setActionState("ready")
+                setFirstLoading(false);
+              }, 500)
+            }
           }
         })
       return () => { isMounted = false }
@@ -131,13 +141,17 @@ const UserInfo = () => {
     }
   }, [rankingIndex, gameDataLength])
 
-
+  if (loading && firstLoading) {
+    setActionState("start")
+    return <FetchLoading />
+  }
 
   if (tabId === 2) {
     setTabId(1);
     setInfoState(true)
   }
   return (
+    <Suspense fallback={<FetchLoading />}>
     <div className="flex flex-col gap-4 items-center text-white text-base">
       <div className="font-semibold text-ellipsis overflow-hidden w-52 whitespace-nowrap">{user.RealName}</div>
       <TabButton tabList={statsList} tabNo={tabId} setTabNo={setTabId} />
@@ -216,6 +230,7 @@ const UserInfo = () => {
 
       </InfoModal>
     </div>
+    </Suspense>
   )
 }
 
