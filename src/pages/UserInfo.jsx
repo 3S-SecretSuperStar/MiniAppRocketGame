@@ -212,7 +212,30 @@ const UserInfo = () => {
 
               (friendData.length > 0 ?
                 friendData.map((_data, _index) => <FriendRanking data={_data} key={_index} />)
-                // : (loading && firstLoading) ? <Skeleton/>
+                : (loading && firstLoading) ? (
+                  <div className="flex justify-between rounded-[10px] bg-[#0000001A] py-2 px-4 items-center">
+
+                    <div className="flex gap-1 items-center">
+                      <div class="rounded-full bg-slate-700 h-8 w-8"></div>
+                      <div className="flex flex-col text-[14px] text-white font-bold">
+                        <div class="h-6 bg-slate-700 rounded"></div>
+                        <div class="h-6 bg-slate-700 rounded"></div>
+                        <div class="h-6 bg-slate-700 rounded"></div>
+
+                      </div>
+                    </div>
+
+
+                    <div className="flex items-center gap-2 text-[14px] font-medium">
+                      <div class="rounded-full bg-slate-700 h-6 w-6"></div>
+                      <div>
+                        <div class="h-6 bg-slate-700 rounded"></div>
+                      </div>
+                    </div>
+
+
+                  </div>
+                )
                   : <div className="text-center text-[#ACC1D9]">No {RANKINGDATA[rankingIndex]}s yet.</div>)
             }
 
