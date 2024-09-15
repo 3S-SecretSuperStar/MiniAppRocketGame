@@ -18,6 +18,7 @@ import { realGameState } from "../store/realGameState.jsx";
 import Contact from "../component/molecules/contact.jsx";
 import { isActionState } from "../store/actionState.jsx";
 import FetchLoading from "../component/template/FetchLoading.jsx";
+import Skeleton from "react-loading-skeleton";
 
 const UserInfo = () => {
   const [user,] = useAtom(userData);
@@ -208,10 +209,10 @@ const UserInfo = () => {
         <div className=" w-full" style={{ height: "calc(100vh - 630px)" }}>
           <div className="flex flex-col gap-2 pb-8">
             {
-              (loading && firstLoading) ? <FetchLoading />
-                :
-                (friendData.length > 0 ?
-                  friendData.map((_data, _index) => <FriendRanking data={_data} key={_index} />)
+
+              (friendData.length > 0 ?
+                friendData.map((_data, _index) => <FriendRanking data={_data} key={_index} />)
+                : (loading && firstLoading) ? <Skeleton/>
                   : <div className="text-center text-[#ACC1D9]">No {RANKINGDATA[rankingIndex]}s yet.</div>)
             }
 
