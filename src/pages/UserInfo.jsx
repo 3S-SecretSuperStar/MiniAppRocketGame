@@ -30,7 +30,7 @@ const UserInfo = () => {
   const [gameData, setGameData] = useState({});
   const [realName, setRealName] = useState("");
   const [gameDataLength, setGameDataLength] = useState(0);
-  const [, setActionState]= useAtom(isActionState);
+  const [, setActionState] = useAtom(isActionState);
   const [loading, setLoading] = useState(true)
   const [firstLoading, setFirstLoading] = useState(true);
   const statsList = [
@@ -72,7 +72,7 @@ const UserInfo = () => {
     let isMounted = true
     if (webapp) {
 
-      const lastName = webapp["user"]["last_name"]&&(" " + webapp["user"]["last_name"]);
+      const lastName = webapp["user"]["last_name"] && (" " + webapp["user"]["last_name"]);
 
       const realName = webapp["user"]["first_name"] + lastName;
       const userName = webapp["user"]["username"];
@@ -132,26 +132,27 @@ const UserInfo = () => {
           name: data.name,
           label: ranking,
           rate: RANKINGDATA.indexOf(ranking) + 1,
-          balance: nFormatter( isReal ? data.balance.real : data.balance.virtual,2),
+          balance: nFormatter(isReal ? data.balance.real : data.balance.virtual, 2),
           ranking: data.rank
-  
+
         }
       })
       setFriendData(filterData)
     }
   }, [rankingIndex, gameDataLength])
 
-  if (loading && firstLoading) {
-    setActionState("start")
-    return <FetchLoading />
-  }
+
 
   if (tabId === 2) {
     setTabId(1);
     setInfoState(true)
   }
+
+
+
+
   return (
-    <Suspense fallback={<FetchLoading />}>
+    // <Suspense fallback={<FetchLoading />}>
     <div className="flex flex-col gap-4 items-center text-white text-base">
       <div className="font-semibold text-ellipsis overflow-hidden w-52 whitespace-nowrap">{user.RealName}</div>
       <TabButton tabList={statsList} tabNo={tabId} setTabNo={setTabId} />
@@ -207,10 +208,13 @@ const UserInfo = () => {
         <div className=" w-full" style={{ height: "calc(100vh - 630px)" }}>
           <div className="flex flex-col gap-2 pb-8">
             {
-              friendData.length > 0 ?
-                friendData.map((_data, _index) => <FriendRanking data={_data} key={_index} />)
-                : <div className="text-center text-[#ACC1D9]">No {RANKINGDATA[rankingIndex]}s yet.</div>
+              (loading && firstLoading) ? <FetchLoading />
+                :
+                (friendData.length > 0 ?
+                  friendData.map((_data, _index) => <FriendRanking data={_data} key={_index} />)
+                  : <div className="text-center text-[#ACC1D9]">No {RANKINGDATA[rankingIndex]}s yet.</div>)
             }
+
           </div>
         </div>
       </div>
@@ -225,12 +229,12 @@ const UserInfo = () => {
           <div>
             📢 Join our social media to stay up to date.
           </div>
-          <Contact/>
+          <Contact />
         </div>
 
       </InfoModal>
     </div>
-    </Suspense>
+    // </Suspense>
   )
 }
 
