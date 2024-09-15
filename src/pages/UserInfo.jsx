@@ -19,6 +19,7 @@ import Contact from "../component/molecules/contact.jsx";
 import { isActionState } from "../store/actionState.jsx";
 import FetchLoading from "../component/template/FetchLoading.jsx";
 import Skeleton from "react-loading-skeleton";
+import UserInfoSkeleton from "../component/atom/userInfoSkeleton.jsx";
 
 const UserInfo = () => {
   const [user,] = useAtom(userData);
@@ -213,28 +214,11 @@ const UserInfo = () => {
               (friendData.length > 0 ?
                 friendData.map((_data, _index) => <FriendRanking data={_data} key={_index} />)
                 : (loading && firstLoading) ? (
-                  <div className="flex border   justify-between rounded-[10px] shadow bg-[#0000001A] py-2 px-4 items-center">
-
-                    <div className="animate-pulse flex gap-1 items-center">
-                      <div className="rounded-full bg-white h-8 w-8"></div>
-                      <div className="flex flex-col text-[14px] text-white font-bold">
-                        <div className="h-6 w-1/3 bg-white rounded"></div>
-                        <div className="h-6 w-1/3 bg-white rounded"></div>
-                        <div className="h-6 w-1/3 bg-white rounded"></div>
-
-                      </div>
-                    </div>
-
-
-                    <div className="flex animate-pulse  items-center gap-2 text-[14px] font-medium">
-                      <div className="rounded-full bg-white h-6 w-6"></div>
-                      <div>
-                        <div className="h-6 w-10 bg-white rounded"></div>
-                      </div>
-                    </div>
-
-
+                  <div className="flex flex-col gap-2">
+                    <UserInfoSkeleton />
+                    <UserInfoSkeleton />
                   </div>
+
                 )
                   : <div className="text-center text-[#ACC1D9]">No {RANKINGDATA[rankingIndex]}s yet.</div>)
             }
