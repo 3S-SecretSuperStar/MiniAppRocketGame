@@ -212,7 +212,7 @@ const UserInfo = () => {
 
               (friendData.length > 0 ?
                 friendData.map((_data, _index) => <FriendRanking data={_data} key={_index} />)
-                : (loading && firstLoading) ? <Skeleton/>
+                // : (loading && firstLoading) ? <Skeleton/>
                   : <div className="text-center text-[#ACC1D9]">No {RANKINGDATA[rankingIndex]}s yet.</div>)
             }
 
