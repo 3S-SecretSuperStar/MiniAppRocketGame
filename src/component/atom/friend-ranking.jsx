@@ -1,3 +1,5 @@
+import Skeleton from "react-loading-skeleton";
+
 const FriendRanking = ({ data }) => {
     console.log(data)
 
@@ -8,11 +10,11 @@ const FriendRanking = ({ data }) => {
                     src={data.url}
                     alt=""
                     className="w-8 h-8 rounded-full"
-                />
+                />||<Skeleton/>
                 <div className="flex flex-col text-[14px] text-white font-bold">
-                    <div className="text-ellipsis overflow-hidden w-52 whitespace-nowrap">{data.name}</div>
-                    <div>{`${data.label} · ${data.rate}/10`}</div>
-                    <div className="text-[#ffffff99] font-normal">{data.ranking}</div>
+                    <div className="text-ellipsis overflow-hidden w-52 whitespace-nowrap">{data.name}</div>||<Skeleton/>
+                    <div>{`${data.label} · ${data.rate}/10`}</div>||<Skeleton/>
+                    <div className="text-[#ffffff99] font-normal">{data.ranking}</div>||<Skeleton/>
                 </div>
             </div>
             <div className="flex items-center gap-2 text-[14px] font-medium">
@@ -21,9 +23,9 @@ const FriendRanking = ({ data }) => {
                         alt=""
                         className="w-6 h-6"
                     />
-                    <div>
+                    <div>||<Skeleton/>
                         {data.balance}
-                    </div>
+                    </div>||<Skeleton/>
                 </div>
         </div>
     )
