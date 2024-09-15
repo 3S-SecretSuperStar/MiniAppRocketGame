@@ -83,6 +83,7 @@ const MainPage = () => {
   const [tabId, setTabId] = useState(1);
   const [loading, setLoading] = useState(true)
   const [firstLoading, setFirstLoading] = useState(true);
+  // const [isAutoStart, setAutoStart] = useAtom(isAutoState);
 
   const avatarData = [avatar.avatarBeginner, avatar.avatarPilot, avatar.avatarExplorer,
   avatar.avatarAstronaut, avatar.avatarCaptain, avatar.avatarCommander, avatar.avatarAdmiral,
@@ -104,7 +105,14 @@ const MainPage = () => {
 
   const handleModalButton = () => {
     startGame();
+    // setAutoStart(true)
     setIsModalOpen(false);
+    
+  }
+
+  const handleStartButton = () =>{
+    
+    startGame()
   }
   // setRealGame(true)
   // Effect to validate and adjust state values
@@ -312,6 +320,14 @@ const MainPage = () => {
                   // eslint-disable-next-line no-self-assign
                   document.location.href = document.location.href
                 }
+                finally {
+
+                  setTimeout(() => {
+                    setLoading(false)
+                    firstLoading && setActionState("ready")
+                    setFirstLoading(false);
+                  }, 500)
+                }
               })
             await fetch(`${serverUrl}/check_first`, { method: 'POST', body: JSON.stringify({ userId: userId }), headers })
 
@@ -325,14 +341,7 @@ const MainPage = () => {
       catch (e) {
         console.log(e)
       }
-      finally {
-
-        setTimeout(() => {
-          setLoading(false)
-          firstLoading && setActionState("ready")
-          setFirstLoading(false);
-        }, 500)
-      }
+      
     }
     fetchData()
   }, [isReal, gamePhase])
@@ -639,7 +648,8 @@ const MainPage = () => {
               </div>
 
               {
-                gamePhase !== 'started' ?
+                // gamePhase !== 'started'  ?
+                gamePhase !== 'started'  ?
                   (
                     <div className="flex gap-2 w-full justify-between">
                       {autoMode && <ShadowButton className={`transition-all flex w-1/5 bg-white justify-center items-center invite-btn-setting border-white `}

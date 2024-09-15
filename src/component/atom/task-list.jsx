@@ -200,14 +200,6 @@ const TaskList = () => {
     return () => { isMounted = false }
   }, [])
 
-
-  const updateBalance = (profit) => {
-    setUser(user => {
-      const newUserBalance = (parseFloat(user.Balance) + parseFloat(profit)).toFixed(2)
-      return { ...user, Balance: newUserBalance }
-    })
-  };
-
   const fetchData = async () => {
     await fetch(`${serverUrl}/task_perform`, { method: 'POST', body: JSON.stringify({ userId: user.UserId }), headers })
       .then(res => Promise.all([res.status, res.json()]))
@@ -264,6 +256,7 @@ const TaskList = () => {
           fetch(`${serverUrl}/get_task`, { method: 'POST', body: JSON.stringify({}), headers })
             .then(res => Promise.all([res.status, res.json()]))
             .then(([status, data]) => {
+              try{
               console.log("task data", data)
               const taskItemData = data.task;
               const fixedTaskItems = taskItemData.filter(item => (item.type.substring(0, 4) !== "type" && item.type !== "daily_reward"));
@@ -321,6 +314,16 @@ const TaskList = () => {
 
                 setOtherTaskData(_otherTaskData);
               }
+            }catch(e){
+              console.log(e)
+            }
+            finally {
+          setTimeout(() => {
+            setLoading(false)
+            firstLoading && setActionState("ready")
+            setFirstLoading(false);
+          }, 500)
+        }
             })
 
 
@@ -328,13 +331,7 @@ const TaskList = () => {
           // eslint-disable-next-line no-self-assign
           console.log(e);
         }
-        finally {
-          setTimeout(() => {
-            setLoading(false)
-            firstLoading && setActionState("ready")
-            setFirstLoading(false);
-          }, 500)
-        }
+        
       })
 
   }
