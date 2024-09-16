@@ -300,18 +300,6 @@ const MainPage = () => {
                     gamesHistory.virtual = myData.gamesHistory.virtual.slice(myData.gamesHistory.virtual.length - historySize)
                   }
 
-
-
-                  // const myData = data.userData
-                  //   .sort((a, b) => isReal ? (b.balance.real - a.balance.real) : (b.balance.virtual - a.balance.virtual))
-                  //   .map((i, index) => {
-                  //     i.rank = index + 1;
-                  //     (i.friend === userId) && (friendNumber += 1);
-                  //     return i
-                  //   })
-                  //   .filter(i => i.name === realName)[0];
-                  console.log(myData)
-
                   setGames(myData)
                   const newBalance = parseFloat(isReal ? myData.balance.real : myData.balance.virtual).toFixed(2)
                   console.log("check balance : ", newBalance)
@@ -326,7 +314,7 @@ const MainPage = () => {
                     Balance: isReal ? myData.balance.real.toFixed(2) : myData.balance.virtual.toFixed(2),
                     GameWon: isReal ? realWins : virtualWins,
                     GameLost: isReal ? realLosses : virtualLosses,
-                    Rank: isReal ? myData.realRank : myData.virtualRank,
+                    Rank: isReal ? data.realRank : data.virtualRank,
                     Ranking: isReal ? myData.ranking.real : myData.ranking.virtual,
                     FriendNumber: myData.friendNumber
                   })
