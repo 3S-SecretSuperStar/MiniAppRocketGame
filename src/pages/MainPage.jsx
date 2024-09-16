@@ -107,11 +107,11 @@ const MainPage = () => {
     startGame();
     // setAutoStart(true)
     setIsModalOpen(false);
-    
+
   }
 
-  const handleStartButton = () =>{
-    
+  const handleStartButton = () => {
+
     startGame()
   }
   // setRealGame(true)
@@ -266,6 +266,8 @@ const MainPage = () => {
           const userName = webapp["user"]["username"];
           const userId = webapp["user"]["id"];
           const userInfo = webapp["user"];
+          const historySize = 100;
+          let gamesHistory = { real: [], virtual: [] }
           console.log("uerInfo: ", userInfo)
           const headers = new Headers()
           headers.append('Content-Type', 'application/json')
@@ -275,23 +277,39 @@ const MainPage = () => {
             console.log(userAvatarUrl)
             console.log("userAvatarUrl ", updateAvatarState.url)
 
-            fetch(`${serverUrl}/users_info`, { method: 'POST', body: JSON.stringify({ historySize: 100, realName: realName, userName: userName, userAvatarUrl: userAvatarUrl, userId: userId }), headers })
+            fetch(`${serverUrl}/users_info`, { method: 'POST', body: JSON.stringify({ realName: realName, userName: userName, userAvatarUrl: userAvatarUrl, userId: userId }), headers })
               .then(res => Promise.all([res.status, res.json()]))
               .then(([status, data]) => {
                 try {
                   console.log(data)
                   console.log(realName)
-                  console.log(data.allUsersData[0].name)
-                  console.log(realName === data.allUsersData[0].name);
-                  let friendNumber = 0;
-                  const myData = data.allUsersData
-                    .sort((a, b) => isReal ? (b.balance.real - a.balance.real) : (b.balance.virtual - a.balance.virtual))
-                    .map((i, index) => {
-                      i.rank = index + 1;
-                      (i.friend === userId) && (friendNumber += 1);
-                      return i
-                    })
-                    .filter(i => i.name === realName)[0];
+                  console.log(data.userData)
+                  const myData = data.userData;
+
+
+
+                  const realWins = myData.gamesHistory.real.filter(j => j.crash === 'x').length
+                  const realLosses = myData.gamesHistory.real.filter(j => j.stop === 'x').length
+                  if (myData.gamesHistory.real.length > historySize) {
+                    gamesHistory.real = myData.gamesHistory.real.slice(myData.gamesHistory.real.length - historySize)
+                  }
+
+                  const virtualWins = myData.gamesHistory.virtual.filter(j => j.crash === 'x').length
+                  const virtualLosses = myData.gamesHistory.virtual.filter(j => j.stop === 'x').length
+                  if (myData.gamesHistory.virtual.length > historySize) {
+                    gamesHistory.virtual = myData.gamesHistory.virtual.slice(myData.gamesHistory.virtual.length - historySize)
+                  }
+
+
+
+                  // const myData = data.userData
+                  //   .sort((a, b) => isReal ? (b.balance.real - a.balance.real) : (b.balance.virtual - a.balance.virtual))
+                  //   .map((i, index) => {
+                  //     i.rank = index + 1;
+                  //     (i.friend === userId) && (friendNumber += 1);
+                  //     return i
+                  //   })
+                  //   .filter(i => i.name === realName)[0];
                   console.log(myData)
 
                   setGames(myData)
@@ -302,17 +320,17 @@ const MainPage = () => {
                   setRewardState(myData.first_state !== "false");
                   setBalance(newBalance)
                   setUser({
-                    RealName: realName ,
-                     UserName: userName,
-                     UserId: userId,
-                    Balance: isReal ? myData.balance.real.toFixed(2) : myData.balance.virtual.toFixed(2), 
-                    GameWon: isReal ? myData.realWins : myData.virtualWins,
-                    GameLost: isReal ? myData.realLosses : myData.virtualLosses,
+                    RealName: realName,
+                    UserName: userName,
+                    UserId: userId,
+                    Balance: isReal ? myData.balance.real.toFixed(2) : myData.balance.virtual.toFixed(2),
+                    GameWon: isReal ? realWins : virtualWins,
+                    GameLost: isReal ? realLosses : virtualLosses,
                     Rank: myData.rank,
-                    Ranking: isReal ? myData.ranking.real : myData.ranking.virtual,
-                    FriendNumber: friendNumber
+                    Ranking: isReal ? myData.realRank : myData.virtualRank,
+                    FriendNumber: myData.friendNumber
                   })
-                  const newHistoryGames = isReal ? myData.gamesHistory.real : myData.gamesHistory.virtual
+                  const newHistoryGames = isReal ? gamesHistory.real : gamesHistory.virtual
                   historyGamesRef.current = newHistoryGames
                   setHistoryGames(newHistoryGames)
                   setLoaderIsShown(false)
@@ -341,7 +359,7 @@ const MainPage = () => {
       catch (e) {
         console.log(e)
       }
-      
+
     }
     fetchData()
   }, [isReal, gamePhase])
@@ -649,7 +667,7 @@ const MainPage = () => {
 
               {
                 // gamePhase !== 'started'  ?
-                gamePhase !== 'started'  ?
+                gamePhase !== 'started' ?
                   (
                     <div className="flex gap-2 w-full justify-between">
                       {autoMode && <ShadowButton className={`transition-all flex w-1/5 bg-white justify-center items-center invite-btn-setting border-white `}
