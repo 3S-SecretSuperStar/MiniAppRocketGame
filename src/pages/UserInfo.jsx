@@ -83,7 +83,7 @@ const UserInfo = () => {
 
       const headers = new Headers()
       headers.append('Content-Type', 'application/json')
-      fetch(`${serverUrl}/users_info`, { method: 'POST', body: JSON.stringify({ historySize: 100, realName: realName, userName: userName, userId: userId }), headers })
+      fetch(`${serverUrl}/all_users_info`, { method: 'POST', body: JSON.stringify({ }), headers })
         .then(res => Promise.all([res.status, res.json()]))
         .then(([status, data]) => {
           if (isMounted) {
