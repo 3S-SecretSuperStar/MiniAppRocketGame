@@ -251,7 +251,6 @@ const MainPage = () => {
         }
       })
   }, [])
-  console.log("taskList of main : ", taskList);
   useEffect(() => {
     // setLoading(true)
     async function fetchData() {
