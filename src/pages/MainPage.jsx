@@ -326,8 +326,8 @@ const MainPage = () => {
                     Balance: isReal ? myData.balance.real.toFixed(2) : myData.balance.virtual.toFixed(2),
                     GameWon: isReal ? realWins : virtualWins,
                     GameLost: isReal ? realLosses : virtualLosses,
-                    Rank: myData.rank,
-                    Ranking: isReal ? myData.realRank : myData.virtualRank,
+                    Rank: isReal ? myData.realRank : myData.virtualRank,
+                    Ranking: isReal ? myData.ranking.real : myData.ranking.virtual,
                     FriendNumber: myData.friendNumber
                   })
                   const newHistoryGames = isReal ? gamesHistory.real : gamesHistory.virtual
