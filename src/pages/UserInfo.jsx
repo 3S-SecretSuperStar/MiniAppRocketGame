@@ -122,6 +122,7 @@ const UserInfo = () => {
   useEffect(() => {
     if (gameDataLength) {
       const currentRanking = RANKINGDATA[rankingIndex];
+      
       const myData = gameData.allUsersData
         .sort((a, b) => isReal ? (b.balance.real - a.balance.real) : (b.balance.virtual - a.balance.virtual))
         .map((i, index) => { i.rank = index + 1; return i })
