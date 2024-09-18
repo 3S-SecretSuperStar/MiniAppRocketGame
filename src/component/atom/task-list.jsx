@@ -382,12 +382,12 @@ const TaskList = () => {
       <div className="flex flex-col gap-2 text-[14px] overflow-auto pb-4" style={{ height: "calc(100vh - 200px)" }}>
         {
           fixedTaskData
-            .sort((a, b) => (a.index - b.index))
+            .sort((a, b) => ((a.index+2)%3 - (b.index+2)%3))
             .map((_task, _index) => <GenerateTask task={_task} stateTask={stateTask} key={_index} index={_index} dailytaskIndex={dailytaskIndex} fetchData={fetchData} />)
         }
         {
           otherTaskData
-            .sort((a, b) => (a.status - b.status || a.index - b.index))
+            .sort((a, b) => ((a.status+2)%3 - (b.status+2)%3 || a.index - b.index))
             .map((_task, _index) => <GenerateTask task={_task} stateTask={stateTask} key={_index} index={_index} dailytaskIndex={dailytaskIndex} fetchData={fetchData} />)
         }
       </div>
