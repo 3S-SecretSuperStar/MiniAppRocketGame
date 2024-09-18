@@ -169,7 +169,7 @@ const TaskList = () => {
   let dailytaskIndex = 3
   let performTask = []
   let dailyDays = 1;
-  let dailyState = 1;
+  let dailyState = 0;
 
   const typeToImageMap = {
     'type1-1': { imgSrc: "Type1.png", link: "" },
@@ -232,7 +232,7 @@ const TaskList = () => {
                 dailyDays = data.dailyRewardInfo.consecutive_days
                 setUser((user) => ({ ...user, DailyConsecutiveDays: dailyDays + 1 }));
                 const nowDate = moment().startOf('day');
-                if (dailyDate === "") dailyState = 1;
+                if (dailyDate === "") dailyState = 0;
                 else {
                   console.log("dailyRewardDate : ", dailyDate)
                   const selectedDate = moment(dailyDate).utc().local().startOf('day');
@@ -241,11 +241,11 @@ const TaskList = () => {
                   const diffDate = nowDate.diff(selectedDate, 'days');
                   console.log("diff date : ", diffDate)
                   console.log('taskstates', taskState)
-                  if (diffDate >= 1) dailyState = 1;
+                  if (diffDate >= 1) dailyState = 0;
                   else dailyState = 2;
                   if (diffDate >= 2) {
                     setUser((user) => ({ ...user, DailyConsecutiveDays: 1 }))
-                    dailyDays = 1;
+                    dailyDays = 0;
                   };
                 }
               } catch (e) {
