@@ -98,9 +98,9 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData }) => 
     fetch(`${serverUrl}/add_perform_list`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, performTask: [task.index,], isReal: isReal }), headers })
     setTimeout(() => {
       fetchData()
+      setIsPending(false)
     }, 1000 * 60)
 
-    return () => setIsPending(false)
   }
   // console.log("friend number", user.FriendNumber)
   // console.log("user Info in generate task : ", user.DailyConsecutiveDays)
