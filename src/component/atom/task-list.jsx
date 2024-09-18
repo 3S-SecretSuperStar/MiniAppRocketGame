@@ -114,7 +114,7 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData }) => 
         </div>
       </div>
       {
-        task.status === 0 ?
+        task.status === 1 ?
           task.link === "" ? <Link to={'/play'}>
             <button className="rounded-lg w-[61px] py-1 px-0 h-7 bg-[#3861FB] text-white text-center text-[14px]" >
               Start
@@ -135,7 +135,7 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData }) => 
 
 
           :
-          task.status === 1 ?
+          task.status === 0 ?
             <button
               className="rounded-lg w-[61px] py-1 px-0 h-7 bg-white text-[#080888] text-center text-[14px]"
               onClick={goClaim}
@@ -214,9 +214,9 @@ const TaskList = () => {
           const performtask = isReal ? data.task.real.achieve_task : data.task.virtual.achieve_task
           const doneTask = isReal ? data.task.real.done_task : data.task.virtual.done_task
           console.log("perform task", performtask)
-          taskState = new Array(taskList.length).fill(0)
+          taskState = new Array(taskList.length).fill(1)
           performtask.forEach(item => {
-            taskState[item] = 1;
+            taskState[item] = 0;
           })
           doneTask.forEach(item => {
             taskState[item] = 2;
@@ -245,7 +245,7 @@ const TaskList = () => {
                   else dailyState = 2;
                   if (diffDate >= 2) {
                     setUser((user) => ({ ...user, DailyConsecutiveDays: 1 }))
-                    dailyDays = 0;
+                    dailyDays = 1;
                   };
                 }
               } catch (e) {
@@ -382,7 +382,7 @@ const TaskList = () => {
       <div className="flex flex-col gap-2 text-[14px] overflow-auto pb-4" style={{ height: "calc(100vh - 200px)" }}>
         {
           fixedTaskData
-            .sort((a, b) => ((a.index+2)%3 - (b.index+2)%3))
+            .sort((a, b) => (a.index - b.index))
             .map((_task, _index) => <GenerateTask task={_task} stateTask={stateTask} key={_index} index={_index} dailytaskIndex={dailytaskIndex} fetchData={fetchData} />)
         }
         {
