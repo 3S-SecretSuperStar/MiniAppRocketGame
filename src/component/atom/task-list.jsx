@@ -259,8 +259,8 @@ const TaskList = () => {
               try{
               console.log("task data", data)
               const taskItemData = data.task;
-              const fixedTaskItems = taskItemData.filter(item => (item.type.substring(0, 4) !== "type" && item.type !== "daily_reward"));
-              const otherTaskItems = taskItemData.filter(item => item.type.substring(0, 4) === "type");
+              const fixedTaskItems = taskItemData.filter(item => ( item.type === "daily_reward"));
+              const otherTaskItems = taskItemData.filter(item => (item.type !== "daily_reward"));
               let dailyItemData = {}
               if (fixedTaskItems.length > 0) {
                 console.log('fixed task: ', fixedTaskItems)
@@ -275,21 +275,22 @@ const TaskList = () => {
                     index: dailyData.index
                   }
                 }
-                const _fixedTaskData = fixedTaskItems.map(item => {
-                  const { imgSrc, link } = typeToImageMap[item.type];
+                setFixedTaskData([dailyItemData])
+                // const _fixedTaskData = fixedTaskItems.map(item => {
+                //   const { imgSrc, link } = typeToImageMap[item.type];
 
-                  console.log("item:", item);
+                //   console.log("item:", item);
 
-                  return {
-                    src: imgSrc,
-                    title: item.title,
-                    amount: (item.amount + " Coins"),
-                    status: taskState[item.index],
-                    link: link,
-                    index: item.index
-                  };
-                })
-                setFixedTaskData([dailyItemData, ..._fixedTaskData])
+                //   return {
+                //     src: imgSrc,
+                //     title: item.title,
+                //     amount: (item.amount + " Coins"),
+                //     status: taskState[item.index],
+                //     link: link,
+                //     index: item.index
+                //   };
+                //  })
+                // setFixedTaskData([dailyItemData, ..._fixedTaskData])
               }
 
               if (otherTaskItems.length > 0) {
