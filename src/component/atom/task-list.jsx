@@ -387,7 +387,7 @@ const TaskList = () => {
         }
         {
           otherTaskData
-            .sort((a, b) => ((a.status+2)%3 - (b.status+2)%3 || a.index - b.index))
+            .sort((a, b) => (a.status - b.status || a.index - b.index))
             .map((_task, _index) => <GenerateTask task={_task} stateTask={stateTask} key={_index} index={_index} dailytaskIndex={dailytaskIndex} fetchData={fetchData} />)
         }
       </div>
