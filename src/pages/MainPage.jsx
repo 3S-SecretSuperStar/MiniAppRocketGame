@@ -394,7 +394,7 @@ const MainPage = () => {
       }
     };
   };
-
+  console.log("socket info in game : ", context.socket)
   // Function to stop the game
   const stopGame = () => {
     setStopWasPressed(true);
