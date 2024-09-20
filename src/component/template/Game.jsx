@@ -108,7 +108,9 @@ export default memo(function Game({ gamePhase, finalResult, amount = 10.00,
 
 
   useEffect(() => {
-
+    if (context.socket) {
+      context.socket.send(JSON.stringify({ operation: 'stop' }))
+    }
     if (gamePhase === 'stopped') {
       document.getElementById('stars1').style.animationPlayState =
         document.getElementById('stars2').style.animationPlayState =
