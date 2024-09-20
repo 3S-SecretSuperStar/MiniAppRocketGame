@@ -27,7 +27,7 @@ export default memo(function Game({ gamePhase, finalResult, amount = 10.00,
     clearInterval(timerHandler)
     score = 0
   }
-  console.log("socket info : ", context.socket)
+  console.log("socket info in game : ", context.socket)
   useEffect(() => {
 
 
