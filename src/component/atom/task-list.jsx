@@ -62,12 +62,11 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData }) => 
         })
     } else {
       let dailyAmount = parseFloat(task.amount.split(" ")[0])
-      const consecutiveDays = user.DailyConsecutiveDays - 1
       console.log("index : ", index)
       console.log("task index : ", task.index)
       console.log("Daily Amount : ", dailyAmount)
       console.log("daily reward consequtive days",consecutiveDays)
-      fetch(`${serverUrl}/perform_dailyReward`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, isReal: isReal, amount: dailyAmount, consecutiveDays: (user.DailyConsecutiveDays - 1) }), headers })
+      fetch(`${serverUrl}/perform_dailyReward`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, isReal: isReal, amount: dailyAmount, consecutiveDays: user.DailyConsecutiveDays }), headers })
         .then(res => Promise.all([res.status, res.json()]))
         .then(() => {
           try {
