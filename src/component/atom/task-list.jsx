@@ -62,11 +62,12 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData }) => 
         })
     } else {
       let dailyAmount = parseFloat(task.amount.split(" ")[0])
+      const consecutiveDays = user.DailyConsecutiveDays - 1
       console.log("index : ", index)
       console.log("task index : ", task.index)
       console.log("Daily Amount : ", dailyAmount)
-
-      fetch(`${serverUrl}/perform_dailyReward`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, isReal: isReal, amount: dailyAmount,consecutiveDays:(user.DailyConsecutiveDays-1) }), headers })
+      console.log("daily reward consequtive days",consecutiveDays)
+      fetch(`${serverUrl}/perform_dailyReward`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, isReal: isReal, amount: dailyAmount, consecutiveDays: (user.DailyConsecutiveDays - 1) }), headers })
         .then(res => Promise.all([res.status, res.json()]))
         .then(() => {
           try {
@@ -98,7 +99,7 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData }) => 
     fetch(`${serverUrl}/add_perform_list`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, performTask: [task.index,], isReal: isReal }), headers })
     setTimeout(() => {
       fetchData()
-      
+
     }, 1000 * 60)
     return () => setIsPending(false)
   }
@@ -256,75 +257,75 @@ const TaskList = () => {
           fetch(`${serverUrl}/get_task`, { method: 'POST', body: JSON.stringify({}), headers })
             .then(res => Promise.all([res.status, res.json()]))
             .then(([status, data]) => {
-              try{
-              console.log("task data", data)
-              const taskItemData = data.task;
-              const fixedTaskItems = taskItemData.filter(item => ( item.type === "daily_reward"));
-              const otherTaskItems = taskItemData.filter(item => (item.type !== "daily_reward"));
-              let dailyItemData = {}
-              if (fixedTaskItems.length > 0) {
-                console.log('fixed task: ', fixedTaskItems)
-                const dailyData = taskItemData.find(item => item.type === "daily_reward");
-                if (dailyData) {
-                  dailyItemData = {
-                    src: "DailyReward.png",
-                    title: dailyData.title,
-                    amount: (dailyData.amount + (20 * dailyDays) + " Coins " + dailyData.description),
-                    status: dailyState,
-                    link: "",
-                    index: dailyData.index
+              try {
+                console.log("task data", data)
+                const taskItemData = data.task;
+                const fixedTaskItems = taskItemData.filter(item => (item.type === "daily_reward"));
+                const otherTaskItems = taskItemData.filter(item => (item.type !== "daily_reward"));
+                let dailyItemData = {}
+                if (fixedTaskItems.length > 0) {
+                  console.log('fixed task: ', fixedTaskItems)
+                  const dailyData = taskItemData.find(item => item.type === "daily_reward");
+                  if (dailyData) {
+                    dailyItemData = {
+                      src: "DailyReward.png",
+                      title: dailyData.title,
+                      amount: (dailyData.amount + (20 * dailyDays) + " Coins " + dailyData.description),
+                      status: dailyState,
+                      link: "",
+                      index: dailyData.index
+                    }
                   }
+                  setFixedTaskData([dailyItemData])
+                  // const _fixedTaskData = fixedTaskItems.map(item => {
+                  //   const { imgSrc, link } = typeToImageMap[item.type];
+
+                  //   console.log("item:", item);
+
+                  //   return {
+                  //     src: imgSrc,
+                  //     title: item.title,
+                  //     amount: (item.amount + " Coins"),
+                  //     status: taskState[item.index],
+                  //     link: link,
+                  //     index: item.index
+                  //   };
+                  //  })
+                  // setFixedTaskData([dailyItemData, ..._fixedTaskData])
                 }
-                setFixedTaskData([dailyItemData])
-                // const _fixedTaskData = fixedTaskItems.map(item => {
-                //   const { imgSrc, link } = typeToImageMap[item.type];
 
-                //   console.log("item:", item);
+                if (otherTaskItems.length > 0) {
+                  console.log('task states:', taskState);
 
-                //   return {
-                //     src: imgSrc,
-                //     title: item.title,
-                //     amount: (item.amount + " Coins"),
-                //     status: taskState[item.index],
-                //     link: link,
-                //     index: item.index
-                //   };
-                //  })
-                // setFixedTaskData([dailyItemData, ..._fixedTaskData])
+
+
+                  const _otherTaskData = otherTaskItems.map(item => {
+                    const { imgSrc, link } = typeToImageMap[item.type];
+
+                    console.log("item:", item);
+
+                    return {
+                      src: imgSrc,
+                      title: item.title,
+                      amount: (item.amount + " Coins"),
+                      status: taskState[item.index],
+                      link: link,
+                      index: item.index
+                    };
+                  });
+
+                  setOtherTaskData(_otherTaskData);
+                }
+              } catch (e) {
+                console.log(e)
               }
-
-              if (otherTaskItems.length > 0) {
-                console.log('task states:', taskState);
-
-
-
-                const _otherTaskData = otherTaskItems.map(item => {
-                  const { imgSrc, link } = typeToImageMap[item.type];
-
-                  console.log("item:", item);
-
-                  return {
-                    src: imgSrc,
-                    title: item.title,
-                    amount: (item.amount + " Coins"),
-                    status: taskState[item.index],
-                    link: link,
-                    index: item.index
-                  };
-                });
-
-                setOtherTaskData(_otherTaskData);
+              finally {
+                setTimeout(() => {
+                  setLoading(false)
+                  firstLoading && setActionState("ready")
+                  setFirstLoading(false);
+                }, 500)
               }
-            }catch(e){
-              console.log(e)
-            }
-            finally {
-          setTimeout(() => {
-            setLoading(false)
-            firstLoading && setActionState("ready")
-            setFirstLoading(false);
-          }, 500)
-        }
             })
 
 
@@ -332,7 +333,7 @@ const TaskList = () => {
           // eslint-disable-next-line no-self-assign
           console.log(e);
         }
-        
+
       })
 
   }
