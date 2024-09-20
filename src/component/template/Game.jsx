@@ -27,7 +27,7 @@ export default memo(function Game({ gamePhase, finalResult, amount = 10.00,
     clearInterval(timerHandler)
     score = 0
   }
-  console.log("socket info in game : ", context.socket)
+  // console.log("socket info in game : ", context.socket)
   useEffect(() => {
 
 
@@ -57,7 +57,7 @@ export default memo(function Game({ gamePhase, finalResult, amount = 10.00,
             clearInterval(newCountTimeHandler); // Clear the interval when counter reaches zero
             setCounterNumber(0);// Ensure counter is set to zero
             setCounterFlag(true)
-            console.log("bet in game", bet)
+            // console.log("bet in game", bet)
             context.socket.send(JSON.stringify({
               operation: 'start',
               bet,

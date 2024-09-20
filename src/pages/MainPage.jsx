@@ -182,7 +182,7 @@ const MainPage = () => {
             setActionState("start");
             context.socket.onmessage = async e => {
               const data = JSON.parse(e.data);
-              console.log("Data", data.operation);
+              // console.log("Data", data.operation);
               switch (data.operation) {
                 case 'started':
                   setSocketStart(true)
@@ -212,16 +212,16 @@ const MainPage = () => {
     try {
       const profilesResponse = await fetch(`https://api.telegram.org/bot${bot_token}/getUserProfilePhotos?user_id=${userId}`);
       const profiles = await profilesResponse.json();
-      console.log("profiles :", profiles);
+      // console.log("profiles :", profiles);
 
       if (profiles.result.photos.length > 0) {
         const fileResponse = await fetch(`https://api.telegram.org/bot${bot_token}/getFile?file_id=${profiles.result.photos[0][2].file_id}`);
         const filePath = await fileResponse.json();
-        console.log("fileInfo:", filePath)
+        // console.log("fileInfo:", filePath)
         const userAvatarUrl = `https://api.telegram.org/file/bot${bot_token}/${filePath.result.file_path}`;
         return userAvatarUrl;
       } else {
-        console.log('No profile photos found.');
+        // console.log('No profile photos found.');
       }
     } catch (error) {
       console.error('Error fetching profile photos:', error);
@@ -270,22 +270,22 @@ const MainPage = () => {
           const userInfo = webapp["user"];
           const historySize = 100;
           let gamesHistory = { real: [], virtual: [] }
-          console.log("uerInfo: ", userInfo)
+          // console.log("uerInfo: ", userInfo)
           const headers = new Headers()
           headers.append('Content-Type', 'application/json')
           if (isMounted) {
             const userAvatarUrl = await getProfilePhotos(userId, bot_token);
             const updateAvatarState = await updateAvatar(userAvatarUrl, userId);
-            console.log(userAvatarUrl)
-            console.log("userAvatarUrl ", updateAvatarState.url)
+            // console.log(userAvatarUrl)
+            // console.log("userAvatarUrl ", updateAvatarState.url)
 
             fetch(`${serverUrl}/users_info`, { method: 'POST', body: JSON.stringify({ realName: realName, userName: userName, userAvatarUrl: userAvatarUrl, userId: userId }), headers })
               .then(res => Promise.all([res.status, res.json()]))
               .then(([status, data]) => {
                 try {
-                  console.log(data)
-                  console.log(realName)
-                  console.log(data.userData)
+                  // console.log(data)
+                  // console.log(realName)
+                  // console.log(data.userData)
                   const myData = data.userData;
 
 
@@ -304,7 +304,7 @@ const MainPage = () => {
 
                   setGames(myData)
                   const newBalance = parseFloat(isReal ? myData.balance.real : myData.balance.virtual).toFixed(2)
-                  console.log("check balance : ", newBalance)
+                  // console.log("check balance : ", newBalance)
                   balanceRef.current = newBalance
                   setFirstLogin(myData.first_state !== "false");
                   setRewardState(myData.first_state !== "false");
@@ -357,9 +357,9 @@ const MainPage = () => {
     setActionState("start")
     return <FetchLoading />
   }
-  console.log(loading)
+  // console.log(loading)
 
-  console.log("data of user : ", user)
+  // console.log("data of user : ", user)
   // Function to start the game
   const startGame = () => {
     stopGame();
@@ -380,7 +380,7 @@ const MainPage = () => {
     setActionState("start");
     context.socket.onmessage = async e => {
       const data = JSON.parse(e.data);
-      console.log("start game", data.operation);
+      // console.log("start game", data.operation);
       switch (data.operation) {
         case 'started':
           setSocketStart(true)
@@ -397,7 +397,7 @@ const MainPage = () => {
       }
     };
   };
-  console.log("socket info in game : ", context.socket)
+  // console.log("socket info in game : ", context.socket)
   // Function to stop the game
   const stopGame = () => {
     setStopWasPressed(true);
@@ -409,7 +409,7 @@ const MainPage = () => {
   const handleGameStarted = () => {
     setFirstLogin(false)
     setWinstate(false)
-    console.log("bet in handle game start", bet, "real bet", realBet)
+    // console.log("bet in handle game start", bet, "real bet", realBet)
     updateBalance(-1 * realBet)
     const animation = document.getElementById('stars').style.animation
     document.getElementById('stars').style.animation = 'none'
@@ -424,7 +424,7 @@ const MainPage = () => {
     setCointinueCounter(continueCounter + 1)
     testCounter = testCounter + 1;
 
-    console.log("stop")
+    // console.log("stop")
     setActionState("stop");
     setWinstate(false);
     setFinalResult(data.stop);
@@ -433,12 +433,12 @@ const MainPage = () => {
     // const newBalance = (parseFloat(balanceRef.current) + parseFloat(data.profit)).toFixed(2)
     // setBalance(newBalance)
     // balanceRef.current = newBalance
-    console.log("stopppppp update")
+    // console.log("stopppppp update")
     updateBalance(data.profit);
     setGames(games + 1);
     setWins(wins + 1);
     adjustBetAfterWin();
-    console.log("dsfsdfds")
+    // console.log("dsfsdfds")
     if (data.profit > 0) {
       setWinstate(true);
       toast(`${data.profit} coins added to your balance`,
@@ -471,12 +471,12 @@ const MainPage = () => {
     }, [])
     const headers = new Headers();
     headers.append('Content-Type', 'application/json')
-    console.log("perform task", performTask)
+    // console.log("perform task", performTask)
     fetch(`${serverUrl}/add_perform_list`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, performTask: performTask, isReal: isReal }), headers })
   };
 
   const handleGameCrashed = (data) => {
-    console.log("handleGameCrash")
+    // console.log("handleGameCrash")
     setCointinueCounter(1)
     setActionState("stop");
     setFinalResult('Crashed...');
@@ -504,7 +504,7 @@ const MainPage = () => {
   };
 
   const updateGameHistory = (data, status) => {
-    console.log("bet in updateGame history", data.bet)
+    // console.log("bet in updateGame history", data.bet)
     const newHistory = [{
       crash: status === 'crashed' ? data.crash : 'x',
       bet: data.bet,
@@ -518,19 +518,19 @@ const MainPage = () => {
   const updateBalance = (profit) => {
     const newBalance = (parseFloat(balanceRef.current) + parseFloat(profit)).toFixed(2);
     setBalance(newBalance);
-    console.log(newBalance)
+    // console.log(newBalance)
     balanceRef.current = newBalance;
     setUser(user => {
       const newUserBalance = (parseFloat(user.Balance) + parseFloat(profit)).toFixed(2)
       return { ...user, Balance: newUserBalance }
     })
   };
-  console.log(balance)
+  // console.log(balance)
   const adjustBetAfterWin = () => {
     if (autoMode) {
-      console.log("betAutoRef.current ", betAutoRef.current)
-      console.log("valueAfterWinRef ", valueAfterWinRef.current)
-      console.log("balanceRef ", balanceRef.current)
+      // console.log("betAutoRef.current ", betAutoRef.current)
+      // console.log("valueAfterWinRef ", valueAfterWinRef.current)
+      // console.log("balanceRef ", balanceRef.current)
       if (operationAfterWinRef.current === 'Increase Bet by') {
         setBet(Math.min(bet * valueAfterWinRef.current, balanceRef.current));
         // betAutoRef.current = Math.min(betAutoRef.current * valueAfterWinRef.current, balanceRef.current);
@@ -541,8 +541,8 @@ const MainPage = () => {
       // setBet(betAutoRef.current);
     }
   };
-  console.log("valueAfterWinRef.current", valueAfterWinRef.current)
-  console.log("balanceRef.current", balanceRef.current)
+  // console.log("valueAfterWinRef.current", valueAfterWinRef.current)
+  // console.log("balanceRef.current", balanceRef.current)
 
   const adjustBetAfterLoss = () => {
     if (autoMode) {
@@ -571,7 +571,7 @@ const MainPage = () => {
     setInfoState(true)
   }
 
-  console.log("bet: ", bet, " betAutoRef: ", betAutoRef.current);
+  // console.log("bet: ", bet, " betAutoRef: ", betAutoRef.current);
   return (
     <>
       <Suspense fallback={<FetchLoading />}>

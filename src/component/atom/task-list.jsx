@@ -33,9 +33,9 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData }) => 
   const goClaim = () => {
     setIsClaim(true);
 
-    console.log("task index", task.index)
+    // console.log("task index", task.index)
     if (task.index !== dailytaskIndex) {
-      console.log("index indaily: ", index)
+      // console.log("index indaily: ", index)
       fetch(`${serverUrl}/task_balance`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, amount: task.amount, task: task.index, isReal: isReal }), headers })
         .then(res => Promise.all([res.status, res.json()]))
         .then(() => {
@@ -62,9 +62,9 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData }) => 
         })
     } else {
       let dailyAmount = parseFloat(task.amount.split(" ")[0])
-      console.log("index : ", index)
-      console.log("task index : ", task.index)
-      console.log("Daily Amount : ", dailyAmount)
+      // console.log("index : ", index)
+      // console.log("task index : ", task.index)
+      // console.log("Daily Amount : ", dailyAmount)
       fetch(`${serverUrl}/perform_dailyReward`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, isReal: isReal, amount: dailyAmount, consecutiveDays: user.DailyConsecutiveDays }), headers })
         .then(res => Promise.all([res.status, res.json()]))
         .then(() => {
@@ -203,16 +203,16 @@ const TaskList = () => {
     await fetch(`${serverUrl}/task_perform`, { method: 'POST', body: JSON.stringify({ userId: user.UserId }), headers })
       .then(res => Promise.all([res.status, res.json()]))
       .then(async ([status, data]) => {
-        console.log("fetch data")
+        // console.log("fetch data")
 
         try {
-          console.log("fetch data : ", data);
+          // console.log("fetch data : ", data);
           const userBalance = isReal ? parseFloat(data.balance.real.toFixed(2)) : parseFloat(data.balance.virtual.toFixed(2));
-          console.log(userBalance)
+          // console.log(userBalance)
           setUser(user => ({ ...user, Balance: userBalance }))
           const performtask = isReal ? data.task.real.achieve_task : data.task.virtual.achieve_task
           const doneTask = isReal ? data.task.real.done_task : data.task.virtual.done_task
-          console.log("perform task", performtask)
+          // console.log("perform task", performtask)
           taskState = new Array(taskList.length).fill(1)
           performtask.forEach(item => {
             taskState[item] = 0;
@@ -224,8 +224,8 @@ const TaskList = () => {
             .then(res => Promise.all([res.status, res.json()]))
             .then(([status, data]) => {
               try {
-                console.log(data)
-                console.log(data.dailyRewardInfo)
+                // console.log(data)
+                // console.log(data.dailyRewardInfo)
                 const dailyDate = data.dailyRewardInfo.date;
                 dailytaskIndex = taskList[taskList.findIndex(item => item.type === 'daily_reward')].index
                 dailyDays = data.dailyRewardInfo.consecutive_days
@@ -233,13 +233,13 @@ const TaskList = () => {
                 const nowDate = moment().startOf('day');
                 if (dailyDate === "") dailyState = 0;
                 else {
-                  console.log("dailyRewardDate : ", dailyDate)
+                  // console.log("dailyRewardDate : ", dailyDate)
                   const selectedDate = moment(dailyDate).utc().local().startOf('day');
-                  console.log("nowDate : ", nowDate)
-                  console.log("selected date : ", selectedDate)
+                  // console.log("nowDate : ", nowDate)
+                  // console.log("selected date : ", selectedDate)
                   const diffDate = nowDate.diff(selectedDate, 'days');
-                  console.log("diff date : ", diffDate)
-                  console.log('taskstates', taskState)
+                  // console.log("diff date : ", diffDate)
+                  // console.log('taskstates', taskState)
                   if (diffDate >= 1) dailyState = 0;
                   else dailyState = 2;
                   if (diffDate >= 2) {
@@ -256,13 +256,13 @@ const TaskList = () => {
             .then(res => Promise.all([res.status, res.json()]))
             .then(([status, data]) => {
               try {
-                console.log("task data", data)
+                // console.log("task data", data)
                 const taskItemData = data.task;
                 const fixedTaskItems = taskItemData.filter(item => (item.type === "daily_reward"));
                 const otherTaskItems = taskItemData.filter(item => (item.type !== "daily_reward"));
                 let dailyItemData = {}
                 if (fixedTaskItems.length > 0) {
-                  console.log('fixed task: ', fixedTaskItems)
+                  // console.log('fixed task: ', fixedTaskItems)
                   const dailyData = taskItemData.find(item => item.type === "daily_reward");
                   if (dailyData) {
                     dailyItemData = {
@@ -293,14 +293,11 @@ const TaskList = () => {
                 }
 
                 if (otherTaskItems.length > 0) {
-                  console.log('task states:', taskState);
-
-
-
+                  // console.log('task states:', taskState);
                   const _otherTaskData = otherTaskItems.map(item => {
                     const { imgSrc, link } = typeToImageMap[item.type];
 
-                    console.log("item:", item);
+                    // console.log("item:", item);
 
                     return {
                       src: imgSrc,
@@ -338,20 +335,20 @@ const TaskList = () => {
   // console.log("taskList: ", taskList)
   // console.log("friend number", user.FriendNumber)
   const stateTask = () => {
-    console.log("user in state task :", user)
+    // console.log("user in state task :", user)
     performTask = []
     performTask = taskList.reduce((performList, task) => {
       const taskType = task.type;
       if (user.GameWon >= task.count && taskType === "type1-1") {
-        console.log("game won : ", user.GameWon)
-        console.log("task count : ", task.count)
-        console.log("task index : ", task.index)
-        console.log("state : ", user.GameWon >= task.count)
+        // console.log("game won : ", user.GameWon)
+        // console.log("task count : ", task.count)
+        // console.log("task index : ", task.index)
+        // console.log("state : ", user.GameWon >= task.count)
         performList.push(task.index)
       }
       if ((user.GameLost + user.GameWon) >= task.count && taskType === "type1-2") {
         performList.push(task.index)
-        console.log("state : ", (user.GameLost + user.GameWon) >= task.count)
+        // console.log("state : ", (user.GameLost + user.GameWon) >= task.count)
       }
       if (task.count <= user.FriendNumber && taskType === "type4")
         performList.push(task.index);
@@ -360,7 +357,7 @@ const TaskList = () => {
     fetch(`${serverUrl}/add_perform_list`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, performTask: performTask, isReal: isReal }), headers })
       .then(res => Promise.all([res.status, res.json()]))
       .then(async (res) => {
-        console.log("before fetch data")
+        // console.log("before fetch data")
         fetchData()
       })
 
@@ -372,8 +369,8 @@ const TaskList = () => {
     setActionState("start")
     return <FetchLoading />
   }
-  console.log("fixedTaskData : ", fixedTaskData)
-  console.log("otherTaskData : ", otherTaskData)
+  // console.log("fixedTaskData : ", fixedTaskData)
+  // console.log("otherTaskData : ", otherTaskData)
   // console.log("task data of taskData : ", taskData)
   // console.log(user.FriendNumber)
   // console.log("user Info in taskList : ", user.DailyConsecutiveDays)

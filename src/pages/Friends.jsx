@@ -71,7 +71,7 @@ const Friends = () => {
                   token: ""
                 }
               })
-              console.log(friendData)
+              // console.log(friendData)
               setFriendList(friendData);
 
             } catch (e) {
@@ -115,7 +115,7 @@ const Friends = () => {
     const link = `https://t.me/GetYourRocketBot?start=${userId}`;
 
     
-    console.log(link);
+    // console.log(link);
     try {
       const textField = document.createElement('textarea');
       textField.innerText = link;
@@ -124,7 +124,7 @@ const Friends = () => {
       textField.select();
       document.execCommand('copy');
       parentElement.removeChild(textField);
-      console.log("success");
+      // console.log("success");
     } catch (err) {
       console.log(err);
     }

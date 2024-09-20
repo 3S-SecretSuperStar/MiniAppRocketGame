@@ -127,7 +127,7 @@ const UserInfo = () => {
         .sort((a, b) => isReal ? (b.balance.real - a.balance.real) : (b.balance.virtual - a.balance.virtual))
         .map((i, index) => { i.rank = index + 1; return i })
         .filter(i => (isReal ? i.ranking.real === currentRanking : i.ranking.virtual === currentRanking)) //--------------------------
-      console.log(myData)
+      // console.log(myData)
       const filterData = myData.map((data) => {
         const ranking = isReal ? data.ranking.real : data.ranking.virtual;
         return {
