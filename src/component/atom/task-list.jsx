@@ -66,7 +66,7 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData }) => 
       console.log("task index : ", task.index)
       console.log("Daily Amount : ", dailyAmount)
 
-      fetch(`${serverUrl}/perform_dailyReward`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, isReal: isReal, amount: dailyAmount }), headers })
+      fetch(`${serverUrl}/perform_dailyReward`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, isReal: isReal, amount: dailyAmount,consecutiveDays:(user.DailyConsecutiveDays-1) }), headers })
         .then(res => Promise.all([res.status, res.json()]))
         .then(() => {
           try {
