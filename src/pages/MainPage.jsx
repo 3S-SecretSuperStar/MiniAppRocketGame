@@ -172,7 +172,10 @@ const MainPage = () => {
     if (gamePhase !== 'started' && autoMode && !stopWasPressed && balanceRef.current >= betAutoRef.current && betAutoRef.current) {
       if (isMounted) {
         try {
+          
+          setAutoStop(autoStopAM)
           setTimeout(() => {
+            updateBalance(-1 * Math.min(betAutoRef.current, balanceRef.current))
             setStopWasPressed(false);
             setGamePhase('started')
             setSocketStart(false);
@@ -615,12 +618,12 @@ const MainPage = () => {
               </div>
 
               <div className="text-[15px] w-1/2 leading-5 tracking-[-2%] text-white">You have uncompleted tasks that you can get rewards for.</div>
-              <Link to = '/earn'>
-              <ShadowButton
-                content="Get Rewards"
-                className={`relative px-3 py-1 bg-[#84CB69] text-[#080888] shadow-btn-custom-border h-7 text-sm leading-5 w-[108px] font-medium `}
-                action={() => setRewardState(false)}
-              />
+              <Link to='/earn'>
+                <ShadowButton
+                  content="Get Rewards"
+                  className={`relative px-3 py-1 bg-[#84CB69] text-[#080888] shadow-btn-custom-border h-7 text-sm leading-5 w-[108px] font-medium `}
+                  action={() => setRewardState(false)}
+                />
               </Link>
               <div className="absolute w-[30px], h-[30px]  top-0 right-0" onClick={() => setRewardState(false)}>
                 <img src="/image/icon/CloseButton.svg" width={30} height={30} className="max-w-[30px] h-[30px]" alt="close" />
