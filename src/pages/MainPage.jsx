@@ -66,7 +66,7 @@ const MainPage = () => {
   const [autoStopManual, setAutoStopManual] = useState(autoStop);
   let performTask = [];
   let testCounter = 0;
-  let realBet = 0;
+  let realBet = 1;
 
 
 
@@ -359,8 +359,8 @@ const MainPage = () => {
   // console.log("data of user : ", user)
   // Function to start the game
   const startGame = () => {
-    setBet(Math.min(realBet, balanceRef.current));
-    realBet = Math.min(realBet, balanceRef.current)
+    setBet(Math.min(bet, balanceRef.current));
+    realBet = Math.min(bet, balanceRef.current)
 
     setRewardState(false)
     setStopWasPressed(false);
