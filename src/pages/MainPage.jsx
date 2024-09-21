@@ -116,12 +116,13 @@ const MainPage = () => {
       setAutoStop(autoStopAM)
     }
     else {
-      setBet(Math.min(betManualRef, balanceRef.current));
-      realBet = Math.min(betManualRef, balanceRef.current)
+      setBet(Math.min(betManualRef.current, balanceRef.current));
+      realBet = Math.min(betManualRef.current, balanceRef.current)
       setAutoStop(autoStopManual)
     }
     console.log("automode in handle start game", autoMode)
     console.log("realbet in handle start game : ",realBet)
+    console.log("betManualRef in handle start game : ",betManualRef)
     startGame();
   }
 
@@ -133,7 +134,7 @@ const MainPage = () => {
   // Effect to validate and adjust state values
   useEffect(() => {
     if (gamePhase !== 'started') {
-      if (bet < 1) {
+      if (bet < 1 || isNaN(bet)) {
         setBet(1);
         betAutoRef.current = 1;
         betManualRef.current = 1;
