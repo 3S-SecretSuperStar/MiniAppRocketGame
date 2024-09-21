@@ -307,7 +307,7 @@ const MainPage = () => {
                     RealName: realName,
                     UserName: userName,
                     UserId: userId,
-                    Balance: isReal ? myData.balance.real.toFixed(2) : myData.balance.virtual.toFixed(2),
+                    (autoMode && gamePhase )&& (Balance: isReal ? myData.balance.real.toFixed(2) : myData.balance.virtual.toFixed(2)),
                     GameWon: isReal ? realWins : virtualWins,
                     GameLost: isReal ? realLosses : virtualLosses,
                     Rank: isReal ? data.realRank : data.virtualRank,
@@ -427,7 +427,7 @@ const MainPage = () => {
     // setBalance(newBalance)
     // balanceRef.current = newBalance
     // console.log("stopppppp update")
-    updateBalance(data.profit);
+    profit && updateBalance(data.profit);
     setGames(games + 1);
     setWins(wins + 1);
     adjustBetAfterWin();
