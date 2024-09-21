@@ -74,7 +74,8 @@ const MainPage = () => {
   const balanceRef = useRef(balance);
   const historyGamesRef = useRef(historyGames);
   const betAutoRef = useRef(bet);
-  const betManualRef = useRef(bet)
+  const betManualRef = useRef(bet);
+  const 
   const operationAfterWinRef = useRef(operationAfterWin);
   const valueAfterWinRef = useRef(winCoefficient);
   const operationAfterLossRef = useRef(operationAfterLoss);
@@ -102,7 +103,16 @@ const MainPage = () => {
     }
   ]
 
-
+  const setInitBet = () =>{
+    const currentBetRef =  balanceRef.current;
+    const currentBet = 
+      autoMode
+      ? Math.min(betAutoRef.current, currentBetRef)
+      : Math.min(betManualRef.current, currentBetRef)
+    setBet(currentBet)
+    realBet = currentBet
+    setAutoMode(autoMode ? autoStopAM : autoStopManual)
+  }
   const handleModalButton = () => {
     handleStartGame();
     // setAutoStart(true)
@@ -110,30 +120,12 @@ const MainPage = () => {
 
   }
   const handleStopGame = () =>{
-    if (autoMode) {
-      setBet(Math.min(betAutoRef.current, balanceRef.current));
-      realBet = Math.min(betAutoRef.current, balanceRef.current)
-      setAutoStop(autoStopAM)
-    }
-    else {
-      setBet(Math.min(betManualRef.current, balanceRef.current));
-      realBet = Math.min(betManualRef.current, balanceRef.current)
-      setAutoStop(autoStopManual)
-    }
+    setInitBet()
     stopGame()
-
   }
   const handleStartGame = () => {
-    if (autoMode) {
-      setBet(Math.min(betAutoRef.current, balanceRef.current));
-      realBet = Math.min(betAutoRef.current, balanceRef.current)
-      setAutoStop(autoStopAM)
-    }
-    else {
-      setBet(Math.min(betManualRef.current, balanceRef.current));
-      realBet = Math.min(betManualRef.current, balanceRef.current)
-      setAutoStop(autoStopManual)
-    }
+    setInitBet()
+
     console.log("automode in handle start game", autoMode)
     console.log("realbet in handle start game : ",realBet)
     console.log("betManualRef in handle start game : ",betManualRef)
