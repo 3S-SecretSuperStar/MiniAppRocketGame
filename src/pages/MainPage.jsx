@@ -103,12 +103,12 @@ const MainPage = () => {
     }
   ]
 
-  const setInitBet = () =>{
-    const currentBetRef =  balanceRef.current;
-    const currentBet = 
+  const setInitBet = () => {
+    const currentBetRef = balanceRef.current;
+    const currentBet =
       autoMode
-      ? Math.min(betAutoRef.current, currentBetRef)
-      : Math.min(betManualRef.current, currentBetRef)
+        ? Math.min(betAutoRef.current, currentBetRef)
+        : Math.min(betManualRef.current, currentBetRef)
     realBetRef.current = currentBet
     setAutoMode(autoMode ? autoStopAM : autoStopManual)
   }
@@ -118,7 +118,7 @@ const MainPage = () => {
     setIsModalOpen(false);
 
   }
-  const handleStopGame = () =>{
+  const handleStopGame = () => {
     setInitBet()
     stopGame()
   }
@@ -126,9 +126,9 @@ const MainPage = () => {
     setInitBet()
 
     console.log("automode in handle start game", autoMode)
-    console.log("realbet in handle start game : ",realBet)
-    console.log("betManualRef in handle start game : ",betManualRef)
-    console.log("betManualRef in handle start game : ",betManualRef)
+    console.log("realbet in handle start game : ", realBet)
+    console.log("betManualRef in handle start game : ", betManualRef)
+    console.log("betManualRef in handle start game : ", betManualRef)
     startGame();
   }
 
@@ -362,11 +362,12 @@ const MainPage = () => {
   console.log("current balance", balanceRef.current)
   console.log("balance", balance)
   console.log("game state ", gamePhase)
-  console.log("bet ",bet)
+  console.log("bet ", bet)
+  console.log("realbetref", realBetRef.current)
   // console.log("data of user : ", user)
   // Function to start the game
   const startGame = () => {
-    console.log("bet in start game",bet)
+    console.log("bet in start game", bet)
     const realBet = Math.min(realBetRef.current, balanceRef.current)
     setBet(realBet);
     realBetRef.current = realBet;
@@ -515,7 +516,7 @@ const MainPage = () => {
   };
 
   const updateBalance = (profit) => {
-    console.log("profit of update balance",profit)
+    console.log("profit of update balance", profit)
     const newBalance = (parseFloat(balanceRef.current) + parseFloat(profit)).toFixed(2);
     setBalance(newBalance);
     // console.log(newBalance)
@@ -646,7 +647,13 @@ const MainPage = () => {
                 <div className={`transition duration-300 ${autoMode && "hidden"} flex gap-4`}>
                   <div className="flex flex-col w-1/2 gap-1">
                     <div className="text-sm leading-5">Bet</div>
-                    <InputNumber InputProps={{ value: betManualRef.current, min: 1, step: 1, disabled: gamePhase === 'started', onChange: e => { setBet(parseFloat(e.target.value)); betManualRef.current = parseFloat(e.target.value) } }} />
+                    <InputNumber InputProps={{
+                      value: betManualRef.current, min: 1, step: 1, disabled: gamePhase === 'started', onChange: e => {
+                        setBet(parseFloat(e.target.value));
+                        realBetRef.current = e.target.value;
+                        betAutoRef.current = parseFloat(e.target.value)
+                      }
+                    }} />
                     <div className="text-xs leading-[14px] text-[#FFFFFFCC]">Minimal Bet is 1 Coin</div>
                   </div>
 
@@ -668,11 +675,11 @@ const MainPage = () => {
                         action={() => setIsModalOpen(true)}
                       />}
                       <ShadowButton
-                        action={()=>{
-                          setBet(betAutoRef.current)
-                          handleStartGame() 
+                        action={() => {
+                          // setBet(betAutoRef.current)
+                          handleStartGame()
                         }
-                          }
+                        }
                         content={"Start"}
                         disabled={
                           balance === '0.00' ||
@@ -698,7 +705,13 @@ const MainPage = () => {
                     <div className="flex gap-4">
                       <div className="flex flex-col w-1/2 gap-1">
                         <div className="text-sm leading-5">Bet</div>
-                        <InputNumber InputProps={{ value: betAutoRef.current, min: 1, step: 1, onChange: e => { setBet(parseFloat(e.target.value)); betAutoRef.current = parseFloat(e.target.value) } }} />
+                        <InputNumber InputProps={{
+                          value: betAutoRef.current, min: 1, step: 1, onChange: e => {
+                            setBet(parseFloat(e.target.value));
+                            realBetRef.current = e.target.value;
+                            betAutoRef.current = parseFloat(e.target.value)
+                          }
+                        }} />
                         <div className="text-xs leading-[14px] text-[#FFFFFFCC]">Minimal Bet is 1 Coin</div>
                       </div>
 
@@ -738,9 +751,10 @@ const MainPage = () => {
                     gamePhase !== 'started' ?
                       (
                         <ShadowButton
-                          action={()=>{
-                            setBet(betAutoRef.current)
-                            handleModalButton()}}
+                          action={() => {
+                            // setBet(betAutoRef.current)
+                            handleModalButton()
+                          }}
                           content={"Start"}
                           disabled={
                             balance === '0.00' || bet < 1 || autoStop < 1.1 ||
