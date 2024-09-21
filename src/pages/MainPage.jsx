@@ -109,7 +109,7 @@ const MainPage = () => {
         ? Math.min(betAutoRef.current, currentBetRef)
         : Math.min(betManualRef.current, currentBetRef)
     realBetRef.current = currentBet
-    setAutoMode(autoMode ? autoStopAM : autoStopManual)
+    setAutoStop(autoMode ? autoStopAM : autoStopManual)
   }
   const handleModalButton = () => {
     handleStartGame();
