@@ -120,6 +120,7 @@ const MainPage = () => {
       realBet = Math.min(betManualRef, balanceRef.current)
       setAutoStop(autoStopManual)
     }
+    console.log("realbet in handle start game : ",realBet)
     startGame();
   }
 
