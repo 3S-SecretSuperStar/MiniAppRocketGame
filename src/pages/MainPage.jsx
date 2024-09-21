@@ -410,7 +410,7 @@ const MainPage = () => {
     setFirstLogin(false)
     setWinstate(false)
     // console.log("bet in handle game start", bet, "real bet", realBet)
-    updateBalance(-1 * realBet)
+    updateBalance(-1 * realBetRef.current)
     const animation = document.getElementById('stars').style.animation
     document.getElementById('stars').style.animation = 'none'
     setTimeout(() => {
@@ -530,7 +530,7 @@ const MainPage = () => {
       console.log("operation AfterWInRef ", operationAfterWinRef.current)
       // console.log("balanceRef ", balanceRef.current)
       if (operationAfterWinRef.current === 'Increase Bet by') {
-        realBetRef.current = Math.min(bet * valueAfterWinRef.current, balanceRef.current);
+        realBetRef.current = Math.min(realBetRef.current * valueAfterWinRef.current, balanceRef.current);
         // setBet(Math.min(bet * valueAfterWinRef.current, balanceRef.current));
         // betAutoRef.current = Math.min(betAutoRef.current * valueAfterWinRef.current, balanceRef.current);
       } else {
@@ -548,7 +548,7 @@ const MainPage = () => {
     if (autoMode) {
       if (operationAfterLossRef.current === 'Increase Bet by') {
         // betAutoRef.current = Math.min(betAutoRef.current * valueAfterLossRef.current, balanceRef.current);
-        realBetRef.current = Math.min(bet * valueAfterLossRef.current, balanceRef.current);
+        realBetRef.current = Math.min(realBetRef.current * valueAfterLossRef.current, balanceRef.current);
         // setBet(Math.min(bet * valueAfterLossRef.current, balanceRef.current));
       } else {
         // betAutoRef.current = Math.min(betAutoRef.current, balanceRef.current);
