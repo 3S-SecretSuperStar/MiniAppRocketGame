@@ -245,7 +245,6 @@ const MainPage = () => {
           const realName = webapp["user"]["first_name"] + lastName;
           const userName = webapp["user"]["username"];
           const userId = webapp["user"]["id"];
-          const userInfo = webapp["user"];
           const historySize = 100;
           let gamesHistory = { real: [], virtual: [] }
           // console.log("uerInfo: ", userInfo)
@@ -499,10 +498,7 @@ const MainPage = () => {
     setBalance(newBalance);
     // console.log(newBalance)
     balanceRef.current = newBalance;
-    setUser(user => {
-      const newUserBalance = (parseFloat(user.Balance) + parseFloat(profit)).toFixed(2)
-      return { ...user, Balance: newUserBalance }
-    })
+    setUser({...user, Balance: newBalance})
   };
   // console.log(balance)
   const adjustBetAfterWin = () => {
