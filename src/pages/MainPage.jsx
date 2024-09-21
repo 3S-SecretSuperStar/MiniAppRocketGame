@@ -427,7 +427,7 @@ const MainPage = () => {
     // setBalance(newBalance)
     // balanceRef.current = newBalance
     // console.log("stopppppp update")
-    profit && updateBalance(data.profit);
+    data.profit && updateBalance(data.profit);
     setGames(games + 1);
     setWins(wins + 1);
     adjustBetAfterWin();
