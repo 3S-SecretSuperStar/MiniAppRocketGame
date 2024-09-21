@@ -123,6 +123,7 @@ const MainPage = () => {
     console.log("automode in handle start game", autoMode)
     console.log("realbet in handle start game : ",realBet)
     console.log("betManualRef in handle start game : ",betManualRef)
+    console.log("betManualRef in handle start game : ",betManualRef)
     startGame();
   }
 
@@ -359,8 +360,9 @@ const MainPage = () => {
   // console.log("data of user : ", user)
   // Function to start the game
   const startGame = () => {
-    setBet(Math.min(realBet, balanceRef.current));
-    realBet = Math.min(realBet, balanceRef.current)
+    console.log("bet in start game",bet)
+    setBet(Math.min(bet, balanceRef.current));
+    realBet = Math.min(bet, balanceRef.current)
 
     setRewardState(false)
     setStopWasPressed(false);
