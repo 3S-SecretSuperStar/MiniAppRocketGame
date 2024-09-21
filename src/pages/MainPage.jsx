@@ -66,7 +66,6 @@ const MainPage = () => {
   const [autoStopManual, setAutoStopManual] = useState(autoStop);
   let performTask = [];
   let testCounter = 0;
-  let realBet = 1;
 
 
 
@@ -122,7 +121,6 @@ const MainPage = () => {
     setInitBet()
 
     console.log("automode in handle start game", autoMode)
-    console.log("realbet in handle start game : ", realBet)
     console.log("betManualRef in handle start game : ", betManualRef)
     console.log("betManualRef in handle start game : ", betManualRef)
     startGame();
@@ -402,7 +400,6 @@ const MainPage = () => {
   };
 
   const handleGameStarted = () => {
-    console.log("realBet in start game", realBet)
     setFirstLogin(false)
     setWinstate(false)
     // console.log("bet in handle game start", bet, "real bet", realBet)
@@ -526,11 +523,15 @@ const MainPage = () => {
       console.log("operation AfterWInRef ", operationAfterWinRef.current)
       // console.log("balanceRef ", balanceRef.current)
       if (operationAfterWinRef.current === 'Increase Bet by') {
-        realBetRef.current = Math.min(realBetRef.current * valueAfterWinRef.current, balanceRef.current);
+        const afterWinBet = Math.min(realBetRef.current * valueAfterWinRef.current, balanceRef.current)
+        realBetRef.current = afterWinBet;
+        setBet(afterWinBet)
         // setBet(Math.min(bet * valueAfterWinRef.current, balanceRef.current));
         // betAutoRef.current = Math.min(betAutoRef.current * valueAfterWinRef.current, balanceRef.current);
       } else {
-        realBetRef.current = Math.min(betAutoRef.current, balanceRef.current);
+        const returnBet = Math.min(betAutoRef.current, balanceRef.current)
+        realBetRef.current = returnBet;
+        setBet(returnBet)
         // setBet(Math.min(betAutoRef.current, balanceRef.current));
         // betAutoRef.current = Math.min(betAutoRef.current, balanceRef.current);
       }
@@ -542,14 +543,19 @@ const MainPage = () => {
 
   const adjustBetAfterLoss = () => {
     if (autoMode) {
+      const lostAfterBet = Math.min(realBetRef.current * valueAfterLossRef.current, balanceRef.current)
       if (operationAfterLossRef.current === 'Increase Bet by') {
         // betAutoRef.current = Math.min(betAutoRef.current * valueAfterLossRef.current, balanceRef.current);
-        realBetRef.current = Math.min(realBetRef.current * valueAfterLossRef.current, balanceRef.current);
+        realBetRef.current = lostAfterBet;
+        setBet(lostAfterBet)
         // setBet(Math.min(bet * valueAfterLossRef.current, balanceRef.current));
       } else {
         // betAutoRef.current = Math.min(betAutoRef.current, balanceRef.current);
         // setBet(Math.min(betAutoRef.current, balanceRef.current));
-        realBetRef.current = Math.min(betAutoRef.current, balanceRef.current);
+        const returnBet = Math.min(betAutoRef.current, balanceRef.current)
+        realBetRef.current = returnBet;
+        setBet(returnBet)
+
       }
       // setBet(betAutoRef.current);
     }
