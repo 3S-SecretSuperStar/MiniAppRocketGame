@@ -104,7 +104,7 @@ const MainPage = () => {
 
 
   const handleModalButton = () => {
-    startGame();
+    handleStartGame();
     // setAutoStart(true)
     setIsModalOpen(false);
 
@@ -359,8 +359,8 @@ const MainPage = () => {
   // console.log("data of user : ", user)
   // Function to start the game
   const startGame = () => {
-    setBet(Math.min(bet, balanceRef.current));
-    realBet = Math.min(bet, balanceRef.current)
+    setBet(Math.min(realBet, balanceRef.current));
+    realBet = Math.min(realBet, balanceRef.current)
 
     setRewardState(false)
     setStopWasPressed(false);
