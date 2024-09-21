@@ -307,7 +307,7 @@ const MainPage = () => {
                     RealName: realName,
                     UserName: userName,
                     UserId: userId,
-                    (autoMode && gamePhase )&& (Balance: isReal ? myData.balance.real.toFixed(2) : myData.balance.virtual.toFixed(2)),
+                    Balance: isReal ? myData.balance.real.toFixed(2) : myData.balance.virtual.toFixed(2),
                     GameWon: isReal ? realWins : virtualWins,
                     GameLost: isReal ? realLosses : virtualLosses,
                     Rank: isReal ? data.realRank : data.virtualRank,
