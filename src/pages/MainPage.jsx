@@ -672,7 +672,11 @@ const MainPage = () => {
                         action={() => setIsModalOpen(true)}
                       />}
                       <ShadowButton
-                        action={handleStartGame}
+                        action={()=>{
+                          setBet(betAutoRef.current)
+                          handleStartGame() 
+                        }
+                          }
                         content={"Start"}
                         disabled={
                           balance === '0.00' ||
@@ -738,7 +742,9 @@ const MainPage = () => {
                     gamePhase !== 'started' ?
                       (
                         <ShadowButton
-                          action={handleModalButton}
+                          action={()=>{
+                            setBet(betAutoRef.current)
+                            handleModalButton()}}
                           content={"Start"}
                           disabled={
                             balance === '0.00' || bet < 1 || autoStop < 1.1 ||
