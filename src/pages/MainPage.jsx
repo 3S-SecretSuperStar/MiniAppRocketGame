@@ -118,10 +118,6 @@ const MainPage = () => {
     setIsModalOpen(false);
 
   }
-  const handleStopGame = () => {
-    setInitBet()
-    stopGame()
-  }
   const handleStartGame = () => {
     setInitBet()
 
@@ -675,11 +671,7 @@ const MainPage = () => {
                         action={() => setIsModalOpen(true)}
                       />}
                       <ShadowButton
-                        action={() => {
-                          // setBet(betAutoRef.current)
-                          handleStartGame()
-                        }
-                        }
+                        action={handleStartGame}
                         content={"Start"}
                         disabled={
                           balance === '0.00' ||
@@ -694,7 +686,7 @@ const MainPage = () => {
                     <ShadowButton
                       className={"bg-[#CC070A] shadow-btn-red-border invite-btn-red-shadow"}
                       content={"Stop"}
-                      action={handleStopGame}
+                      action={stopGame}
                     />
                   )
               }
@@ -751,10 +743,7 @@ const MainPage = () => {
                     gamePhase !== 'started' ?
                       (
                         <ShadowButton
-                          action={() => {
-                            // setBet(betAutoRef.current)
-                            handleModalButton()
-                          }}
+                          action={handleModalButton}
                           content={"Start"}
                           disabled={
                             balance === '0.00' || bet < 1 || autoStop < 1.1 ||
@@ -767,7 +756,7 @@ const MainPage = () => {
                         <ShadowButton
                           className={"bg-[#CC070A] shadow-btn-red-border invite-btn-red-shadow"}
                           content={"Stop"}
-                          action={handleStopGame}
+                          action={stopGame}
                         />
                       )
                   }
