@@ -338,6 +338,7 @@ const MainPage = () => {
   console.log("userInfo",user.Balance)
   console.log("current balance",balanceRef.current)
   console.log("balance", balance)
+  console.log("game state ",gamePhase)
   // console.log("data of user : ", user)
   // Function to start the game
   const startGame = () => {
