@@ -109,6 +109,20 @@ const MainPage = () => {
     setIsModalOpen(false);
 
   }
+  const handleStopGame = () =>{
+    if (autoMode) {
+      setBet(Math.min(betAutoRef.current, balanceRef.current));
+      realBet = Math.min(betAutoRef.current, balanceRef.current)
+      setAutoStop(autoStopAM)
+    }
+    else {
+      setBet(Math.min(betManualRef.current, balanceRef.current));
+      realBet = Math.min(betManualRef.current, balanceRef.current)
+      setAutoStop(autoStopManual)
+    }
+    stopGame()
+
+  }
   const handleStartGame = () => {
     if (autoMode) {
       setBet(Math.min(betAutoRef.current, balanceRef.current));
@@ -672,7 +686,7 @@ const MainPage = () => {
                     <ShadowButton
                       className={"bg-[#CC070A] shadow-btn-red-border invite-btn-red-shadow"}
                       content={"Stop"}
-                      action={stopGame}
+                      action={handleStopGame}
                     />
                   )
               }
@@ -736,7 +750,7 @@ const MainPage = () => {
                         <ShadowButton
                           className={"bg-[#CC070A] shadow-btn-red-border invite-btn-red-shadow"}
                           content={"Stop"}
-                          action={stopGame}
+                          action={handleStopGame}
                         />
                       )
                   }
