@@ -175,29 +175,7 @@ const MainPage = () => {
           
           setAutoStop(autoStopAM)
           setTimeout(() => {
-            updateBalance(-1 * Math.min(betAutoRef.current, balanceRef.current))
-            setStopWasPressed(false);
-            setGamePhase('started')
-            setSocketStart(false);
-            setActionState("start");
-            context.socket.onmessage = async e => {
-              const data = JSON.parse(e.data);
-              // console.log("Data", data.operation);
-              switch (data.operation) {
-                case 'started':
-                  setSocketStart(true)
-                  handleGameStarted();
-                  break;
-                case 'stopped':
-                  handleGameStopped(data);
-                  break;
-                case 'crashed':
-                  handleGameCrashed(data);
-                  break;
-                default:
-                  break;
-              }
-            };
+            startGame()
           }, 1000)
         } catch (e) {
           // eslint-disable-next-line no-self-assign
