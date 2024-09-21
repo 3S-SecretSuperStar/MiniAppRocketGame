@@ -335,7 +335,9 @@ const MainPage = () => {
     return <FetchLoading />
   }
   // console.log(loading)
-
+  console.log("userInfo",user.Balance)
+  console.log("current balance",balanceRef.current)
+  console.log("balance", balance)
   // console.log("data of user : ", user)
   // Function to start the game
   const startGame = () => {
