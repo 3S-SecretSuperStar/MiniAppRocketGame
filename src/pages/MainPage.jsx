@@ -170,10 +170,10 @@ const MainPage = () => {
   useEffect(() => {
     let isMounted = true
     if (gamePhase !== 'started' && autoMode && !stopWasPressed && balanceRef.current >= betAutoRef.current && betAutoRef.current) {
+      console.log("balanceRef.current in auto game", balanceRef.current)
+      console.log("betAutoRef.current in auto game", betAutoRef.current)
       if (isMounted) {
         try {
-          
-          setAutoStop(autoStopAM)
           setTimeout(() => {
             startGame()
           }, 1000)
@@ -385,6 +385,7 @@ const MainPage = () => {
   };
 
   const handleGameStarted = () => {
+    console.log("realBet in start game", realBet)
     setFirstLogin(false)
     setWinstate(false)
     // console.log("bet in handle game start", bet, "real bet", realBet)
