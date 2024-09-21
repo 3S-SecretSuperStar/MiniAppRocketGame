@@ -109,6 +109,19 @@ const MainPage = () => {
     setIsModalOpen(false);
 
   }
+  const handleStartGame = () => {
+    if (autoMode) {
+      setBet(Math.min(betAutoRef, balanceRef.current));
+      realBet = Math.min(betAutoRef, balanceRef.current)
+      setAutoStop(autoStopAM)
+    }
+    else {
+      setBet(Math.min(betManualRef, balanceRef.current));
+      realBet = Math.min(betManualRef, balanceRef.current)
+      setAutoStop(autoStopManual)
+    }
+    startGame();
+  }
 
   const handleStartButton = () => {
 
@@ -335,23 +348,16 @@ const MainPage = () => {
     return <FetchLoading />
   }
   // console.log(loading)
-  console.log("userInfo",user.Balance)
-  console.log("current balance",balanceRef.current)
+  console.log("userInfo", user.Balance)
+  console.log("current balance", balanceRef.current)
   console.log("balance", balance)
-  console.log("game state ",gamePhase)
+  console.log("game state ", gamePhase)
   // console.log("data of user : ", user)
   // Function to start the game
   const startGame = () => {
-    if (autoMode) {
-      setBet(Math.min(bet, balanceRef.current));
-      realBet = Math.min(bet, balanceRef.current)
-      setAutoStop(autoStopAM)
-    }
-    else {
-      setBet(Math.min(bet, balanceRef.current));
-      realBet = Math.min(bet, balanceRef.current)
-      setAutoStop(autoStopManual)
-    }
+    setBet(Math.min(bet, balanceRef.current));
+    realBet = Math.min(bet, balanceRef.current)
+
     setRewardState(false)
     setStopWasPressed(false);
     setGamePhase('started')
@@ -500,7 +506,7 @@ const MainPage = () => {
     setBalance(newBalance);
     // console.log(newBalance)
     balanceRef.current = newBalance;
-    setUser({...user, Balance: newBalance})
+    setUser({ ...user, Balance: newBalance })
   };
   // console.log(balance)
   const adjustBetAfterWin = () => {
@@ -644,7 +650,7 @@ const MainPage = () => {
                         action={() => setIsModalOpen(true)}
                       />}
                       <ShadowButton
-                        action={startGame}
+                        action={handleStartGame}
                         content={"Start"}
                         disabled={
                           balance === '0.00' ||
