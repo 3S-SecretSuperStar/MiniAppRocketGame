@@ -512,10 +512,10 @@ const MainPage = () => {
       // console.log("balanceRef ", balanceRef.current)
       if (operationAfterWinRef.current === 'Increase Bet by') {
         setBet(Math.min(bet * valueAfterWinRef.current, balanceRef.current));
-        // betAutoRef.current = Math.min(betAutoRef.current * valueAfterWinRef.current, balanceRef.current);
+        betAutoRef.current = Math.min(betAutoRef.current * valueAfterWinRef.current, balanceRef.current);
       } else {
         setBet(Math.min(betAutoRef.current, balanceRef.current));
-        // betAutoRef.current = Math.min(betAutoRef.current, balanceRef.current);
+        betAutoRef.current = Math.min(betAutoRef.current, balanceRef.current);
       }
       // setBet(betAutoRef.current);
     }
