@@ -653,7 +653,7 @@ const MainPage = () => {
                       value: betManualRef.current, min: 1, step: 1, disabled: gamePhase === 'started', onChange: e => {
                         setBet(parseFloat(e.target.value));
                         realBetRef.current = e.target.value;
-                        betAutoRef.current = parseFloat(e.target.value)
+                        betManualRef.current = parseFloat(e.target.value)
                       }
                     }} />
                     <div className="text-xs leading-[14px] text-[#FFFFFFCC]">Minimal Bet is 1 Coin</div>
