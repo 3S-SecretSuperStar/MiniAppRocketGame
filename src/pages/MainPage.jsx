@@ -152,6 +152,7 @@ const MainPage = () => {
 
       if (balance === 0) {
         setBalance('0.00')
+        balanceRef.current = (balance.toFixed(2));
       }
 
       if (winCoefficient < 1) {
@@ -303,6 +304,7 @@ const MainPage = () => {
                   setFirstLogin(myData.first_state !== "false");
                   setRewardState(myData.first_state !== "false");
                   setBalance(newBalance)
+                  balanceRef.current = newBalance.current
                   setUser({
                     RealName: realName,
                     UserName: userName,
@@ -637,7 +639,7 @@ const MainPage = () => {
 
             </div>
             <TabButton className={`transform translate-y-[100px] ${isAction === "start" ? "-translate-y-[150px]" : ""} `} tabList={statsList} tabNo={tabId} setTabNo={setTabId} />
-            <Game className={`transition-all ${isAction !== "start" ? "mt-24" : "mt-0"} `} finalResult={finalResult} gamePhase={gamePhase} isWin={winState}
+            <Game className={`transition-all ${isAction !== "start" ? "mt-24" : "mt-0"} `} finalResult={finalResult} gamePhase={gamePhase} isWin={winState} stopGame = {stopGame}
               setLoaderIsShown={setLoaderIsShown} amount={balanceRef.current} bet={bet} autoStop={autoStop} socketFlag={socketStart} realGame={isReal} setInfoState={(e) => setInfoState(e)} />
 
             <div className="flex flex-col text-white gap-4">

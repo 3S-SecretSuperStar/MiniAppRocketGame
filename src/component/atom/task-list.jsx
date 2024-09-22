@@ -21,7 +21,6 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData }) => 
   const [isPending, setIsPending] = useState(false)
   const [claimState, setClaimState] = useState(true)
 
-
   const updateBalance = (profit) => {
     setUser(user => {
       const newUserBalance = (parseFloat(user.Balance) + parseFloat(profit)).toFixed(2)
@@ -149,7 +148,7 @@ return (
             }
           </button> :
           <div className="text-white">
-            {setClaimState(true)}
+            
             <CheckMark />
           </div>
     }
