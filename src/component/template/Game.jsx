@@ -28,10 +28,11 @@ export default memo(function Game({ gamePhase, finalResult, amount = 10.00,
     score = 0
   }
   // console.log("socket info in game : ", context.socket)
- 
-  useEffect(()=>{
-    if(score>autoStop+0.1) stopGame()
-  },[score])
+  console.log("autoStop in game : ", autoStop)
+  // useEffect(()=>{
+  //   autoStop
+  //   if(score>autoStop+0.1) stopGame()
+  // },[score])
  
   useEffect(() => {
 
