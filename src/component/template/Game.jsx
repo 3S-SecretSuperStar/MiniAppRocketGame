@@ -31,7 +31,7 @@ export default memo(function Game({ gamePhase, finalResult, amount = 10.00,
  
   useEffect(()=>{
     if(score>autoStop+0.1) stopGame()
-  },[score, autoStop])
+  },[score])
  
   useEffect(() => {
 
