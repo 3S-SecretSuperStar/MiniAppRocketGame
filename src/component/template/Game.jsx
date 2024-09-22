@@ -9,7 +9,7 @@ import "../../css/Game.css"
 import { Link } from 'react-router-dom'
 
 export default memo(function Game({ gamePhase, finalResult, amount = 10.00,
-  className, bet, autoStop, socketFlag, realGame, isWin }) {
+  className, bet, autoStop, socketFlag, realGame, isWin,stopGame }) {
   const context = useContext(AppContext);
   const [currentResult, setCurrentResult] = useState(1)
   const [user,] = useAtom(userData)
@@ -28,6 +28,11 @@ export default memo(function Game({ gamePhase, finalResult, amount = 10.00,
     score = 0
   }
   // console.log("socket info in game : ", context.socket)
+ 
+  useEffect(()=>{
+    if(score>autoStop+0.1) stopGame()
+  },[score, autoStop])
+ 
   useEffect(() => {
 
 

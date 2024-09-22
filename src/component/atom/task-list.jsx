@@ -19,6 +19,7 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData }) => 
   const [isReal, setIsReal] = useAtom(realGameState);
   const [user, setUser] = useAtom(userData)
   const [isPending, setIsPending] = useState(false)
+  const [claimState, setClaimState] = useState(true)
 
 
   const updateBalance = (profit) => {
@@ -31,6 +32,7 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData }) => 
   headers.append('Content-Type', 'application/json')
 
   const goClaim = () => {
+    setClaimState(false)
     setIsClaim(true);
 
     // console.log("task index", task.index)
@@ -57,9 +59,11 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData }) => 
             // eslint-disable-next-line no-self-assign
             console.log(e);
           }
-          stateTask()
-          setIsClaim(false)
+          finally {
+            setIsClaim(false)
+          }
         })
+      stateTask();
     } else {
       let dailyAmount = parseFloat(task.amount.split(" ")[0])
       // console.log("index : ", index)
@@ -86,8 +90,11 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData }) => 
             // eslint-disable-next-line no-self-assign
             console.log(e);
           }
+          finally {
+            setIsClaim(false)
+          }
+
           stateTask()
-          setIsClaim(false)
         })
     }
   }
@@ -97,7 +104,6 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData }) => 
     fetch(`${serverUrl}/add_perform_list`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, performTask: [task.index,], isReal: isReal }), headers })
     setTimeout(() => {
       fetchData()
-
     }, 1000 * 60)
     return () => setIsPending(false)
   }
@@ -137,7 +143,7 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData }) => 
           task.status === 0 ?
             <button
               className="rounded-lg w-[61px] py-1 px-0 h-7 bg-white text-[#080888] text-center text-[14px]"
-              onClick={goClaim}
+              onClick={claimState && goClaim()}
             >
               {
                 isClaim ?
@@ -146,6 +152,7 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData }) => 
               }
             </button> :
             <div className="text-white">
+              {setClaimState(true)}
               <CheckMark />
             </div>
       }
