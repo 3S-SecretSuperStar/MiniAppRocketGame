@@ -304,7 +304,7 @@ const MainPage = () => {
                   setFirstLogin(myData.first_state !== "false");
                   setRewardState(myData.first_state !== "false");
                   setBalance(newBalance)
-                  balanceRef.current = newBalance.current
+                  balanceRef.current = newBalance
                   setUser({
                     RealName: realName,
                     UserName: userName,
