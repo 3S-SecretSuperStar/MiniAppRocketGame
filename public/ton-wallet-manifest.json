@@ -1,5 +1,5 @@
 {
-  "url": "http://localhost:3000",
+  "url": "mini-app-rocket-game-sigma.vercel.app",
   "name": "TWA-Wallet",
-  "iconUrl": "http://localhost:3000/image/token.png"
+  "iconUrl": "mini-app-rocket-game-sigma.vercel.app/image/token.png"
 }
