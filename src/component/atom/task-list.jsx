@@ -12,15 +12,13 @@ import { isActionState } from "../../store";
 
 const serverUrl = REACT_APP_SERVER;
 
-const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData }) => {
+const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claimStateList, setClaimStateList }) => {
 
 
   const [isClaim, setIsClaim] = useState(false);
   const [isReal, setIsReal] = useAtom(realGameState);
   const [user, setUser] = useAtom(userData)
   const [isPending, setIsPending] = useState(false)
-  const [claimDiableList, setClaimDisableList] = useState([]) 
-  const [dailyClaimState, setDailyClaimState] = useState(false);
 
   const updateBalance = (profit) => {
     setUser(user => {
@@ -32,7 +30,7 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData }) => 
   headers.append('Content-Type', 'application/json')
 
   const goClaim = () => {
-    
+    setClaimStateList(index)
     setIsClaim(true);
 
     // console.log("task index", task.index)
@@ -141,7 +139,7 @@ return (
           <button
             className="rounded-lg w-[61px] py-1 px-0 h-7 bg-white text-[#080888] text-center text-[14px]"
             onClick={ goClaim()}
-
+            disabled = {claimStateList.includes(index)}
           >
             {
               isClaim ?
@@ -386,12 +384,12 @@ const TaskList = () => {
         {
           fixedTaskData
             .sort((a, b) => (a.index - b.index))
-            .map((_task, _index) => <GenerateTask task={_task} stateTask={stateTask} key={_index} index={_index} dailytaskIndex={dailytaskIndex} fetchData={fetchData} />)
+            .map((_task, _index) => <GenerateTask task={_task} stateTask={stateTask} key={_index} index={_index} dailytaskIndex={dailytaskIndex} fetchData={fetchData} claimStateList = {claimStateList} setClaimStateList = {setClaimStateList} />)
         }
         {
           otherTaskData
             .sort((a, b) => (a.status - b.status || a.index - b.index))
-            .map((_task, _index) => <GenerateTask task={_task} stateTask={stateTask} key={_index} index={_index} dailytaskIndex={dailytaskIndex} fetchData={fetchData} />)
+            .map((_task, _index) => <GenerateTask task={_task} stateTask={stateTask} key={_index+1} index={_index+1} dailytaskIndex={dailytaskIndex} claimStateList = {claimStateList} setClaimStateList = {setClaimStateList} fetchData={fetchData} />)
         }
       </div>
     </Suspense>
