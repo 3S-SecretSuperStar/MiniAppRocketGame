@@ -408,7 +408,7 @@ const MainPage = () => {
     // console.log("bet in handle game start", bet, "real bet", realBet)
     const animation = document.getElementById('stars').style.animation
     console.log("realBetRef", realBetRef.current);
-    updateBalance(-1 * realBetRef.current)
+    updateBalance(-1 * bet)
     document.getElementById('stars').style.animation = 'none'
     setTimeout(() => {
       setFinalResult(0);
