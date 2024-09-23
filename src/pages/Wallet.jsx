@@ -7,12 +7,13 @@ import Contact from "../component/molecules/contact";
 import { useAtom } from "jotai";
 import { isActionState } from "../store";
 import { LazyLoadImage } from "react-lazy-load-image-component";
-import { TonConnectButton, useTonAddress, useTonConnectUI, useTonWallet } from "@tonconnect/ui-react";
+import { TonConnectButton, useTonAddress, useTonConnectUI, useTonWallet, beginCell, toNano, Address } from "@tonconnect/ui-react";
 import { Img } from "../assets/image";
 import NavWallet from "../component/svg/nav_wallet";
 import CheckMark from "../component/svg/check-mark";
 import WalletInfo from "../component/atom/wallet-info";
 import InputNumber from "../component/template/InputNumber";
+
 
 
 const Wallet = () => {
@@ -28,35 +29,42 @@ const Wallet = () => {
   const [tonconnectUi] = useTonConnectUI();
   const [tokenNumber, setTokenNumber] = useState(1000);
 
+
+
+
+
+
   const createTransaction = (tokenCount)=>{
+    
     console.log("tokenNumber : ",tokenCount)
-  // return  {
-  //   // The transaction is valid for 10 minutes from now, in unix epoch seconds.
-  //   validUntil: Math.floor(Date.now() / 1000) + 600,
-  //   messages: [
+
+  return  {
+    // The transaction is valid for 10 minutes from now, in unix epoch seconds.
+    validUntil: Math.floor(Date.now() / 1000) + 600,
+    messages: [
   
-  //     {
-  //       // The receiver's address.
-  //       address: adminWalletAdress,
-  //       // Amount to send in nanoTON. For example, 0.005 TON is 5000000 nanoTON.
-  //       amount: tokenCount*Math.pow(10,6),
-  //       // (optional) State initialization in boc base64 format.
-  //       stateInit: 'te6cckEBBAEAOgACATQCAQAAART/APSkE/S88sgLAwBI0wHQ0wMBcbCRW+D6QDBwgBDIywVYzxYh+gLLagHPFsmAQPsAlxCarA==',
-  //       // (optional) Payload in boc base64 format.
-  //       payload: 'te6ccsEBAQEADAAMABQAAAAASGVsbG8hCaTc/g==',
-  //     },
+      {
+        // The receiver's address.
+        address: adminWalletAdress,
+        // Amount to send in nanoTON. For example, 0.005 TON is 5000000 nanoTON.
+        amount: tokenCount*Math.pow(10,6),
+        // (optional) State initialization in boc base64 format.
+        stateInit: 'te6cckEBBAEAOgACATQCAQAAART/APSkE/S88sgLAwBI0wHQ0wMBcbCRW+D6QDBwgBDIywVYzxYh+gLLagHPFsmAQPsAlxCarA==',
+        // (optional) Payload in boc base64 format.
+        payload: 'te6ccsEBAQEADAAMABQAAAAASGVsbG8hCaTc/g==',
+      },
   
-  //     // Uncomment the following message to send two messages in one transaction.
-  //     /*
-  //     {
-  //       // Note: Funds sent to this address will not be returned back to the sender.
-  //       address: 'UQAuz15H1ZHrZ_psVrAra7HealMIVeFq0wguqlmFno1f3B-m',
-  //       amount: toNano('0.01').toString(),
-  //     }
-  //     */
+      // Uncomment the following message to send two messages in one transaction.
+      /*
+      {
+        // Note: Funds sent to this address will not be returned back to the sender.
+        address: 'UQAuz15H1ZHrZ_psVrAra7HealMIVeFq0wguqlmFno1f3B-m',
+        amount: toNano('0.01').toString(),
+      }
+      */
   
-  //   ],
-  // };
+    ],
+  };
 }
 
 
@@ -69,16 +77,21 @@ const Wallet = () => {
     }
   }
   const transactionProcess = (tokenCount) =>{
-
+    
     const tx = createTransaction(tokenCount)
     console.log("transaction : ",tx)
+    try{
     tonconnectUi.sendTransaction(tx);
-     
+    }catch(e){
+      console.log("ton contract state",e)
+    }
   }
 
   // const onChange = useCallback((value) => setTx(value.updated_src), [])
 console.log("wallet",tonwallet)
 console.log("ton number", tokenNumber )
+console.log("wallet network : ",tonwallet.account.address)
+console.log("wallet network : ",wallet)
   setActionState('stop')
   return (
     <div className="h-full pb-[76px] flex flex-col gap-4 font-roboto">
