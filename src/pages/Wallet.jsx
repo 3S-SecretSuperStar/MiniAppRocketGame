@@ -1,13 +1,13 @@
-import { useCallback, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import InfoModal from "../component/atom/infoModel";
 import AtomLabel from "../component/atom/atom-label";
 import ShadowButton from "../component/atom/shadow-btn";
-
+// import {toNano} from '@ton/ton'
 import Contact from "../component/molecules/contact";
 import { useAtom } from "jotai";
 import { isActionState } from "../store";
 import { LazyLoadImage } from "react-lazy-load-image-component";
-import { useTonConnectUI, useTonWallet } from "@tonconnect/ui-react";
+import { TonConnectButton, useTonAddress, useTonConnectUI, useTonWallet } from "@tonconnect/ui-react";
 import { Img } from "../assets/image";
 import NavWallet from "../component/svg/nav_wallet";
 import CheckMark from "../component/svg/check-mark";
@@ -21,13 +21,65 @@ const Wallet = () => {
   const [infoState, setInfoState] = useState(false)
   const [, setActionState] = useAtom(isActionState);
   const [tx, setTx] = useState({})
-  const wallet = useTonWallet();
+  const wallet = useTonAddress();
+  const tonwallet = useTonWallet();
+  const adminWalletAdress = "UQBkGEoA5uqoPmjuZusDoBrma5aTTwvyxcxYPvjEnTU1EWgd";
   // const wallet = "0x23265323454232";
   const [tonconnectUi] = useTonConnectUI();
   const [tokenNumber, setTokenNumber] = useState(1000);
+  const tokenNumberRef = useRef(tokenNumber);
 
-  const onChange = useCallback((value) => setTx(value.updated_src), [])
+  const createTransaction = (tokenNumber)=>{
+    console.log("tokenNumber : ",tokenNumber)
+  return  {
+    // The transaction is valid for 10 minutes from now, in unix epoch seconds.
+    validUntil: Math.floor(Date.now() / 1000) + 600,
+    messages: [
+  
+      {
+        // The receiver's address.
+        address: adminWalletAdress,
+        // Amount to send in nanoTON. For example, 0.005 TON is 5000000 nanoTON.
+        amount: tokenNumber*Math.pow(10,6),
+        // (optional) State initialization in boc base64 format.
+        stateInit: 'te6cckEBBAEAOgACATQCAQAAART/APSkE/S88sgLAwBI0wHQ0wMBcbCRW+D6QDBwgBDIywVYzxYh+gLLagHPFsmAQPsAlxCarA==',
+        // (optional) Payload in boc base64 format.
+        payload: 'te6ccsEBAQEADAAMABQAAAAASGVsbG8hCaTc/g==',
+      },
+  
+      // Uncomment the following message to send two messages in one transaction.
+      /*
+      {
+        // Note: Funds sent to this address will not be returned back to the sender.
+        address: 'UQAuz15H1ZHrZ_psVrAra7HealMIVeFq0wguqlmFno1f3B-m',
+        amount: toNano('0.01').toString(),
+      }
+      */
+  
+    ],
+  };
+}
 
+
+  const tonWalletAction = async() =>{
+    if(!wallet){
+       tonconnectUi.openModal()
+    }
+    else{
+      await tonconnectUi.disconnect()
+    }
+  }
+  const transactionProcess = () =>{
+
+    const tx = createTransaction(tokenNumberRef.current)
+    console.log("transaction : ",tx)
+    tonconnectUi.sendTransaction(tx);
+     
+  }
+
+  // const onChange = useCallback((value) => setTx(value.updated_src), [])
+console.log("wallet",tonwallet)
+console.log("ton number", tokenNumberRef.current )
   setActionState('stop')
   return (
     <div className="h-full pb-[76px] flex flex-col gap-4 font-roboto">
@@ -52,22 +104,26 @@ const Wallet = () => {
       </div>
       <div className="w-full flex flex-col gap-4">
         <AtomLabel content={"Wallet"} />
-        <WalletInfo address={wallet} />
+        <WalletInfo 
+        address={wallet?`${wallet.slice(0,6)}...${wallet.slice(-6)}`:''} />
         {
           wallet && (
             <>
               <div className="flex flex-col gap-4 text-base text-white">
                 <div className="flex flex-col gap-1">
                   Buy coins
-                  <InputNumber InputProps={{ value: tokenNumber, min: 1, onchange: e => setTokenNumber(e.target.value) }} />
-                  1TON = 100 coins
+                  <InputNumber InputProps={{ value: tokenNumber, min: 1, step:1, onchange: e => {setTokenNumber(e.target.value);
+                    tokenNumberRef.current = e.target.value;
+                    console.log(e.target.value)
+                  } }} />
+                  1TON = 1000 coins
                 </div>
               </div>
-
+              
               <ShadowButton
                 className={"text-base font-bold leading-5 py-3.5"}
                 content={"Buy Coins"}
-                action={() => setInfoState(true)}
+                action={() =>transactionProcess() }
               />
             </>)
 
@@ -78,7 +134,7 @@ const Wallet = () => {
         <ShadowButton
           className={` ${wallet ? 'bg-[#CC070A] shadow-btn-red-border invite-btn-red-shadow' : 'bg-[#3434DA]'} py-3.5`}
           content={wallet ? "Disconnect wallet" : "Connect wallet"}
-          action={() => tonconnectUi.openModal()}
+          action={() => tonWalletAction()}
         />
 
       </div>
