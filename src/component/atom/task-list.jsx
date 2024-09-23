@@ -19,6 +19,7 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
   const [isReal, setIsReal] = useAtom(realGameState);
   const [user, setUser] = useAtom(userData)
   const [isPending, setIsPending] = useState(false)
+  console.log(claimStateList);
 
   const updateBalance = (profit) => {
     setUser(user => {
@@ -139,7 +140,7 @@ return (
           <button
             className="rounded-lg w-[61px] py-1 px-0 h-7 bg-white text-[#080888] text-center text-[14px]"
             onClick={ goClaim()}
-            disabled = {claimStateList.includes(index)}
+            // disabled = {claimStateList.includes(index)}
           >
             {
               isClaim ?
