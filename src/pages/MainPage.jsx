@@ -186,7 +186,7 @@ const MainPage = () => {
 
   useEffect(() => {
     let isMounted = true
-    if (gamePhase !== 'started' && autoMode && !stopWasPressed && balanceRef.current >= betAutoRef.current && betAutoRef.current) {
+    if (gamePhase !== 'started' && autoMode && !stopWasPressed && balance >= betAutoRef.current && betAutoRef.current) {
       console.log("balanceRef.current in auto game", balanceRef.current)
       console.log("betAutoRef.current in auto game", betAutoRef.current)
       if (isMounted) {
@@ -300,7 +300,6 @@ const MainPage = () => {
                   setGames(myData)
                   const newBalance = parseFloat(isReal ? myData.balance.real : myData.balance.virtual).toFixed(2)
                   // console.log("check balance : ", newBalance)
-                  balanceRef.current = newBalance
                   setFirstLogin(myData.first_state !== "false");
                   setRewardState(myData.first_state !== "false");
                   setBalance(newBalance)
@@ -364,7 +363,7 @@ const MainPage = () => {
   // Function to start the game
   const startGame = () => {
     console.log("bet in start game", bet)
-    const realBet = Math.min(realBetRef.current, balanceRef.current)
+    const realBet = Math.min(realBetRef.current, balance)
     setBet(realBet);
     realBetRef.current = realBet;
 
@@ -405,8 +404,8 @@ const MainPage = () => {
     setFirstLogin(false)
     setWinstate(false)
     // console.log("bet in handle game start", bet, "real bet", realBet)
-    updateBalance(-1 * realBetRef.current)
     const animation = document.getElementById('stars').style.animation
+    updateBalance(-1 * realBetRef.current)
     document.getElementById('stars').style.animation = 'none'
     setTimeout(() => {
       setFinalResult(0);
@@ -512,7 +511,7 @@ const MainPage = () => {
 
   const updateBalance = (profit) => {
     console.log("profit of update balance", profit)
-    const newBalance = (parseFloat(balanceRef.current) + parseFloat(profit)).toFixed(2);
+    const newBalance = (parseFloat(balance) + parseFloat(profit)).toFixed(2);
     balanceRef.current = newBalance;
     setBalance(newBalance);
     // console.log(newBalance)
@@ -526,13 +525,13 @@ const MainPage = () => {
       console.log("operation AfterWInRef ", operationAfterWinRef.current)
       // console.log("balanceRef ", balanceRef.current)
       if (operationAfterWinRef.current === 'Increase Bet by') {
-        const afterWinBet = Math.min(realBetRef.current * valueAfterWinRef.current, balanceRef.current)
+        const afterWinBet = Math.min(realBetRef.current * valueAfterWinRef.current, balance)
         realBetRef.current = afterWinBet;
         setBet(afterWinBet)
         // setBet(Math.min(bet * valueAfterWinRef.current, balanceRef.current));
         // betAutoRef.current = Math.min(betAutoRef.current * valueAfterWinRef.current, balanceRef.current);
       } else {
-        const returnBet = Math.min(betAutoRef.current, balanceRef.current)
+        const returnBet = Math.min(betAutoRef.current, balance)
         realBetRef.current = returnBet;
         setBet(returnBet)
         // setBet(Math.min(betAutoRef.current, balanceRef.current));
@@ -546,7 +545,7 @@ const MainPage = () => {
 
   const adjustBetAfterLoss = () => {
     if (autoMode) {
-      const lostAfterBet = Math.min(realBetRef.current * valueAfterLossRef.current, balanceRef.current)
+      const lostAfterBet = Math.min(realBetRef.current * valueAfterLossRef.current, balance)
       if (operationAfterLossRef.current === 'Increase Bet by') {
         // betAutoRef.current = Math.min(betAutoRef.current * valueAfterLossRef.current, balanceRef.current);
         realBetRef.current = lostAfterBet;
@@ -555,7 +554,7 @@ const MainPage = () => {
       } else {
         // betAutoRef.current = Math.min(betAutoRef.current, balanceRef.current);
         // setBet(Math.min(betAutoRef.current, balanceRef.current));
-        const returnBet = Math.min(betAutoRef.current, balanceRef.current)
+        const returnBet = Math.min(betAutoRef.current, balance)
         realBetRef.current = returnBet;
         setBet(returnBet)
 
@@ -639,7 +638,7 @@ const MainPage = () => {
             </div>
             <TabButton className={`transform translate-y-[100px] ${isAction === "start" ? "-translate-y-[150px]" : ""} `} tabList={statsList} tabNo={tabId} setTabNo={setTabId} />
             <Game className={`transition-all ${isAction !== "start" ? "mt-24" : "mt-0"} `} finalResult={finalResult} gamePhase={gamePhase} isWin={winState} stopGame = {stopGame}
-              setLoaderIsShown={setLoaderIsShown} amount={balanceRef.current} bet={bet} autoStop={autoStop} socketFlag={socketStart} realGame={isReal} setInfoState={(e) => setInfoState(e)} />
+              setLoaderIsShown={setLoaderIsShown} amount={balance} bet={bet} autoStop={autoStop} socketFlag={socketStart} realGame={isReal} setInfoState={(e) => setInfoState(e)} />
 
             <div className="flex flex-col text-white gap-4">
               <div >
@@ -683,9 +682,9 @@ const MainPage = () => {
                         action={handleStartGame}
                         content={"Start"}
                         disabled={
-                          balanceRef.current === '0.00' ||
+                          balance === '0.00' ||
                           bet < 1 || autoStop < 1.1 ||
-                          balanceRef.current < 1 || isNaN(bet) || isNaN(autoStop) || isNaN(winCoefficient)
+                          balance < 1 || isNaN(bet) || isNaN(autoStop) || isNaN(winCoefficient)
                           || isNaN(lostCoefficient)
                         }
                       />
@@ -755,8 +754,8 @@ const MainPage = () => {
                           action={handleModalButton}
                           content={"Start"}
                           disabled={
-                            balanceRef.current === '0.00' || bet < 1 || autoStop < 1.1 ||
-                            balanceRef.current < 1 || isNaN(bet) || isNaN(autoStop) || isNaN(winCoefficient)
+                            balance === '0.00' || bet < 1 || autoStop < 1.1 ||
+                            balance < 1 || isNaN(bet) || isNaN(autoStop) || isNaN(winCoefficient)
                             || isNaN(lostCoefficient)
                           }
                         />
