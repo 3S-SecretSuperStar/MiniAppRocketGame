@@ -309,7 +309,7 @@ const MainPage = () => {
                     RealName: realName,
                     UserName: userName,
                     UserId: userId,
-                    Balance: isReal ? myData.balance.real.toFixed(2) : myData.balance.virtual.toFixed(2),
+                    Balance: newBalance,
                     GameWon: isReal ? realWins : virtualWins,
                     GameLost: isReal ? realLosses : virtualLosses,
                     Rank: isReal ? data.realRank : data.virtualRank,
@@ -516,9 +516,8 @@ const MainPage = () => {
     balanceRef.current = newBalance;
     setBalance(newBalance);
     // console.log(newBalance)
-    balanceRef.current = newBalance;
     const updatedUser = { ...user, Balance: newBalance }
-    setUser(updatedUser)
+    // setUser(updatedUser)
   };
   // console.log(balance)
   const adjustBetAfterWin = () => {
@@ -684,9 +683,9 @@ const MainPage = () => {
                         action={handleStartGame}
                         content={"Start"}
                         disabled={
-                          balance === '0.00' ||
+                          balanceRef.current === '0.00' ||
                           bet < 1 || autoStop < 1.1 ||
-                          balance < 1 || isNaN(bet) || isNaN(autoStop) || isNaN(winCoefficient)
+                          balanceRef.current < 1 || isNaN(bet) || isNaN(autoStop) || isNaN(winCoefficient)
                           || isNaN(lostCoefficient)
                         }
                       />
@@ -756,8 +755,8 @@ const MainPage = () => {
                           action={handleModalButton}
                           content={"Start"}
                           disabled={
-                            balance === '0.00' || bet < 1 || autoStop < 1.1 ||
-                            balance < 1 || isNaN(bet) || isNaN(autoStop) || isNaN(winCoefficient)
+                            balanceRef.current === '0.00' || bet < 1 || autoStop < 1.1 ||
+                            balanceRef.current < 1 || isNaN(bet) || isNaN(autoStop) || isNaN(winCoefficient)
                             || isNaN(lostCoefficient)
                           }
                         />
