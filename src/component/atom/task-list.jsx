@@ -113,7 +113,7 @@ return (
       <img src={`/image/task/${task.src}`} alt="" className="w-8 h-8" />
       <div className="flex flex-col">
         <div className="text-white">{task.title}</div>
-        <div className="text-[#ffffff99] w-[210px]">+{index+"  "}{task.amount}</div>
+        <div className="text-[#ffffff99] w-[210px]">+{task.amount}</div>
       </div>
     </div>
     {
