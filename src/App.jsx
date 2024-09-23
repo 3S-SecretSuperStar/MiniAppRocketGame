@@ -16,7 +16,7 @@ import Wallet from './pages/Wallet';
 import JotaiProvider from "./providers/jotaiProvider"
 import { REACT_APP_WS_SERVER } from './utils/privateData.js';
 import ReconnectingWebSocket from 'reconnecting-websocket';
-import { TonConnectUIProvider } from '@tonconnect/ui-react';
+import { THEME, TonConnectUIProvider } from '@tonconnect/ui-react';
 
 const wsServerUrl = REACT_APP_WS_SERVER;
 

@@ -22,6 +22,7 @@ const Wallet = () => {
   const [, setActionState] = useAtom(isActionState);
   const [tx, setTx] = useState({})
   const wallet = useTonWallet();
+  // const wallet = "0x23265323454232";
   const [tonconnectUi] = useTonConnectUI();
   const [tokenNumber, setTokenNumber] = useState(1000);
 
@@ -29,7 +30,7 @@ const Wallet = () => {
 
   setActionState('stop')
   return (
-    <div className="h-full pb-[76px] flex flex-col">
+    <div className="h-full pb-[76px] flex flex-col gap-4 font-roboto">
       <div className="flex-auto flex" style={{ height: "calc(100vh - 320px)" }}>
         <div className="my-auto flex flex-col items-center text-center gap-4 h-fit">
 
@@ -49,30 +50,36 @@ const Wallet = () => {
           </div>
         </div>
       </div>
-      <div className="w-full">
+      <div className="w-full flex flex-col gap-4">
         <AtomLabel content={"Wallet"} />
-        <WalletInfo address={wallet}/>
+        <WalletInfo address={wallet} />
         {
-          wallet &&
-          <div className="flex flex-col gap-4">
-            <div className="flex flex-col gap-1">
-            Buy coins
-            <InputNumber InputProps = {{value:tokenNumber,min:1,onchange: e=>setTokenNumber(e.target.value)}} />
-            1TON = 100 coins
-            </div>
-          </div>
-              
-            
+          wallet && (
+            <>
+              <div className="flex flex-col gap-4 text-base text-white">
+                <div className="flex flex-col gap-1">
+                  Buy coins
+                  <InputNumber InputProps={{ value: tokenNumber, min: 1, onchange: e => setTokenNumber(e.target.value) }} />
+                  1TON = 100 coins
+                </div>
+              </div>
+
+              <ShadowButton
+                className={"text-base font-bold leading-5 py-3.5"}
+                content={"Buy Coins"}
+                action={() => setInfoState(true)}
+              />
+            </>)
 
 
         }
         {/* <WalletInfo className={"mt-2"} address={walletAddress} /> */}
 
-            <ShadowButton
-                className={`mt-4 ${wallet?'bg-[#CC070A]':'bg-[#3434DA]'}`}
-                content={wallet ? "Disconnect wallet" : "Connect wallet"}
-                action={() => setInfoState(true)}
-              />
+        <ShadowButton
+          className={` ${wallet ? 'bg-[#CC070A] shadow-btn-red-border invite-btn-red-shadow' : 'bg-[#3434DA]'} py-3.5`}
+          content={wallet ? "Disconnect wallet" : "Connect wallet"}
+          action={() => tonconnectUi.openModal()}
+        />
 
       </div>
       <InfoModal title="Coming soon!" isOpen={infoState} setIsOpen={() => setInfoState(false)} height="h-[280px]">
