@@ -58,7 +58,7 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData }) => 
             // eslint-disable-next-line no-self-assign
             console.log(e);
           }
-          setIsClaim(false)
+          stateTask()
           setIsClaim(false)
         
         })
