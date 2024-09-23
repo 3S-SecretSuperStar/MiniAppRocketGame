@@ -100,15 +100,15 @@ const MainPage = () => {
       amount: 0,
       id: 2
     }
-  ]
+  ]   
 
   const setInitBet = () => {
-    const currentBetRef = balanceRef.current;
+    const currentBalanceRef = balanceRef.current;
     const currentBet =
       autoMode
-        ? Math.min(betAutoRef.current, currentBetRef)
-        : Math.min(betManualRef.current, currentBetRef)
-    realBetRef.current = currentBet
+        ? Math.min(betAutoRef.current, currentBalanceRef)
+        : Math.min(betManualRef.current, currentBalanceRef)
+    setBet(currentBet);
     setAutoStop(autoMode ? autoStopAM : autoStopManual)
   }
   const handleModalButton = () => {
@@ -365,9 +365,9 @@ const MainPage = () => {
   // Function to start the game
   const startGame = () => {
     console.log("bet in start game", bet)
-    const realBet = Math.min(realBetRef.current, balance)
+    const realBet = Math.min(bet, balance)
     setBet(realBet);
-    realBetRef.current = realBet;
+    // realBetRef.current = realBet;
 
     setRewardState(false)
     setStopWasPressed(false);
@@ -407,7 +407,7 @@ const MainPage = () => {
     setWinstate(false)
     // console.log("bet in handle game start", bet, "real bet", realBet)
     const animation = document.getElementById('stars').style.animation
-    updateBalance(-1 * realBetRef.current)
+    updateBalance(-1 * bet)
     document.getElementById('stars').style.animation = 'none'
     setTimeout(() => {
       setFinalResult(0);
@@ -530,13 +530,13 @@ const MainPage = () => {
       // console.log("balanceRef ", balanceRef.current)
       if (operationAfterWinRef.current === 'Increase Bet by') {
         const afterWinBet = Math.min(realBetRef.current * valueAfterWinRef.current, balance)
-        realBetRef.current = afterWinBet;
+        // setBet(afterWinBet);
         setBet(afterWinBet)
         // setBet(Math.min(bet * valueAfterWinRef.current, balanceRef.current));
         // betAutoRef.current = Math.min(betAutoRef.current * valueAfterWinRef.current, balanceRef.current);
       } else {
         const returnBet = Math.min(betAutoRef.current, balance)
-        realBetRef.current = returnBet;
+        // realBetRef.current = returnBet;
         setBet(returnBet)
         // setBet(Math.min(betAutoRef.current, balanceRef.current));
         // betAutoRef.current = Math.min(betAutoRef.current, balanceRef.current);
