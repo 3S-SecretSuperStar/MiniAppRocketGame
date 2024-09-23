@@ -27,37 +27,36 @@ const Wallet = () => {
   // const wallet = "0x23265323454232";
   const [tonconnectUi] = useTonConnectUI();
   const [tokenNumber, setTokenNumber] = useState(1000);
-  const tokenNumberRef = useRef(tokenNumber);
 
-  const createTransaction = (tokenNumber)=>{
-    console.log("tokenNumber : ",tokenNumber)
-  return  {
-    // The transaction is valid for 10 minutes from now, in unix epoch seconds.
-    validUntil: Math.floor(Date.now() / 1000) + 600,
-    messages: [
+  const createTransaction = (tokenCount)=>{
+    console.log("tokenNumber : ",tokenCount)
+  // return  {
+  //   // The transaction is valid for 10 minutes from now, in unix epoch seconds.
+  //   validUntil: Math.floor(Date.now() / 1000) + 600,
+  //   messages: [
   
-      {
-        // The receiver's address.
-        address: adminWalletAdress,
-        // Amount to send in nanoTON. For example, 0.005 TON is 5000000 nanoTON.
-        amount: tokenNumber*Math.pow(10,6),
-        // (optional) State initialization in boc base64 format.
-        stateInit: 'te6cckEBBAEAOgACATQCAQAAART/APSkE/S88sgLAwBI0wHQ0wMBcbCRW+D6QDBwgBDIywVYzxYh+gLLagHPFsmAQPsAlxCarA==',
-        // (optional) Payload in boc base64 format.
-        payload: 'te6ccsEBAQEADAAMABQAAAAASGVsbG8hCaTc/g==',
-      },
+  //     {
+  //       // The receiver's address.
+  //       address: adminWalletAdress,
+  //       // Amount to send in nanoTON. For example, 0.005 TON is 5000000 nanoTON.
+  //       amount: tokenCount*Math.pow(10,6),
+  //       // (optional) State initialization in boc base64 format.
+  //       stateInit: 'te6cckEBBAEAOgACATQCAQAAART/APSkE/S88sgLAwBI0wHQ0wMBcbCRW+D6QDBwgBDIywVYzxYh+gLLagHPFsmAQPsAlxCarA==',
+  //       // (optional) Payload in boc base64 format.
+  //       payload: 'te6ccsEBAQEADAAMABQAAAAASGVsbG8hCaTc/g==',
+  //     },
   
-      // Uncomment the following message to send two messages in one transaction.
-      /*
-      {
-        // Note: Funds sent to this address will not be returned back to the sender.
-        address: 'UQAuz15H1ZHrZ_psVrAra7HealMIVeFq0wguqlmFno1f3B-m',
-        amount: toNano('0.01').toString(),
-      }
-      */
+  //     // Uncomment the following message to send two messages in one transaction.
+  //     /*
+  //     {
+  //       // Note: Funds sent to this address will not be returned back to the sender.
+  //       address: 'UQAuz15H1ZHrZ_psVrAra7HealMIVeFq0wguqlmFno1f3B-m',
+  //       amount: toNano('0.01').toString(),
+  //     }
+  //     */
   
-    ],
-  };
+  //   ],
+  // };
 }
 
 
@@ -69,9 +68,9 @@ const Wallet = () => {
       await tonconnectUi.disconnect()
     }
   }
-  const transactionProcess = () =>{
+  const transactionProcess = (tokenCount) =>{
 
-    const tx = createTransaction(tokenNumberRef.current)
+    const tx = createTransaction(tokenCount)
     console.log("transaction : ",tx)
     tonconnectUi.sendTransaction(tx);
      
@@ -79,7 +78,7 @@ const Wallet = () => {
 
   // const onChange = useCallback((value) => setTx(value.updated_src), [])
 console.log("wallet",tonwallet)
-console.log("ton number", tokenNumberRef.current )
+console.log("ton number", tokenNumber )
   setActionState('stop')
   return (
     <div className="h-full pb-[76px] flex flex-col gap-4 font-roboto">
@@ -112,10 +111,14 @@ console.log("ton number", tokenNumberRef.current )
               <div className="flex flex-col gap-4 text-base text-white">
                 <div className="flex flex-col gap-1">
                   Buy coins
-                  <InputNumber InputProps={{ value: tokenNumberRef.current, min: 1, step:1, onchange: e => {setTokenNumber(parseFloat(e.target.value));
-                    tokenNumberRef.current = e.target.value;
-                    console.log(e.target.value)
-                  } }} />
+                  <InputNumber 
+                    InputProps={{ 
+                      value: tokenNumber, 
+                      min: 1, 
+                      step:1, 
+                      onChange: e => setTokenNumber(parseFloat(e.target.value)) 
+                    }} 
+                  />
                   1TON = 1000 coins
                 </div>
               </div>
@@ -123,7 +126,7 @@ console.log("ton number", tokenNumberRef.current )
               <ShadowButton
                 className={"text-base font-bold leading-5 py-3.5"}
                 content={"Buy Coins"}
-                action={() =>transactionProcess() }
+                action={() =>transactionProcess(tokenNumber) }
               />
             </>)
 
