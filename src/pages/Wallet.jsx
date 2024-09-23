@@ -112,7 +112,7 @@ console.log("ton number", tokenNumberRef.current )
               <div className="flex flex-col gap-4 text-base text-white">
                 <div className="flex flex-col gap-1">
                   Buy coins
-                  <InputNumber InputProps={{ value: tokenNumber, min: 1, step:1, onchange: e => {setTokenNumber(e.target.value);
+                  <InputNumber InputProps={{ value: tokenNumberRef.current, min: 1, step:1, onchange: e => {setTokenNumber(parseFloat(e.target.value));
                     tokenNumberRef.current = e.target.value;
                     console.log(e.target.value)
                   } }} />
