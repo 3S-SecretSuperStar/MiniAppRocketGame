@@ -511,7 +511,7 @@ const MainPage = () => {
 
   const updateBalance = (profit) => {
     console.log("profit of update balance", profit)
-    const newBalance = (parseFloat(balance) + parseFloat(profit)).toFixed(2);
+    const newBalance = (parseFloat(balanceRef.current) + parseFloat(profit)).toFixed(2);
     balanceRef.current = newBalance;
     setBalance(newBalance);
     // console.log(newBalance)
