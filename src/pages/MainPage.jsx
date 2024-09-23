@@ -299,7 +299,7 @@ const MainPage = () => {
 
                   setGames(myData)
                   const newBalance = parseFloat(isReal ? myData.balance.real : myData.balance.virtual).toFixed(2)
-                  // console.log("check balance : ", newBalance)
+                  console.log("check balance in fetch : ", newBalance)
                   setFirstLogin(myData.first_state !== "false");
                   setRewardState(myData.first_state !== "false");
                   setBalance(newBalance)
@@ -511,7 +511,9 @@ const MainPage = () => {
 
   const updateBalance = (profit) => {
     console.log("profit of update balance", profit)
+    console.log("balance of user", user.Balance)
     const newBalance = (parseFloat(user.Balance) + parseFloat(profit)).toFixed(2);
+    console.log("balance newbalance", newBalance)
     balanceRef.current = newBalance;
     setBalance(newBalance);
     // console.log(newBalance)
