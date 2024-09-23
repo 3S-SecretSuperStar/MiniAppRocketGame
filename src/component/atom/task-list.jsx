@@ -143,6 +143,7 @@ return (
             className="rounded-lg w-[61px] py-1 px-0 h-7 bg-white text-[#080888] text-center text-[14px]"
             onClick={ goClaim()}
             // disabled = {!claimState}
+            
           >
             {
               isClaim ?
