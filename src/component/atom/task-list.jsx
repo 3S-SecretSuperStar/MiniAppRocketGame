@@ -19,7 +19,6 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData }) => 
   const [isReal, setIsReal] = useAtom(realGameState);
   const [user, setUser] = useAtom(userData)
   const [isPending, setIsPending] = useState(false)
-  const [claimState, setClaimState] = useState(true);
   const [claimDiableList, setClaimDisableList] = useState([]) 
   const [dailyClaimState, setDailyClaimState] = useState(false);
 
@@ -33,7 +32,7 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData }) => 
   headers.append('Content-Type', 'application/json')
 
   const goClaim = () => {
-    setClaimState(false)
+    
     setIsClaim(true);
 
     // console.log("task index", task.index)
@@ -113,7 +112,7 @@ return (
       <img src={`/image/task/${task.src}`} alt="" className="w-8 h-8" />
       <div className="flex flex-col">
         <div className="text-white">{task.title}</div>
-        <div className="text-[#ffffff99] w-[210px]">+{task.amount}</div>
+        <div className="text-[#ffffff99] w-[210px]">+{index+"  "}{task.amount}</div>
       </div>
     </div>
     {
@@ -142,8 +141,7 @@ return (
           <button
             className="rounded-lg w-[61px] py-1 px-0 h-7 bg-white text-[#080888] text-center text-[14px]"
             onClick={ goClaim()}
-            // disabled = {!claimState}
-            
+
           >
             {
               isClaim ?
@@ -171,6 +169,7 @@ const TaskList = () => {
   const [firstLoading, setFirstLoading] = useState(true);
   const [isAction, setActionState] = useAtom(isActionState);
   const [fixedTaskData, setFixedTaskData] = useState([]);
+  const [claimStateList, setClaimStateList] = useState([]);
 
   let dailytaskIndex = 3
   let performTask = []
