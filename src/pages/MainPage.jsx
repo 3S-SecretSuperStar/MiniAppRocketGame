@@ -369,9 +369,9 @@ const MainPage = () => {
     setBet(realBet);
     realBetRef.current = realBet;
 
-    setRewardState(false)
+    setRewardState(false);
     setStopWasPressed(false);
-    setGamePhase('started')
+    setGamePhase('started');
     setSocketStart(false);
     setActionState("start");
     context.socket.onmessage = async e => {
@@ -407,6 +407,7 @@ const MainPage = () => {
     setWinstate(false)
     // console.log("bet in handle game start", bet, "real bet", realBet)
     const animation = document.getElementById('stars').style.animation
+    console.log("realBetRef", realBetRef.current);
     updateBalance(-1 * realBetRef.current)
     document.getElementById('stars').style.animation = 'none'
     setTimeout(() => {
@@ -518,7 +519,7 @@ const MainPage = () => {
     console.log("balance newbalance", newBalance)
     balanceRef.current = newBalance;
     setBalance(newBalance);
-    // console.log(newBalance)
+    console.log("newBalance", newBalance)
     const updatedUser = { ...user, Balance: newBalance }
     setUser(updatedUser)
   };
@@ -536,7 +537,9 @@ const MainPage = () => {
         // betAutoRef.current = Math.min(betAutoRef.current * valueAfterWinRef.current, balanceRef.current);
       } else {
         const returnBet = Math.min(betAutoRef.current, balance)
+        console.log("realBetRefBefore", realBetRef.current);
         realBetRef.current = returnBet;
+        console.log("realBetRefAfter", realBetRef.current);
         setBet(returnBet)
         // setBet(Math.min(betAutoRef.current, balanceRef.current));
         // betAutoRef.current = Math.min(betAutoRef.current, balanceRef.current);
@@ -552,7 +555,9 @@ const MainPage = () => {
       const lostAfterBet = Math.min(realBetRef.current * valueAfterLossRef.current, balance)
       if (operationAfterLossRef.current === 'Increase Bet by') {
         // betAutoRef.current = Math.min(betAutoRef.current * valueAfterLossRef.current, balanceRef.current);
+        console.log("realBetRefBefore", realBetRef.current);
         realBetRef.current = lostAfterBet;
+        console.log("realBetRefAfter", realBetRef.current);
         setBet(lostAfterBet)
         // setBet(Math.min(bet * valueAfterLossRef.current, balanceRef.current));
       } else {
