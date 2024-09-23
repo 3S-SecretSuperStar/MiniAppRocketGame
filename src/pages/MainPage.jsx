@@ -278,7 +278,7 @@ const MainPage = () => {
               .then(res => Promise.all([res.status, res.json()]))
               .then(([status, data]) => {
                 try {
-                  if(gamePhase!=='started')
+                  if(gamePhase !== 'started' )
                  { // console.log(data)
                   // console.log(realName)
                   // console.log(data.userData)
@@ -349,7 +349,7 @@ const MainPage = () => {
 
     }
     fetchData()
-  }, [isReal, gamePhase])
+  }, [])
   if (loading && firstLoading) {
     setActionState("start")
     return <FetchLoading />
