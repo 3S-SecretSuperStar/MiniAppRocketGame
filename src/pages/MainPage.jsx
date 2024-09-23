@@ -516,7 +516,7 @@ const MainPage = () => {
     setBalance(newBalance);
     // console.log(newBalance)
     const updatedUser = { ...user, Balance: newBalance }
-    // setUser(updatedUser)
+    setUser(updatedUser)
   };
   // console.log(balance)
   const adjustBetAfterWin = () => {
