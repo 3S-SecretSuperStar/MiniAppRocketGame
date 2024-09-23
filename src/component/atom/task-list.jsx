@@ -33,7 +33,7 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
   headers.append('Content-Type', 'application/json')
 
   const goClaim = () => {
-    setClaimStateList((prev)=>[...prev,index])
+    setClaimStateList((prev)=>[...prev,task.index])
     setIsClaim(true);
 
     // console.log("task index", task.index)
@@ -142,7 +142,7 @@ return (
           <button
             className="rounded-lg w-[61px] py-1 px-0 h-7 bg-white text-[#080888] text-center text-[14px]"
             onClick={ goClaim}
-            disabled = {claimStateListData.includes(index)}
+            disabled = {claimStateListData.includes(task.index)}
           >
             {
               isClaim ?
