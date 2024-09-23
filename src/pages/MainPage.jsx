@@ -278,7 +278,7 @@ const MainPage = () => {
               .then(res => Promise.all([res.status, res.json()]))
               .then(([status, data]) => {
                 try {
-                  if(gamePhase==='stopped')
+                  if(gamePhase!=='started')
                  { // console.log(data)
                   // console.log(realName)
                   // console.log(data.userData)
