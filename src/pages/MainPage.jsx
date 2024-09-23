@@ -278,7 +278,8 @@ const MainPage = () => {
               .then(res => Promise.all([res.status, res.json()]))
               .then(([status, data]) => {
                 try {
-                  // console.log(data)
+                  if(gamePhase==='stopped')
+                 { // console.log(data)
                   // console.log(realName)
                   // console.log(data.userData)
                   const myData = data.userData;
@@ -319,6 +320,7 @@ const MainPage = () => {
                   historyGamesRef.current = newHistoryGames
                   setHistoryGames(newHistoryGames)
                   setLoaderIsShown(false)
+                }
                 } catch (e) {
                   // eslint-disable-next-line no-self-assign
                   document.location.href = document.location.href
