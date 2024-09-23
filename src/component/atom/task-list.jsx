@@ -139,7 +139,7 @@ return (
         task.status === 0 ?
           <button
             className="rounded-lg w-[61px] py-1 px-0 h-7 bg-white text-[#080888] text-center text-[14px]"
-            onClick={ goClaim()}
+            onClick={ goClaim}
             // disabled = {claimStateList.includes(index)}
           >
             {
