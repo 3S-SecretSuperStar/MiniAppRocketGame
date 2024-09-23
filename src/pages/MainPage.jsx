@@ -529,7 +529,7 @@ const MainPage = () => {
       console.log("operation AfterWInRef ", operationAfterWinRef.current)
       // console.log("balanceRef ", balanceRef.current)
       if (operationAfterWinRef.current === 'Increase Bet by') {
-        const afterWinBet = Math.min(realBetRef.current * valueAfterWinRef.current, balance)
+        const afterWinBet = Math.min(bet * valueAfterWinRef.current, balance)
         // setBet(afterWinBet);
         setBet(afterWinBet)
         // setBet(Math.min(bet * valueAfterWinRef.current, balanceRef.current));
@@ -549,17 +549,17 @@ const MainPage = () => {
 
   const adjustBetAfterLoss = () => {
     if (autoMode) {
-      const lostAfterBet = Math.min(realBetRef.current * valueAfterLossRef.current, balance)
+      const lostAfterBet = Math.min(bet * valueAfterLossRef.current, balance)
       if (operationAfterLossRef.current === 'Increase Bet by') {
         // betAutoRef.current = Math.min(betAutoRef.current * valueAfterLossRef.current, balanceRef.current);
-        realBetRef.current = lostAfterBet;
+        // realBetRef.current = lostAfterBet;
         setBet(lostAfterBet)
         // setBet(Math.min(bet * valueAfterLossRef.current, balanceRef.current));
       } else {
         // betAutoRef.current = Math.min(betAutoRef.current, balanceRef.current);
         // setBet(Math.min(betAutoRef.current, balanceRef.current));
         const returnBet = Math.min(betAutoRef.current, balance)
-        realBetRef.current = returnBet;
+        // realBetRef.current = returnBet;
         setBet(returnBet)
 
       }
