@@ -21,6 +21,7 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
   const [isPending, setIsPending] = useState(false)
   const claimStateListData = claimStateList;
   console.log(claimStateListData);
+  console.log(claimStateList)
 
   const updateBalance = (profit) => {
     setUser(user => {
@@ -32,7 +33,7 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
   headers.append('Content-Type', 'application/json')
 
   const goClaim = () => {
-    setClaimStateList(index)
+    setClaimStateList((prev)=>[...prev,index])
     setIsClaim(true);
 
     // console.log("task index", task.index)
