@@ -29,6 +29,7 @@ const Wallet = () => {
   const adminWalletAdress = "UQBkGEoA5uqoPmjuZusDoBrma5aTTwvyxcxYPvjEnTU1EWgd";
   // const wallet = "0x23265323454232";
   const [tonconnectUi] = useTonConnectUI();
+
   const [tokenNumber, setTokenNumber] = useState(1000);
 
   useEffect(() => {
