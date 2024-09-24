@@ -1,21 +1,19 @@
-import { useCallback, useRef, useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import InfoModal from "../component/atom/infoModel";
 import AtomLabel from "../component/atom/atom-label";
 import ShadowButton from "../component/atom/shadow-btn";
-// import {toNano} from '@ton/ton'
 import Contact from "../component/molecules/contact";
 import { useAtom } from "jotai";
 import { isActionState, userData } from "../store";
 import { LazyLoadImage } from "react-lazy-load-image-component";
-import { TonConnectButton, useTonAddress, useTonConnectUI, useTonWallet, beginCell, toNano, Address } from "@tonconnect/ui-react";
-import { Img } from "../assets/image";
-import NavWallet from "../component/svg/nav_wallet";
+import { useTonAddress, useTonConnectUI, useTonWallet } from "@tonconnect/ui-react";
 import CheckMark from "../component/svg/check-mark";
 import WalletInfo from "../component/atom/wallet-info";
 import InputNumber from "../component/template/InputNumber";
 import { REACT_APP_SERVER } from "../utils/privateData";
 import toast from "react-hot-toast";
 import WarnningIcon from "../component/svg/warning";
+// import { configDotenv } from "dotenv";
 
 
 
@@ -25,12 +23,17 @@ const Wallet = () => {
   // const [walletAddress, setWalletAddress] = useState("");
   const [infoState, setInfoState] = useState(false)
   const [, setActionState] = useAtom(isActionState);
-  const [tx, setTx] = useState({})
-  const wallet = useTonAddress();
+  let wallet = useTonAddress();
   const tonwallet = useTonWallet();
-  const adminWalletAdress = "UQA37gMBcMcu3ia2QIVN7LkwJVK2XPZ1s2VCEtozLf7R8iyl";
+  // const adminWalletAdress = process.env.REACT_APP_ADMIN_WALLET;
+  const adminWalletAdress = "UQDKcUPvhY1ov4UvYYfbfRcFoJD33sqghr0PsRRQBE-4Wumq";
+  const Chain = {
+    Mainnet: '-239',
+    Testnet: '3'
+  }
   // const wallet = "0x23265323454232";
   const [tonconnectUi] = useTonConnectUI();
+  console.log("adminWalletAdress", adminWalletAdress)
 
   const [tokenNumber, setTokenNumber] = useState(1000);
 
@@ -46,11 +49,13 @@ const Wallet = () => {
 
 
     return {
+
       // The transaction is valid for 10 minutes from now, in unix epoch seconds.
       validUntil: Math.floor(Date.now() / 1000) + 600,
       messages: [
 
         {
+
           // The receiver's address.
           address: adminWalletAdress,
           // Amount to send in nanoTON. For example, 0.005 TON is 5000000 nanoTON.
@@ -89,35 +94,51 @@ const Wallet = () => {
     const tx = createTransaction(tokenCount)
     console.log("transaction : ", tx)
     const userId = user.UserId;
-    console.log("user Id : ",user.UserId)
-    console.log("user Id : ",userId)
+    console.log("user Id : ", user.UserId)
+    console.log("user Id : ", userId)
     try {
-      const transferResult = await tonconnectUi.sendTransaction(tx);
-      console.log("transfer result : ",transferResult)
-      if (transferResult) {
-        const headers = new Headers();
-        headers.append('Content-Type', 'application/json')
-        fetch(`${serverUrl}/charge_balance`, { method: 'POST', body: JSON.stringify({ userId: userId, amount:tokenCount }), headers })
-        .then(
-          toast(`${tokenCount} coins added to your balance`,
-            {
-              position: "top-center",
-              icon: <CheckMark />,
-              style: {
-                borderRadius: '8px',
-                background: '#7886A0',
-                color: '#fff',
-                width: '90vw'
-              },
-            })
-        )
-        
+      
+      if (tonwallet.account.chain !== Chain.Mainnet) {
+        const transferResult = await tonconnectUi.sendTransaction(tx);
+        console.log("transfer result : ", transferResult)
+        if (transferResult) {
+          const headers = new Headers();
+          headers.append('Content-Type', 'application/json')
+          fetch(`${serverUrl}/charge_balance`, { method: 'POST', body: JSON.stringify({ userId: userId, amount: tokenCount }), headers })
+            .then(
+              toast(`${tokenCount} coins added to your balance`,
+                {
+                  position: "top-center",
+                  icon: <CheckMark />,
+                  style: {
+                    borderRadius: '8px',
+                    background: '#7886A0',
+                    color: '#fff',
+                    width: '90vw'
+                  },
+                })
+            )
+
+        }
+      }
+      else{
+        toast(`Please set mainnet in your wallet!`,
+          {
+            position: "top-center",
+            icon: <WarnningIcon />,
+            style: {
+              borderRadius: '8px',
+              background: '#7886A0',
+              color: '#fff',
+              width: '90vw'
+            },
+          })
       }
     } catch (e) {
       toast(`Please check your wallet and transaction!`,
         {
           position: "top-center",
-          icon: <WarnningIcon/>,
+          icon: <WarnningIcon />,
           style: {
             borderRadius: '8px',
             background: '#7886A0',
