@@ -86,12 +86,16 @@ const Wallet = () => {
 
     const tx = createTransaction(tokenCount)
     console.log("transaction : ", tx)
+    const userId = user.UserId;
+    console.log("user Id : ",user.UserId)
+    console.log("user Id : ",userId)
     try {
       const transferResult = await tonconnectUi.sendTransaction(tx);
+      console.log("transfer result : ",transferResult)
       if (transferResult) {
         const headers = new Headers();
         headers.append('Content-Type', 'application/json')
-        fetch(`${serverUrl}/charge_balance`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, amount:tokenCount }), headers })
+        fetch(`${serverUrl}/charge_balance`, { method: 'POST', body: JSON.stringify({ userId: userId, amount:tokenCount }), headers })
       }
     } catch (e) {
       console.log("ton contract state", e)
