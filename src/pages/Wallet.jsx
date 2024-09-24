@@ -14,19 +14,20 @@ import CheckMark from "../component/svg/check-mark";
 import WalletInfo from "../component/atom/wallet-info";
 import InputNumber from "../component/template/InputNumber";
 import { REACT_APP_SERVER } from "../utils/privateData";
+import toast from "react-hot-toast";
 
 
 
 const Wallet = () => {
   const serverUrl = REACT_APP_SERVER;
-  const user = useAtom(userData)
+  const [user,] = useAtom(userData)
   // const [walletAddress, setWalletAddress] = useState("");
   const [infoState, setInfoState] = useState(false)
   const [, setActionState] = useAtom(isActionState);
   const [tx, setTx] = useState({})
   const wallet = useTonAddress();
   const tonwallet = useTonWallet();
-  const adminWalletAdress = "UQBkGEoA5uqoPmjuZusDoBrma5aTTwvyxcxYPvjEnTU1EWgd";
+  const adminWalletAdress = "UQA37gMBcMcu3ia2QIVN7LkwJVK2XPZ1s2VCEtozLf7R8iyl";
   // const wallet = "0x23265323454232";
   const [tonconnectUi] = useTonConnectUI();
 
@@ -96,9 +97,33 @@ const Wallet = () => {
         const headers = new Headers();
         headers.append('Content-Type', 'application/json')
         fetch(`${serverUrl}/charge_balance`, { method: 'POST', body: JSON.stringify({ userId: userId, amount:tokenCount }), headers })
+        .then(
+          toast(`${tokenCount} coins added to your balance`,
+            {
+              position: "top-center",
+              icon: <CheckMark />,
+              style: {
+                borderRadius: '8px',
+                background: '#7886A0',
+                color: '#fff',
+                width: '90vw'
+              },
+            })
+        )
+        
       }
     } catch (e) {
-      console.log("ton contract state", e)
+      toast(`Please check your wallet and transaction!`,
+        {
+          position: "top-center",
+          icon: Img.warnningIcon,
+          style: {
+            borderRadius: '8px',
+            background: '#7886A0',
+            color: '#fff',
+            width: '90vw'
+          },
+        })
     }
   }
 
