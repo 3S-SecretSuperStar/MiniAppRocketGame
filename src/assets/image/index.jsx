@@ -31,6 +31,7 @@ import imgFire from "./fire.png";
 import imgAfterAction from "./img_After_Action.png"
 import imgButtons from "./img_Buttons.png"
 import imgSelectButton from "./img_Select_Button.png"
+import warnningIcon from "./warning.svg"
 
 export const Img = {
   agree, disagree,counter1, counter2, counter3, 
@@ -40,5 +41,5 @@ export const Img = {
   imgAmazing, imgIncredible, imgFantastic, imgGreat,
   imgRockrtStar, imgBrilliant, imgCrushing, imgGenius, 
   imgImpressive, imgUnstoppable, imgGotThis, imgFire,
-  imgAfterAction, imgButtons, imgSelectButton
+  imgAfterAction, imgButtons, imgSelectButton,warnningIcon
 }; 
