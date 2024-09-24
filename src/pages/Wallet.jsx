@@ -98,7 +98,7 @@ const Wallet = () => {
     console.log("user Id : ", userId)
     try {
       
-      if (tonwallet.account.chain !== Chain.Mainnet) {
+      if (tonwallet.account.chain === Chain.Mainnet) {
         const transferResult = await tonconnectUi.sendTransaction(tx);
         console.log("transfer result : ", transferResult)
         if (transferResult) {
