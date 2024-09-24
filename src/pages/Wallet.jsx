@@ -15,6 +15,7 @@ import WalletInfo from "../component/atom/wallet-info";
 import InputNumber from "../component/template/InputNumber";
 import { REACT_APP_SERVER } from "../utils/privateData";
 import toast from "react-hot-toast";
+import WarnningIcon from "../component/svg/warning";
 
 
 
@@ -116,7 +117,7 @@ const Wallet = () => {
       toast(`Please check your wallet and transaction!`,
         {
           position: "top-center",
-          icon: Img.warnningIcon,
+          icon: <WarnningIcon/>,
           style: {
             borderRadius: '8px',
             background: '#7886A0',

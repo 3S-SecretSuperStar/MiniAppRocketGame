@@ -31,7 +31,7 @@ import imgFire from "./fire.png";
 import imgAfterAction from "./img_After_Action.png"
 import imgButtons from "./img_Buttons.png"
 import imgSelectButton from "./img_Select_Button.png"
-import warnningIcon from "./warn.png"
+import warnningIcon from "./warning.svg"
 
 export const Img = {
   agree, disagree,counter1, counter2, counter3, 
