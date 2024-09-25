@@ -36,6 +36,7 @@
     "react-responsive-carousel": "^3.2.23",
     "react-router": "^6.26.0",
     "react-router-dom": "^6.26.0",
+    "react-script": "^2.0.5",
     "react-scripts": "5.0.1",
     "react-transition-group": "^4.4.5",
     "reconnecting-websocket": "^4.4.0",

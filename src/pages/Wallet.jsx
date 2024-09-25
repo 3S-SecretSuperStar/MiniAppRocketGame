@@ -26,7 +26,7 @@ const Wallet = () => {
   let wallet = useTonAddress();
   const tonwallet = useTonWallet();
   // const adminWalletAdress = process.env.REACT_APP_ADMIN_WALLET;
-  const adminWalletAdress = "UQDKcUPvhY1ov4UvYYfbfRcFoJD33sqghr0PsRRQBE-4Wumq";
+  const adminWalletAdress = "UQCwD5RFiujnfjK7TUGkBUrKJtaoDmDv_r_qxenV7dPM4HOn";
   const Chain = {
     Mainnet: '-239',
     Testnet: '3'
