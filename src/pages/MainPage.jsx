@@ -395,10 +395,15 @@ const MainPage = () => {
   };
   // console.log("socket info in game : ", context.socket)
   // Function to stop the game
-  const stopGame = () => {
+  const stopGame = (amount) => {
     setStopWasPressed(true);
     setActionState("stop");
-    context.socket.send(JSON.stringify({ operation: 'stop' }));
+    if(amount!=='x'){
+    context.socket.send(JSON.stringify({ operation: 'stop'}));
+  }
+  else{
+    context.socket.send(JSON.stringify({ operation: 'stop',stopAmount:amount }));
+  }
     handleGameStopped()
   };
 
@@ -578,7 +583,7 @@ const MainPage = () => {
   }
 
   const goToUserInfo = () => {
-    stopGame();
+    stopGame('x');
     navigate("/userInfo");
   }
   if (tabId === 2) {
@@ -703,7 +708,7 @@ const MainPage = () => {
                     <ShadowButton
                       className={"bg-[#CC070A] shadow-btn-red-border invite-btn-red-shadow"}
                       content={"Stop"}
-                      action={stopGame}
+                      action={()=>stopGame('x')}
                     />
                   )
               }
@@ -773,7 +778,7 @@ const MainPage = () => {
                         <ShadowButton
                           className={"bg-[#CC070A] shadow-btn-red-border invite-btn-red-shadow"}
                           content={"Stop"}
-                          action={stopGame}
+                          action={()=>stopGame('x')}
                         />
                       )
                   }
