@@ -47,7 +47,7 @@ const Wallet = () => {
   const createTransaction = (tokenCount) => {
     const body = beginCell()
     .storeUint(0,32)
-    .storeStringTail("                       RocketTON Coins purchased")
+    .storeStringTail("RocketTON Coins purchased")
     .endCell()
 
 
