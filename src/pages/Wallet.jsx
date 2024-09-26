@@ -26,20 +26,18 @@ const Wallet = () => {
   let wallet = useTonAddress();
   const tonwallet = useTonWallet();
   // const adminWalletAdress = process.env.REACT_APP_ADMIN_WALLET;
-  const adminWalletAdress = "UQCwD5RFiujnfjK7TUGkBUrKJtaoDmDv_r_qxenV7dPM4HOn";
+  const adminWalletAddress = "UQCwD5RFiujnfjK7TUGkBUrKJtaoDmDv_r_qxenV7dPM4HOn";
   const Chain = {
     Mainnet: '-239',
     Testnet: '3'
   }
   // const wallet = "0x23265323454232";
   const [tonconnectUi] = useTonConnectUI();
-  console.log("adminWalletAdress", adminWalletAdress)
+  console.log("adminWalletAdress", adminWalletAddress)
 
   const [tokenNumber, setTokenNumber] = useState(1000);
 
-  useEffect(() => {
-    wallet && disconnectFunction();
-  }, [])
+
   const disconnectFunction = async () => {
     await tonconnectUi.disconnect();
   }
@@ -57,13 +55,13 @@ const Wallet = () => {
         {
 
           // The receiver's address.
-          address: adminWalletAdress,
+          address: adminWalletAddress,
           // Amount to send in nanoTON. For example, 0.005 TON is 5000000 nanoTON.
           amount: tokenCount * Math.pow(10, 6),
           // (optional) State initialization in boc base64 format.
           stateInit: 'te6cckEBBAEAOgACATQCAQAAART/APSkE/S88sgLAwBI0wHQ0wMBcbCRW+D6QDBwgBDIywVYzxYh+gLLagHPFsmAQPsAlxCarA==',
           // (optional) Payload in boc base64 format.
-          payload: 'te6ccsEBAQEADAAMABQAAAAASGVsbG8hCaTc/g==',
+          payload: "te6cckEBAQEAIAAAPAAAAABSb2NrZXRUT04gQ29pbnMgcHVyY2hhc2VkIZKw6no=",          
         },
 
         // Uncomment the following message to send two messages in one transaction.
