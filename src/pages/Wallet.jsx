@@ -13,6 +13,7 @@ import InputNumber from "../component/template/InputNumber";
 import { REACT_APP_SERVER } from "../utils/privateData";
 import toast from "react-hot-toast";
 import WarnningIcon from "../component/svg/warning";
+import {beginCell} from "@ton/ton"
 // import { configDotenv } from "dotenv";
 
 
@@ -44,6 +45,10 @@ const Wallet = () => {
 
 
   const createTransaction = (tokenCount) => {
+    const body = beginCell()
+    .storeUint(0,32)
+    .storeStringTail("                       RocketTON Coins purchased")
+    .endCell()
 
 
     return {
@@ -61,7 +66,7 @@ const Wallet = () => {
           // (optional) State initialization in boc base64 format.
           stateInit: 'te6cckEBBAEAOgACATQCAQAAART/APSkE/S88sgLAwBI0wHQ0wMBcbCRW+D6QDBwgBDIywVYzxYh+gLLagHPFsmAQPsAlxCarA==',
           // (optional) Payload in boc base64 format.
-          payload: "te6cckEBAQEAIAAAPAAAAABSb2NrZXRUT04gQ29pbnMgcHVyY2hhc2VkIZKw6no=",          
+          payload: body.toBoc().toString("base64"),          
         },
 
         // Uncomment the following message to send two messages in one transaction.
@@ -96,7 +101,7 @@ const Wallet = () => {
     console.log("user Id : ", userId)
     try {
       
-      if (tonwallet.account.chain === Chain.Mainnet) {
+      if (tonwallet.account.chain !== Chain.Mainnet) {
         const transferResult = await tonconnectUi.sendTransaction(tx);
         console.log("transfer result : ", transferResult)
         if (transferResult) {
