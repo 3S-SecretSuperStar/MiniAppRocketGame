@@ -31,7 +31,7 @@ export default memo(function Game({ gamePhase, finalResult, amount = 10.00,
   console.log("autoStop in game : ", autoStop)
   useEffect(()=>{
       console.log("score: ",parseFloat(score.slice(1))," autostop : ",parseFloat(autoStop)+0.1, " gamephage: ",gamePhase)
-      console.log("condition : ",(parseFloat(score.slice(1))>parseFloat(autoStop)+0.1 && gamePhase==="started"))
+      console.log("condition : ",(score>1.1 && gamePhase==="started" && gamePhase==="started"))
     if(score>1.1 && gamePhase==="started") stopGame(autoStop)
     // if(score>parseFloat(autoStop)+0.1 && gamePhase==="started") stopGame(autoStop)
   },[score,gamePhase])
