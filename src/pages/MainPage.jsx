@@ -278,49 +278,48 @@ const MainPage = () => {
               .then(res => Promise.all([res.status, res.json()]))
               .then(([status, data]) => {
                 try {
-                  if(gamePhase !== 'started' )
-                 { // console.log(data)
-                  // console.log(realName)
-                  // console.log(data.userData)
-                  const myData = data.userData;
+                  if (gamePhase !== 'started') { // console.log(data)
+                    // console.log(realName)
+                    // console.log(data.userData)
+                    const myData = data.userData;
 
 
 
-                  const realWins = myData.gamesHistory.real.filter(j => j.crash === 'x').length
-                  const realLosses = myData.gamesHistory.real.filter(j => j.stop === 'x').length
-                  if (myData.gamesHistory.real.length > historySize) {
-                    gamesHistory.real = myData.gamesHistory.real.slice(myData.gamesHistory.real.length - historySize)
+                    const realWins = myData.gamesHistory.real.filter(j => j.crash === 'x').length
+                    const realLosses = myData.gamesHistory.real.filter(j => j.stop === 'x').length
+                    if (myData.gamesHistory.real.length > historySize) {
+                      gamesHistory.real = myData.gamesHistory.real.slice(myData.gamesHistory.real.length - historySize)
+                    }
+
+                    const virtualWins = myData.gamesHistory.virtual.filter(j => j.crash === 'x').length
+                    const virtualLosses = myData.gamesHistory.virtual.filter(j => j.stop === 'x').length
+                    if (myData.gamesHistory.virtual.length > historySize) {
+                      gamesHistory.virtual = myData.gamesHistory.virtual.slice(myData.gamesHistory.virtual.length - historySize)
+                    }
+
+                    setGames(myData)
+                    const newBalance = parseFloat(isReal ? myData.balance.real : myData.balance.virtual).toFixed(2)
+                    console.log("check balance in fetch : ", newBalance)
+                    setFirstLogin(myData.first_state !== "false");
+                    setRewardState(myData.first_state !== "false");
+                    setBalance(newBalance)
+                    balanceRef.current = newBalance
+                    setUser({
+                      RealName: realName,
+                      UserName: userName,
+                      UserId: userId,
+                      Balance: newBalance,
+                      GameWon: isReal ? realWins : virtualWins,
+                      GameLost: isReal ? realLosses : virtualLosses,
+                      Rank: isReal ? data.realRank : data.virtualRank,
+                      Ranking: isReal ? myData.ranking.real : myData.ranking.virtual,
+                      FriendNumber: myData.friendNumber
+                    })
+                    const newHistoryGames = isReal ? gamesHistory.real : gamesHistory.virtual
+                    historyGamesRef.current = newHistoryGames
+                    setHistoryGames(newHistoryGames)
+                    setLoaderIsShown(false)
                   }
-
-                  const virtualWins = myData.gamesHistory.virtual.filter(j => j.crash === 'x').length
-                  const virtualLosses = myData.gamesHistory.virtual.filter(j => j.stop === 'x').length
-                  if (myData.gamesHistory.virtual.length > historySize) {
-                    gamesHistory.virtual = myData.gamesHistory.virtual.slice(myData.gamesHistory.virtual.length - historySize)
-                  }
-
-                  setGames(myData)
-                  const newBalance = parseFloat(isReal ? myData.balance.real : myData.balance.virtual).toFixed(2)
-                  console.log("check balance in fetch : ", newBalance)
-                  setFirstLogin(myData.first_state !== "false");
-                  setRewardState(myData.first_state !== "false");
-                  setBalance(newBalance)
-                  balanceRef.current = newBalance
-                  setUser({
-                    RealName: realName,
-                    UserName: userName,
-                    UserId: userId,
-                    Balance: newBalance,
-                    GameWon: isReal ? realWins : virtualWins,
-                    GameLost: isReal ? realLosses : virtualLosses,
-                    Rank: isReal ? data.realRank : data.virtualRank,
-                    Ranking: isReal ? myData.ranking.real : myData.ranking.virtual,
-                    FriendNumber: myData.friendNumber
-                  })
-                  const newHistoryGames = isReal ? gamesHistory.real : gamesHistory.virtual
-                  historyGamesRef.current = newHistoryGames
-                  setHistoryGames(newHistoryGames)
-                  setLoaderIsShown(false)
-                }
                 } catch (e) {
                   // eslint-disable-next-line no-self-assign
                   document.location.href = document.location.href
@@ -398,12 +397,12 @@ const MainPage = () => {
   const stopGame = (amount) => {
     setStopWasPressed(true);
     setActionState("stop");
-    if(amount!=='x'){
-    context.socket.send(JSON.stringify({ operation: 'stop'}));
-  }
-  else{
-    context.socket.send(JSON.stringify({ operation: 'stop',stopAmount:amount }));
-  }
+    if (amount !== 'x') {
+      context.socket.send(JSON.stringify({ operation: 'stop' }));
+    }
+    else {
+      context.socket.send(JSON.stringify({ operation: 'stop', stopAmount: amount }));
+    }
     handleGameStopped()
   };
 
@@ -436,7 +435,7 @@ const MainPage = () => {
     // setBalance(newBalance)
     // balanceRef.current = newBalance
     // console.log("stopppppp update")
-    data.profit && updateBalance(data.profit-bet);
+    data.profit && updateBalance(data.profit - bet);
     setGames(games + 1);
     setWins(wins + 1);
     adjustBetAfterWin();
@@ -651,8 +650,8 @@ const MainPage = () => {
 
             </div>
             <TabButton className={`transform translate-y-[100px] ${isAction === "start" ? "-translate-y-[150px]" : ""} `} tabList={statsList} tabNo={tabId} setTabNo={setTabId} />
-            <Game className={`transition-all ${isAction !== "start" ? "mt-24" : "mt-0"} `} finalResult={finalResult} gamePhase={gamePhase} isWin={winState} stopGame = {(e)=>stopGame(e)}
-              setLoaderIsShown={setLoaderIsShown} amount={balance} bet={bet} autoStop={autoStop} socketFlag={socketStart} realGame={isReal} setInfoState={(e) => setInfoState(e)} setGamePhase={setGamePhase} />
+            <Game className={`transition-all ${isAction !== "start" ? "mt-24" : "mt-0"} `} finalResult={finalResult} gamePhase={gamePhase} isWin={winState} stopGame={(e) => stopGame(e)}
+              setLoaderIsShown={setLoaderIsShown} amount={balance} bet={bet} autoStop={autoStop} socketFlag={socketStart} realGame={isReal} setInfoState={(e) => setInfoState(e)} startGame={startGame} />
 
             <div className="flex flex-col text-white gap-4">
               <div >
@@ -708,7 +707,7 @@ const MainPage = () => {
                     <ShadowButton
                       className={"bg-[#CC070A] shadow-btn-red-border invite-btn-red-shadow"}
                       content={"Stop"}
-                      action={()=>stopGame('x')}
+                      action={() => stopGame('x')}
                     />
                   )
               }
@@ -778,7 +777,7 @@ const MainPage = () => {
                         <ShadowButton
                           className={"bg-[#CC070A] shadow-btn-red-border invite-btn-red-shadow"}
                           content={"Stop"}
-                          action={()=>stopGame('x')}
+                          action={() => stopGame('x')}
                         />
                       )
                   }

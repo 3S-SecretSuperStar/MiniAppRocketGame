@@ -9,7 +9,7 @@ import "../../css/Game.css"
 import { Link } from 'react-router-dom'
 
 export default memo(function Game({ gamePhase, finalResult, amount = 10.00,
-  className, bet, autoStop, socketFlag, realGame, isWin,stopGame,setGamePhase }) {
+  className, bet, autoStop, socketFlag, realGame, isWin, stopGame, startGame }) {
   const context = useContext(AppContext);
   const [currentResult, setCurrentResult] = useState(1)
   const [user,] = useAtom(userData)
@@ -29,17 +29,17 @@ export default memo(function Game({ gamePhase, finalResult, amount = 10.00,
   }
   // console.log("socket info in game : ", context.socket)
   console.log("autoStop in game : ", autoStop)
-  useEffect(()=>{
-      console.log("score: ",parseFloat(score.slice(1))," autostop : ",parseFloat(autoStop)+0.1, " gamephage: ",gamePhase)
-      console.log("condition : ",(score>1.1 && gamePhase==="started"))
-      // if(parseFloat(score.slice(1))>1.1 && gamePhase==="started") stopGame(autoStop)
-      // if(parseFloat(score.slice(1))>parseFloat(autoStop)+0.1 && gamePhase==="started") {
-      if(parseFloat(score.slice(1))>parseFloat(1)+0.1 && gamePhase==="started") {
+  useEffect(() => {
+    console.log("score: ", parseFloat(score.slice(1)), " autostop : ", parseFloat(autoStop) + 0.1, " gamephage: ", gamePhase)
+    console.log("condition : ", (score > 1.1 && gamePhase === "started"))
+    // if(parseFloat(score.slice(1))>1.1 && gamePhase==="started") stopGame(autoStop)
+    // if(parseFloat(score.slice(1))>parseFloat(autoStop)+0.1 && gamePhase==="started") {
+    if (parseFloat(score.slice(1)) > parseFloat(1) + 0.1 && gamePhase === "started") {
       stopGame(parseFloat(autoStop))
-      setGamePhase('started')
-}
-  },[score,gamePhase])
- 
+      startGame()
+    }
+  }, [score, gamePhase])
+
   useEffect(() => {
 
 
