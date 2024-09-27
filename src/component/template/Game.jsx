@@ -36,7 +36,9 @@ export default memo(function Game({ gamePhase, finalResult, amount = 10.00,
     // if(parseFloat(score.slice(1))>parseFloat(autoStop)+0.1 && gamePhase==="started") {
     if (parseFloat(score.slice(1)) > parseFloat(1) + 0.1 && gamePhase === "started") {
       stopGame(parseFloat(autoStop))
-      startGame()
+      setTimeout(() => {
+        startGame()
+      }, 1000)
     }
   }, [score, gamePhase])
 
