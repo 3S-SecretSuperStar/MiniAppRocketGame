@@ -28,11 +28,11 @@ export default memo(function Game({ gamePhase, finalResult, amount = 10.00,
     score = 0
   }
   // console.log("socket info in game : ", context.socket)
-  console.log("autoStop in game : ", autoStop)
+  // console.log("autoStop in game : ", autoStop)
   useEffect(() => {
     if (autoMode) {
-      console.log("score: ", parseFloat(score.slice(1)), " autostop : ", parseFloat(autoStop) + 0.1, " gamephage: ", gamePhase)
-      console.log("condition : ", (score > 1.1 && gamePhase === "started"))
+      // console.log("score: ", parseFloat(score.slice(1)), " autostop : ", parseFloat(autoStop) + 0.1, " gamephage: ", gamePhase)
+      // console.log("condition : ", (score > 1.1 && gamePhase === "started"))
       // if(parseFloat(score.slice(1))>1.1 && gamePhase==="started") stopGame(autoStop)
       if (parseFloat(score.slice(1)) > parseFloat(autoStop) + 0.1 && gamePhase === "started") {
         // if (parseFloat(score.slice(1)) > parseFloat(1) + 0.1 && gamePhase === "started") {

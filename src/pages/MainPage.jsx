@@ -120,9 +120,9 @@ const MainPage = () => {
   const handleStartGame = () => {
     setInitBet()
 
-    console.log("automode in handle start game", autoMode)
-    console.log("betManualRef in handle start game : ", betManualRef)
-    console.log("betManualRef in handle start game : ", betManualRef)
+    // console.log("automode in handle start game", autoMode)
+    // console.log("betManualRef in handle start game : ", betManualRef)
+    // console.log("betManualRef in handle start game : ", betManualRef)
     startGame();
   }
 
@@ -187,8 +187,8 @@ const MainPage = () => {
   useEffect(() => {
     let isMounted = true
     if (gamePhase !== 'started' && autoMode && !stopWasPressed && balance >= betAutoRef.current && betAutoRef.current) {
-      console.log("balanceRef.current in auto game", balanceRef.current)
-      console.log("betAutoRef.current in auto game", betAutoRef.current)
+      // console.log("balanceRef.current in auto game", balanceRef.current)
+      // console.log("betAutoRef.current in auto game", betAutoRef.current)
       if (isMounted) {
         try {
           setTimeout(() => {
@@ -253,7 +253,7 @@ const MainPage = () => {
     // setLoading(true)
     async function fetchData() {
       try {
-        console.log("fetch data from server")
+        // console.log("fetch data from server")
         const webapp = window.Telegram.WebApp.initDataUnsafe;
         let isMounted = true
         const bot_token = '7379750890:AAGYFlyXnjrC8kbyxRdYhUbisoTbCWdPCg8'
@@ -299,7 +299,7 @@ const MainPage = () => {
 
                     setGames(myData)
                     const newBalance = parseFloat(isReal ? myData.balance.real : myData.balance.virtual).toFixed(2)
-                    console.log("check balance in fetch : ", newBalance)
+                    // console.log("check balance in fetch : ", newBalance)
                     setFirstLogin(myData.first_state !== "false");
                     setRewardState(myData.first_state !== "false");
                     setBalance(newBalance)
@@ -354,16 +354,16 @@ const MainPage = () => {
     return <FetchLoading />
   }
   // console.log(loading)
-  console.log("userInfo", user.Balance)
-  console.log("current balance", balanceRef.current)
-  console.log("balance", balance)
-  console.log("game state ", gamePhase)
-  console.log("bet ", bet)
-  console.log("realbetref", realBetRef.current)
+  // console.log("userInfo", user.Balance)
+  // console.log("current balance", balanceRef.current)
+  // console.log("balance", balance)
+  // console.log("game state ", gamePhase)
+  // console.log("bet ", bet)
+  // console.log("realbetref", realBetRef.current)
   // console.log("data of user : ", user)
   // Function to start the game
   const startGame = () => {
-    console.log("bet in start game", bet)
+    // console.log("bet in start game", bet)
     const realBet = Math.min(realBetRef.current, balance)
     setBet(realBet);
     realBetRef.current = realBet;
@@ -411,7 +411,7 @@ const MainPage = () => {
     setWinstate(false)
     // console.log("bet in handle game start", bet, "real bet", realBet)
     const animation = document.getElementById('stars').style.animation
-    console.log("realBetRef", realBetRef.current);
+    // console.log("realBetRef", realBetRef.current);
     updateBalance(-1 * bet)
     document.getElementById('stars').style.animation = 'none'
     setTimeout(() => {
@@ -517,21 +517,21 @@ const MainPage = () => {
   };
 
   const updateBalance = (profit) => {
-    console.log("profit of update balance", profit)
-    console.log("balance of user", user.Balance)
+    // console.log("profit of update balance", profit)
+    // console.log("balance of user", user.Balance)
     const newBalance = (parseFloat(user.Balance) + parseFloat(profit)).toFixed(2);
-    console.log("balance newbalance", newBalance)
+    // console.log("balance newbalance", newBalance)
     balanceRef.current = newBalance;
     setBalance(newBalance);
-    console.log("newBalance", newBalance)
+    // console.log("newBalance", newBalance)
     const updatedUser = { ...user, Balance: newBalance }
     setUser(updatedUser)
   };
   // console.log(balance)
   const adjustBetAfterWin = () => {
     if (autoMode) {
-      console.log("betAutoRef.current in adjustBetAfterWin ", betAutoRef.current)
-      console.log("operation AfterWInRef ", operationAfterWinRef.current)
+      // console.log("betAutoRef.current in adjustBetAfterWin ", betAutoRef.current)
+      // console.log("operation AfterWInRef ", operationAfterWinRef.current)
       // console.log("balanceRef ", balanceRef.current)
       if (operationAfterWinRef.current === 'Increase Bet by') {
         const afterWinBet = Math.min(realBetRef.current * valueAfterWinRef.current, balance)
@@ -541,9 +541,9 @@ const MainPage = () => {
         // betAutoRef.current = Math.min(betAutoRef.current * valueAfterWinRef.current, balanceRef.current);
       } else {
         const returnBet = Math.min(betAutoRef.current, balance)
-        console.log("realBetRefBefore", realBetRef.current);
+        // console.log("realBetRefBefore", realBetRef.current);
         realBetRef.current = returnBet;
-        console.log("realBetRefAfter", realBetRef.current);
+        // console.log("realBetRefAfter", realBetRef.current);
         setBet(returnBet)
         // setBet(Math.min(betAutoRef.current, balanceRef.current));
         // betAutoRef.current = Math.min(betAutoRef.current, balanceRef.current);
@@ -559,9 +559,9 @@ const MainPage = () => {
       const lostAfterBet = Math.min(realBetRef.current * valueAfterLossRef.current, balance)
       if (operationAfterLossRef.current === 'Increase Bet by') {
         // betAutoRef.current = Math.min(betAutoRef.current * valueAfterLossRef.current, balanceRef.current);
-        console.log("realBetRefBefore", realBetRef.current);
+        // console.log("realBetRefBefore", realBetRef.current);
         realBetRef.current = lostAfterBet;
-        console.log("realBetRefAfter", realBetRef.current);
+        // console.log("realBetRefAfter", realBetRef.current);
         setBet(lostAfterBet)
         // setBet(Math.min(bet * valueAfterLossRef.current, balanceRef.current));
       } else {

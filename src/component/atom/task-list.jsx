@@ -20,8 +20,8 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
   const [user, setUser] = useAtom(userData)
   const [isPending, setIsPending] = useState(false)
   const claimStateListData = claimStateList;
-  console.log(claimStateListData);
-  console.log(claimStateList)
+  // console.log(claimStateListData);
+  // console.log(claimStateList)
 
   const updateBalance = (profit) => {
     setUser(user => {

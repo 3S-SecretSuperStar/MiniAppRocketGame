@@ -34,7 +34,7 @@ const Wallet = () => {
   }
   // const wallet = "0x23265323454232";
   const [tonconnectUi] = useTonConnectUI();
-  console.log("adminWalletAdress", adminWalletAddress)
+  // console.log("adminWalletAdress", adminWalletAddress)
 
   const [tokenNumber, setTokenNumber] = useState(1000);
 
@@ -95,15 +95,15 @@ const Wallet = () => {
   const transactionProcess = async (tokenCount) => {
 
     const tx = createTransaction(tokenCount)
-    console.log("transaction : ", tx)
+    // console.log("transaction : ", tx)
     const userId = user.UserId;
-    console.log("user Id : ", user.UserId)
-    console.log("user Id : ", userId)
+    // console.log("user Id : ", user.UserId)
+    // console.log("user Id : ", userId)
     try {
       
       if (tonwallet.account.chain === Chain.Mainnet) {
         const transferResult = await tonconnectUi.sendTransaction(tx);
-        console.log("transfer result : ", transferResult)
+        // console.log("transfer result : ", transferResult)
         if (transferResult) {
           const headers = new Headers();
           headers.append('Content-Type', 'application/json')
@@ -153,10 +153,10 @@ const Wallet = () => {
   }
 
   // const onChange = useCallback((value) => setTx(value.updated_src), [])
-  console.log("wallet", tonwallet)
-  console.log("ton number", tokenNumber)
+  // console.log("wallet", tonwallet)
+  // console.log("ton number", tokenNumber)
   // console.log("wallet network : ", tonwallet.account.address)
-  console.log("wallet network : ", wallet)
+  // console.log("wallet network : ", wallet)
   setActionState('stop')
   return (
     <div className="h-full pb-[76px] flex flex-col gap-4 font-roboto">
