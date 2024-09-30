@@ -283,8 +283,8 @@ const MainPage = () => {
                     // console.log(realName)
                     // console.log(data.userData)
                     const myData = data.userData;
-                    // console.log("myData: ",myData)
-                    // console.log("data : ",data)
+                    console.log("myData: ",myData)
+                    console.log("data : ",data)
                     const virtualTaskState = myData.task.virtual;
                     console.log("virtualTaskState : ",virtualTaskState)
 
@@ -320,9 +320,9 @@ const MainPage = () => {
                     console.log("achieve task",virtualTaskState.achieve_task)
                     console.log("virtual state", virtualTaskState.done_task.every(item => virtualTaskState.achieve_task.includes(item)))
                     
-                    const rewardStates = !virtualTaskState.done_task.every(item => virtualTaskState.achieve_task.includes(item)) || myData.first_state !== "false" || diffDate>=2;
+                    const rewardStates = !virtualTaskState.achieve_task.every(item => virtualTaskState.done_task.includes(item)) || myData.first_state !== "false" || diffDate>=2;
                     console.log("diff date", diffDate)
-                    console.log("reward state", rewardState)
+                    console.log("reward state", rewardStates)
                     setRewardState(rewardStates);
                     setBalance(newBalance)
                     balanceRef.current = newBalance
