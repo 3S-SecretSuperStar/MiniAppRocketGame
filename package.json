@@ -16,7 +16,7 @@
     "@vitejs/plugin-react": "^4.3.1",
     "aes256": "^1.1.0",
     "autoprefixer": "^10.4.20",
-    "babble": "^0.11.0",
+    "babble": "^0.2.0",
     "bootstrap": "^5.3.3",
     "buffer": "^6.0.3",
     "clsx": "^2.1.1",
@@ -88,7 +88,7 @@
     "@babel/preset-env": "^7.25.3",
     "@babel/preset-react": "^7.24.7",
     "@webpack-cli/generators": "^3.0.7",
-    "babel": "^5.8.38",
+    "babel": "^6.23.0",
     "babel-eslint": "^10.1.0",
     "tailwindcss": "^3.4.9",
     "webpack-cli": "^5.1.4"
