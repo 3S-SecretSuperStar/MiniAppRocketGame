@@ -283,8 +283,8 @@ const MainPage = () => {
                     // console.log(realName)
                     // console.log(data.userData)
                     const myData = data.userData;
-                    console.log("myData: ",myData)
-                    console.log("data : ",data)
+                    // console.log("myData: ",myData)
+                    // console.log("data : ",data)
                     const virtualTaskState = myData.task.virtual;
                     console.log("virtualTaskState : ",virtualTaskState)
 
@@ -292,11 +292,11 @@ const MainPage = () => {
                     const realWins = myData.gamesHistory.real.filter(j => j.crash === 'x').length
                     const realLosses = myData.gamesHistory.real.filter(j => j.stop === 'x').length
 
-                    const dailyDate = data.dailyRewardInfo.date;
+                    const dailyDate = myData.dailyHistory;
                     const nowDate = moment().startOf('day');
                     const selectedDate = moment(dailyDate).utc().local().startOf('day');
                     const diffDate = nowDate.diff(selectedDate, 'days');
-
+                    console.log(diffDate)
 
                     if (myData.gamesHistory.real.length > historySize) {
                       gamesHistory.real = myData.gamesHistory.real.slice(myData.gamesHistory.real.length - historySize)
