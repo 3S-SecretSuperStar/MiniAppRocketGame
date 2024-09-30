@@ -317,10 +317,10 @@ const MainPage = () => {
                     console.log("check balance in fetch : ", newBalance)
                     setFirstLogin(myData.first_state !== "false");
                     console.log("done task",virtualTaskState.done_task)
-                    console.log("achieve task",virtualTaskState.acheive_task)
-                    console.log("virtual state", virtualTaskState.done_task.every(item => virtualTaskState.acheive_task.includes(item)))
+                    console.log("achieve task",virtualTaskState.achieve_task)
+                    console.log("virtual state", virtualTaskState.done_task.every(item => virtualTaskState.achieve_task.includes(item)))
                     
-                    const rewardStates = !virtualTaskState.done_task.every(item => virtualTaskState.acheive_task.includes(item)) || myData.first_state !== "false" || diffDate>=2;
+                    const rewardStates = !virtualTaskState.done_task.every(item => virtualTaskState.achieve_task.includes(item)) || myData.first_state !== "false" || diffDate>=2;
                     console.log("diff date", diffDate)
                     console.log("reward state", rewardState)
                     setRewardState(rewardStates);
