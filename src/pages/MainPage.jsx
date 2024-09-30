@@ -283,7 +283,10 @@ const MainPage = () => {
                     // console.log(realName)
                     // console.log(data.userData)
                     const myData = data.userData;
+                    console.log("myData: ",myData)
+                    console.log("data : ",data)
                     const virtualTaskState = data.task.virtual;
+                    console.log("virtualTaskState : ",virtualTaskState)
 
 
                     const realWins = myData.gamesHistory.real.filter(j => j.crash === 'x').length
