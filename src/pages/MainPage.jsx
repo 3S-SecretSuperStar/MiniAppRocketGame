@@ -312,10 +312,10 @@ const MainPage = () => {
                     setFirstLogin(myData.first_state !== "false");
 
                     console.log("virtual state", virtualTaskState.done_task.every(item => virtualTaskState.acheive_task.includes(item)))
+                    
+                    const rewardStates = !virtualTaskState.done_task.every(item => virtualTaskState.acheive_task.includes(item)) || myData.first_state !== "false" || diffDate>=2;
                     console.log("diff date", diffDate)
-                    console.log("virtual state", virtualTaskState.done_task.every(item => virtualTaskState.acheive_task.includes(item)))
-
-                    const rewardStates = virtualTaskState.done_task.every(item => virtualTaskState.acheive_task.includes(item)) || myData.first_state !== "false" || diffDate>=2;
+                    console.log("reward state", rewardState)
                     setRewardState(rewardStates);
                     setBalance(newBalance)
                     balanceRef.current = newBalance
