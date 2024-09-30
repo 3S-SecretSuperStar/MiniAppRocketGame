@@ -310,6 +310,11 @@ const MainPage = () => {
                     const newBalance = parseFloat(isReal ? myData.balance.real : myData.balance.virtual).toFixed(2)
                     // console.log("check balance in fetch : ", newBalance)
                     setFirstLogin(myData.first_state !== "false");
+
+                    console.log("virtual state", virtualTaskState.done_task.every(item => virtualTaskState.acheive_task.includes(item)))
+                    console.log("diff date", diffDate)
+                    console.log("virtual state", virtualTaskState.done_task.every(item => virtualTaskState.acheive_task.includes(item)))
+
                     const rewardStates = virtualTaskState.done_task.every(item => virtualTaskState.acheive_task.includes(item)) || myData.first_state !== "false" || diffDate>=2;
                     setRewardState(rewardStates);
                     setBalance(newBalance)
