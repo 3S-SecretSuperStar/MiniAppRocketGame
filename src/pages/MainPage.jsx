@@ -28,6 +28,7 @@ import AutoIcon from "../component/svg/auto-icon.jsx";
 import FetchLoading from "../component/template/FetchLoading.jsx";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import 'react-lazy-load-image-component/src/effects/blur.css'
+import moment from "moment";
 
 const MainPage = () => {
 
@@ -282,11 +283,18 @@ const MainPage = () => {
                     // console.log(realName)
                     // console.log(data.userData)
                     const myData = data.userData;
-
+                    const virtualTaskState = data.task.virtual;
 
 
                     const realWins = myData.gamesHistory.real.filter(j => j.crash === 'x').length
                     const realLosses = myData.gamesHistory.real.filter(j => j.stop === 'x').length
+
+                    const dailyDate = data.dailyRewardInfo.date;
+                    const nowDate = moment().startOf('day');
+                    const selectedDate = moment(dailyDate).utc().local().startOf('day');
+                    const diffDate = nowDate.diff(selectedDate, 'days');
+
+
                     if (myData.gamesHistory.real.length > historySize) {
                       gamesHistory.real = myData.gamesHistory.real.slice(myData.gamesHistory.real.length - historySize)
                     }
@@ -297,11 +305,13 @@ const MainPage = () => {
                       gamesHistory.virtual = myData.gamesHistory.virtual.slice(myData.gamesHistory.virtual.length - historySize)
                     }
 
+
                     setGames(myData)
                     const newBalance = parseFloat(isReal ? myData.balance.real : myData.balance.virtual).toFixed(2)
                     // console.log("check balance in fetch : ", newBalance)
                     setFirstLogin(myData.first_state !== "false");
-                    setRewardState(myData.first_state !== "false");
+                    const rewardStates = virtualTaskState.done_task.every(item => virtualTaskState.acheive_task.includes(item)) || myData.first_state !== "false" || diffDate>=2;
+                    setRewardState(rewardStates);
                     setBalance(newBalance)
                     balanceRef.current = newBalance
                     setUser({
@@ -651,7 +661,7 @@ const MainPage = () => {
             </div>
             <TabButton className={`transform translate-y-[100px] ${isAction === "start" ? "-translate-y-[150px]" : ""} `} tabList={statsList} tabNo={tabId} setTabNo={setTabId} />
             <Game className={`transition-all ${isAction !== "start" ? "mt-24" : "mt-0"} `} finalResult={finalResult} gamePhase={gamePhase} isWin={winState} stopGame={(e) => stopGame(e)}
-              setLoaderIsShown={setLoaderIsShown} amount={balance} bet={bet} autoStop={autoStop} socketFlag={socketStart} realGame={isReal} setInfoState={(e) => setInfoState(e)} startGame={startGame} autoMode = {autoMode} />
+              setLoaderIsShown={setLoaderIsShown} amount={balance} bet={bet} autoStop={autoStop} socketFlag={socketStart} realGame={isReal} setInfoState={(e) => setInfoState(e)} startGame={startGame} autoMode={autoMode} />
 
             <div className="flex flex-col text-white gap-4">
               <div >
