@@ -285,7 +285,7 @@ const MainPage = () => {
                     const myData = data.userData;
                     console.log("myData: ",myData)
                     console.log("data : ",data)
-                    const virtualTaskState = data.task.virtual;
+                    const virtualTaskState = myData.task.virtual;
                     console.log("virtualTaskState : ",virtualTaskState)
 
 
