@@ -286,7 +286,7 @@ const MainPage = () => {
                     console.log("myData: ",myData)
                     console.log("data : ",data)
                     const virtualTaskState = myData.task.virtual;
-                    console.log("virtualTaskState : ",virtualTaskState)
+                    // console.log("virtualTaskState : ",virtualTaskState)
 
 
                     const realWins = myData.gamesHistory.real.filter(j => j.crash === 'x').length
@@ -297,9 +297,9 @@ const MainPage = () => {
                     const selectedDate = moment(dailyDate).utc().local().startOf('day');
                     const diffDate = nowDate.diff(selectedDate, 'days');
                     
-                    console.log("dailyDate : ",dailyDate)
-                    console.log("selectedDate : ",selectedDate)
-                    console.log("diffDate : ",diffDate)
+                    // console.log("dailyDate : ",dailyDate)
+                    // console.log("selectedDate : ",selectedDate)
+                    // console.log("diffDate : ",diffDate)
 
                     if (myData.gamesHistory.real.length > historySize) {
                       gamesHistory.real = myData.gamesHistory.real.slice(myData.gamesHistory.real.length - historySize)
@@ -314,15 +314,15 @@ const MainPage = () => {
 
                     setGames(myData)
                     const newBalance = parseFloat(isReal ? myData.balance.real : myData.balance.virtual).toFixed(2)
-                    console.log("check balance in fetch : ", newBalance)
+                    // console.log("check balance in fetch : ", newBalance)
                     setFirstLogin(myData.first_state !== "false");
-                    console.log("done task",virtualTaskState.done_task)
-                    console.log("achieve task",virtualTaskState.achieve_task)
-                    console.log("virtual state", virtualTaskState.done_task.every(item => virtualTaskState.achieve_task.includes(item)))
+                    // console.log("done task",virtualTaskState.done_task)
+                    // console.log("achieve task",virtualTaskState.achieve_task)
+                    // console.log("virtual state", virtualTaskState.done_task.every(item => virtualTaskState.achieve_task.includes(item)))
                     
                     const rewardStates = !virtualTaskState.achieve_task.every(item => virtualTaskState.done_task.includes(item)) || myData.first_state !== "false" || diffDate>=2;
-                    console.log("diff date", diffDate)
-                    console.log("reward state", rewardStates)
+                    // console.log("diff date", diffDate)
+                    // console.log("reward state", rewardStates)
                     setRewardState(rewardStates);
                     setBalance(newBalance)
                     balanceRef.current = newBalance

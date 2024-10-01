@@ -203,33 +203,33 @@ export default memo(function Game({ gamePhase, finalResult, amount = 10.00,
 
 
   if (score <= 0) comment = undefined
-  else if (score >= 2 && score <= 2.2) {
+  else if (score >= 2 && score <= 2.5) {
     comment = comments[0]
-  } else if (score >= 3 && score <= 3.2) {
+  } else if (score >= 3 && score <= 3.5) {
     comment = comments[1]
-  } else if (score >= 4 && score <= 4.3) {
+  } else if (score >= 4 && score <= 4.6) {
     comment = comments[2]
-  } else if (score >= 5 && score <= 5.3) {
+  } else if (score >= 5 && score <= 5.6) {
     comment = comments[3]
-  } else if (score >= 6 && score <= 6.3) {
+  } else if (score >= 6 && score <= 6.7) {
     comment = comments[4]
-  } else if (score >= 7 && score <= 7.3) {
+  } else if (score >= 7 && score <= 7.8) {
     comment = comments[5]
-  } else if (score >= 8.1 && score <= 7.55) {
+  } else if (score >= 8.1 && score <= 9) {
     comment = comments[6]
-  } else if (score >= 9.6 && score <= 10) {
+  } else if (score >= 9.6 && score <= 10.5) {
     comment = comments[7]
-  } else if (score >= 11 && score <= 12.5) {
+  } else if (score >= 11 && score <= 12) {
     comment = comments[8]
-  } else if (score >= 13 && score <= 13.5) {
+  } else if (score >= 13 && score <= 14) {
     comment = comments[9]
-  } else if (score >= 15 && score <= 16) {
+  } else if (score >= 15 && score <= 16.5) {
     comment = comments[10]
-  } else if (score >= 17 && score <= 18) {
+  } else if (score >= 17 && score <= 19) {
     comment = comments[11]
   }
 
-  if (score >= 20 && (score % 5 >= 3 && score % 5 <= 4)) {
+  if (score >= 20 && (score % 5 >= 3 && score % 5 <= 5)) {
     comment = comments[12]
   }
 
