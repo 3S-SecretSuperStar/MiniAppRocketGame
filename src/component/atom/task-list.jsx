@@ -60,6 +60,7 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
         .then(() => {
           try {
             
+            taskAddNotification(task.amount)
           } catch (e) {
             // eslint-disable-next-line no-self-assign
             console.log(e);
@@ -78,6 +79,7 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
     .then(res => Promise.all([res.status, res.json()]))
     .then(() => {
       try {
+        taskAddNotification(dailyAmount)
       } catch (e) {
         // eslint-disable-next-line no-self-assign
         console.log(e);
@@ -140,11 +142,11 @@ return (
                 <LoadingSpinner className="w-4 h-4 mx-auto" /> :
                 "Claim"
             }
-          </button> :(
-            taskAddNotification(parseFloat(task.amount))
-          (<div className="text-white">
+          </button> :
+          <div className="text-white">
+            {taskAddNotification(task.amount)}
             <CheckMark />
-          </div>))
+          </div>
     }
   </div>
 )
