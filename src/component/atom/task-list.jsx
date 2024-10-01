@@ -149,7 +149,7 @@ return (
             disabled = {claimStateListData.includes(task.index)}
           >
             {
-              isClaim ?
+              claimStateListData.includes(task.index)?
                 <LoadingSpinner className="w-4 h-4 mx-auto" /> :
                 "Claim"
             }
