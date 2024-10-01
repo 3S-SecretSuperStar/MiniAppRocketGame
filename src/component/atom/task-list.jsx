@@ -32,22 +32,6 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
   const headers = new Headers()
   headers.append('Content-Type', 'application/json')
 
-  const taskAddNotification = (amount) =>{
-    toast(`${amount} coins added to your balance`,
-      {
-        position: "top-center",
-        icon: <CheckMark />,
-        style: {
-          borderRadius: '8px',
-          background: '#7886A0',
-          color: '#fff',
-          width: '90vw'
-        },
-      }
-    )
-    updateBalance(amount)
-  }
-
   const goClaim = () => {
     setClaimStateList((prev)=>[...prev,task.index])
     setIsClaim(true);
@@ -59,12 +43,24 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
         .then(res => Promise.all([res.status, res.json()]))
         .then(() => {
           try {
-            
-            taskAddNotification(task.amount)
+            toast(`${task.amount} coins added to your balance`,
+              {
+                position: "top-center",
+                icon: <CheckMark />,
+                style: {
+                  borderRadius: '8px',
+                  background: '#7886A0',
+                  color: '#fff',
+                  width: '90vw'
+                },
+              }
+            )
+            updateBalance(parseFloat(task.amount))
           } catch (e) {
             // eslint-disable-next-line no-self-assign
             console.log(e);
           }
+
             stateTask()
 
           
@@ -79,7 +75,19 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
     .then(res => Promise.all([res.status, res.json()]))
     .then(() => {
       try {
-        taskAddNotification(dailyAmount)
+        toast(`${dailyAmount} coins added to your balance`,
+          {
+            position: "top-center",
+            icon: <CheckMark />,
+            style: {
+              borderRadius: '8px',
+              background: '#7886A0',
+              color: '#fff',
+              width: '90vw'
+            },
+          }
+        )
+        updateBalance(dailyAmount)
       } catch (e) {
         // eslint-disable-next-line no-self-assign
         console.log(e);
@@ -144,7 +152,7 @@ return (
             }
           </button> :
           <div className="text-white">
-            {taskAddNotification(task.amount)}
+            
             <CheckMark />
           </div>
     }
