@@ -140,11 +140,11 @@ return (
                 <LoadingSpinner className="w-4 h-4 mx-auto" /> :
                 "Claim"
             }
-          </button> :
-          <div className="text-white">
-            {taskAddNotification(parseFloat(task.amount))}
+          </button> :(
+            taskAddNotification(parseFloat(task.amount))
+          (<div className="text-white">
             <CheckMark />
-          </div>
+          </div>))
     }
   </div>
 )
