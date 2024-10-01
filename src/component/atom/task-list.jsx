@@ -61,9 +61,10 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
             console.log(e);
           }
           stateTask()
-          setIsClaim(false)
+          
         
         })
+        return ()=> setIsClaim(false)
     // stateTask();
   } else {
     let dailyAmount = parseFloat(task.amount.split(" ")[0])
@@ -92,8 +93,9 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
         console.log(e);
       }
       stateTask()
-      setIsClaim(false)
+     
     })
+    return ()=> setIsClaim(false)
 }
   }
 const followHandle = (index) => {

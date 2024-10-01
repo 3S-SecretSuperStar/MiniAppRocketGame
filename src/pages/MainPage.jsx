@@ -658,10 +658,10 @@ const MainPage = () => {
                 <img src="/image/cup.png" width={48} height={48} className="max-w-12 h-12" alt='cup'></img>
               </div>
 
-              <div className="text-[15px] w-1/2 leading-5 tracking-[-2%] text-white">You have uncompleted tasks that you can get rewards for.</div>
+              <div className="text-[15px] w-1/2 leading-5 tracking-[-2%] text-white">You have unclaimed tasks that you can get rewards for.</div>
               <Link to='/earn'>
                 <ShadowButton
-                  content={firstLogin?"Get Rewards":"Unclaimed"}
+                  content="Get Rewards"
                   className={`relative px-3 py-1 bg-[#84CB69] text-[#080888] shadow-btn-custom-border h-7 text-sm leading-5 w-[108px] font-medium `}
                   action={() => setRewardState(false)}
                 />
