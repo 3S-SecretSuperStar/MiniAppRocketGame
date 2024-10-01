@@ -64,7 +64,7 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
           setIsClaim(false)
         
         })
-    stateTask();
+    // stateTask();
   } else {
     let dailyAmount = parseFloat(task.amount.split(" ")[0])
       // console.log("index : ", index)
@@ -341,7 +341,7 @@ const TaskList = () => {
   }
   // console.log("taskList: ", taskList)
   // console.log("friend number", user.FriendNumber)
-  const stateTask = () => {
+  const stateTask = async () => {
     // console.log("user in state task :", user)
     performTask = []
     performTask = taskList.reduce((performList, task) => {
@@ -361,7 +361,7 @@ const TaskList = () => {
         performList.push(task.index);
       return performList
     }, [])
-    fetch(`${serverUrl}/add_perform_list`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, performTask: performTask, isReal: isReal }), headers })
+    await fetch(`${serverUrl}/add_perform_list`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, performTask: performTask, isReal: isReal }), headers })
       .then(res => Promise.all([res.status, res.json()]))
       .then(async (res) => {
         // console.log("before fetch data")

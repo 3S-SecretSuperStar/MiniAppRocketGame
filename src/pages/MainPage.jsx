@@ -661,7 +661,7 @@ const MainPage = () => {
               <div className="text-[15px] w-1/2 leading-5 tracking-[-2%] text-white">You have uncompleted tasks that you can get rewards for.</div>
               <Link to='/earn'>
                 <ShadowButton
-                  content="Get Rewards"
+                  content={firstLogin?"Get Rewards":"Unclaimed"}
                   className={`relative px-3 py-1 bg-[#84CB69] text-[#080888] shadow-btn-custom-border h-7 text-sm leading-5 w-[108px] font-medium `}
                   action={() => setRewardState(false)}
                 />
