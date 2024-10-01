@@ -60,10 +60,12 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
             // eslint-disable-next-line no-self-assign
             console.log(e);
           }
-          stateTask()
+          finally{
+            stateTask()
           
-        
-          return ()=> setIsClaim(false)
+          setIsClaim(false)
+          }
+          
         })
     // stateTask();
   } else {
@@ -367,7 +369,9 @@ const TaskList = () => {
       .then(res => Promise.all([res.status, res.json()]))
       .then(async (res) => {
         // console.log("before fetch data")
-        fetchData()
+        await fetchData().then(
+          console.log("fetch data")
+        )
       })
 
     // console.log("after fetch data")
