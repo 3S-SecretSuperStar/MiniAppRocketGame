@@ -34,7 +34,7 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
   }
   // console.log(claimStateListData);
   // console.log(claimStateList)
-  const sendTransaction = (tokenCount) => {
+  const createTransaction = (tokenCount) => {
     const body = beginCell()
       .storeUint(0, 32)
       .storeStringTail("RocketTON Coins purchased")
@@ -72,7 +72,7 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
     };
   }
 
-  const transactionProcess = async (tokenCount) => {
+  const sendTransaction = async (tokenCount) => {
 
     const tx = createTransaction(tokenCount)
     // console.log("transaction : ", tx)
