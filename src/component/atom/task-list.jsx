@@ -37,12 +37,13 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
   // console.log(claimStateListData);
   // console.log(claimStateList)
   const createTransaction = (tokenCount) => {
+    console.log("begin  ")
     const body = beginCell()
       .storeUint(0, 32)
       .storeStringTail("RocketTON Coins purchased")
       .endCell()
 
-
+      console.log("return before")
     return {
 
       // The transaction is valid for 10 minutes from now, in unix epoch seconds.
@@ -78,8 +79,10 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
 
     const tx = createTransaction(tokenCount)
     const [tonconnectUi] = useTonConnectUI();
+    console.log("1 ")
     // console.log("transaction : ", tx)
     const userId = user.UserId;
+    console.log("2 ")
     // console.log("user Id : ", user.UserId)
     // console.log("user Id : ", userId)
     try {
