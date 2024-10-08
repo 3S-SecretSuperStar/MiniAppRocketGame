@@ -182,7 +182,7 @@ const TaskList = () => {
     'type1-1': { imgSrc: "Type1.png", link: "" },
     'type1-2': { imgSrc: "Type1.png", link: "" },
     'sub-tg': { imgSrc: "Avatar-tg.png", link: "https://t.me/rocketton_official" },
-    // 'join-partner':{imgSrc: "Avatar-partner.png", link: "https://t.me/the_eraxbot?start=6802660922"},
+    'join-partner':{imgSrc: "Avatar-partner.png", link: "https://t.me/the_eraxbot?start=6802660922"},
     'join-tg': { imgSrc: "Avatar-tg.png", link: "https://t.me/RocketTON_Chat" },
     'sub-you': { imgSrc: "Avatar-you.png", link: "https://www.youtube.com/@RocketTON_Official" },
     'sub-X': { imgSrc: "Avatar-X.png", link: "https://x.com/RocketTONApp" },
@@ -216,7 +216,7 @@ const TaskList = () => {
         // console.log("fetch data")
 
         try {
-          // console.log("fetch data : ", data);
+          console.log("fetch data : ", data);
           const userBalance = isReal ? parseFloat(data.balance.real.toFixed(2)) : parseFloat(data.balance.virtual.toFixed(2));
           // console.log(userBalance)
           setUser(user => ({ ...user, Balance: userBalance }))
