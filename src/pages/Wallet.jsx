@@ -58,8 +58,9 @@ const getPerformTask = async()=>{
 
       })
 }
-  const addPerformList = (performTask) => {
-    fetch(`${serverUrl}/add_perform_list`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, performTask: performTask, isReal: isReal }), headers })
+  const addPerformList = async (performTask) => {
+    console.log("perform task: ",performTask)
+    await fetch(`${serverUrl}/add_perform_list`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, performTask: performTask, isReal: isReal }), headers })
   }
 
 
@@ -121,6 +122,7 @@ const getPerformTask = async()=>{
 
 useEffect(()=>{
   if (!wallet) {
+    console.log(performList)
     if(!performList.length || !performList.includes(25) )
     addPerformList(25);
 }
