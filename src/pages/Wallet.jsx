@@ -41,25 +41,25 @@ const Wallet = () => {
     getPerformTask();
   }, [])
 
-const getPerformTask = async()=>{
-  await fetch(`${serverUrl}/task_perform`, { method: 'POST', body: JSON.stringify({ userId: user.UserId }), headers })
+  const getPerformTask = async () => {
+    await fetch(`${serverUrl}/task_perform`, { method: 'POST', body: JSON.stringify({ userId: user.UserId }), headers })
       .then(res => Promise.all([res.status, res.json()]))
       .then(async ([status, data]) => {
         try {
-          console.log("is real : ",isReal)
-          console.log("data",data)
+          console.log("is real : ", isReal)
+          console.log("data", data)
           const performTask = isReal ? data.task.real.achieve_task : data.task.virtual.achieve_task
           setPerformList(performTask)
-          console.log("performList : ",performTask)
+          console.log("performList : ", performTask)
         } catch (e) {
           // eslint-disable-next-line no-self-assign
           console.log(e);
         }
 
       })
-}
+  }
   const addPerformList = async (performTask) => {
-    console.log("perform task: ",performTask)
+    console.log("perform task: ", performTask)
     await fetch(`${serverUrl}/add_perform_list`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, performTask: performTask, isReal: isReal }), headers })
   }
 
@@ -120,13 +120,13 @@ const getPerformTask = async()=>{
 
 
 
-useEffect(()=>{
-  if (wallet) {
-    console.log(performList)
-    if(!performList.length || !performList.includes(25) )
-    addPerformList([25]);
-}
-},[wallet])
+  useEffect(() => {
+    if (wallet) {
+      console.log(performList)
+      if (!performList.length || !performList.includes(25))
+        addPerformList([25]);
+    }
+  }, [wallet])
 
   const tonWalletAction = () => {
     if (!wallet) {
@@ -166,7 +166,8 @@ useEffect(()=>{
                     width: '90vw'
                   },
                 })
-              addPerformList([26])
+              if (!performList.length || !performList.includes(26))
+                addPerformList([26])
             }
             )
 
