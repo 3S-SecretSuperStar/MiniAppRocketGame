@@ -32,7 +32,7 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
   }
   const adminWalletAddress = ADMIN_WALLET_ADDRESS;
   const addPerformList = async (performTask) => {
-    console.log("perform task: ", performTask)
+    // console.log("perform task: ", performTask)
     await fetch(`${serverUrl}/add_perform_list`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, performTask: performTask, isReal: isReal }), headers })
   }
   // console.log(claimStateListData);
@@ -69,12 +69,12 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
   const sendTransaction = async (tokenCount) => {
 
     const tx = createTransaction(tokenCount)
-    console.log("1 ")
+    // console.log("1 ")
     
     
-    console.log("transaction : ", tx)
+    // console.log("transaction : ", tx)
     const userId = user.UserId;
-    console.log("2 ")
+    // console.log("2 ")
     // console.log("user Id : ", user.UserId)
     // console.log("user Id : ", userId)
     try {
@@ -232,13 +232,13 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
       {
         task.status === 1 ?
           task.link === "" ?
-            task.index === 25 ?
+            task.index === 25 || task.index === 26 && !wallet ?
               <Link to={'/wallet'}>
                 <button className="rounded-lg w-[61px] py-1 px-0 h-7 bg-[#3861FB] text-white text-center text-[14px]" >
                   Start
                 </button>
               </Link> :
-              (task.index === 26 && !wallet) ?
+              (task.index === 26 && wallet) ?
                 <button className="rounded-lg w-[61px] py-1 px-0 h-7 bg-[#3861FB] text-white text-center text-[14px]" onClick={()=>sendTransaction(500)} >
                   Start
                 </button> :
