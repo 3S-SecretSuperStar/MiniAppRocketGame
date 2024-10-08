@@ -268,7 +268,7 @@ const TaskList = () => {
               try {
                 console.log("task data", data)
                 const taskItemData = data.task;
-                const fixedTaskItems = taskItemData.filter(item => (item.type === "daily_reward" || item.type === 'type6'));
+                const fixedTaskItems = taskItemData.filter(item => ( item.type === 'type6'));
                 const otherTaskItems = taskItemData.filter(item => !(item.type === "daily_reward" || item.type === 'type6'));
                 console.log('otherTaskItems: ', otherTaskItems)
                 let dailyItemData = {}
@@ -287,7 +287,7 @@ const TaskList = () => {
                   }
                   // setFixedTaskData([dailyItemData])
                   const _fixedTaskData = fixedTaskItems.map(item => {
-                    if (item.type !== "daily_reward") {
+                    
                       const { imgSrc, link } = typeToImageMap[item.type];
 
                       console.log("item:", item);
@@ -300,7 +300,7 @@ const TaskList = () => {
                         link: link,
                         index: item.index
                       };
-                    }
+                    
                     })
                   setFixedTaskData([dailyItemData, ..._fixedTaskData])
                 
@@ -385,8 +385,8 @@ if (loading && firstLoading) {
   setActionState("start")
   return <FetchLoading />
 }
-// console.log("fixedTaskData : ", fixedTaskData)
-// console.log("otherTaskData : ", otherTaskData)
+console.log("fixedTaskData : ", fixedTaskData)
+console.log("otherTaskData : ", otherTaskData)
 // console.log("task data of taskData : ", taskData)
 // console.log(user.FriendNumber)
 // console.log("user Info in taskList : ", user.DailyConsecutiveDays)
