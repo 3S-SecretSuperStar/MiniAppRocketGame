@@ -326,7 +326,7 @@ const TaskList = () => {
                     status: taskState[item.index],
                     link: link,
                     index: item.index,
-                    sort:dailyData.sort
+                    sort:item.sort
                   };
                 });
 
