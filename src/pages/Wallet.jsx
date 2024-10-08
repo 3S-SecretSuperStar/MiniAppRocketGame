@@ -46,6 +46,8 @@ const getPerformTask = async()=>{
       .then(res => Promise.all([res.status, res.json()]))
       .then(async ([status, data]) => {
         try {
+          console.log("is real : ",isReal)
+          console.log("data",data)
           const performTask = isReal ? data.task.real.achieve_task : data.task.virtual.achieve_task
           setPerformList(performTask)
           console.log("performList : ",performList)
@@ -119,7 +121,7 @@ const getPerformTask = async()=>{
 
 useEffect(()=>{
   if (!wallet) {
-    if(performList.length===0 || !performList.includes(25) )
+    if(performList || !performList.includes(25) )
     addPerformList(25);
 }
 },[wallet])
