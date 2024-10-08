@@ -42,8 +42,8 @@ const Wallet = () => {
       .then(res => Promise.all([res.status, res.json()]))
       .then(async ([status, data]) => {
         try {
-          const performtask = isReal ? data.task.real.achieve_task : data.task.virtual.achieve_task
-
+          const performTask = isReal ? data.task.real.achieve_task : data.task.virtual.achieve_task
+          setPerformList(performTask)
         } catch (e) {
           // eslint-disable-next-line no-self-assign
           console.log(e);
