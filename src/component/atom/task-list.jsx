@@ -101,7 +101,7 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
                 })
                 
                 addPerformList([26])
-                // stateTask();
+                stateTask();
             }
             )
 

@@ -46,11 +46,11 @@ const Wallet = () => {
       .then(res => Promise.all([res.status, res.json()]))
       .then(async ([status, data]) => {
         try {
-          console.log("is real : ", isReal)
-          console.log("data", data)
+          // console.log("is real : ", isReal)
+          // console.log("data", data)
           const performTask = isReal ? data.task.real.achieve_task : data.task.virtual.achieve_task
           setPerformList(performTask)
-          console.log("performList : ", performTask)
+          // console.log("performList : ", performTask)
         } catch (e) {
           // eslint-disable-next-line no-self-assign
           console.log(e);
@@ -59,7 +59,7 @@ const Wallet = () => {
       })
   }
   const addPerformList = async (performTask) => {
-    console.log("perform task: ", performTask)
+    // console.log("perform task: ", performTask)
     await fetch(`${serverUrl}/add_perform_list`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, performTask: performTask, isReal: isReal }), headers })
   }
 
@@ -122,7 +122,7 @@ const Wallet = () => {
 
   useEffect(() => {
     if (wallet) {
-      console.log(performList)
+      // console.log(performList)
       if (!performList.length || !performList.includes(25))
         addPerformList([25]);
     }
@@ -166,7 +166,7 @@ const Wallet = () => {
                     width: '90vw'
                   },
                 })
-              if (!performList.length || !performList.includes(26))
+              if ((!performList.length || !performList.includes(26))&&tokenCount>=500)
                 addPerformList([26])
             }
             )
