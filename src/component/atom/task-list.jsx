@@ -10,6 +10,8 @@ import moment from "moment";
 import FetchLoading from "../template/FetchLoading";
 import { isActionState } from "../../store";
 import { useTonAddress, useTonConnectUI, useTonWallet } from "@tonconnect/ui-react";
+import { beginCell } from "@ton/ton";
+import WarnningIcon from "../svg/warning";
 
 const serverUrl = REACT_APP_SERVER;
 
