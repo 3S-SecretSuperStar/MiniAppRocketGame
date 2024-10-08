@@ -38,13 +38,13 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
   // console.log(claimStateListData);
   // console.log(claimStateList)
   const createTransaction = (tokenCount) => {
-    console.log("begin  ")
+    // console.log("begin  ")
     const body = beginCell()
       .storeUint(0, 32)
       .storeStringTail("RocketTON Coins purchased")
       .endCell()
 
-      console.log("return before")
+      // console.log("return before")
     return {
 
       // The transaction is valid for 10 minutes from now, in unix epoch seconds.
@@ -389,14 +389,14 @@ const TaskList = () => {
             .then(res => Promise.all([res.status, res.json()]))
             .then(([status, data]) => {
               try {
-                console.log("task data", data)
+                // console.log("task data", data)
                 const taskItemData = data.task;
                 const fixedTaskItems = taskItemData.filter(item => (item.type === 'type6'));
                 const otherTaskItems = taskItemData.filter(item => !(item.type === "daily_reward" || item.type === 'type6'));
-                console.log('otherTaskItems: ', otherTaskItems)
+                // console.log('otherTaskItems: ', otherTaskItems)
                 let dailyItemData = {}
                 if (fixedTaskItems.length > 0) {
-                  console.log('fixed task: ', fixedTaskItems)
+                  // console.log('fixed task: ', fixedTaskItems)
                   const dailyData = taskItemData.find(item => item.type === "daily_reward");
                   if (dailyData) {
                     dailyItemData = {
@@ -414,7 +414,7 @@ const TaskList = () => {
 
                     const { imgSrc, link } = typeToImageMap[item.type];
 
-                    console.log("item:", item);
+                    // console.log("item:", item);
 
                     return {
                       src: imgSrc,
@@ -436,7 +436,7 @@ const TaskList = () => {
                   const _otherTaskData = otherTaskItems.map(item => {
                     const { imgSrc, link } = typeToImageMap[item.type];
 
-                    console.log("item:", item);
+                    // console.log("item:", item);
 
                     return {
                       src: imgSrc,
@@ -511,8 +511,8 @@ const TaskList = () => {
     setActionState("start")
     return <FetchLoading />
   }
-  console.log("fixedTaskData : ", fixedTaskData)
-  console.log("otherTaskData : ", otherTaskData)
+  // console.log("fixedTaskData : ", fixedTaskData)
+  // console.log("otherTaskData : ", otherTaskData)
   // console.log("task data of taskData : ", taskData)
   // console.log(user.FriendNumber)
   // console.log("user Info in taskList : ", user.DailyConsecutiveDays)
