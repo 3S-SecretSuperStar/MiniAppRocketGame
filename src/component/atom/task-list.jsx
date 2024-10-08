@@ -2,13 +2,14 @@ import { useState, useEffect, Suspense } from "react";
 import CheckMark from "../svg/check-mark";
 import LoadingSpinner from "../svg/loading-spinner";
 import toast, { useToasterStore } from "react-hot-toast";
-import { REACT_APP_SERVER } from "../../utils/privateData";
+import { ADMIN_WALLET_ADDRESS, REACT_APP_SERVER } from "../../utils/privateData";
 import { useAtom } from "jotai";
 import { realGameState, TaskContent, userData } from "../../store";
 import { Link, useActionData } from "react-router-dom";
 import moment from "moment";
 import FetchLoading from "../template/FetchLoading";
 import { isActionState } from "../../store";
+import { useTonWallet } from "@tonconnect/ui-react";
 
 const serverUrl = REACT_APP_SERVER;
 
@@ -20,8 +21,121 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
   const [user, setUser] = useAtom(userData)
   const [isPending, setIsPending] = useState(false)
   const claimStateListData = claimStateList;
+  let wallet = useTonAddress();
+  const tonwallet = useTonWallet()
+  const Chain = {
+    Mainnet: '-239',
+    Testnet: '3'
+  }
+  const adminWalletAddress = ADMIN_WALLET_ADDRESS;
+  const addPerformList = async (performTask) => {
+    console.log("perform task: ", performTask)
+    await fetch(`${serverUrl}/add_perform_list`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, performTask: performTask, isReal: isReal }), headers })
+  }
   // console.log(claimStateListData);
   // console.log(claimStateList)
+  const sendTransaction = (tokenCount) => {
+    const body = beginCell()
+      .storeUint(0, 32)
+      .storeStringTail("RocketTON Coins purchased")
+      .endCell()
+
+
+    return {
+
+      // The transaction is valid for 10 minutes from now, in unix epoch seconds.
+      validUntil: Math.floor(Date.now() / 1000) + 600,
+      messages: [
+
+        {
+
+          // The receiver's address.
+          address: adminWalletAddress,
+          // Amount to send in nanoTON. For example, 0.005 TON is 5000000 nanoTON.
+          amount: tokenCount * Math.pow(10, 6),
+          // (optional) State initialization in boc base64 format.
+          stateInit: 'te6cckEBBAEAOgACATQCAQAAART/APSkE/S88sgLAwBI0wHQ0wMBcbCRW+D6QDBwgBDIywVYzxYh+gLLagHPFsmAQPsAlxCarA==',
+          // (optional) Payload in boc base64 format.
+          payload: body.toBoc().toString("base64"),
+        },
+
+        // Uncomment the following message to send two messages in one transaction.
+        /*
+        {
+          // Note: Funds sent to this address will not be returned back to the sender.
+          address: 'UQAuz15H1ZHrZ_psVrAra7HealMIVeFq0wguqlmFno1f3B-m',
+          amount: toNano('0.01').toString(),
+        }
+        */
+
+      ],
+    };
+  }
+
+  const transactionProcess = async (tokenCount) => {
+
+    const tx = createTransaction(tokenCount)
+    // console.log("transaction : ", tx)
+    const userId = user.UserId;
+    // console.log("user Id : ", user.UserId)
+    // console.log("user Id : ", userId)
+    try {
+
+      if (tonwallet.account.chain === Chain.Mainnet) {
+        const transferResult = await tonconnectUi.sendTransaction(tx);
+        // console.log("transfer result : ", transferResult)
+        if (transferResult) {
+          const headers = new Headers();
+          headers.append('Content-Type', 'application/json')
+          fetch(`${serverUrl}/charge_balance`, { method: 'POST', body: JSON.stringify({ userId: userId, amount: tokenCount }), headers })
+            .then(() => {
+
+              toast(`${tokenCount} coins added to your balance`,
+                {
+                  position: "top-center",
+                  icon: <CheckMark />,
+                  style: {
+                    borderRadius: '8px',
+                    background: '#7886A0',
+                    color: '#fff',
+                    width: '90vw'
+                  },
+                })
+                
+                addPerformList([26])
+                stateTask();
+            }
+            )
+
+        }
+      }
+      else {
+        toast(`Please set mainnet in your wallet!`,
+          {
+            position: "top-center",
+            icon: <WarnningIcon />,
+            style: {
+              borderRadius: '8px',
+              background: '#7886A0',
+              color: '#fff',
+              width: '90vw'
+            },
+          })
+      }
+    } catch (e) {
+      toast(`Please check your wallet and transaction!`,
+        {
+          position: "top-center",
+          icon: <WarnningIcon />,
+          style: {
+            borderRadius: '8px',
+            background: '#7886A0',
+            color: '#fff',
+            width: '90vw'
+          },
+        })
+    }
+  }
 
   const updateBalance = (profit) => {
     setUser(user => {
@@ -119,15 +233,22 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
       </div>
       {
         task.status === 1 ?
-          task.link === "" ? task.index===25 || task.index===26 ? <Link to={'/wallet'}>
-            <button className="rounded-lg w-[61px] py-1 px-0 h-7 bg-[#3861FB] text-white text-center text-[14px]" >
-              Start
-            </button>
-          </Link>:<Link to={'/play'}>
-            <button className="rounded-lg w-[61px] py-1 px-0 h-7 bg-[#3861FB] text-white text-center text-[14px]" >
-              Start
-            </button>
-          </Link>: 
+          task.link === "" ?
+            task.index === 25 || (task.index === 26 && !wallet) ?
+              <Link to={'/wallet'}>
+                <button className="rounded-lg w-[61px] py-1 px-0 h-7 bg-[#3861FB] text-white text-center text-[14px]" >
+                  Start
+                </button>
+              </Link> :
+              (task.index === 26 && !wallet) ?
+                <button className="rounded-lg w-[61px] py-1 px-0 h-7 bg-[#3861FB] text-white text-center text-[14px]" onClick={()=>sendTransaction(0.5)} >
+                  Start
+                </button> :
+                <Link to={'/play'}>
+                  <button className="rounded-lg w-[61px] py-1 px-0 h-7 bg-[#3861FB] text-white text-center text-[14px]" >
+                    Start
+                  </button>
+                </Link> :
 
             <button className="rounded-lg w-[61px] py-1 px-0 h-7 bg-[#3861FB] text-white text-center text-[14px]"
               onClick={() => followHandle(task.index)} >
@@ -272,7 +393,7 @@ const TaskList = () => {
               try {
                 console.log("task data", data)
                 const taskItemData = data.task;
-                const fixedTaskItems = taskItemData.filter(item => ( item.type === 'type6'));
+                const fixedTaskItems = taskItemData.filter(item => (item.type === 'type6'));
                 const otherTaskItems = taskItemData.filter(item => !(item.type === "daily_reward" || item.type === 'type6'));
                 console.log('otherTaskItems: ', otherTaskItems)
                 let dailyItemData = {}
@@ -287,132 +408,132 @@ const TaskList = () => {
                       status: dailyState,
                       link: "",
                       index: dailyData.index,
-                      sort:dailyData.sort
+                      sort: dailyData.sort
                     }
                   }
                   // setFixedTaskData([dailyItemData])
                   const _fixedTaskData = fixedTaskItems.map(item => {
-                    
-                      const { imgSrc, link } = typeToImageMap[item.type];
 
-                      console.log("item:", item);
+                    const { imgSrc, link } = typeToImageMap[item.type];
 
-                      return {
-                        src: imgSrc,
-                        title: item.title,
-                        amount: (item.amount + " Coins"),
-                        status: taskState[item.index],
-                        link: link,
-                        index: item.index,
-                        sort:item.sort
-                      };
-                    
-                    })
+                    console.log("item:", item);
+
+                    return {
+                      src: imgSrc,
+                      title: item.title,
+                      amount: (item.amount + " Coins"),
+                      status: taskState[item.index],
+                      link: link,
+                      index: item.index,
+                      sort: item.sort
+                    };
+
+                  })
                   setFixedTaskData([dailyItemData, ..._fixedTaskData])
-                
-              }
+
+                }
 
                 if (otherTaskItems.length > 0) {
-                // console.log('task states:', taskState);
-                const _otherTaskData = otherTaskItems.map(item => {
-                  const { imgSrc, link } = typeToImageMap[item.type];
+                  // console.log('task states:', taskState);
+                  const _otherTaskData = otherTaskItems.map(item => {
+                    const { imgSrc, link } = typeToImageMap[item.type];
 
-                  console.log("item:", item);
+                    console.log("item:", item);
 
-                  return {
-                    src: imgSrc,
-                    title: item.title,
-                    amount: (item.amount + " Coins"),
-                    status: taskState[item.index],
-                    link: link,
-                    index: item.index,
-                    sort:item.sort
-                  };
-                });
+                    return {
+                      src: imgSrc,
+                      title: item.title,
+                      amount: (item.amount + " Coins"),
+                      status: taskState[item.index],
+                      link: link,
+                      index: item.index,
+                      sort: item.sort
+                    };
+                  });
 
-                setOtherTaskData(_otherTaskData);
+                  setOtherTaskData(_otherTaskData);
+                }
+              } catch (e) {
+                console.log(e)
               }
-            } catch (e) {
-              console.log(e)
-            }
-          finally {
-            setTimeout(() => {
-              setLoading(false)
-              firstLoading && setActionState("ready")
-              setFirstLoading(false);
-            }, 500)
-          }
-        })
+              finally {
+                setTimeout(() => {
+                  setLoading(false)
+                  firstLoading && setActionState("ready")
+                  setFirstLoading(false);
+                }, 500)
+              }
+            })
 
 
-  } catch (e) {
-    // eslint-disable-next-line no-self-assign
-    console.log(e);
-  }
+        } catch (e) {
+          // eslint-disable-next-line no-self-assign
+          console.log(e);
+        }
 
-})
+      })
 
   }
-// console.log("taskList: ", taskList)
-// console.log("friend number", user.FriendNumber)
-const stateTask = async () => {
-  // console.log("user in state task :", user)
-  performTask = []
-  performTask = taskList.reduce((performList, task) => {
-    const taskType = task.type;
-    if (user.GameWon >= task.count && taskType === "type1-1") {
-      // console.log("game won : ", user.GameWon)
-      // console.log("task count : ", task.count)
-      // console.log("task index : ", task.index)
-      // console.log("state : ", user.GameWon >= task.count)
-      performList.push(task.index)
-    }
-    if ((user.GameLost + user.GameWon) >= task.count && taskType === "type1-2") {
-      performList.push(task.index)
-      // console.log("state : ", (user.GameLost + user.GameWon) >= task.count)
-    }
-    if (task.count <= user.FriendNumber && taskType === "type4")
-      performList.push(task.index);
-    return performList
-  }, [])
-  await fetch(`${serverUrl}/add_perform_list`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, performTask: performTask, isReal: isReal }), headers })
-    .then(res => Promise.all([res.status, res.json()]))
-    .then(async (res) => {
-      // console.log("before fetch data")
-      await fetchData().then(
-        console.log("fetch data")
-      )
-    })
-
-  // console.log("after fetch data")
-
-}
-
-if (loading && firstLoading) {
-  setActionState("start")
-  return <FetchLoading />
-}
-console.log("fixedTaskData : ", fixedTaskData)
-console.log("otherTaskData : ", otherTaskData)
-// console.log("task data of taskData : ", taskData)
-// console.log(user.FriendNumber)
-// console.log("user Info in taskList : ", user.DailyConsecutiveDays)
-return (
-  <Suspense fallback={<fetchData />}>
-    <div className="flex flex-col gap-2 text-[14px] overflow-auto pb-4" style={{ height: "calc(100vh - 200px)" }}>
-      {
-        fixedTaskData
-          .sort((a, b) => (a.sort - b.sort))
-          .map((_task, _index) => <GenerateTask task={_task} stateTask={stateTask} key={_index} index={_index} dailytaskIndex={dailytaskIndex} fetchData={fetchData} claimStateList={claimStateList} setClaimStateList={setClaimStateList} />)
+  // console.log("taskList: ", taskList)
+  // console.log("friend number", user.FriendNumber)
+  const stateTask = async () => {
+    // console.log("user in state task :", user)
+    performTask = []
+    performTask = taskList.reduce((performList, task) => {
+      const taskType = task.type;
+      if (user.GameWon >= task.count && taskType === "type1-1") {
+        // console.log("game won : ", user.GameWon)
+        // console.log("task count : ", task.count)
+        // console.log("task index : ", task.index)
+        // console.log("state : ", user.GameWon >= task.count)
+        performList.push(task.index)
       }
-      {
-        otherTaskData
-          .sort((a, b) => (a.status - b.status || a.sort - b.sort))
-          .map((_task, _index) => <GenerateTask task={_task} stateTask={stateTask} key={_index + 1} index={_index + 1} dailytaskIndex={dailytaskIndex} claimStateList={claimStateList} setClaimStateList={setClaimStateList} fetchData={fetchData} />)
+      if ((user.GameLost + user.GameWon) >= task.count && taskType === "type1-2") {
+        performList.push(task.index)
+        // console.log("state : ", (user.GameLost + user.GameWon) >= task.count)
       }
-    </div>
-  </Suspense>
-)
+      if (task.count <= user.FriendNumber && taskType === "type4")
+        performList.push(task.index);
+      return performList
+    }, [])
+    await fetch(`${serverUrl}/add_perform_list`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, performTask: performTask, isReal: isReal }), headers })
+      .then(res => Promise.all([res.status, res.json()]))
+      .then(async (res) => {
+        // console.log("before fetch data")
+        await fetchData().then(
+          console.log("fetch data")
+        )
+      })
+
+    // console.log("after fetch data")
+
+  }
+
+  if (loading && firstLoading) {
+    setActionState("start")
+    return <FetchLoading />
+  }
+  console.log("fixedTaskData : ", fixedTaskData)
+  console.log("otherTaskData : ", otherTaskData)
+  // console.log("task data of taskData : ", taskData)
+  // console.log(user.FriendNumber)
+  // console.log("user Info in taskList : ", user.DailyConsecutiveDays)
+  return (
+    <Suspense fallback={<fetchData />}>
+      <div className="flex flex-col gap-2 text-[14px] overflow-auto pb-4" style={{ height: "calc(100vh - 200px)" }}>
+        {
+          fixedTaskData
+            .sort((a, b) => (a.sort - b.sort))
+            .map((_task, _index) => <GenerateTask task={_task} stateTask={stateTask} key={_index} index={_index} dailytaskIndex={dailytaskIndex} fetchData={fetchData} claimStateList={claimStateList} setClaimStateList={setClaimStateList} />)
+        }
+        {
+          otherTaskData
+            .sort((a, b) => (a.status - b.status || a.sort - b.sort))
+            .map((_task, _index) => <GenerateTask task={_task} stateTask={stateTask} key={_index + 1} index={_index + 1} dailytaskIndex={dailytaskIndex} claimStateList={claimStateList} setClaimStateList={setClaimStateList} fetchData={fetchData} />)
+        }
+      </div>
+    </Suspense>
+  )
 }
 
 export default TaskList;

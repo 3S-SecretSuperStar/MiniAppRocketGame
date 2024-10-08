@@ -10,7 +10,7 @@ import { useTonAddress, useTonConnectUI, useTonWallet } from "@tonconnect/ui-rea
 import CheckMark from "../component/svg/check-mark";
 import WalletInfo from "../component/atom/wallet-info";
 import InputNumber from "../component/template/InputNumber";
-import { REACT_APP_SERVER } from "../utils/privateData";
+import { ADMIN_WALLET_ADDRESS, REACT_APP_SERVER } from "../utils/privateData";
 import toast from "react-hot-toast";
 import WarnningIcon from "../component/svg/warning";
 import { beginCell } from "@ton/ton"
@@ -31,7 +31,7 @@ const Wallet = () => {
   let wallet = useTonAddress();
   const tonwallet = useTonWallet();
   // const adminWalletAdress = process.env.REACT_APP_ADMIN_WALLET;
-  const adminWalletAddress = "UQCwD5RFiujnfjK7TUGkBUrKJtaoDmDv_r_qxenV7dPM4HOn";
+  const adminWalletAddress = ADMIN_WALLET_ADDRESS;
   const Chain = {
     Mainnet: '-239',
     Testnet: '3'
