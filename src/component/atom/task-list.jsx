@@ -119,11 +119,15 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
       </div>
       {
         task.status === 1 ?
-          task.link === "" ? <Link to={'/play'}>
+          task.link === "" ? task.type!=="type6"? <Link to={'/play'}>
             <button className="rounded-lg w-[61px] py-1 px-0 h-7 bg-[#3861FB] text-white text-center text-[14px]" >
               Start
             </button>
-          </Link> :
+          </Link>:<Link to={'/wallet'}>
+            <button className="rounded-lg w-[61px] py-1 px-0 h-7 bg-[#3861FB] text-white text-center text-[14px]" >
+              Start
+            </button>
+          </Link>: 
 
             <button className="rounded-lg w-[61px] py-1 px-0 h-7 bg-[#3861FB] text-white text-center text-[14px]"
               onClick={() => followHandle(task.index)} >
