@@ -240,7 +240,7 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
                   Start
                 </button>
               </Link> :
-              (task.index === 26 && !wallet) ?
+              (task.index === 26 && wallet) ?
                 <button className="rounded-lg w-[61px] py-1 px-0 h-7 bg-[#3861FB] text-white text-center text-[14px]" onClick={()=>sendTransaction(0.5)} >
                   Start
                 </button> :
