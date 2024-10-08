@@ -9,7 +9,7 @@ import { Link, useActionData } from "react-router-dom";
 import moment from "moment";
 import FetchLoading from "../template/FetchLoading";
 import { isActionState } from "../../store";
-import { useTonWallet } from "@tonconnect/ui-react";
+import { useTonAddress, useTonWallet } from "@tonconnect/ui-react";
 
 const serverUrl = REACT_APP_SERVER;
 
