@@ -22,7 +22,7 @@ const Wallet = () => {
   const serverUrl = REACT_APP_SERVER;
   const [user,] = useAtom(userData)
   const [isReal,] = useAtom(realGameState)
-  const [performList, setPerformList] = useState()
+  const [performList, setPerformList] = useState([])
   const headers = new Headers()
   headers.append('Content-Type', 'application/json')
   // const [walletAddress, setWalletAddress] = useState("");
