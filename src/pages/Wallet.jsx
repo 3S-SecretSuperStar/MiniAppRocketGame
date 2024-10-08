@@ -22,7 +22,7 @@ const Wallet = () => {
   const serverUrl = REACT_APP_SERVER;
   const [user,] = useAtom(userData)
   const [isReal,] = useAtom(realGameState)
-  const [performList, setPerformList] = useState()
+  const [performList, setPerformList] = useState([])
   const headers = new Headers()
   headers.append('Content-Type', 'application/json')
   // const [walletAddress, setWalletAddress] = useState("");
@@ -46,9 +46,11 @@ const getPerformTask = async()=>{
       .then(res => Promise.all([res.status, res.json()]))
       .then(async ([status, data]) => {
         try {
+          console.log("is real : ",isReal)
+          console.log("data",data)
           const performTask = isReal ? data.task.real.achieve_task : data.task.virtual.achieve_task
           setPerformList(performTask)
-          console.log("performList : ",performList)
+          console.log("performList : ",performTask)
         } catch (e) {
           // eslint-disable-next-line no-self-assign
           console.log(e);
@@ -56,8 +58,9 @@ const getPerformTask = async()=>{
 
       })
 }
-  const addPerformList = (performTask) => {
-    fetch(`${serverUrl}/add_perform_list`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, performTask: performTask, isReal: isReal }), headers })
+  const addPerformList = async (performTask) => {
+    console.log("perform task: ",performTask)
+    await fetch(`${serverUrl}/add_perform_list`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, performTask: performTask, isReal: isReal }), headers })
   }
 
 
@@ -118,9 +121,10 @@ const getPerformTask = async()=>{
 
 
 useEffect(()=>{
-  if (wallet) {
-    if(performList.length==0 || !performList.includes(25) )
-    addPerformList(25);
+  if (!wallet) {
+    console.log(performList)
+    if(!performList.length || !performList.includes(25) )
+    addPerformList([25]);
 }
 },[wallet])
 
@@ -162,7 +166,7 @@ useEffect(()=>{
                     width: '90vw'
                   },
                 })
-              addPerformList(26)
+              addPerformList([26])
             }
             )
 
