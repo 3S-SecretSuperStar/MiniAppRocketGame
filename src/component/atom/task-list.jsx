@@ -111,7 +111,7 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
   return (
     <div className="bg-[#0000001A] rounded-lg flex justify-between items-center gap-2 py-2 pl-2 pr-4 text-[14px]">
       <div className="flex gap-2 items-center">
-        <img src={`/image/task/${task.src}`} alt="" className="w-8 h-8" />
+        <img src={`/image/task/${task.src}`} alt="" className="w-8 h-8 rounded-full" />
         <div className="flex flex-col">
           <div className="text-white">{task.title}</div>
           <div className="text-[#ffffff99] w-[210px]">+{task.amount}</div>
