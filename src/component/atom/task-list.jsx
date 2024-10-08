@@ -33,7 +33,7 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
   headers.append('Content-Type', 'application/json')
 
   const goClaim = () => {
-    setClaimStateList((prev)=>[...prev,task.index])
+    setClaimStateList((prev) => [...prev, task.index])
     setIsClaim(true);
 
     // console.log("task index", task.index)
@@ -61,103 +61,107 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
             console.log(e);
           }
 
-            stateTask()
+          stateTask()
 
-          
+
         })
-    // stateTask();
-  } else {
-    let dailyAmount = parseFloat(task.amount.split(" ")[0])
+      // stateTask();
+    } else {
+      let dailyAmount = parseFloat(task.amount.split(" ")[0])
       // console.log("index : ", index)
       // console.log("task index : ", task.index)
       // console.log("Daily Amount : ", dailyAmount)
       fetch(`${serverUrl}/perform_dailyReward`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, isReal: isReal, amount: dailyAmount, consecutiveDays: user.DailyConsecutiveDays }), headers })
-    .then(res => Promise.all([res.status, res.json()]))
-    .then(() => {
-      try {
-        toast(`${dailyAmount} coins added to your balance`,
-          {
-            position: "top-center",
-            icon: <CheckMark />,
-            style: {
-              borderRadius: '8px',
-              background: '#7886A0',
-              color: '#fff',
-              width: '90vw'
-            },
+        .then(res => Promise.all([res.status, res.json()]))
+        .then(() => {
+          try {
+            toast(`${dailyAmount} coins added to your balance`,
+              {
+                position: "top-center",
+                icon: <CheckMark />,
+                style: {
+                  borderRadius: '8px',
+                  background: '#7886A0',
+                  color: '#fff',
+                  width: '90vw'
+                },
+              }
+            )
+            updateBalance(dailyAmount)
+          } catch (e) {
+            // eslint-disable-next-line no-self-assign
+            console.log(e);
           }
-        )
-        updateBalance(dailyAmount)
-      } catch (e) {
-        // eslint-disable-next-line no-self-assign
-        console.log(e);
-      }
-      stateTask()
-     
-    })
-}
-  }
-const followHandle = (index) => {
-  setIsPending(true)
-  window.open(task.link, '_blank')
-  fetch(`${serverUrl}/add_perform_list`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, performTask: [task.index,], isReal: isReal }), headers })
-  setTimeout(() => {
-    fetchData()
-  }, 1000 * 60)
-  return () => setIsPending(false)
-}
-// console.log("friend number", user.FriendNumber)
-// console.log("user Info in generate task : ", user.DailyConsecutiveDays)
-return (
-  <div className="bg-[#0000001A] rounded-lg flex justify-between items-center gap-2 py-2 pl-2 pr-4 text-[14px]">
-    <div className="flex gap-2 items-center">
-      <img src={`/image/task/${task.src}`} alt="" className="w-8 h-8" />
-      <div className="flex flex-col">
-        <div className="text-white">{task.title}</div>
-        <div className="text-[#ffffff99] w-[210px]">+{task.amount}</div>
-      </div>
-    </div>
-    {
-      task.status === 1 ?
-        task.link === "" ? <Link to={'/play'}>
-          <button className="rounded-lg w-[61px] py-1 px-0 h-7 bg-[#3861FB] text-white text-center text-[14px]" >
-            Start
-          </button>
-        </Link> :
+          stateTask()
 
-          <button className="rounded-lg w-[61px] py-1 px-0 h-7 bg-[#3861FB] text-white text-center text-[14px]"
-            onClick={() => followHandle(task.index)} >
-            {
-              isPending ?
-                <div className="flex w-full items-center text-center justify-center gap-1">
-                  <LoadingSpinner className="w-4 h-4  my-auto mx-0 stroke-white" />
-                  Wait
-                </div> :
-                "Start"
-            }
-          </button>
-
-
-        :
-        task.status === 0 ?
-          <button
-            className="rounded-lg w-[61px] py-1 px-0 h-7 bg-white text-[#080888] text-center text-[14px]"
-            onClick={ goClaim}
-            disabled = {claimStateListData.includes(task.index)}
-          >
-            {
-              claimStateListData.includes(task.index)?
-                <LoadingSpinner className="w-4 h-4 mx-auto" /> :
-                "Claim"
-            }
-          </button> :
-          <div className="text-white">
-            
-            <CheckMark />
-          </div>
+        })
     }
-  </div>
-)
+  }
+  const followHandle = (index) => {
+    setIsPending(true)
+    window.open(task.link, '_blank')
+    fetch(`${serverUrl}/add_perform_list`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, performTask: [task.index,], isReal: isReal }), headers })
+    setTimeout(() => {
+      fetchData()
+    }, 1000 * 60)
+    return () => setIsPending(false)
+  }
+  // console.log("friend number", user.FriendNumber)
+  // console.log("user Info in generate task : ", user.DailyConsecutiveDays)
+  return (
+    <div className="bg-[#0000001A] rounded-lg flex justify-between items-center gap-2 py-2 pl-2 pr-4 text-[14px]">
+      <div className="flex gap-2 items-center">
+        <img src={`/image/task/${task.src}`} alt="" className="w-8 h-8" />
+        <div className="flex flex-col">
+          <div className="text-white">{task.title}</div>
+          <div className="text-[#ffffff99] w-[210px]">+{task.amount}</div>
+        </div>
+      </div>
+      {
+        task.status === 1 ?
+          task.link === "" ? task.index===25 || task.index===26 ? <Link to={'/wallet'}>
+            <button className="rounded-lg w-[61px] py-1 px-0 h-7 bg-[#3861FB] text-white text-center text-[14px]" >
+              Start
+            </button>
+          </Link>:<Link to={'/play'}>
+            <button className="rounded-lg w-[61px] py-1 px-0 h-7 bg-[#3861FB] text-white text-center text-[14px]" >
+              Start
+            </button>
+          </Link>: 
+
+            <button className="rounded-lg w-[61px] py-1 px-0 h-7 bg-[#3861FB] text-white text-center text-[14px]"
+              onClick={() => followHandle(task.index)} >
+              {
+                isPending ?
+                  <div className="flex w-full items-center text-center justify-center gap-1">
+                    <LoadingSpinner className="w-4 h-4  my-auto mx-0 stroke-white" />
+                    Wait
+                  </div> :
+                  "Start"
+              }
+            </button>
+
+
+          :
+          task.status === 0 ?
+            <button
+              className="rounded-lg w-[61px] py-1 px-0 h-7 bg-white text-[#080888] text-center text-[14px]"
+              onClick={goClaim}
+              disabled={claimStateListData.includes(task.index)}
+            >
+              {
+                claimStateListData.includes(task.index) ?
+                  <LoadingSpinner className="w-4 h-4 mx-auto" /> :
+                  "Claim"
+              }
+            </button> :
+            <div className="text-white">
+
+              <CheckMark />
+            </div>
+      }
+    </div>
+  )
 }
 
 const TaskList = () => {
@@ -182,6 +186,7 @@ const TaskList = () => {
     'type1-1': { imgSrc: "Type1.png", link: "" },
     'type1-2': { imgSrc: "Type1.png", link: "" },
     'sub-tg': { imgSrc: "Avatar-tg.png", link: "https://t.me/rocketton_official" },
+    'join-partner': { imgSrc: "Avatar-partner.png", link: "https://t.me/the_eraxbot?start=6802660922" },
     'join-tg': { imgSrc: "Avatar-tg.png", link: "https://t.me/RocketTON_Chat" },
     'sub-you': { imgSrc: "Avatar-you.png", link: "https://www.youtube.com/@RocketTON_Official" },
     'sub-X': { imgSrc: "Avatar-X.png", link: "https://x.com/RocketTONApp" },
@@ -193,7 +198,8 @@ const TaskList = () => {
     'type2-25': { imgSrc: "Type2-25.png", link: "" },
     'type3': { imgSrc: "Type3.png", link: "" },
     'type4': { imgSrc: "Type4.png", link: "" },
-    'type5': { imgSrc: "Type5.png", link: "" }
+    'type5': { imgSrc: "Type5.png", link: "" },
+    'type6': { imgSrc: "Type6.png", link: "" },
   };
 
   const headers = new Headers()
@@ -264,13 +270,14 @@ const TaskList = () => {
             .then(res => Promise.all([res.status, res.json()]))
             .then(([status, data]) => {
               try {
-                // console.log("task data", data)
+                console.log("task data", data)
                 const taskItemData = data.task;
-                const fixedTaskItems = taskItemData.filter(item => (item.type === "daily_reward"));
-                const otherTaskItems = taskItemData.filter(item => (item.type !== "daily_reward"));
+                const fixedTaskItems = taskItemData.filter(item => ( item.type === 'type6'));
+                const otherTaskItems = taskItemData.filter(item => !(item.type === "daily_reward" || item.type === 'type6'));
+                console.log('otherTaskItems: ', otherTaskItems)
                 let dailyItemData = {}
                 if (fixedTaskItems.length > 0) {
-                  // console.log('fixed task: ', fixedTaskItems)
+                  console.log('fixed task: ', fixedTaskItems)
                   const dailyData = taskItemData.find(item => item.type === "daily_reward");
                   if (dailyData) {
                     dailyItemData = {
@@ -279,127 +286,133 @@ const TaskList = () => {
                       amount: (dailyData.amount + (20 * dailyDays) + " Coins " + dailyData.description),
                       status: dailyState,
                       link: "",
-                      index: dailyData.index
+                      index: dailyData.index,
+                      sort:dailyData.sort
                     }
                   }
-                  setFixedTaskData([dailyItemData])
-                  // const _fixedTaskData = fixedTaskItems.map(item => {
-                  //   const { imgSrc, link } = typeToImageMap[item.type];
+                  // setFixedTaskData([dailyItemData])
+                  const _fixedTaskData = fixedTaskItems.map(item => {
+                    
+                      const { imgSrc, link } = typeToImageMap[item.type];
 
-                  //   console.log("item:", item);
+                      console.log("item:", item);
 
-                  //   return {
-                  //     src: imgSrc,
-                  //     title: item.title,
-                  //     amount: (item.amount + " Coins"),
-                  //     status: taskState[item.index],
-                  //     link: link,
-                  //     index: item.index
-                  //   };
-                  //  })
-                  // setFixedTaskData([dailyItemData, ..._fixedTaskData])
-                }
+                      return {
+                        src: imgSrc,
+                        title: item.title,
+                        amount: (item.amount + " Coins"),
+                        status: taskState[item.index],
+                        link: link,
+                        index: item.index,
+                        sort:item.sort
+                      };
+                    
+                    })
+                  setFixedTaskData([dailyItemData, ..._fixedTaskData])
+                
+              }
 
                 if (otherTaskItems.length > 0) {
-                  // console.log('task states:', taskState);
-                  const _otherTaskData = otherTaskItems.map(item => {
-                    const { imgSrc, link } = typeToImageMap[item.type];
+                // console.log('task states:', taskState);
+                const _otherTaskData = otherTaskItems.map(item => {
+                  const { imgSrc, link } = typeToImageMap[item.type];
 
-                    // console.log("item:", item);
+                  console.log("item:", item);
 
-                    return {
-                      src: imgSrc,
-                      title: item.title,
-                      amount: (item.amount + " Coins"),
-                      status: taskState[item.index],
-                      link: link,
-                      index: item.index
-                    };
-                  });
+                  return {
+                    src: imgSrc,
+                    title: item.title,
+                    amount: (item.amount + " Coins"),
+                    status: taskState[item.index],
+                    link: link,
+                    index: item.index,
+                    sort:item.sort
+                  };
+                });
 
-                  setOtherTaskData(_otherTaskData);
-                }
-              } catch (e) {
-                console.log(e)
+                setOtherTaskData(_otherTaskData);
               }
-              finally {
-                setTimeout(() => {
-                  setLoading(false)
-                  firstLoading && setActionState("ready")
-                  setFirstLoading(false);
-                }, 500)
-              }
-            })
+            } catch (e) {
+              console.log(e)
+            }
+          finally {
+            setTimeout(() => {
+              setLoading(false)
+              firstLoading && setActionState("ready")
+              setFirstLoading(false);
+            }, 500)
+          }
+        })
 
 
-        } catch (e) {
-          // eslint-disable-next-line no-self-assign
-          console.log(e);
-        }
+  } catch (e) {
+    // eslint-disable-next-line no-self-assign
+    console.log(e);
+  }
 
-      })
+})
 
   }
-  // console.log("taskList: ", taskList)
-  // console.log("friend number", user.FriendNumber)
-  const stateTask = async () => {
-    // console.log("user in state task :", user)
-    performTask = []
-    performTask = taskList.reduce((performList, task) => {
-      const taskType = task.type;
-      if (user.GameWon >= task.count && taskType === "type1-1") {
-        // console.log("game won : ", user.GameWon)
-        // console.log("task count : ", task.count)
-        // console.log("task index : ", task.index)
-        // console.log("state : ", user.GameWon >= task.count)
-        performList.push(task.index)
+// console.log("taskList: ", taskList)
+// console.log("friend number", user.FriendNumber)
+const stateTask = async () => {
+  // console.log("user in state task :", user)
+  performTask = []
+  performTask = taskList.reduce((performList, task) => {
+    const taskType = task.type;
+    if (user.GameWon >= task.count && taskType === "type1-1") {
+      // console.log("game won : ", user.GameWon)
+      // console.log("task count : ", task.count)
+      // console.log("task index : ", task.index)
+      // console.log("state : ", user.GameWon >= task.count)
+      performList.push(task.index)
+    }
+    if ((user.GameLost + user.GameWon) >= task.count && taskType === "type1-2") {
+      performList.push(task.index)
+      // console.log("state : ", (user.GameLost + user.GameWon) >= task.count)
+    }
+    if (task.count <= user.FriendNumber && taskType === "type4")
+      performList.push(task.index);
+    return performList
+  }, [])
+  await fetch(`${serverUrl}/add_perform_list`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, performTask: performTask, isReal: isReal }), headers })
+    .then(res => Promise.all([res.status, res.json()]))
+    .then(async (res) => {
+      // console.log("before fetch data")
+      await fetchData().then(
+        console.log("fetch data")
+      )
+    })
+
+  // console.log("after fetch data")
+
+}
+
+if (loading && firstLoading) {
+  setActionState("start")
+  return <FetchLoading />
+}
+console.log("fixedTaskData : ", fixedTaskData)
+console.log("otherTaskData : ", otherTaskData)
+// console.log("task data of taskData : ", taskData)
+// console.log(user.FriendNumber)
+// console.log("user Info in taskList : ", user.DailyConsecutiveDays)
+return (
+  <Suspense fallback={<fetchData />}>
+    <div className="flex flex-col gap-2 text-[14px] overflow-auto pb-4" style={{ height: "calc(100vh - 200px)" }}>
+      {
+        fixedTaskData
+          .sort((a, b) => (a.sort - b.sort))
+          .map((_task, _index) => <GenerateTask task={_task} stateTask={stateTask} key={_index} index={_index} dailytaskIndex={dailytaskIndex} fetchData={fetchData} claimStateList={claimStateList} setClaimStateList={setClaimStateList} />)
       }
-      if ((user.GameLost + user.GameWon) >= task.count && taskType === "type1-2") {
-        performList.push(task.index)
-        // console.log("state : ", (user.GameLost + user.GameWon) >= task.count)
+      {
+        otherTaskData
+          .sort((a, b) => (a.status - b.status || a.sort - b.sort))
+          .map((_task, _index) => <GenerateTask task={_task} stateTask={stateTask} key={_index + 1} index={_index + 1} dailytaskIndex={dailytaskIndex} claimStateList={claimStateList} setClaimStateList={setClaimStateList} fetchData={fetchData} />)
       }
-      if (task.count <= user.FriendNumber && taskType === "type4")
-        performList.push(task.index);
-      return performList
-    }, [])
-    await fetch(`${serverUrl}/add_perform_list`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, performTask: performTask, isReal: isReal }), headers })
-      .then(res => Promise.all([res.status, res.json()]))
-      .then(async (res) => {
-        // console.log("before fetch data")
-        await fetchData().then(
-          console.log("fetch data")
-        )
-      })
-
-    // console.log("after fetch data")
-
-  }
-
-  if (loading && firstLoading) {
-    setActionState("start")
-    return <FetchLoading />
-  }
-  // console.log("fixedTaskData : ", fixedTaskData)
-  // console.log("otherTaskData : ", otherTaskData)
-  // console.log("task data of taskData : ", taskData)
-  // console.log(user.FriendNumber)
-  // console.log("user Info in taskList : ", user.DailyConsecutiveDays)
-  return (
-    <Suspense fallback={<fetchData />}>
-      <div className="flex flex-col gap-2 text-[14px] overflow-auto pb-4" style={{ height: "calc(100vh - 200px)" }}>
-        {
-          fixedTaskData
-            .sort((a, b) => (a.index - b.index))
-            .map((_task, _index) => <GenerateTask task={_task} stateTask={stateTask} key={_index} index={_index} dailytaskIndex={dailytaskIndex} fetchData={fetchData} claimStateList = {claimStateList} setClaimStateList = {setClaimStateList} />)
-        }
-        {
-          otherTaskData
-            .sort((a, b) => (a.status - b.status || a.index - b.index))
-            .map((_task, _index) => <GenerateTask task={_task} stateTask={stateTask} key={_index+1} index={_index+1} dailytaskIndex={dailytaskIndex} claimStateList = {claimStateList} setClaimStateList = {setClaimStateList} fetchData={fetchData} />)
-        }
-      </div>
-    </Suspense>
-  )
+    </div>
+  </Suspense>
+)
 }
 
 export default TaskList;

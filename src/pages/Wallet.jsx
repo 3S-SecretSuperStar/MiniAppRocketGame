@@ -4,7 +4,7 @@ import AtomLabel from "../component/atom/atom-label";
 import ShadowButton from "../component/atom/shadow-btn";
 import Contact from "../component/molecules/contact";
 import { useAtom } from "jotai";
-import { isActionState, userData } from "../store";
+import { isActionState, realGameState, userData } from "../store";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import { useTonAddress, useTonConnectUI, useTonWallet } from "@tonconnect/ui-react";
 import CheckMark from "../component/svg/check-mark";
@@ -13,7 +13,7 @@ import InputNumber from "../component/template/InputNumber";
 import { REACT_APP_SERVER } from "../utils/privateData";
 import toast from "react-hot-toast";
 import WarnningIcon from "../component/svg/warning";
-import {beginCell} from "@ton/ton"
+import { beginCell } from "@ton/ton"
 // import { configDotenv } from "dotenv";
 
 
@@ -21,6 +21,10 @@ import {beginCell} from "@ton/ton"
 const Wallet = () => {
   const serverUrl = REACT_APP_SERVER;
   const [user,] = useAtom(userData)
+  const [isReal,] = useAtom(realGameState)
+  const [performList, setPerformList] = useState()
+  const headers = new Headers()
+  headers.append('Content-Type', 'application/json')
   // const [walletAddress, setWalletAddress] = useState("");
   const [infoState, setInfoState] = useState(false)
   const [, setActionState] = useAtom(isActionState);
@@ -32,6 +36,35 @@ const Wallet = () => {
     Mainnet: '-239',
     Testnet: '3'
   }
+
+  useEffect(() => {
+    getPerformTask();
+  }, [])
+
+const getPerformTask = async()=>{
+  await fetch(`${serverUrl}/task_perform`, { method: 'POST', body: JSON.stringify({ userId: user.UserId }), headers })
+      .then(res => Promise.all([res.status, res.json()]))
+      .then(async ([status, data]) => {
+        try {
+          const performTask = isReal ? data.task.real.achieve_task : data.task.virtual.achieve_task
+          setPerformList(performTask)
+          console.log("performList : ",performList)
+        } catch (e) {
+          // eslint-disable-next-line no-self-assign
+          console.log(e);
+        }
+
+      })
+}
+  const addPerformList = (performTask) => {
+    fetch(`${serverUrl}/add_perform_list`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, performTask: performTask, isReal: isReal }), headers })
+  }
+
+
+
+
+
+
   // const wallet = "0x23265323454232";
   const [tonconnectUi] = useTonConnectUI();
   // console.log("adminWalletAdress", adminWalletAddress)
@@ -46,9 +79,9 @@ const Wallet = () => {
 
   const createTransaction = (tokenCount) => {
     const body = beginCell()
-    .storeUint(0,32)
-    .storeStringTail("RocketTON Coins purchased")
-    .endCell()
+      .storeUint(0, 32)
+      .storeStringTail("RocketTON Coins purchased")
+      .endCell()
 
 
     return {
@@ -66,7 +99,7 @@ const Wallet = () => {
           // (optional) State initialization in boc base64 format.
           stateInit: 'te6cckEBBAEAOgACATQCAQAAART/APSkE/S88sgLAwBI0wHQ0wMBcbCRW+D6QDBwgBDIywVYzxYh+gLLagHPFsmAQPsAlxCarA==',
           // (optional) Payload in boc base64 format.
-          payload: body.toBoc().toString("base64"),          
+          payload: body.toBoc().toString("base64"),
         },
 
         // Uncomment the following message to send two messages in one transaction.
@@ -82,6 +115,14 @@ const Wallet = () => {
     };
   }
 
+
+
+useEffect(()=>{
+  if (wallet) {
+    if(performList.length==0 || !performList.includes(25) )
+    addPerformList(25);
+}
+},[wallet])
 
   const tonWalletAction = () => {
     if (!wallet) {
@@ -100,7 +141,7 @@ const Wallet = () => {
     // console.log("user Id : ", user.UserId)
     // console.log("user Id : ", userId)
     try {
-      
+
       if (tonwallet.account.chain === Chain.Mainnet) {
         const transferResult = await tonconnectUi.sendTransaction(tx);
         // console.log("transfer result : ", transferResult)
@@ -108,7 +149,8 @@ const Wallet = () => {
           const headers = new Headers();
           headers.append('Content-Type', 'application/json')
           fetch(`${serverUrl}/charge_balance`, { method: 'POST', body: JSON.stringify({ userId: userId, amount: tokenCount }), headers })
-            .then(
+            .then(() => {
+
               toast(`${tokenCount} coins added to your balance`,
                 {
                   position: "top-center",
@@ -120,11 +162,13 @@ const Wallet = () => {
                     width: '90vw'
                   },
                 })
+              addPerformList(26)
+            }
             )
 
         }
       }
-      else{
+      else {
         toast(`Please set mainnet in your wallet!`,
           {
             position: "top-center",
