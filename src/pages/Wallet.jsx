@@ -38,7 +38,11 @@ const Wallet = () => {
   }
 
   useEffect(() => {
-    fetch(`${serverUrl}/task_perform`, { method: 'POST', body: JSON.stringify({ userId: user.UserId }), headers })
+    getPerformTask();
+  }, [])
+
+const getPerformTask = async()=>{
+  await fetch(`${serverUrl}/task_perform`, { method: 'POST', body: JSON.stringify({ userId: user.UserId }), headers })
       .then(res => Promise.all([res.status, res.json()]))
       .then(async ([status, data]) => {
         try {
@@ -50,9 +54,7 @@ const Wallet = () => {
         }
 
       })
-  }, [])
-
-
+}
   const addPerformList = (performTask) => {
     fetch(`${serverUrl}/add_perform_list`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, performTask: performTask, isReal: isReal }), headers })
   }
