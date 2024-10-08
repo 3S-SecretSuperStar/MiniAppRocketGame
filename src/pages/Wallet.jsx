@@ -50,7 +50,7 @@ const getPerformTask = async()=>{
           console.log("data",data)
           const performTask = isReal ? data.task.real.achieve_task : data.task.virtual.achieve_task
           setPerformList(performTask)
-          console.log("performList : ",performList)
+          console.log("performList : ",performTask)
         } catch (e) {
           // eslint-disable-next-line no-self-assign
           console.log(e);
@@ -121,7 +121,7 @@ const getPerformTask = async()=>{
 
 useEffect(()=>{
   if (!wallet) {
-    if(!performList || !performList.includes(25) )
+    if(!performList.length || !performList.includes(25) )
     addPerformList(25);
 }
 },[wallet])
