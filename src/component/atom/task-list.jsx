@@ -119,11 +119,11 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
       </div>
       {
         task.status === 1 ?
-          task.link === "" ? task.type!=="type6"? <Link to={'/play'}>
+          task.link === "" ? task.index===25 || task.index===26 ? <Link to={'/wallet'}>
             <button className="rounded-lg w-[61px] py-1 px-0 h-7 bg-[#3861FB] text-white text-center text-[14px]" >
               Start
             </button>
-          </Link>:<Link to={'/wallet'}>
+          </Link>:<Link to={'/play'}>
             <button className="rounded-lg w-[61px] py-1 px-0 h-7 bg-[#3861FB] text-white text-center text-[14px]" >
               Start
             </button>
@@ -286,7 +286,8 @@ const TaskList = () => {
                       amount: (dailyData.amount + (20 * dailyDays) + " Coins " + dailyData.description),
                       status: dailyState,
                       link: "",
-                      index: dailyData.index
+                      index: dailyData.index,
+                      sort:dailyData.sort
                     }
                   }
                   // setFixedTaskData([dailyItemData])
@@ -302,7 +303,8 @@ const TaskList = () => {
                         amount: (item.amount + " Coins"),
                         status: taskState[item.index],
                         link: link,
-                        index: item.index
+                        index: item.index,
+                        sort:item.sort
                       };
                     
                     })
@@ -323,7 +325,8 @@ const TaskList = () => {
                     amount: (item.amount + " Coins"),
                     status: taskState[item.index],
                     link: link,
-                    index: item.index
+                    index: item.index,
+                    sort:dailyData.sort
                   };
                 });
 

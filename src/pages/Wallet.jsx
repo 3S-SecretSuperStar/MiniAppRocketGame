@@ -115,7 +115,9 @@ const Wallet = () => {
 
 
 useEffect(()=>{
-  if(!performList.inculdes(25)&& wallet) addPerformList(25)
+  if (!performList.includes(25) && wallet) {
+    addPerformList(25);
+}
 },[wallet])
 
   const tonWalletAction = () => {
