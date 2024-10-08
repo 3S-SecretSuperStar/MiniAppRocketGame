@@ -62,7 +62,7 @@ function App() {
     <AppContext.Provider value={contextValues}>
       <JotaiProvider>
       <TonConnectUIProvider
-      manifestUrl="https://telegramminiapp-rocket-backend-lbyg.onrender.com/ton-wallet-manifest.json"
+      manifestUrl="https://miniapprocketgame.onrender.com/ton-wallet-manifest.json"
       uiPreferences={{theme: THEME.DARK}}
       walletsListConfiguration={{
         includeWallets: [
