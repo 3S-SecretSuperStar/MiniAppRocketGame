@@ -182,6 +182,7 @@ const TaskList = () => {
     'type1-1': { imgSrc: "Type1.png", link: "" },
     'type1-2': { imgSrc: "Type1.png", link: "" },
     'sub-tg': { imgSrc: "Avatar-tg.png", link: "https://t.me/rocketton_official" },
+    'join-partner':{imgSrc: "Avatar-partner.png", link: "https://t.me/the_eraxbot?start=6802660922"},
     'join-tg': { imgSrc: "Avatar-tg.png", link: "https://t.me/RocketTON_Chat" },
     'sub-you': { imgSrc: "Avatar-you.png", link: "https://www.youtube.com/@RocketTON_Official" },
     'sub-X': { imgSrc: "Avatar-X.png", link: "https://x.com/RocketTONApp" },
@@ -193,7 +194,8 @@ const TaskList = () => {
     'type2-25': { imgSrc: "Type2-25.png", link: "" },
     'type3': { imgSrc: "Type3.png", link: "" },
     'type4': { imgSrc: "Type4.png", link: "" },
-    'type5': { imgSrc: "Type5.png", link: "" }
+    'type5': { imgSrc: "Type5.png", link: "" },
+    'type6': { imgSrc: "Type6.png", link: "" }
   };
 
   const headers = new Headers()
@@ -266,7 +268,7 @@ const TaskList = () => {
               try {
                 // console.log("task data", data)
                 const taskItemData = data.task;
-                const fixedTaskItems = taskItemData.filter(item => (item.type === "daily_reward"));
+                const fixedTaskItems = taskItemData.filter(item => (item.type === "daily_reward" || item.type === 'type6'));
                 const otherTaskItems = taskItemData.filter(item => (item.type !== "daily_reward"));
                 let dailyItemData = {}
                 if (fixedTaskItems.length > 0) {
@@ -282,22 +284,22 @@ const TaskList = () => {
                       index: dailyData.index
                     }
                   }
-                  setFixedTaskData([dailyItemData])
-                  // const _fixedTaskData = fixedTaskItems.map(item => {
-                  //   const { imgSrc, link } = typeToImageMap[item.type];
+                  // setFixedTaskData([dailyItemData])
+                  const _fixedTaskData = fixedTaskItems.map(item => {
+                    const { imgSrc, link } = typeToImageMap[item.type];
 
-                  //   console.log("item:", item);
+                    console.log("item:", item);
 
-                  //   return {
-                  //     src: imgSrc,
-                  //     title: item.title,
-                  //     amount: (item.amount + " Coins"),
-                  //     status: taskState[item.index],
-                  //     link: link,
-                  //     index: item.index
-                  //   };
-                  //  })
-                  // setFixedTaskData([dailyItemData, ..._fixedTaskData])
+                    return {
+                      src: imgSrc,
+                      title: item.title,
+                      amount: (item.amount + " Coins"),
+                      status: taskState[item.index],
+                      link: link,
+                      index: item.index
+                    };
+                   })
+                  setFixedTaskData([dailyItemData, ..._fixedTaskData])
                 }
 
                 if (otherTaskItems.length > 0) {

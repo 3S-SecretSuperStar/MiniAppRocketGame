@@ -83,6 +83,9 @@ const Wallet = () => {
   }
 
 
+  
+
+
   const tonWalletAction = () => {
     if (!wallet) {
       tonconnectUi.openModal()
