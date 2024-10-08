@@ -269,10 +269,10 @@ const TaskList = () => {
                 console.log("task data", data)
                 const taskItemData = data.task;
                 const fixedTaskItems = taskItemData.filter(item => (item.type === "daily_reward" || item.type === 'type6'));
-                const otherTaskItems = taskItemData.filter(item => (item.type !== "daily_reward"));
+                const otherTaskItems = taskItemData.filter(item => (item.type !== "daily_reward" || item.type !== 'type6'));
                 let dailyItemData = {}
                 if (fixedTaskItems.length > 0) {
-                  // console.log('fixed task: ', fixedTaskItems)
+                  console.log('fixed task: ', fixedTaskItems)
                   const dailyData = taskItemData.find(item => item.type === "daily_reward");
                   if (dailyData) {
                     dailyItemData = {
