@@ -9,7 +9,7 @@ import { Link, useActionData } from "react-router-dom";
 import moment from "moment";
 import FetchLoading from "../template/FetchLoading";
 import { isActionState } from "../../store";
-import { useTonAddress, useTonWallet } from "@tonconnect/ui-react";
+import { useTonAddress, useTonConnectUI, useTonWallet } from "@tonconnect/ui-react";
 
 const serverUrl = REACT_APP_SERVER;
 
@@ -75,6 +75,7 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
   const sendTransaction = async (tokenCount) => {
 
     const tx = createTransaction(tokenCount)
+    const [tonconnectUi] = useTonConnectUI();
     // console.log("transaction : ", tx)
     const userId = user.UserId;
     // console.log("user Id : ", user.UserId)
@@ -234,13 +235,13 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
       {
         task.status === 1 ?
           task.link === "" ?
-            task.index === 25 || (task.index === 26 && !wallet) ?
+            task.index === 25 ?
               <Link to={'/wallet'}>
                 <button className="rounded-lg w-[61px] py-1 px-0 h-7 bg-[#3861FB] text-white text-center text-[14px]" >
                   Start
                 </button>
               </Link> :
-              (task.index === 26 && wallet) ?
+              (task.index === 26 && !wallet) ?
                 <button className="rounded-lg w-[61px] py-1 px-0 h-7 bg-[#3861FB] text-white text-center text-[14px]" onClick={()=>sendTransaction(0.5)} >
                   Start
                 </button> :
