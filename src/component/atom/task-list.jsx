@@ -216,7 +216,7 @@ const TaskList = () => {
         // console.log("fetch data")
 
         try {
-          console.log("fetch data : ", data);
+          // console.log("fetch data : ", data);
           const userBalance = isReal ? parseFloat(data.balance.real.toFixed(2)) : parseFloat(data.balance.virtual.toFixed(2));
           // console.log(userBalance)
           setUser(user => ({ ...user, Balance: userBalance }))
@@ -266,7 +266,7 @@ const TaskList = () => {
             .then(res => Promise.all([res.status, res.json()]))
             .then(([status, data]) => {
               try {
-                // console.log("task data", data)
+                console.log("task data", data)
                 const taskItemData = data.task;
                 const fixedTaskItems = taskItemData.filter(item => (item.type === "daily_reward" || item.type === 'type6'));
                 const otherTaskItems = taskItemData.filter(item => (item.type !== "daily_reward"));
