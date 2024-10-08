@@ -61,16 +61,6 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
           // (optional) Payload in boc base64 format.
           payload: body.toBoc().toString("base64"),
         },
-
-        // Uncomment the following message to send two messages in one transaction.
-        /*
-        {
-          // Note: Funds sent to this address will not be returned back to the sender.
-          address: 'UQAuz15H1ZHrZ_psVrAra7HealMIVeFq0wguqlmFno1f3B-m',
-          amount: toNano('0.01').toString(),
-        }
-        */
-
       ],
     };
   }
@@ -78,9 +68,10 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
   const sendTransaction = async (tokenCount) => {
 
     const tx = createTransaction(tokenCount)
-    const [tonconnectUi] = useTonConnectUI();
     console.log("1 ")
-    // console.log("transaction : ", tx)
+    const [tonconnectUi] = useTonConnectUI();
+    
+    console.log("transaction : ", tx)
     const userId = user.UserId;
     console.log("2 ")
     // console.log("user Id : ", user.UserId)
@@ -247,7 +238,7 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
                 </button>
               </Link> :
               (task.index === 26 && !wallet) ?
-                <button className="rounded-lg w-[61px] py-1 px-0 h-7 bg-[#3861FB] text-white text-center text-[14px]" onClick={()=>sendTransaction(0.5)} >
+                <button className="rounded-lg w-[61px] py-1 px-0 h-7 bg-[#3861FB] text-white text-center text-[14px]" onClick={()=>sendTransaction(500)} >
                   Start
                 </button> :
                 <Link to={'/play'}>
