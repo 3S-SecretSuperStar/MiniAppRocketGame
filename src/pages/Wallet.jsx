@@ -118,8 +118,8 @@ const getPerformTask = async()=>{
 
 
 useEffect(()=>{
-  if (wallet) {
-    if(performList.length==0 || !performList.includes(25) )
+  if (!wallet) {
+    if(performList.length===0 || !performList.includes(25) )
     addPerformList(25);
 }
 },[wallet])
