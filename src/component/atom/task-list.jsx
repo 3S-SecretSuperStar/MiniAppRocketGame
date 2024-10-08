@@ -25,6 +25,7 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
   const claimStateListData = claimStateList;
   let wallet = useTonAddress();
   const tonwallet = useTonWallet()
+  const [tonconnectUi] = useTonConnectUI();
   const Chain = {
     Mainnet: '-239',
     Testnet: '3'
@@ -69,7 +70,7 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
 
     const tx = createTransaction(tokenCount)
     console.log("1 ")
-    const [tonconnectUi] = useTonConnectUI();
+    
     
     console.log("transaction : ", tx)
     const userId = user.UserId;
