@@ -124,7 +124,7 @@ useEffect(()=>{
   if (!wallet) {
     console.log(performList)
     if(!performList.length || !performList.includes(25) )
-    addPerformList(25);
+    addPerformList([25]);
 }
 },[wallet])
 
@@ -166,7 +166,7 @@ useEffect(()=>{
                     width: '90vw'
                   },
                 })
-              addPerformList(26)
+              addPerformList([26])
             }
             )
 
