@@ -36,10 +36,13 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
   const adminWalletAddress = ADMIN_WALLET_ADDRESS;
  
   const addPerformList = async (performTask) => {
+    const headers = new Headers();
+    headers.append('Content-Type', 'application/json')
     console.log("perform task: ", performTask)
     console.log("headers",headers)
     await fetch(`${serverUrl}/add_perform_list`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, performTask: performTask, isReal: isReal }), headers })
-    .then(stateTask())
+    .then(res => Promise.all([res.status, res.json()]))
+    .then(()=>stateTask())
   }
   // console.log(claimStateListData);
   // console.log(claimStateList)
