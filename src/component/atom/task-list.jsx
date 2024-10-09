@@ -299,8 +299,8 @@ const TaskList = () => {
   const [isAction, setActionState] = useAtom(isActionState);
   const [fixedTaskData, setFixedTaskData] = useState([]);
   const [claimStateList, setClaimStateList] = useState([]);
-  const headers = new Headers();
-    headers.append('Content-Type', 'application/json')
+  // const headers = new Headers();
+  //   headers.append('Content-Type', 'application/json')
 
   let dailytaskIndex = 3
   let performTask = []
