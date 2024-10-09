@@ -13,6 +13,9 @@ import { useTonAddress, useTonConnectUI, useTonWallet } from "@tonconnect/ui-rea
 import { beginCell } from "@ton/ton";
 import WarnningIcon from "../svg/warning";
 
+const headers = new Headers();
+headers.append('Content-Type', 'application/json')
+
 const serverUrl = REACT_APP_SERVER;
 
 const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claimStateList, setClaimStateList }) => {
@@ -31,8 +34,9 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
     Testnet: '3'
   }
   const adminWalletAddress = ADMIN_WALLET_ADDRESS;
+ 
   const addPerformList = async (performTask) => {
-    // console.log("perform task: ", performTask)
+    console.log("perform task: ", performTask)
     await fetch(`${serverUrl}/add_perform_list`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, performTask: performTask, isReal: isReal }), headers })
     .then(stateTask())
   }
@@ -84,8 +88,7 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
         const transferResult = await tonconnectUi.sendTransaction(tx);
         // console.log("transfer result : ", transferResult)
         if (transferResult) {
-          const headers = new Headers();
-          headers.append('Content-Type', 'application/json')
+          
           fetch(`${serverUrl}/charge_balance`, { method: 'POST', body: JSON.stringify({ userId: userId, amount: tokenCount }), headers })
             .then(() => {
 
@@ -100,7 +103,7 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
                     width: '90vw'
                   },
                 })
-                
+                console.log("add perform task 26")
                 addPerformList([26])
             }
             )
@@ -141,8 +144,6 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
       return { ...user, Balance: newUserBalance }
     })
   };
-  const headers = new Headers()
-  headers.append('Content-Type', 'application/json')
 
   const goClaim = () => {
     setClaimStateList((prev) => [...prev, task.index])
@@ -321,8 +322,6 @@ const TaskList = () => {
     'type6': { imgSrc: "Type6.png", link: "" },
   };
 
-  const headers = new Headers()
-  headers.append('Content-Type', 'application/json')
 
   useEffect(() => {
     let isMounted = true
