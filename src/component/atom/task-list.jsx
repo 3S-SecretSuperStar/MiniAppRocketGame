@@ -34,15 +34,15 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
     Testnet: '3'
   }
   const adminWalletAddress = ADMIN_WALLET_ADDRESS;
- 
+
   const addPerformList = async (performTask) => {
     const headers = new Headers();
     headers.append('Content-Type', 'application/json')
     console.log("perform task: ", performTask)
-    console.log("headers",headers)
+    console.log("headers", headers)
     await fetch(`${serverUrl}/add_perform_list`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, performTask: performTask, isReal: isReal }), headers })
-    .then(res => Promise.all([res.status, res.json()]))
-    .then(()=>stateTask())
+      .then(res => Promise.all([res.status, res.json()]))
+      .then(() => { stateTask() })
   }
   // console.log(claimStateListData);
   // console.log(claimStateList)
@@ -53,7 +53,7 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
       .storeStringTail("RocketTON Coins purchased")
       .endCell()
 
-      // console.log("return before")
+    // console.log("return before")
     return {
 
       // The transaction is valid for 10 minutes from now, in unix epoch seconds.
@@ -79,8 +79,8 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
 
     const tx = createTransaction(tokenCount)
     // console.log("1 ")
-    
-    
+
+
     // console.log("transaction : ", tx)
     const userId = user.UserId;
     // console.log("2 ")
@@ -92,7 +92,7 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
         const transferResult = await tonconnectUi.sendTransaction(tx);
         // console.log("transfer result : ", transferResult)
         if (transferResult) {
-          
+
           fetch(`${serverUrl}/charge_balance`, { method: 'POST', body: JSON.stringify({ userId: userId, amount: tokenCount }), headers })
             .then(() => {
 
@@ -107,8 +107,8 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
                     width: '90vw'
                   },
                 })
-                console.log("add perform task 26")
-                addPerformList([26]);
+              console.log("add perform task 26")
+              addPerformList([26]);
             }
             )
 
@@ -244,7 +244,7 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
                 </button>
               </Link> :
               (task.index === 26 && wallet) ?
-                <button className="rounded-lg w-[61px] py-1 px-0 h-7 bg-[#3861FB] text-white text-center text-[14px]" onClick={()=>sendTransaction(500)} >
+                <button className="rounded-lg w-[61px] py-1 px-0 h-7 bg-[#3861FB] text-white text-center text-[14px]" onClick={() => sendTransaction(500)} >
                   Start
                 </button> :
                 <Link to={'/play'}>
