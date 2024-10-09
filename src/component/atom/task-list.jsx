@@ -31,7 +31,7 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
     Testnet: '3'
   }
   const headers = new Headers();
-    headers.append('Content-Type', 'application/json')
+  headers.append('Content-Type', 'application/json')
   const adminWalletAddress = ADMIN_WALLET_ADDRESS;
 
   const addPerformList = async (performTask) => {
@@ -299,8 +299,8 @@ const TaskList = () => {
   const [isAction, setActionState] = useAtom(isActionState);
   const [fixedTaskData, setFixedTaskData] = useState([]);
   const [claimStateList, setClaimStateList] = useState([]);
-  // const headers = new Headers();
-  //   headers.append('Content-Type', 'application/json')
+  const headers = new Headers();
+  headers.append('Content-Type', 'application/json')
 
   let dailytaskIndex = 3
   let performTask = []
