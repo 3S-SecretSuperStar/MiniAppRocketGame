@@ -37,6 +37,7 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
  
   const addPerformList = async (performTask) => {
     console.log("perform task: ", performTask)
+    console.log("headers",headers)
     await fetch(`${serverUrl}/add_perform_list`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, performTask: performTask, isReal: isReal }), headers })
     .then(stateTask())
   }
@@ -104,7 +105,7 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
                   },
                 })
                 console.log("add perform task 26")
-                addPerformList([26])
+                addPerformList([26]);
             }
             )
 
