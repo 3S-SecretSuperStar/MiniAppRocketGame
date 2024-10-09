@@ -13,9 +13,6 @@ import { useTonAddress, useTonConnectUI, useTonWallet } from "@tonconnect/ui-rea
 import { beginCell } from "@ton/ton";
 import WarnningIcon from "../svg/warning";
 
-const headers = new Headers();
-headers.append('Content-Type', 'application/json')
-
 const serverUrl = REACT_APP_SERVER;
 
 const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claimStateList, setClaimStateList }) => {
@@ -33,6 +30,8 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
     Mainnet: '-239',
     Testnet: '3'
   }
+  const headers = new Headers();
+    headers.append('Content-Type', 'application/json')
   const adminWalletAddress = ADMIN_WALLET_ADDRESS;
 
   const addPerformList = async (performTask) => {
@@ -300,6 +299,8 @@ const TaskList = () => {
   const [isAction, setActionState] = useAtom(isActionState);
   const [fixedTaskData, setFixedTaskData] = useState([]);
   const [claimStateList, setClaimStateList] = useState([]);
+  const headers = new Headers();
+    headers.append('Content-Type', 'application/json')
 
   let dailytaskIndex = 3
   let performTask = []
