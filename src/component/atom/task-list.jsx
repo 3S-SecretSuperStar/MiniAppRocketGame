@@ -311,7 +311,7 @@ const TaskList = () => {
     'type1-1': { imgSrc: "Type1.png", link: "" },
     'type1-2': { imgSrc: "Type1.png", link: "" },
     'sub-tg': { imgSrc: "Avatar-tg.png", link: "https://t.me/rocketton_official" },
-    'join-partner': { imgSrc: "Avatar-partner.png", link: "https://t.me/the_eraxbot?start=6802660922" },
+    'join-partner': { imgSrc: "Avatar-partner.png", link: " https://t.me/FileMarketAIPlayBot/game?startapp=13174" },
     'join-tg': { imgSrc: "Avatar-tg.png", link: "https://t.me/RocketTON_Chat" },
     'sub-you': { imgSrc: "Avatar-you.png", link: "https://www.youtube.com/@RocketTON_Official" },
     'sub-X': { imgSrc: "Avatar-X.png", link: "https://x.com/RocketTONApp" },
