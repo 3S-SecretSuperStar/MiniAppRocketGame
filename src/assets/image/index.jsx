@@ -4,7 +4,7 @@ import counter1 from "./Counter1.svg";
 import counter2 from "./Counter2.svg";
 import counter3 from "./Counter3.svg";
 import coin from "./Coin.svg";
-import rocketInactive from "./rocket-inactive.png"; 
+import rocketInactive from "./rocket-inactive.png";
 import rocketExplosed from "./rocket-explosed.png";
 import rocketActive from "./rocket-active.png";
 import inputNumberArrowDown from "./input-number-arrow-down.png";
@@ -32,14 +32,18 @@ import imgAfterAction from "./img_After_Action.png"
 import imgButtons from "./img_Buttons.png"
 import imgSelectButton from "./img_Select_Button.png"
 import warnningIcon from "./warning.svg"
+import meteor from "./meteor.png"
+import crater from "./crater.png"
+import destroy from "./destroy.png"
 
 export const Img = {
-  agree, disagree,counter1, counter2, counter3, 
-  coin, rocketInactive, rocketExplosed, rocketActive, 
+  agree, disagree, counter1, counter2, counter3,
+  coin, rocketInactive, rocketExplosed, rocketActive,
   inputNumberArrowDown, inputNumberArrowUp, trailingButton,
-  youWon, wow, crash ,go, imgSetting, loadingTitle,
+  youWon, wow, crash, go, imgSetting, loadingTitle,
   imgAmazing, imgIncredible, imgFantastic, imgGreat,
-  imgRockrtStar, imgBrilliant, imgCrushing, imgGenius, 
+  imgRockrtStar, imgBrilliant, imgCrushing, imgGenius,
   imgImpressive, imgUnstoppable, imgGotThis, imgFire,
-  imgAfterAction, imgButtons, imgSelectButton,warnningIcon
+  imgAfterAction, imgButtons, imgSelectButton, warnningIcon,
+  meteor, crater, destroy
 }; 

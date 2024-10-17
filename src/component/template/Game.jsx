@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React, { memo, useContext, useEffect, useState } from 'react'
+import React, { memo, useContext, useEffect, useState, useRef } from 'react'
 import { useAtom } from 'jotai'
 import AppContext from './AppContext'
 import { Img } from '../../assets/image'
@@ -7,9 +7,11 @@ import { ACCELERATION } from '../../utils/globals'
 import { userData } from '../../store'
 import "../../css/Game.css"
 import { Link } from 'react-router-dom'
+import FallGame from '../atom/fallGame'
+import { REACT_APP_SERVER } from '../../utils/privateData'
 
 export default memo(function Game({ gamePhase, finalResult, amount = 10.00,
-  className, bet, autoStop, socketFlag, realGame, isWin, stopGame, startGame, autoMode }) {
+  className, bet, autoStop, socketFlag, realGame, isWin, stopGame, startGame, autoMode, updateBalance }) {
   const context = useContext(AppContext);
   const [currentResult, setCurrentResult] = useState(1)
   const [user,] = useAtom(userData)
@@ -19,9 +21,43 @@ export default memo(function Game({ gamePhase, finalResult, amount = 10.00,
   const [timerRounded, setTimerRounded] = useState(0);
   const [counterFlag, setCounterFlag] = useState(false);
   const [isImgShow, setIsImgShow] = useState(false);
+  const [fallGameScore, setFallGameScore] = useState(0);
+  const [saveLastScore, setSaveLastScore] = useState(0)
+  const serverUrl = REACT_APP_SERVER;
+  let gameRef = useRef(null)
   const counterItem = [Img.go, Img.counter1, Img.counter2, Img.counter3];
   let comment;
   let score = finalResult === 'Crashed...' ? 'Crashed...' : finalResult || currentResult
+
+
+  const view = useRef(null);
+  let gameId = (Math.random() * 10000) | 0;
+
+  const gamePlay = () => {
+    gameRef.current = new FallGame(gameId++);
+    view.current.append(gameRef.current.view);
+    // game.onStartPauseClick()
+    // console.log()
+    // gameStart()
+  }
+  const gameStop = () => {
+    if (gameRef.current) {
+      console.log("game info ", game)
+      const headers = new Headers();
+      headers.append('Content-Type', 'application/json')
+      console.log("fetch before user balance", fallGameScore * bet * autoStop);
+      fetch(`${serverUrl}/charge_balance`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, amount: fallGameScore * bet * autoStop }), headers })
+      setFallGameScore(0);
+      setSaveLastScore(0)
+      console.log("fetch after user balance", user.Balance)
+      gameRef.current.destroy();
+      console.log("destroy after user balance", user.Balance)
+      gameRef.current = null;
+    }
+  }
+  const gameScore = () => {
+    console.log(gameRef.current.getScore())
+  }
 
   if (gamePhase === 'stopped') {
     clearInterval(timerHandler)
@@ -42,12 +78,14 @@ export default memo(function Game({ gamePhase, finalResult, amount = 10.00,
         }, 1000)
       }
     }
-  }, [score, gamePhase,autoMode])
+  }, [score, gamePhase, autoMode])
 
+  console.log("fallGameScore", fallGameScore)
   useEffect(() => {
 
 
     if (gamePhase === 'started') {
+
       setCurrentResult(1);
       setCounterNumber(4);
       setTimerRounded(0);
@@ -67,9 +105,10 @@ export default memo(function Game({ gamePhase, finalResult, amount = 10.00,
           setTimerRounded((prevRound) => prevRound + 0.61);
           const newCounterNumber = 5 - Math.ceil(time);
 
+
           // Check if the counter has reached zero
           if (newCounterNumber <= 0) {
-
+            gamePlay();
             clearInterval(newCountTimeHandler); // Clear the interval when counter reaches zero
             setCounterNumber(0);// Ensure counter is set to zero
             setCounterFlag(true)
@@ -94,6 +133,7 @@ export default memo(function Game({ gamePhase, finalResult, amount = 10.00,
       }
 
     } else if (gamePhase === 'stopped' || gamePhase === 'crashed') {
+      gameStop();
       comment = null
       clearInterval(timerHandler)
       clearInterval(countTimeHandler);
@@ -135,6 +175,18 @@ export default memo(function Game({ gamePhase, finalResult, amount = 10.00,
     }
   }, [])
 
+  useEffect(() => {
+    if (gameRef.current) setFallGameScore(gameRef.current.getScore())
+  }, [score])
+
+  useEffect(() => {
+    console.log("fallgame score update before", fallGameScore)
+    console.log("last fallgame score update before", saveLastScore)
+    updateBalance((fallGameScore - saveLastScore) * bet * autoStop)
+    setSaveLastScore(fallGameScore)
+  }, [fallGameScore])
+  // console.log("fallgame score",fallGameScore)
+  // console.log("lastscore",saveLastScore)
   const generateGauge = () => {
     const price = 0.5
     let first = price - currentResult % price
@@ -251,8 +303,9 @@ export default memo(function Game({ gamePhase, finalResult, amount = 10.00,
 
   return (
     <div id='game' className={`${className} flex-auto flex flex-col h-fit justify-between items-center relative`}>
+      <div className='top-0 left-0 fixed z-[1]' ref={view}></div>
       <div className='flex flex-col items-center justify-between'>
-        <div className="flex gap-2 items-center justify-center font-extrabold ">
+        <div className="flex gap-2 items-center justify-center font-extrabold z-10 ">
           <img src={Img.coin} width={44} height={44} className="max-w-11 h-11" alt="coin" />
           <p className="text-[40px] text-white font-extrabold">{parseFloat(amount).toFixed(2)}</p>
           <Link to='/help' className={`bg-[#3434DA] w-8 h-8 rounded-lg p-1 ${gamePhase === 'started' && 'hidden'}`} >
@@ -293,7 +346,7 @@ export default memo(function Game({ gamePhase, finalResult, amount = 10.00,
       </div>
 
 
-      <div className='flex items-center'>
+      <div className='flex items-center z-10'>
         <img
           src='/image/rocket-active.png'
           className={`shaking game-rocket active ${(counterNumber === 0 && gamePhase === 'started' && socketFlag) ? 'block' : 'hidden'}`}

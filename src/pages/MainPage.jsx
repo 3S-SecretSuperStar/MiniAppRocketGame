@@ -89,7 +89,7 @@ const MainPage = () => {
   const avatarData = [avatar.avatarBeginner, avatar.avatarPilot, avatar.avatarExplorer,
   avatar.avatarAstronaut, avatar.avatarCaptain, avatar.avatarCommander, avatar.avatarAdmiral,
   avatar.avatarLegend, avatar.avatarMasterOfTheUniverse, avatar.avatarGodOfSpace]
-
+  
   const statsList = [
     {
       src: "coin-y.svg",
@@ -386,16 +386,18 @@ const MainPage = () => {
   // Function to start the game
   const startGame = () => {
     // console.log("bet in start game", bet)
-    const realBet = Math.min(realBetRef.current, balance)
+        const realBet = Math.min(realBetRef.current, balance)
     setBet(realBet);
     realBetRef.current = realBet;
-
+    
     setRewardState(false);
     setStopWasPressed(false);
     setGamePhase('started');
     setSocketStart(false);
     setActionState("start");
+    console.log("before socket",user.Balance)
     context.socket.onmessage = async e => {
+      console.log(user.Balance)
       const data = JSON.parse(e.data);
       // console.log("start game", data.operation);
       switch (data.operation) {
@@ -404,6 +406,8 @@ const MainPage = () => {
           handleGameStarted();
           break;
         case 'stopped':
+          
+          console.log("stopped",user.Balance)
           handleGameStopped(data);
           break;
         case 'crashed':
@@ -417,15 +421,18 @@ const MainPage = () => {
   // console.log("socket info in game : ", context.socket)
   // Function to stop the game
   const stopGame = (amount) => {
+    console.log("stop game button ", user.Balance)
     setStopWasPressed(true);
     setActionState("stop");
     if (amount !== 'x') {
       context.socket.send(JSON.stringify({ operation: 'stop' }));
+      console.log("stop game button amount x ", user.Balance)
     }
     else {
       context.socket.send(JSON.stringify({ operation: 'stop', stopAmount: amount }));
+      console.log("stop game button amount not x ", user.Balance)
     }
-    handleGameStopped()
+    // handleGameStopped({ stop: 'x', profit: '0' })
   };
 
   const handleGameStarted = () => {
@@ -442,12 +449,13 @@ const MainPage = () => {
       document.getElementById('stars').style.animation = animation;
     }, 50);
   };
+console.log("test",user.Balance)
 
   const handleGameStopped = (data = { stop: 'x', profit: '0' }) => {
     setCointinueCounter(continueCounter + 1)
     testCounter = testCounter + 1;
 
-    // console.log("stop")
+    console.log("stop")
     setActionState("stop");
     setWinstate(false);
     setFinalResult(data.stop);
@@ -457,6 +465,7 @@ const MainPage = () => {
     // setBalance(newBalance)
     // balanceRef.current = newBalance
     // console.log("stopppppp update")
+    console.log("when stopped game",user.Balance)
     data.profit && updateBalance(data.profit - bet);
     setGames(games + 1);
     setWins(wins + 1);
@@ -673,7 +682,8 @@ const MainPage = () => {
             </div>
             <TabButton className={`transform translate-y-[100px] ${isAction === "start" ? "-translate-y-[150px]" : ""} `} tabList={statsList} tabNo={tabId} setTabNo={setTabId} />
             <Game className={`transition-all ${isAction !== "start" ? "mt-24" : "mt-0"} `} finalResult={finalResult} gamePhase={gamePhase} isWin={winState} stopGame={(e) => stopGame(e)}
-              setLoaderIsShown={setLoaderIsShown} amount={balance} bet={bet} autoStop={autoStop} socketFlag={socketStart} realGame={isReal} setInfoState={(e) => setInfoState(e)} startGame={startGame} autoMode={autoMode} />
+              setLoaderIsShown={setLoaderIsShown} amount={balance} bet={bet} autoStop={autoStop} socketFlag={socketStart} realGame={isReal} setInfoState={(e) => setInfoState(e)} 
+              startGame={startGame} autoMode={autoMode} updateBalance = {updateBalance} />
 
             <div className="flex flex-col text-white gap-4">
               <div >
@@ -714,6 +724,7 @@ const MainPage = () => {
                         action={() => setIsModalOpen(true)}
                       />}
                       <ShadowButton
+                      className={"z-10"}
                         action={handleStartGame}
                         content={"Start"}
                         disabled={
@@ -727,7 +738,7 @@ const MainPage = () => {
                   ) :
                   (
                     <ShadowButton
-                      className={"bg-[#CC070A] shadow-btn-red-border invite-btn-red-shadow"}
+                      className={"bg-[#CC070A] shadow-btn-red-border invite-btn-red-shadow z-10"}
                       content={"Stop"}
                       action={() => stopGame('x')}
                     />
@@ -786,6 +797,7 @@ const MainPage = () => {
                     gamePhase !== 'started' ?
                       (
                         <ShadowButton
+                        className={"z-10"}
                           action={handleModalButton}
                           content={"Start"}
                           disabled={
@@ -797,7 +809,7 @@ const MainPage = () => {
                       ) :
                       (
                         <ShadowButton
-                          className={"bg-[#CC070A] shadow-btn-red-border invite-btn-red-shadow"}
+                          className={"bg-[#CC070A] shadow-btn-red-border invite-btn-red-shadow z-10"}
                           content={"Stop"}
                           action={() => stopGame('x')}
                         />
