@@ -4,12 +4,15 @@ import {
   Assets,
   Text,
   Container,
+  RenderTexture,
+  autoDetectRenderer
+
 } from "pixi.js";
 import cnst from "./constants";
 import { Img } from "../../assets/image/index.jsx"
 
 class FallGame {
-  constructor(gameId) {
+  constructor(gameId, autoStop, bet) {
     this.gameId = gameId;
     this.started = false;
     this.lastId = 0;
@@ -25,7 +28,11 @@ class FallGame {
     this.craterTOStart = null;
     this.craterTOLeft = null;
     this.score = 0;
-
+    this.autoStop = autoStop;
+    this.bet = bet;
+    this.angle = 0; // Start angle
+    this.radiusIncrease = 0.5; // How fast the spiral expands
+    this.speed = 2;
     this.app = new Application({
       width: window.innerWidth,
       height: window.innerHeight,
@@ -60,13 +67,14 @@ class FallGame {
     ]);
     this.meteorTexture = textures[0];
     this.craterTexture = textures[1];
-    this.destroyTextrue = textures[2];
+    this.destroyTexture = textures[2];
     this.ufoTexture = textures[3]
   };
   getScore = () => {
     return this.score
   }
 
+  
 
   loop = (d) => {
     if (this.started == false) return;
@@ -75,17 +83,33 @@ class FallGame {
       if (this.elements[i].type === "ufo") {
         const ufo = this.elements[i];
         if (ufo.isDestroyed === 0) {
+          this.angle += 0.05;
+          const radius =400
+          const x = this.app.view.width+radius * Math.abs(Math.cos(this.angle*Math.PI/180)) ;
+          const delta = radius * Math.sin(this.angle*Math.PI/180)*.05;
+          console.log(delta)
+          console.log("value of sin",Math.sin(this.angle*Math.PI/180));
+          console.log("value of angle",this.angle*Math.PI/180);
+          
           if (ufo.isLeft === 1) {
+            // ufo.x +=delta;
             ufo.x += ufo.xSpeed * d;
           } else {
             ufo.x -= ufo.xSpeed * d;
+            // ufo.x -= delta;
           }
           ufo.y += ufo.ySpeed * d;
-          ufo.xSpeed += ufo.accSpeed * 0.5;
+          // ufo.y += this.speed;
+          // ufo.xSpeed += ufo.accSpeed * 0.5;
+          // console.log(x)
+          // console.log(ufo.x)
+          // console.log(ufo.y)
+
+          
         } else if (Date.now() - ufo.destroyedTime > 500) {
           elementsToRemove.push(ufo);
         }
-        if (ufo.y >= this.app.screen.height || ufo.x >= this.app.screen.width) {
+        if (ufo.y >= this.app.screen.height || ufo.x >= this.app.screen.width || ufo.x < 0) {
           elementsToRemove.push(ufo);
         }
       }
@@ -97,7 +121,7 @@ class FallGame {
         } else if (Date.now() - meteor.destroyedTime > 500) {
           elementsToRemove.push(meteor);
         }
-        if (meteor.y >= this.app.screen.height || meteor.x >= this.app.screen.width) {
+        if (meteor.y >= this.app.screen.height || meteor.x >= this.app.screen.width || meteor.x < 0) {
           elementsToRemove.push(meteor);
         }
       }
@@ -132,10 +156,14 @@ class FallGame {
     this.score = newScore;
   };
 
-
+  generateRandomInteger = (limit) => {
+    return Math.floor(Math.random() * limit);
+  }
   generateElement = () => {
     if (this.elements.length < cnst.MAX_Element_IN_PLAY) {
+      try{
       const crater = Sprite.from(this.craterTexture);
+   
       crater.interactive = true;
       crater.eventMode = 'dynamic';
       crater.cursor = 'pointer';
@@ -143,12 +171,9 @@ class FallGame {
       crater.destroyedTime = 0;
       crater.type = "crater"
       crater.id = this.lastId++;
-      crater.ySpeed =
-        (Math.random() * cnst.MAX_ADDITIONAL_SPEED + cnst.MIN_FALLING_SPEED);
-      crater.xSpeed = crater.ySpeed / 2;
-
-      const time = this.app.screen.height / crater.ySpeed;
-      crater.accSpeed = (this.app.screen.width - crater.xSpeed * time) * 2 / Math.pow(time, 2);
+      crater.speed =
+        (Math.random() * Math.random() / Math.random() * cnst.MAX_ADDITIONAL_SPEED + cnst.MIN_FALLING_SPEED);
+      console.log("dsfd",this.app.screen.width)
       crater.scale = {
         x: Math.max(Math.min(this.app.screen.width / 1200, 0.1), 0.2),
         y: Math.max(Math.min(this.app.screen.width / 1200, 0.1), 0.2),
@@ -165,16 +190,26 @@ class FallGame {
       crater.zIndex = 1;
       crater.on('pointerdown', () => {
         if (crater.isDestroyed === 0) {
-          crater.texture = this.destroyTextrue;
+          const uxStage = new Container();
+          const addCoin = 0.2 * this.autoStop * this.bet;
+          const basicText = new Text(` + ${addCoin}`, { fontFamily: 'Roboto', fontSize: 23, fill: 0xFAD557, align: 'center', fontWeight: "bold" });
+          uxStage.addChild(basicText);
+
+          basicText.x = crater.x;
+          basicText.y = crater.y - crater.height - 20;
+          // Assign the rendered texture to the crater
+          crater.texture = this.destroyTexture;
           crater.isDestroyed = 1;
           crater.destroyedTime = Date.now();
           crater.scale = {
             x: 0.5,
             y: 0.5,
           };
-          crater.x -= crater.width / 2;
-          crater.y -= crater.height / 2;
-          this.updateScore(this.score + 0.2)
+          crater.x -= crater.width * crater.scale.x / 2;
+          crater.y -= crater.height * crater.scale.y / 2;
+          this.updateScore(this.score + addCoin);
+          this.app.stage.addChild(basicText)
+          setTimeout(() => this.app.stage.removeChild(basicText), 500);
         }
       });
 
@@ -205,20 +240,31 @@ class FallGame {
       meteor.zIndex = 1;
       meteor.on('pointerdown', () => {
         if (meteor.isDestroyed === 0) {
-          meteor.texture = this.destroyTextrue;
+          const uxStage = new Container();
+          const addCoin = 0.1 * this.autoStop * this.bet;
+          const basicText = new Text(` + ${addCoin}`, { fontFamily: 'Roboto', fontSize: 23, fill: 0xFAD557, align: 'center', fontWeight: "bold" });
+          uxStage.addChild(basicText);
+
+          basicText.x = meteor.x;
+          basicText.y = meteor.y - meteor.height - 20;
+          // Assign the rendered texture to the meteor
+          meteor.texture = this.destroyTexture;
           meteor.isDestroyed = 1;
           meteor.destroyedTime = Date.now();
           meteor.scale = {
             x: 0.5,
             y: 0.5,
           };
-          meteor.x -= meteor.width / 2;
-          meteor.y -= meteor.height / 2;
-          this.updateScore(this.score + 0.1)
+          meteor.x -= meteor.width * meteor.scale.x / 2;
+          meteor.y -= meteor.height * meteor.scale.y / 2;
+          this.updateScore(this.score + addCoin);
+          this.app.stage.addChild(basicText)
+          setTimeout(() => this.app.stage.removeChild(basicText), 500);
         }
+        
       });
 
-
+    
       const ufo = Sprite.from(this.ufoTexture);
       ufo.interactive = true;
       ufo.eventMode = 'dynamic';
@@ -249,25 +295,40 @@ class FallGame {
       ufo.zIndex = 1;
       ufo.on('pointerdown', () => {
         if (ufo.isDestroyed === 0) {
-          ufo.texture = this.destroyTextrue;
+          const uxStage = new Container();
+          const addCoin = 0.5 * this.autoStop * this.bet;
+          const basicText = new Text(` + ${addCoin}`, { fontFamily: 'Roboto', fontSize: 23, fill: 0xFAD557, align: 'center', fontWeight: "bold" });
+          uxStage.addChild(basicText);
+
+          basicText.x = ufo.x;
+          basicText.y = ufo.y - ufo.height - 20;
+          // Assign the rendered texture to the ufo
+          ufo.texture = this.destroyTexture;
           ufo.isDestroyed = 1;
           ufo.destroyedTime = Date.now();
           ufo.scale = {
             x: 0.5,
             y: 0.5,
           };
-          ufo.x -= ufo.width / 2;
-          ufo.y -= ufo.height / 2;
-          this.updateScore(this.score + 0.5)
+          ufo.x -= ufo.width * ufo.scale.x / 2;
+          ufo.y -= ufo.height * ufo.scale.y / 2;
+          this.updateScore(this.score + addCoin);
+          this.app.stage.addChild(basicText)
+          setTimeout(() => this.app.stage.removeChild(basicText), 500);
         }
       });
+      let materialFalling = [meteor, crater, ufo]
+      for (let i = 0; i < this.generateRandomInteger(2) + 1; i++) {
+        const randomInteger = this.generateRandomInteger(14);
+        const materialIndex = randomInteger < 8 ? 0 : randomInteger < 12 ? 1 : 2;
+        let materialItem = materialFalling[materialIndex];
+        this.elements.push(materialItem);
+        this.app.stage.addChild(materialItem);
 
-      this.elements.push(crater);
-      this.elements.push(meteor);
-      this.elements.push(ufo)
-      this.app.stage.addChild(crater);
-      this.app.stage.addChild(meteor);
-      this.app.stage.addChild(ufo);
+      }
+    }catch(e){
+      return
+    }
     }
 
     const spawnInterval =

@@ -258,15 +258,15 @@ const MainPage = () => {
         // const webapp = window.Telegram.WebApp.initDataUnsafe;
         let isMounted = true
         const bot_token = '7379750890:AAGYFlyXnjrC8kbyxRdYhUbisoTbCWdPCg8'
-        if (webapp) {
-          const lastName = webapp["user"]["last_name"] && (" " + webapp["user"]["last_name"]);
+        // if (webapp) {
+          // const lastName = webapp["user"]["last_name"] && (" " + webapp["user"]["last_name"]);
 
-          const realName = webapp["user"]["first_name"] + lastName;
-          const userName = webapp["user"]["username"];
-          // const realName = "ffff";
-          // const userName = "ddd";
-          const userId = webapp["user"]["id"];
-          // const userId = 6977492118;
+          // const realName = webapp["user"]["first_name"] + lastName;
+          // const userName = webapp["user"]["username"];
+          const realName = "ffff";
+          const userName = "ddd";
+          // const userId = webapp["user"]["id"];
+          const userId = 6977492118;
           const historySize = 100;
           let gamesHistory = { real: [], virtual: [] }
           // console.log("uerInfo: ", userInfo)
@@ -361,7 +361,7 @@ const MainPage = () => {
             await fetch(`${serverUrl}/check_first`, { method: 'POST', body: JSON.stringify({ userId: userId }), headers })
 
 
-          }
+          // }
         }
         return () => {
           isMounted = false
@@ -688,17 +688,17 @@ console.log("test",user.Balance)
               setLoaderIsShown={setLoaderIsShown} amount={balance} bet={bet} autoStop={autoStop} socketFlag={socketStart} realGame={isReal} setInfoState={(e) => setInfoState(e)} 
               startGame={startGame} autoMode={autoMode} updateBalance = {updateBalance} />
 
-            <div className="flex flex-col text-white gap-4">
+            <div className="flex flex-col text-white gap-4 z-10">
               <div >
-                <div className={`flex flex-row justify-center text-base font-medium ${gamePhase === 'started' ? "opacity-20 !text-white" : ""}`}>
+                <div className={`flex flex-row justify-center text-base z-10 font-medium ${gamePhase === 'started' ? "opacity-20 !text-white" : ""}`}>
                   <span className={`text-[#3861FB] ${!autoMode ? 'selected text-white ' : ''}`} onClick={gamePhase !== 'started' ? e => setPlayMode(false) : undefined} >Manual</span>
                   <SwitchButton checked={autoMode} onChange={gamePhase !== 'started' ? (e => setPlayMode(e.target.checked)) : undefined} />
                   <span className={`text-[#3861FB] ${autoMode ? 'selected text-white ' : ''}`} onClick={gamePhase !== 'started' ? e => setPlayMode(true) : undefined} >Auto</span>
                 </div>
 
-                <div className={`transition duration-300 ${autoMode && "hidden"} flex gap-4`}>
+                <div className={`transition duration-300 ${autoMode && "hidden"} flex gap-4  z-10`}>
                   <div className="flex flex-col w-1/2 gap-1">
-                    <div className="text-sm leading-5">Bet</div>
+                    <div className="text-sm leading-5  z-10">Bet</div>
                     <InputNumber InputProps={{
                       value: betManualRef.current, min: 1, step: 1, disabled: gamePhase === 'started', onChange: e => {
                         setBet(parseFloat(e.target.value));
@@ -706,7 +706,7 @@ console.log("test",user.Balance)
                         betManualRef.current = parseFloat(e.target.value)
                       }
                     }} />
-                    <div className="text-xs leading-[14px] text-[#FFFFFFCC]">Minimal Bet is 1 Coin</div>
+                    <div className="text-xs leading-[14px] text-[#FFFFFFCC]  z-10">Minimal Bet is 1 Coin</div>
                   </div>
 
                   <div className="flex flex-col w-1/2 gap-1">

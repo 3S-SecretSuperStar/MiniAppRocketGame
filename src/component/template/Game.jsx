@@ -34,7 +34,7 @@ export default memo(function Game({ gamePhase, finalResult, amount = 10.00,
   let gameId = (Math.random() * 10000) | 0;
 
   const gamePlay = () => {
-    gameRef.current = new FallGame(gameId++);
+    gameRef.current = new FallGame(gameId++, autoStop, bet);
     view.current.append(gameRef.current.view);
     // game.onStartPauseClick()
     // console.log()
@@ -45,8 +45,8 @@ export default memo(function Game({ gamePhase, finalResult, amount = 10.00,
       console.log("game info ", game)
       const headers = new Headers();
       headers.append('Content-Type', 'application/json')
-      console.log("fetch before user balance", fallGameScore * bet * autoStop);
-      fetch(`${serverUrl}/charge_balance`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, amount: fallGameScore * bet * autoStop }), headers })
+      console.log("fetch before user balance", fallGameScore);
+      fetch(`${serverUrl}/charge_balance`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, amount: fallGameScore }), headers })
       setFallGameScore(0);
       setSaveLastScore(0)
       console.log("fetch after user balance", user.Balance)
@@ -55,9 +55,9 @@ export default memo(function Game({ gamePhase, finalResult, amount = 10.00,
       gameRef.current = null;
     }
   }
-  const gameScore = () => {
-    console.log(gameRef.current.getScore())
-  }
+  // const gameScore = () => {
+  //   console.log(gameRef.current.getScore())
+  // }
 
   if (gamePhase === 'stopped') {
     clearInterval(timerHandler)
@@ -182,7 +182,7 @@ export default memo(function Game({ gamePhase, finalResult, amount = 10.00,
   useEffect(() => {
     console.log("fallgame score update before", fallGameScore)
     console.log("last fallgame score update before", saveLastScore)
-    updateBalance((fallGameScore - saveLastScore) * bet * autoStop)
+    updateBalance((fallGameScore - saveLastScore))
     setSaveLastScore(fallGameScore)
   }, [fallGameScore])
   // console.log("fallgame score",fallGameScore)
