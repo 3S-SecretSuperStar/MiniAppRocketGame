@@ -78,6 +78,7 @@ class FallGame {
       Assets.load(Img.meteor),
       Assets.load(Img.crater),
       Assets.load(Img.destroy),
+      Assets.load(Img.ufo)
     ]);
     // this.paddleTextureNominal = textures[0];
     // this.paddleTextureLeft = textures[1];
@@ -86,6 +87,7 @@ class FallGame {
     // this.startPauseButtonTexture = textures[1];
     this.craterTexture = textures[1];
     this.destroyTextrue = textures[2];
+    this.ufoTexture = textures[3]
   };
   getScore = () =>{
     return this.score
@@ -125,21 +127,21 @@ class FallGame {
     // if (!this.inPlay) return;
     const elementsToRemove = [];
     for (let i = 0; i < this.elements.length; i++) {
-      if (this.elements[i].type  === "crater") {
-        const crater = this.elements[i];
-        if (crater.isDestroyed === 0) {
-          if (crater.isLeft === 1) {
-            crater.x += crater.xSpeed * d;
+      if (this.elements[i].type  === "ufo") {
+        const ufo = this.elements[i];
+        if (ufo.isDestroyed === 0) {
+          if (ufo.isLeft === 1) {
+            ufo.x += ufo.xSpeed * d;
           } else {
-            crater.x -= crater.xSpeed * d;
+            ufo.x -= ufo.xSpeed * d;
           }
-          crater.y += crater.ySpeed * d;
-          crater.xSpeed += crater.accSpeed * 0.5;
-        } else if (Date.now() - crater.destroyedTime > 500) {
-          elementsToRemove.push(crater);
+          ufo.y += ufo.ySpeed * d;
+          ufo.xSpeed += ufo.accSpeed * 0.5;
+        } else if (Date.now() - ufo.destroyedTime > 500) {
+          elementsToRemove.push(ufo);
         }
-        if (crater.y >= this.app.screen.height || crater.x >= this.app.screen.width) {
-          elementsToRemove.push(crater);
+        if (ufo.y >= this.app.screen.height || ufo.x >= this.app.screen.width) {
+          elementsToRemove.push(ufo);
           // this.updateLost(this.lostelements + 1);
         }
       }
@@ -220,7 +222,7 @@ class FallGame {
     }
     this.elements = [];
     this.generateElement();
-    this.app.stage.removeChild(this.gameOverText);
+    // this.app.stage.removeChild(this.gameOverText);
     // this.gameOverText = null;
     this.timer = 0;
     // this.updateTimerText(true);
@@ -352,12 +354,12 @@ class FallGame {
           crater.isDestroyed = 1;
           crater.destroyedTime = Date.now();
           crater.scale = {
-            x: 1,
-            y: 1,
+            x: 0.5,
+            y: 0.5,
           };
           crater.x -= crater.width / 2;
           crater.y -= crater.height / 2;
-          this.updateScore(this.score+0.5)
+          this.updateScore(this.score+0.2)
         }
       });
 
@@ -370,7 +372,7 @@ class FallGame {
       meteor.type = "meteor"
       meteor.id = this.lastId++;
       meteor.speed =
-        (Math.random() * cnst.MAX_ADDITIONAL_SPEED + cnst.MIN_FALLING_SPEED) *
+        (Math.random()*Math.random()/Math.random() * cnst.MAX_ADDITIONAL_SPEED + cnst.MIN_FALLING_SPEED) *
         this.speedMultiplier;
 
       meteor.scale = {
@@ -393,12 +395,57 @@ class FallGame {
           meteor.isDestroyed = 1;
           meteor.destroyedTime = Date.now();
           meteor.scale = {
-            x: 1,
-            y: 1,
+            x: 0.5,
+            y: 0.5,
           };
           meteor.x -= meteor.width / 2;
           meteor.y -= meteor.height / 2;
-          this.updateScore(this.score+0.25)
+          this.updateScore(this.score+0.1)
+        }
+      });
+
+
+      const ufo = Sprite.from(this.ufoTexture);
+      ufo.interactive = true;
+      ufo.eventMode = 'dynamic';
+      ufo.cursor = 'pointer';
+      ufo.isDestroyed = 0;
+      ufo.destroyedTime = 0;
+      ufo.type = "ufo"
+      ufo.id = this.lastId++;
+      ufo.ySpeed =
+        (Math.random() * cnst.MAX_ADDITIONAL_SPEED + cnst.MIN_FALLING_SPEED) *
+        this.speedMultiplier;
+      ufo.xSpeed = ufo.ySpeed / 2;
+      
+      const ufotime = this.app.screen.height / ufo.ySpeed;
+      ufo.accSpeed = (this.app.screen.width - ufo.xSpeed * ufotime) * 2 / Math.pow(ufotime, 2);
+      ufo.scale = {
+        x: Math.max(Math.min(this.app.screen.width / 1200, 0.1), 0.2),
+        y: Math.max(Math.min(this.app.screen.width / 1200, 0.1), 0.2),
+      };
+      ufo.x = Math.max(
+        Math.min(
+          this.app.screen.width - ufo.width - cnst.MIN_UFO_SIDE_OFFSET,
+          Math.floor(Math.random() * this.app.screen.width)
+        ),
+        cnst.MIN_UFO_SIDE_OFFSET
+      );
+      ufo.isLeft = ufo.x > this.app.screen.width / 2 ? 0 : 1;
+      ufo.y = 20;
+      ufo.zIndex = 1;
+      ufo.on('pointerdown', () => {
+        if (ufo.isDestroyed === 0) {
+          ufo.texture = this.destroyTextrue;
+          ufo.isDestroyed = 1;
+          ufo.destroyedTime = Date.now();
+          ufo.scale = {
+            x: 0.5,
+            y: 0.5,
+          };
+          ufo.x -= ufo.width / 2;
+          ufo.y -= ufo.height / 2;
+          this.updateScore(this.score+0.5)
         }
       });
 
@@ -407,8 +454,10 @@ class FallGame {
       // console.log("meteor", meteor)
       this.elements.push(crater);
       this.elements.push(meteor);
+      this.elements.push(ufo)
       this.app.stage.addChild(crater);
       this.app.stage.addChild(meteor);
+      this.app.stage.addChild(ufo);
     }
 
     const spawnInterval =
