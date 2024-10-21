@@ -26,9 +26,14 @@
   left: 50%;
 }
 #game .game-rocket.active, #game .game-rocket.inactive {
-  width: 64;
   margin-left: -32px;
   bottom: 10px;
+}
+#game .game-rocket.inactive {
+  width: 64px;
+}
+#game .game-rocket.active {
+  width: 52px;
 }
 #game .game-rocket.explosed {
   width: 140px;

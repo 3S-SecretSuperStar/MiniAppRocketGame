@@ -89,7 +89,7 @@ const MainPage = () => {
   const avatarData = [avatar.avatarBeginner, avatar.avatarPilot, avatar.avatarExplorer,
   avatar.avatarAstronaut, avatar.avatarCaptain, avatar.avatarCommander, avatar.avatarAdmiral,
   avatar.avatarLegend, avatar.avatarMasterOfTheUniverse, avatar.avatarGodOfSpace]
-  
+
   const statsList = [
     {
       src: "coin-y.svg",
@@ -120,10 +120,6 @@ const MainPage = () => {
   }
   const handleStartGame = () => {
     setInitBet()
-
-    // console.log("automode in handle start game", autoMode)
-    // console.log("betManualRef in handle start game : ", betManualRef)
-    // console.log("betManualRef in handle start game : ", betManualRef)
     startGame();
   }
 
@@ -259,109 +255,92 @@ const MainPage = () => {
         let isMounted = true
         const bot_token = '7379750890:AAGYFlyXnjrC8kbyxRdYhUbisoTbCWdPCg8'
         // if (webapp) {
-          // const lastName = webapp["user"]["last_name"] && (" " + webapp["user"]["last_name"]);
+        // const lastName = webapp["user"]["last_name"] && (" " + webapp["user"]["last_name"]);
 
-          // const realName = webapp["user"]["first_name"] + lastName;
-          // const userName = webapp["user"]["username"];
-          const realName = "ffff";
-          const userName = "ddd";
-          // const userId = webapp["user"]["id"];
-          const userId = 6977492118;
-          const historySize = 100;
-          let gamesHistory = { real: [], virtual: [] }
-          // console.log("uerInfo: ", userInfo)
-          const headers = new Headers()
-          headers.append('Content-Type', 'application/json')
-          if (isMounted) {
-            const userAvatarUrl = await getProfilePhotos(userId, bot_token);
-            const updateAvatarState = await updateAvatar(userAvatarUrl, userId);
-            // console.log(userAvatarUrl)
-            // console.log("userAvatarUrl ", updateAvatarState.url)
+        // const realName = webapp["user"]["first_name"] + lastName;
+        // const userName = webapp["user"]["username"];
+        const realName = "ffff";
+        const userName = "ddd";
+        // const userId = webapp["user"]["id"];
+        const userId = 6977492118;
+        const historySize = 100;
+        let gamesHistory = { real: [], virtual: [] }
+        // console.log("uerInfo: ", userInfo)
+        const headers = new Headers()
+        headers.append('Content-Type', 'application/json')
+        if (isMounted) {
+          const userAvatarUrl = await getProfilePhotos(userId, bot_token);
+          const updateAvatarState = await updateAvatar(userAvatarUrl, userId);
+          // console.log(userAvatarUrl)
+          // console.log("userAvatarUrl ", updateAvatarState.url)
 
-            fetch(`${serverUrl}/users_info`, { method: 'POST', body: JSON.stringify({ realName: realName, userName: userName, userAvatarUrl: userAvatarUrl, userId: userId }), headers })
-              .then(res => Promise.all([res.status, res.json()]))
-              .then(([status, data]) => {
-                try {
-                  if (gamePhase !== 'started') { // console.log(data)
-                    // console.log(realName)
-                    // console.log(data.userData)
-                    const myData = data.userData;
-                    console.log("myData: ",myData)
-                    console.log("data : ",data)
-                    const virtualTaskState = myData.task.virtual;
-                    // console.log("virtualTaskState : ",virtualTaskState)
+          fetch(`${serverUrl}/users_info`, { method: 'POST', body: JSON.stringify({ realName: realName, userName: userName, userAvatarUrl: userAvatarUrl, userId: userId }), headers })
+            .then(res => Promise.all([res.status, res.json()]))
+            .then(([status, data]) => {
+              try {
+                if (gamePhase !== 'started') {
+                  const myData = data.userData;
+                  console.log("myData: ", myData)
+                  console.log("data : ", data)
+                  const virtualTaskState = myData.task.virtual;
 
+                  const realWins = myData.gamesHistory.real.filter(j => j.crash === 'x').length
+                  const realLosses = myData.gamesHistory.real.filter(j => j.stop === 'x').length
 
-                    const realWins = myData.gamesHistory.real.filter(j => j.crash === 'x').length
-                    const realLosses = myData.gamesHistory.real.filter(j => j.stop === 'x').length
+                  const dailyDate = myData.dailyHistory;
+                  const nowDate = moment().startOf('day');
+                  const selectedDate = moment(dailyDate).utc().local().startOf('day');
+                  const diffDate = nowDate.diff(selectedDate, 'days');
 
-                    const dailyDate = myData.dailyHistory;
-                    const nowDate = moment().startOf('day');
-                    const selectedDate = moment(dailyDate).utc().local().startOf('day');
-                    const diffDate = nowDate.diff(selectedDate, 'days');
-                    
-                    // console.log("dailyDate : ",dailyDate)
-                    // console.log("selectedDate : ",selectedDate)
-                    // console.log("diffDate : ",diffDate)
-
-                    if (myData.gamesHistory.real.length > historySize) {
-                      gamesHistory.real = myData.gamesHistory.real.slice(myData.gamesHistory.real.length - historySize)
-                    }
-
-                    const virtualWins = myData.gamesHistory.virtual.filter(j => j.crash === 'x').length
-                    const virtualLosses = myData.gamesHistory.virtual.filter(j => j.stop === 'x').length
-                    if (myData.gamesHistory.virtual.length > historySize) {
-                      gamesHistory.virtual = myData.gamesHistory.virtual.slice(myData.gamesHistory.virtual.length - historySize)
-                    }
-
-
-                    setGames(myData)
-                    const newBalance = parseFloat(isReal ? myData.balance.real : myData.balance.virtual).toFixed(2)
-                    // console.log("check balance in fetch : ", newBalance)
-                    setFirstLogin(myData.first_state !== "false");
-                    // console.log("done task",virtualTaskState.done_task)
-                    // console.log("achieve task",virtualTaskState.achieve_task)
-                    // console.log("virtual state", virtualTaskState.done_task.every(item => virtualTaskState.achieve_task.includes(item)))
-                    
-                    const rewardStates = !virtualTaskState.achieve_task.every(item => virtualTaskState.done_task.includes(item)) || myData.first_state !== "false" || diffDate>=2;
-                    // console.log("diff date", diffDate)
-                    // console.log("reward state", rewardStates)
-                    setRewardState(rewardStates);
-                    setBalance(newBalance)
-                    balanceRef.current = newBalance
-                    setUser({
-                      RealName: realName,
-                      UserName: userName,
-                      UserId: userId,
-                      Balance: newBalance,
-                      GameWon: isReal ? realWins : virtualWins,
-                      GameLost: isReal ? realLosses : virtualLosses,
-                      Rank: isReal ? data.realRank : data.virtualRank,
-                      Ranking: isReal ? myData.ranking.real : myData.ranking.virtual,
-                      FriendNumber: myData.friendNumber
-                    })
-                    const newHistoryGames = isReal ? gamesHistory.real : gamesHistory.virtual
-                    historyGamesRef.current = newHistoryGames
-                    setHistoryGames(newHistoryGames)
-                    setLoaderIsShown(false)
+                  if (myData.gamesHistory.real.length > historySize) {
+                    gamesHistory.real = myData.gamesHistory.real.slice(myData.gamesHistory.real.length - historySize)
                   }
-                } catch (e) {
-                  // eslint-disable-next-line no-self-assign
-                  document.location.href = document.location.href
+
+                  const virtualWins = myData.gamesHistory.virtual.filter(j => j.crash === 'x').length
+                  const virtualLosses = myData.gamesHistory.virtual.filter(j => j.stop === 'x').length
+                  if (myData.gamesHistory.virtual.length > historySize) {
+                    gamesHistory.virtual = myData.gamesHistory.virtual.slice(myData.gamesHistory.virtual.length - historySize)
+                  }
+
+
+                  setGames(myData)
+                  const newBalance = parseFloat(isReal ? myData.balance.real : myData.balance.virtual).toFixed(2)
+                  setFirstLogin(myData.first_state !== "false");
+
+                  const rewardStates = !virtualTaskState.achieve_task.every(item => virtualTaskState.done_task.includes(item)) || myData.first_state !== "false" || diffDate >= 2;
+                  setRewardState(rewardStates);
+                  setBalance(newBalance)
+                  balanceRef.current = newBalance
+                  setUser({
+                    RealName: realName,
+                    UserName: userName,
+                    UserId: userId,
+                    Balance: newBalance,
+                    GameWon: isReal ? realWins : virtualWins,
+                    GameLost: isReal ? realLosses : virtualLosses,
+                    Rank: isReal ? data.realRank : data.virtualRank,
+                    Ranking: isReal ? myData.ranking.real : myData.ranking.virtual,
+                    FriendNumber: myData.friendNumber
+                  })
+                  const newHistoryGames = isReal ? gamesHistory.real : gamesHistory.virtual
+                  historyGamesRef.current = newHistoryGames
+                  setHistoryGames(newHistoryGames)
+                  setLoaderIsShown(false)
                 }
-                finally {
+              } catch (e) {
+                // eslint-disable-next-line no-self-assign
+                document.location.href = document.location.href
+              }
+              finally {
 
-                  setTimeout(() => {
-                    setLoading(false)
-                    firstLoading && setActionState("ready")
-                    setFirstLoading(false);
-                  }, 500)
-                }
-              })
-            await fetch(`${serverUrl}/check_first`, { method: 'POST', body: JSON.stringify({ userId: userId }), headers })
-
-
-          // }
+                setTimeout(() => {
+                  setLoading(false)
+                  firstLoading && setActionState("ready")
+                  setFirstLoading(false);
+                }, 500)
+              }
+            })
+          await fetch(`${serverUrl}/check_first`, { method: 'POST', body: JSON.stringify({ userId: userId }), headers });
         }
         return () => {
           isMounted = false
@@ -378,39 +357,29 @@ const MainPage = () => {
     setActionState("start")
     return <FetchLoading />
   }
-  // console.log(loading)
-  // console.log("userInfo", user.Balance)
-  // console.log("current balance", balanceRef.current)
-  // console.log("balance", balance)
-  // console.log("game state ", gamePhase)
-  // console.log("bet ", bet)
-  // console.log("realbetref", realBetRef.current)
-  // console.log("data of user : ", user)
-  // Function to start the game
+
   const startGame = () => {
-    // console.log("bet in start game", bet)
-        const realBet = Math.min(realBetRef.current, balance)
+    const realBet = Math.min(realBetRef.current, balance)
     setBet(realBet);
     realBetRef.current = realBet;
-    
+
     setRewardState(false);
     setStopWasPressed(false);
     setGamePhase('started');
     setSocketStart(false);
     setActionState("start");
-    console.log("before socket",user.Balance)
+    console.log("before socket", user.Balance)
     context.socket.onmessage = async e => {
       console.log(user.Balance)
       const data = JSON.parse(e.data);
-      // console.log("start game", data.operation);
       switch (data.operation) {
         case 'started':
           setSocketStart(true)
           handleGameStarted();
           break;
         case 'stopped':
-          
-          console.log("stopped",user.Balance)
+
+          console.log("stopped", user.Balance)
           handleGameStopped(data);
           break;
         case 'crashed':
@@ -421,8 +390,7 @@ const MainPage = () => {
       }
     };
   };
-  // console.log("socket info in game : ", context.socket)
-  // Function to stop the game
+
   const stopGame = (amount) => {
     console.log("stop game button ", user.Balance)
     setStopWasPressed(true);
@@ -435,15 +403,12 @@ const MainPage = () => {
       context.socket.send(JSON.stringify({ operation: 'stop', stopAmount: amount }));
       console.log("stop game button amount not x ", user.Balance)
     }
-    // handleGameStopped({ stop: 'x', profit: '0' })
   };
 
   const handleGameStarted = () => {
     setFirstLogin(false)
     setWinstate(false)
-    // console.log("bet in handle game start", bet, "real bet", realBet)
-    const animation = document.getElementById('stars').style.animation
-    // console.log("realBetRef", realBetRef.current);
+    const animation = document.getElementById('stars').style.animation;
     updateBalance(-1 * bet)
     document.getElementById('stars').style.animation = 'none'
     setTimeout(() => {
@@ -452,7 +417,6 @@ const MainPage = () => {
       document.getElementById('stars').style.animation = animation;
     }, 50);
   };
-console.log("test",user.Balance)
 
   const handleGameStopped = (data = { stop: 'x', profit: '0' }) => {
     setCointinueCounter(continueCounter + 1)
@@ -464,16 +428,12 @@ console.log("test",user.Balance)
     setFinalResult(data.stop);
     setGamePhase('stopped');
     updateGameHistory(data, 'stopped');
-    // const newBalance = (parseFloat(balanceRef.current) + parseFloat(data.profit)).toFixed(2)
-    // setBalance(newBalance)
-    // balanceRef.current = newBalance
-    // console.log("stopppppp update")
-    console.log("when stopped game",user.Balance)
+
     data.profit && updateBalance(data.profit - bet);
     setGames(games + 1);
     setWins(wins + 1);
     adjustBetAfterWin();
-    // console.log("dsfsdfds")
+
     if (data.profit > 0) {
       setWinstate(true);
       toast(`${data.profit} coins added to your balance`,
@@ -492,6 +452,7 @@ console.log("test",user.Balance)
         }
       )
     }
+
     performTask = []
     performTask = taskList.reduce((performList, task, index) => {
       const taskType = task.type;
@@ -506,18 +467,15 @@ console.log("test",user.Balance)
     }, [])
     const headers = new Headers();
     headers.append('Content-Type', 'application/json')
-    // console.log("perform task", performTask)
     fetch(`${serverUrl}/add_perform_list`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, performTask: performTask, isReal: isReal }), headers })
   };
 
   const handleGameCrashed = (data) => {
-    // console.log("handleGameCrash")
     setCointinueCounter(1)
     setActionState("stop");
     setFinalResult('Crashed...');
     setGamePhase('crashed');
     updateGameHistory(data, 'crashed');
-    // updateBalance(data.profit);
     setGames(games + 1);
     setLosses(losses + 1);
     adjustBetAfterLoss();
@@ -531,15 +489,12 @@ console.log("test",user.Balance)
           background: '#F56D63',
           color: '#FFFFFF',
           width: '90vw',
-
         },
       }
     )
-
   };
 
   const updateGameHistory = (data, status) => {
-    // console.log("bet in updateGame history", data.bet)
     const newHistory = [{
       crash: status === 'crashed' ? data.crash : 'x',
       bet: data.bet,
@@ -551,62 +506,38 @@ console.log("test",user.Balance)
   };
 
   const updateBalance = (profit) => {
-    // console.log("profit of update balance", profit)
-    // console.log("balance of user", user.Balance)
     const newBalance = (parseFloat(user.Balance) + parseFloat(profit)).toFixed(2);
-    // console.log("balance newbalance", newBalance)
     balanceRef.current = newBalance;
     setBalance(newBalance);
-    // console.log("newBalance", newBalance)
     const updatedUser = { ...user, Balance: newBalance }
     setUser(updatedUser)
   };
-  // console.log(balance)
+
   const adjustBetAfterWin = () => {
     if (autoMode) {
-      // console.log("betAutoRef.current in adjustBetAfterWin ", betAutoRef.current)
-      // console.log("operation AfterWInRef ", operationAfterWinRef.current)
-      // console.log("balanceRef ", balanceRef.current)
       if (operationAfterWinRef.current === 'Increase Bet by') {
         const afterWinBet = Math.min(realBetRef.current * valueAfterWinRef.current, balance)
         realBetRef.current = afterWinBet;
         setBet(afterWinBet)
-        // setBet(Math.min(bet * valueAfterWinRef.current, balanceRef.current));
-        // betAutoRef.current = Math.min(betAutoRef.current * valueAfterWinRef.current, balanceRef.current);
       } else {
         const returnBet = Math.min(betAutoRef.current, balance)
-        // console.log("realBetRefBefore", realBetRef.current);
         realBetRef.current = returnBet;
-        // console.log("realBetRefAfter", realBetRef.current);
         setBet(returnBet)
-        // setBet(Math.min(betAutoRef.current, balanceRef.current));
-        // betAutoRef.current = Math.min(betAutoRef.current, balanceRef.current);
       }
-      // setBet(betAutoRef.current);
     }
   };
-  // console.log("valueAfterWinRef.current", valueAfterWinRef.current)
-  // console.log("balanceRef.current", balanceRef.current)
 
   const adjustBetAfterLoss = () => {
     if (autoMode) {
       const lostAfterBet = Math.min(realBetRef.current * valueAfterLossRef.current, balance)
       if (operationAfterLossRef.current === 'Increase Bet by') {
-        // betAutoRef.current = Math.min(betAutoRef.current * valueAfterLossRef.current, balanceRef.current);
-        // console.log("realBetRefBefore", realBetRef.current);
         realBetRef.current = lostAfterBet;
-        // console.log("realBetRefAfter", realBetRef.current);
         setBet(lostAfterBet)
-        // setBet(Math.min(bet * valueAfterLossRef.current, balanceRef.current));
       } else {
-        // betAutoRef.current = Math.min(betAutoRef.current, balanceRef.current);
-        // setBet(Math.min(betAutoRef.current, balanceRef.current));
         const returnBet = Math.min(betAutoRef.current, balance)
         realBetRef.current = returnBet;
-        setBet(returnBet)
-
+        setBet(returnBet);
       }
-      // setBet(betAutoRef.current);
     }
   };
 
@@ -619,24 +550,19 @@ console.log("test",user.Balance)
     stopGame('x');
     navigate("/userInfo");
   }
+
   if (tabId === 2) {
     setTabId(1);
     setInfoState(true)
   }
 
-  // console.log("bet: ", bet, " betAutoRef: ", betAutoRef.current);
   return (
     <>
       <Suspense fallback={<FetchLoading />}>
         <div className="flex-auto p-4">
-
           <div id='index-operations' className={`flex flex-col relative h-full w-full gap-4 justify-between ${autoMode ? 'auto-mode' : ''} transition flex flex-col gap-4 ${isAction === "start" ? "pb-0" : "pb-[76px]"}`}>
-
-
             <div className={`flex w-full absolute bg-white_20 justify-between transition transform duration-200 p-2 rounded-[10px] text-white text-base leading-5 ${isAction === "start" ? "-translate-y-24" : ""} `} onClick={goToUserInfo}>
-
               <div className="flex gap-2.5">
-                {/* <img src={avatarData[RANKINGDATA.indexOf(user.Ranking)]} width="64px" height="64px" className="max-w-16 h-16" alt="avatar" /> */}
                 <LazyLoadImage
                   alt="user ranking avatar"
                   effect="blur"
@@ -655,21 +581,15 @@ console.log("test",user.Balance)
                   <p className="text-[#ffffff99]">{user.Rank}</p>
                 </div>
               </div>
-
-
               <div className="flex flex-col gap-2">
                 <PannelScore img={Img.agree} text2={"Won"} text3={user.GameWon} />
                 <PannelScore img={Img.disagree} text2={"Lost"} text3={user.GameLost} />
               </div>
-
             </div>
-
-
             <div className={` transform translate-y-[100px] bg-cover bg-center bg-opacity-20 justify-between flex gap-2 px-4 py-2 items-center reward-bg h-[76px] rounded-[10px] ${rewardState ? "" : "hidden"}`} style={{ background: `url(${rewardBG})` }}>
               <div>
                 <img src="/image/cup.png" width={48} height={48} className="max-w-12 h-12" alt='cup'></img>
               </div>
-
               <div className="text-[15px] w-1/2 leading-5 tracking-[-2%] text-white">You have unclaimed tasks that you can get rewards for.</div>
               <Link to='/earn'>
                 <ShadowButton
@@ -681,21 +601,18 @@ console.log("test",user.Balance)
               <div className="absolute w-[30px], h-[30px]  top-0 right-0" onClick={() => setRewardState(false)}>
                 <img src="/image/icon/CloseButton.svg" width={30} height={30} className="max-w-[30px] h-[30px]" alt="close" />
               </div>
-
             </div>
-            <TabButton className={`transform translate-y-[100px] ${isAction === "start" ? "-translate-y-[150px]" : ""} `} tabList={statsList} tabNo={tabId} setTabNo={setTabId} />
+            <TabButton className={`transform translate-y-[100px] z-10 ${isAction === "start" ? "-translate-y-[150px]" : ""} `} tabList={statsList} tabNo={tabId} setTabNo={setTabId} />
             <Game className={`transition-all ${isAction !== "start" ? "mt-24" : "mt-0"} `} finalResult={finalResult} gamePhase={gamePhase} isWin={winState} stopGame={(e) => stopGame(e)}
-              setLoaderIsShown={setLoaderIsShown} amount={balance} bet={bet} autoStop={autoStop} socketFlag={socketStart} realGame={isReal} setInfoState={(e) => setInfoState(e)} 
-              startGame={startGame} autoMode={autoMode} updateBalance = {updateBalance} />
-
+              setLoaderIsShown={setLoaderIsShown} amount={balance} bet={bet} autoStop={autoStop} socketFlag={socketStart} realGame={isReal} setInfoState={(e) => setInfoState(e)}
+              startGame={startGame} autoMode={autoMode} updateBalance={updateBalance} />
             <div className="flex flex-col text-white gap-4 z-10">
               <div >
                 <div className={`flex flex-row justify-center text-base z-10 font-medium ${gamePhase === 'started' ? "opacity-20 !text-white" : ""}`}>
-                  <span className={`text-[#3861FB] ${!autoMode ? 'selected text-white ' : ''}`} onClick={gamePhase !== 'started' ? e => setPlayMode(false) : undefined} >Manual</span>
+                  <span className={`${!autoMode ? 'selected text-white ' : 'text-[#FAE365]'}`} onClick={gamePhase !== 'started' ? e => setPlayMode(false) : undefined} >Manual</span>
                   <SwitchButton checked={autoMode} onChange={gamePhase !== 'started' ? (e => setPlayMode(e.target.checked)) : undefined} />
-                  <span className={`text-[#3861FB] ${autoMode ? 'selected text-white ' : ''}`} onClick={gamePhase !== 'started' ? e => setPlayMode(true) : undefined} >Auto</span>
+                  <span className={`${autoMode ? 'selected text-white ' : 'text-[#FAE365]'}`} onClick={gamePhase !== 'started' ? e => setPlayMode(true) : undefined} >Auto</span>
                 </div>
-
                 <div className={`transition duration-300 ${autoMode && "hidden"} flex gap-4  z-10`}>
                   <div className="flex flex-col w-1/2 gap-1">
                     <div className="text-sm leading-5  z-10">Bet</div>
@@ -708,7 +625,6 @@ console.log("test",user.Balance)
                     }} />
                     <div className="text-xs leading-[14px] text-[#FFFFFFCC]  z-10">Minimal Bet is 1 Coin</div>
                   </div>
-
                   <div className="flex flex-col w-1/2 gap-1">
                     <div className="text-sm leading-5">Auto Stop</div>
                     <InputNumber InputProps={{ value: autoStopManual, min: 1.1, max: 100, step: 1, disabled: gamePhase === 'started', type: "xWithNumber", onChange: e => { setAutoStopManual(e.target.value) } }} />
@@ -718,7 +634,6 @@ console.log("test",user.Balance)
               </div>
 
               {
-                // gamePhase !== 'started'  ?
                 gamePhase !== 'started' ?
                   (
                     <div className="flex gap-2 w-full justify-between">
@@ -727,7 +642,7 @@ console.log("test",user.Balance)
                         action={() => setIsModalOpen(true)}
                       />}
                       <ShadowButton
-                      className={"z-10"}
+                        className={"z-10"}
                         action={handleStartGame}
                         content={"Start"}
                         disabled={
@@ -763,32 +678,27 @@ console.log("test",user.Balance)
                         }} />
                         <div className="text-xs leading-[14px] text-[#FFFFFFCC]">Minimal Bet is 1 Coin</div>
                       </div>
-
                       <div className="flex flex-col w-1/2 gap-1">
                         <div className="text-sm leading-5">Auto Stop</div>
                         <InputNumber InputProps={{ value: autoStopAM, min: 1.1, max: 100, step: 1, type: "xWithNumber", onChange: e => { setAutoStopAM(e.target.value) } }} />
                         <div className="text-xs leading-[14px] text-[#FFFFFFCC]">Auto Cash Out when this amount will be reached</div>
                       </div>
                     </div>
-
                     <div className="flex flex-col gap-[15px]">
                       <div className="flex flex-col w-full gap-1">
                         <div className="text-sm leading-5">If Lose</div>
                         <SwitchButtonOption contents={operationOption} setSlot={(e) => setOperationAfterLoss(e)} slot={operationAfterLoss} />
                       </div>
-
                       <div className="flex flex-col w-full gap-1">
                         <div className="text-sm leading-5">Coefficient</div>
                         <InputNumber InputProps={{ value: lostCoefficient, min: 1, max: 100, step: 1, type: "xWithNumber", disabled: operationAfterLoss === "Return to base Bet", onChange: e => { setLostCoefficient(parseFloat(e.target.value)) } }} />
                       </div>
                     </div>
-
                     <div className="flex flex-col gap-[15px]">
                       <div className="flex flex-col w-full gap-1">
                         <div className="text-sm leading-5">If Win</div>
                         <SwitchButtonOption contents={operationOption} setSlot={(e) => setOperationAfterWin(e)} slot={operationAfterWin} />
                       </div>
-
                       <div className="flex flex-col w-full gap-1">
                         <div className="text-sm leading-5 text-[#FFFFFF99]">Coefficeent</div>
                         <InputNumber InputProps={{ value: winCoefficient, min: 1, max: 100, step: 1, type: "xWithNumber", disabled: operationAfterWin === "Return to base Bet", onChange: e => { setWinCoefficient(e.target.value) } }} />
@@ -800,7 +710,7 @@ console.log("test",user.Balance)
                     gamePhase !== 'started' ?
                       (
                         <ShadowButton
-                        className={"z-10"}
+                          className={"z-10"}
                           action={handleModalButton}
                           content={"Start"}
                           disabled={
@@ -818,6 +728,7 @@ console.log("test",user.Balance)
                         />
                       )
                   }
+
                 </div>
               </SettingModal>
 
@@ -838,12 +749,12 @@ console.log("test",user.Balance)
                 </div>
                 <div className=" flex gap-4">
                   <Link to={'/help'} className="w-1/2">
-                    <ShadowButton className=" bg-white text-[#3861FB] invite-btn-setting !border-[#F3E3E3]" content="learn more" />
+                    <ShadowButton className=" bg-white text-mainFocus invite-btn-setting !border-[#F3E3E3]" content="learn more" />
                   </Link>
                   <ShadowButton className="w-1/2" content="Got it!" action={() => setFirstLogin(false)} />
-
                 </div>
               </InfoModal>
+
               <InfoModal title="Coming soon!" isOpen={infoState} setIsOpen={() => setInfoState(false)} height="h-[280px]">
                 <div className="flex items-center justify-center">
                   <img src='image/icon/rocketx.svg' width="48px" height="48px" className="max-w-[48px] h-[48px]" alt="avatar" />
@@ -857,8 +768,8 @@ console.log("test",user.Balance)
                   </div>
                   <Contact />
                 </div>
-
               </InfoModal>
+
             </div>
           </div>
         </div>

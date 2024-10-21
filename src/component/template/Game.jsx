@@ -22,13 +22,15 @@ export default memo(function Game({ gamePhase, finalResult, amount = 10.00,
   const [counterFlag, setCounterFlag] = useState(false);
   const [isImgShow, setIsImgShow] = useState(false);
   const [fallGameScore, setFallGameScore] = useState(0);
-  const [saveLastScore, setSaveLastScore] = useState(0)
+  const [saveLastScore, setSaveLastScore] = useState(0);
+  const [planetPos, setPlanetPos] = useState({ x: -300, y: 0 });
+  const [spaceFogPos, setSpaceFogPos] = useState({y1: -170, y2: -1251});
+
   const serverUrl = REACT_APP_SERVER;
   let gameRef = useRef(null)
   const counterItem = [Img.go, Img.counter1, Img.counter2, Img.counter3];
   let comment;
   let score = finalResult === 'Crashed...' ? 'Crashed...' : finalResult || currentResult
-
 
   const view = useRef(null);
   let gameId = (Math.random() * 10000) | 0;
@@ -36,42 +38,37 @@ export default memo(function Game({ gamePhase, finalResult, amount = 10.00,
   const gamePlay = () => {
     gameRef.current = new FallGame(gameId++, autoStop, bet);
     view.current.append(gameRef.current.view);
-    // game.onStartPauseClick()
-    // console.log()
-    // gameStart()
   }
+
   const gameStop = () => {
     if (gameRef.current) {
       console.log("game info ", game)
       const headers = new Headers();
       headers.append('Content-Type', 'application/json')
       console.log("fetch before user balance", fallGameScore);
-      fetch(`${serverUrl}/charge_balance`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, amount: fallGameScore }), headers })
+      
+      if (gamePhase === 'stopped') {
+        fetch(`${serverUrl}/charge_balance`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, amount: fallGameScore + bet * autoStop }), headers })
+      } else {
+        fetch(`${serverUrl}/charge_balance`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, amount: -bet }), headers })
+        updateBalance(-fallGameScore);
+      }
+
       setFallGameScore(0);
       setSaveLastScore(0)
-      console.log("fetch after user balance", user.Balance)
       gameRef.current.destroy();
-      console.log("destroy after user balance", user.Balance)
       gameRef.current = null;
     }
   }
-  // const gameScore = () => {
-  //   console.log(gameRef.current.getScore())
-  // }
 
   if (gamePhase === 'stopped') {
     clearInterval(timerHandler)
     score = 0
   }
-  // console.log("socket info in game : ", context.socket)
-  // console.log("autoStop in game : ", autoStop)
+
   useEffect(() => {
     if (autoMode) {
-      // console.log("score: ", parseFloat(score.slice(1)), " autostop : ", parseFloat(autoStop) + 0.1, " gamephage: ", gamePhase)
-      // console.log("condition : ", (score > 1.1 && gamePhase === "started"))
-      // if(parseFloat(score.slice(1))>1.1 && gamePhase==="started") stopGame(autoStop)
       if (parseFloat(score.slice(1)) > parseFloat(autoStop) + 0.1 && gamePhase === "started") {
-        // if (parseFloat(score.slice(1)) > parseFloat(1) + 0.1 && gamePhase === "started") {
         stopGame(parseFloat(autoStop))
         setTimeout(() => {
           startGame()
@@ -80,12 +77,8 @@ export default memo(function Game({ gamePhase, finalResult, amount = 10.00,
     }
   }, [score, gamePhase, autoMode])
 
-  console.log("fallGameScore", fallGameScore)
   useEffect(() => {
-
-
     if (gamePhase === 'started') {
-
       setCurrentResult(1);
       setCounterNumber(4);
       setTimerRounded(0);
@@ -105,10 +98,8 @@ export default memo(function Game({ gamePhase, finalResult, amount = 10.00,
           setTimerRounded((prevRound) => prevRound + 0.61);
           const newCounterNumber = 5 - Math.ceil(time);
 
-
           // Check if the counter has reached zero
           if (newCounterNumber <= 0) {
-            gamePlay();
             clearInterval(newCountTimeHandler); // Clear the interval when counter reaches zero
             setCounterNumber(0);// Ensure counter is set to zero
             setCounterFlag(true)
@@ -121,17 +112,14 @@ export default memo(function Game({ gamePhase, finalResult, amount = 10.00,
               userId: user.UserId
             }));
 
-
           } else {
             setCounterNumber(newCounterNumber);
           }
-
         }, 10);
 
         // Update the handler reference
         setCountTimeHandler(newCountTimeHandler);
       }
-
     } else if (gamePhase === 'stopped' || gamePhase === 'crashed') {
       gameStop();
       comment = null
@@ -149,24 +137,45 @@ export default memo(function Game({ gamePhase, finalResult, amount = 10.00,
     let timer = new Date().getTime();
     let isMounted = true;
 
-    socketFlag && counterFlag && setTimerHandler(setInterval(() => {
-      let new_timer = new Date().getTime() - timer;
-      if (isMounted) {
-        try {
-          setCurrentResult((ACCELERATION * new_timer * new_timer / 2 + 1).toFixed(2))
-        } catch (e) {
-          // eslint-disable-next-line no-self-assign
-          document.location.href = document.location.href
+    if (socketFlag && counterFlag) {
+      setTimerHandler(setInterval(() => {
+        let new_timer = new Date().getTime() - timer;
+        if (isMounted) {
+          try {
+            setPlanetPos((prevPos) => {
+              if (prevPos.x > window.innerWidth || prevPos.y > window.innerHeight) {
+                return {
+                  x: -300, // Create a new x position
+                  y: 0, // Create a new y position
+                }
+              } else {
+                return {
+                  x: prevPos.x + 0.05, // Create a new x position
+                  y: prevPos.y + 0.05, // Create a new y position
+                }
+              }
+            });
+            setSpaceFogPos((prevPos) => ({
+              y1: prevPos.y1 > window.innerHeight ? prevPos.y2 - 1081 : prevPos.y1 + 0.15,
+              y2: prevPos.y2 > window.innerHeight ? prevPos.y1 - 1081 : prevPos.y2 + 0.15
+            }));
+            setCurrentResult((ACCELERATION * new_timer * new_timer / 2 + 1).toFixed(2))
+          } catch (e) {
+            // eslint-disable-next-line no-self-assign
+            document.location.href = document.location.href
+          }
         }
-      }
-    }, 1))
-  }, [counterFlag, socketFlag])
+      }, 1));
+      gamePlay();
+    }
 
+  }, [counterFlag, socketFlag])
 
   useEffect(() => {
     if (context.socket) {
       context.socket.send(JSON.stringify({ operation: 'stop' }))
     }
+
     if (gamePhase === 'stopped') {
       document.getElementById('stars1').style.animationPlayState =
         document.getElementById('stars2').style.animationPlayState =
@@ -180,13 +189,10 @@ export default memo(function Game({ gamePhase, finalResult, amount = 10.00,
   }, [score])
 
   useEffect(() => {
-    console.log("fallgame score update before", fallGameScore)
-    console.log("last fallgame score update before", saveLastScore)
     updateBalance((fallGameScore - saveLastScore))
     setSaveLastScore(fallGameScore)
   }, [fallGameScore])
-  // console.log("fallgame score",fallGameScore)
-  // console.log("lastscore",saveLastScore)
+
   const generateGauge = () => {
     const price = 0.5
     let first = price - currentResult % price
@@ -245,7 +251,7 @@ export default memo(function Game({ gamePhase, finalResult, amount = 10.00,
         document.querySelector('footer').classList.remove('dark-mode')
       }
     } catch (e) {
-
+      return;
     }
   }
 
@@ -289,7 +295,6 @@ export default memo(function Game({ gamePhase, finalResult, amount = 10.00,
     score += '.00'
   }
 
-
   score = score === 'Crashed...' ? '' : `x${score}`
 
   useEffect(() => {
@@ -299,16 +304,38 @@ export default memo(function Game({ gamePhase, finalResult, amount = 10.00,
     }
   }, [isWin])
 
-
-
   return (
     <div id='game' className={`${className} flex-auto flex flex-col h-fit justify-between items-center relative`}>
+      <img
+        src={Img.spaceFog}
+        alt="spaceFog"
+        width={589}
+        height={1081}
+        className={`max-w-[589px] h-[1081px] fixed`}
+        style={{ top: `${spaceFogPos.y2.toString()}px` }}
+      />
+      <img
+        src={Img.spaceFog}
+        alt="spaceFog"
+        width={589}
+        height={1081}
+        className={`max-w-[589px] h-[1081px] fixed`}
+        style={{ top: `${spaceFogPos.y1.toString()}px` }}
+      />
+      <img
+        src={Img.planet}
+        alt="planet"
+        width={300}
+        height={300}
+        className={`max-w-[300px] h-[300px] fixed`}
+        style={{ top: `${planetPos.y.toString()}px`, right: `${planetPos.x.toString()}px` }}
+      />
       <div className='top-0 left-0 fixed z-[1]' ref={view}></div>
       <div className='flex flex-col items-center justify-between'>
         <div className="flex gap-2 items-center justify-center font-extrabold z-10 ">
           <img src={Img.coin} width={44} height={44} className="max-w-11 h-11" alt="coin" />
           <p className="text-[40px] text-white font-extrabold">{parseFloat(amount).toFixed(2)}</p>
-          <Link to='/help' className={`bg-[#3434DA] w-8 h-8 rounded-lg p-1 ${gamePhase === 'started' && 'hidden'}`} >
+          <Link to='/help' className={`bg-main w-8 h-8 rounded-lg p-1 ${gamePhase === 'started' && 'hidden'}`} >
             <img src="/image/icon/info.svg" width={24} height={24} className='max-w-6 h-6' alt="info" />
           </Link>
         </div>

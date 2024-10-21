@@ -11,6 +11,8 @@ module.exports = {
         'bgNavbar': '#3861fb',
         'blueFaded': "#ACC1D9",
         'gradient-border': 'linear-gradient(180deg, #FFFFFF 0%, #FAD557 100%)',
+        'main': "#560D5E",
+        'mainFocus': "#923f9bb5"
       },
       fontFamily: {
         roboto: ['Roboto', 'sans-serif'],

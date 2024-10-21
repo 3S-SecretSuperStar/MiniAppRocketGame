@@ -238,21 +238,21 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
           task.link === "" ?
             task.index === 25 || task.index === 26 && !wallet ?
               <Link to={'/wallet'}>
-                <button className="rounded-lg w-[61px] py-1 px-0 h-7 bg-[#3861FB] text-white text-center text-[14px]" >
+                <button className="rounded-lg w-[61px] py-1 px-0 h-7 bg-mainFocus text-white text-center text-[14px]" >
                   Start
                 </button>
               </Link> :
               (task.index === 26 && wallet) ?
-                <button className="rounded-lg w-[61px] py-1 px-0 h-7 bg-[#3861FB] text-white text-center text-[14px]" onClick={() => sendTransaction(500)} >
+                <button className="rounded-lg w-[61px] py-1 px-0 h-7 bg-mainFocus text-white text-center text-[14px]" onClick={() => sendTransaction(500)} >
                   Start
                 </button> :
                 <Link to={'/play'}>
-                  <button className="rounded-lg w-[61px] py-1 px-0 h-7 bg-[#3861FB] text-white text-center text-[14px]" >
+                  <button className="rounded-lg w-[61px] py-1 px-0 h-7 bg-mainFocus text-white text-center text-[14px]" >
                     Start
                   </button>
                 </Link> :
 
-            <button className="rounded-lg w-[61px] py-1 px-0 h-7 bg-[#3861FB] text-white text-center text-[14px]"
+            <button className="rounded-lg w-[61px] py-1 px-0 h-7 bg-mainFocus text-white text-center text-[14px]"
               onClick={() => followHandle(task.index)} >
               {
                 isPending ?

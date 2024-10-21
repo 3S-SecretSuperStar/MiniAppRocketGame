@@ -28,7 +28,7 @@ const SettingModal = ({ children, icon, title, isOpen, setIsOpen }) => {
         >
             <div
                 className={
-                    `absolute bottom-0 rounded-tl-[10px] h-screen rounded-tr-[10px] w-full bg-gradient-to-b from-[#0000D0] to-[#9393EB]
+                    `absolute bottom-0 rounded-tl-[10px] h-screen rounded-tr-[10px] w-full bg-gradient-to-b from-[#480B97] to-[#BA2BA1]
                     ${isExiting ? 'animate-slide-out-bottom' : 'animate-slide-in-top'}`
                 }
             >

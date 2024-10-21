@@ -36,6 +36,8 @@ import meteor from "./meteor.png"
 import crater from "./crater.png"
 import destroy from "./destroy.png"
 import ufo from "./ufo.png"
+import planet from "./planet.png";
+import spaceFog from "./space_fog.png";
 
 export const Img = {
   agree, disagree, counter1, counter2, counter3,
@@ -46,5 +48,5 @@ export const Img = {
   imgRockrtStar, imgBrilliant, imgCrushing, imgGenius,
   imgImpressive, imgUnstoppable, imgGotThis, imgFire,
   imgAfterAction, imgButtons, imgSelectButton, warnningIcon,
-  meteor, crater, destroy,ufo
+  meteor, crater, destroy, ufo, planet, spaceFog
 }; 
