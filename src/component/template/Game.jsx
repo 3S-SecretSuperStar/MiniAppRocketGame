@@ -50,7 +50,6 @@ export default memo(function Game({ gamePhase, finalResult, amount = 10.00,
       if (gamePhase === 'stopped') {
         fetch(`${serverUrl}/charge_balance`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, amount: fallGameScore + bet * autoStop }), headers })
       } else {
-        fetch(`${serverUrl}/charge_balance`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, amount: -bet }), headers })
         updateBalance(-fallGameScore);
       }
 
