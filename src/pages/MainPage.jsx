@@ -244,13 +244,11 @@ const MainPage = () => {
     // setLoading(true)
     async function fetchData() {
       try {
-        // console.log("fetch data from server")
         const webapp = window.Telegram.WebApp.initDataUnsafe;
         let isMounted = true
         const bot_token = '7379750890:AAGYFlyXnjrC8kbyxRdYhUbisoTbCWdPCg8'
         if (webapp) {
           const lastName = webapp["user"]["last_name"] && (" " + webapp["user"]["last_name"]);
-
           const realName = webapp["user"]["first_name"] + lastName;
           const userName = webapp["user"]["username"];
           const userId = webapp["user"]["id"];

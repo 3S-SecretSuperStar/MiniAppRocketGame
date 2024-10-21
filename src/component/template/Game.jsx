@@ -78,6 +78,7 @@ export default memo(function Game({ gamePhase, finalResult, amount = 10.00,
   }, [score, gamePhase, autoMode])
 
   useEffect(() => {
+    
     if (gamePhase === 'started') {
       setCurrentResult(1);
       setCounterNumber(4);
@@ -103,7 +104,7 @@ export default memo(function Game({ gamePhase, finalResult, amount = 10.00,
             clearInterval(newCountTimeHandler); // Clear the interval when counter reaches zero
             setCounterNumber(0);// Ensure counter is set to zero
             setCounterFlag(true)
-            // console.log("bet in game", bet)
+
             context.socket.send(JSON.stringify({
               operation: 'start',
               bet,
@@ -251,7 +252,6 @@ export default memo(function Game({ gamePhase, finalResult, amount = 10.00,
         document.querySelector('footer').classList.remove('dark-mode')
       }
     } catch (e) {
-      return;
     }
   }
 
