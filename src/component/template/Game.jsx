@@ -24,7 +24,7 @@ export default memo(function Game({ gamePhase, finalResult, amount = 10.00,
   const [fallGameScore, setFallGameScore] = useState(0);
   const [saveLastScore, setSaveLastScore] = useState(0);
   const [planetPos, setPlanetPos] = useState({ x: -300, y: 0 });
-  const [spaceFogPos, setSpaceFogPos] = useState({y1: -170, y2: -1251});
+  const [spaceFogPos, setSpaceFogPos] = useState({ y1: -170, y2: -1251 });
 
   const serverUrl = REACT_APP_SERVER;
   let gameRef = useRef(null)
@@ -46,7 +46,7 @@ export default memo(function Game({ gamePhase, finalResult, amount = 10.00,
       const headers = new Headers();
       headers.append('Content-Type', 'application/json')
       console.log("fetch before user balance", fallGameScore);
-      
+
       if (gamePhase === 'stopped') {
         fetch(`${serverUrl}/charge_balance`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, amount: fallGameScore + bet * autoStop }), headers })
       } else {
@@ -78,7 +78,7 @@ export default memo(function Game({ gamePhase, finalResult, amount = 10.00,
   }, [score, gamePhase, autoMode])
 
   useEffect(() => {
-    
+
     if (gamePhase === 'started') {
       setCurrentResult(1);
       setCounterNumber(4);
@@ -190,8 +190,10 @@ export default memo(function Game({ gamePhase, finalResult, amount = 10.00,
   }, [score])
 
   useEffect(() => {
-    updateBalance((fallGameScore - saveLastScore))
-    setSaveLastScore(fallGameScore)
+    if (fallGameScore > 0) {
+      updateBalance((fallGameScore - saveLastScore))
+      setSaveLastScore(fallGameScore)
+    }
   }, [fallGameScore])
 
   const generateGauge = () => {
