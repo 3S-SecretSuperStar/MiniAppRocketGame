@@ -420,7 +420,7 @@ const MainPage = () => {
     setGamePhase('stopped');
     updateGameHistory(data, 'stopped');
 
-    data.profit && updateBalance(data.profit - bet);
+    // data.profit && updateBalance(data.profit - bet);
     setGames(games + 1);
     setWins(wins + 1);
     adjustBetAfterWin();
