@@ -68,8 +68,6 @@ const MainPage = () => {
   let performTask = [];
   let testCounter = 0;
 
-
-
   // Refs for mutable state
   const balanceRef = useRef(balance);
   const historyGamesRef = useRef(historyGames);
@@ -124,7 +122,6 @@ const MainPage = () => {
   }
 
   const handleStartButton = () => {
-
     startGame()
   }
   // setRealGame(true)
@@ -170,7 +167,6 @@ const MainPage = () => {
     }
   }, [bet, autoStop, balance, lostCoefficient, winCoefficient]);
 
-
   useEffect(() => {
     operationAfterWinRef.current = operationAfterWin;
     valueAfterWinRef.current = winCoefficient;
@@ -184,8 +180,6 @@ const MainPage = () => {
   useEffect(() => {
     let isMounted = true
     if (gamePhase !== 'started' && autoMode && !stopWasPressed && balance >= betAutoRef.current && betAutoRef.current) {
-      // console.log("balanceRef.current in auto game", balanceRef.current)
-      // console.log("betAutoRef.current in auto game", betAutoRef.current)
       if (isMounted) {
         try {
           setTimeout(() => {
@@ -254,93 +248,92 @@ const MainPage = () => {
         // const webapp = window.Telegram.WebApp.initDataUnsafe;
         let isMounted = true
         const bot_token = '7379750890:AAGYFlyXnjrC8kbyxRdYhUbisoTbCWdPCg8'
-        // if (webapp) {
-        // const lastName = webapp["user"]["last_name"] && (" " + webapp["user"]["last_name"]);
+        if (webapp) {
+          const lastName = webapp["user"]["last_name"] && (" " + webapp["user"]["last_name"]);
 
-        // const realName = webapp["user"]["first_name"] + lastName;
-        // const userName = webapp["user"]["username"];
-        const realName = "ffff";
-        const userName = "ddd";
-        // const userId = webapp["user"]["id"];
-        const userId = 6977492118;
-        const historySize = 100;
-        let gamesHistory = { real: [], virtual: [] }
-        // console.log("uerInfo: ", userInfo)
-        const headers = new Headers()
-        headers.append('Content-Type', 'application/json')
-        if (isMounted) {
-          const userAvatarUrl = await getProfilePhotos(userId, bot_token);
-          const updateAvatarState = await updateAvatar(userAvatarUrl, userId);
-          // console.log(userAvatarUrl)
-          // console.log("userAvatarUrl ", updateAvatarState.url)
+          const realName = webapp["user"]["first_name"] + lastName;
+          const userName = webapp["user"]["username"];
+          const userId = webapp["user"]["id"];
+          // const realName = "ffff";
+          // const userName = "ddd";
+          // const userId = 6977492118;
+          const historySize = 100;
+          let gamesHistory = { real: [], virtual: [] }
+          // console.log("uerInfo: ", userInfo)
+          const headers = new Headers()
+          headers.append('Content-Type', 'application/json')
+          if (isMounted) {
+            const userAvatarUrl = await getProfilePhotos(userId, bot_token);
+            const updateAvatarState = await updateAvatar(userAvatarUrl, userId);
 
-          fetch(`${serverUrl}/users_info`, { method: 'POST', body: JSON.stringify({ realName: realName, userName: userName, userAvatarUrl: userAvatarUrl, userId: userId }), headers })
-            .then(res => Promise.all([res.status, res.json()]))
-            .then(([status, data]) => {
-              try {
-                if (gamePhase !== 'started') {
-                  const myData = data.userData;
-                  console.log("myData: ", myData)
-                  console.log("data : ", data)
-                  const virtualTaskState = myData.task.virtual;
+            fetch(`${serverUrl}/users_info`, { method: 'POST', body: JSON.stringify({ realName: realName, userName: userName, userAvatarUrl: userAvatarUrl, userId: userId }), headers })
+              .then(res => Promise.all([res.status, res.json()]))
+              .then(([status, data]) => {
+                try {
+                  if (gamePhase !== 'started') {
+                    const myData = data.userData;
+                    console.log("myData: ", myData)
+                    console.log("data : ", data)
+                    const virtualTaskState = myData.task.virtual;
 
-                  const realWins = myData.gamesHistory.real.filter(j => j.crash === 'x').length
-                  const realLosses = myData.gamesHistory.real.filter(j => j.stop === 'x').length
+                    const realWins = myData.gamesHistory.real.filter(j => j.crash === 'x').length
+                    const realLosses = myData.gamesHistory.real.filter(j => j.stop === 'x').length
 
-                  const dailyDate = myData.dailyHistory;
-                  const nowDate = moment().startOf('day');
-                  const selectedDate = moment(dailyDate).utc().local().startOf('day');
-                  const diffDate = nowDate.diff(selectedDate, 'days');
+                    const dailyDate = myData.dailyHistory;
+                    const nowDate = moment().startOf('day');
+                    const selectedDate = moment(dailyDate).utc().local().startOf('day');
+                    const diffDate = nowDate.diff(selectedDate, 'days');
 
-                  if (myData.gamesHistory.real.length > historySize) {
-                    gamesHistory.real = myData.gamesHistory.real.slice(myData.gamesHistory.real.length - historySize)
+                    if (myData.gamesHistory.real.length > historySize) {
+                      gamesHistory.real = myData.gamesHistory.real.slice(myData.gamesHistory.real.length - historySize)
+                    }
+
+                    const virtualWins = myData.gamesHistory.virtual.filter(j => j.crash === 'x').length
+                    const virtualLosses = myData.gamesHistory.virtual.filter(j => j.stop === 'x').length
+                    if (myData.gamesHistory.virtual.length > historySize) {
+                      gamesHistory.virtual = myData.gamesHistory.virtual.slice(myData.gamesHistory.virtual.length - historySize)
+                    }
+
+
+                    setGames(myData)
+                    const newBalance = parseFloat(isReal ? myData.balance.real : myData.balance.virtual).toFixed(2)
+                    setFirstLogin(myData.first_state !== "false");
+
+                    const rewardStates = !virtualTaskState.achieve_task.every(item => virtualTaskState.done_task.includes(item)) || myData.first_state !== "false" || diffDate >= 2;
+                    setRewardState(rewardStates);
+                    setBalance(newBalance)
+                    balanceRef.current = newBalance
+                    setUser({
+                      RealName: realName,
+                      UserName: userName,
+                      UserId: userId,
+                      Balance: newBalance,
+                      GameWon: isReal ? realWins : virtualWins,
+                      GameLost: isReal ? realLosses : virtualLosses,
+                      Rank: isReal ? data.realRank : data.virtualRank,
+                      Ranking: isReal ? myData.ranking.real : myData.ranking.virtual,
+                      FriendNumber: myData.friendNumber
+                    })
+                    const newHistoryGames = isReal ? gamesHistory.real : gamesHistory.virtual
+                    historyGamesRef.current = newHistoryGames
+                    setHistoryGames(newHistoryGames)
+                    setLoaderIsShown(false)
                   }
-
-                  const virtualWins = myData.gamesHistory.virtual.filter(j => j.crash === 'x').length
-                  const virtualLosses = myData.gamesHistory.virtual.filter(j => j.stop === 'x').length
-                  if (myData.gamesHistory.virtual.length > historySize) {
-                    gamesHistory.virtual = myData.gamesHistory.virtual.slice(myData.gamesHistory.virtual.length - historySize)
-                  }
-
-
-                  setGames(myData)
-                  const newBalance = parseFloat(isReal ? myData.balance.real : myData.balance.virtual).toFixed(2)
-                  setFirstLogin(myData.first_state !== "false");
-
-                  const rewardStates = !virtualTaskState.achieve_task.every(item => virtualTaskState.done_task.includes(item)) || myData.first_state !== "false" || diffDate >= 2;
-                  setRewardState(rewardStates);
-                  setBalance(newBalance)
-                  balanceRef.current = newBalance
-                  setUser({
-                    RealName: realName,
-                    UserName: userName,
-                    UserId: userId,
-                    Balance: newBalance,
-                    GameWon: isReal ? realWins : virtualWins,
-                    GameLost: isReal ? realLosses : virtualLosses,
-                    Rank: isReal ? data.realRank : data.virtualRank,
-                    Ranking: isReal ? myData.ranking.real : myData.ranking.virtual,
-                    FriendNumber: myData.friendNumber
-                  })
-                  const newHistoryGames = isReal ? gamesHistory.real : gamesHistory.virtual
-                  historyGamesRef.current = newHistoryGames
-                  setHistoryGames(newHistoryGames)
-                  setLoaderIsShown(false)
+                } catch (e) {
+                  // eslint-disable-next-line no-self-assign
+                  document.location.href = document.location.href
                 }
-              } catch (e) {
-                // eslint-disable-next-line no-self-assign
-                document.location.href = document.location.href
-              }
-              finally {
+                finally {
 
-                setTimeout(() => {
-                  setLoading(false)
-                  firstLoading && setActionState("ready")
-                  setFirstLoading(false);
-                }, 500)
-              }
-            })
-          await fetch(`${serverUrl}/check_first`, { method: 'POST', body: JSON.stringify({ userId: userId }), headers });
+                  setTimeout(() => {
+                    setLoading(false)
+                    firstLoading && setActionState("ready")
+                    setFirstLoading(false);
+                  }, 500)
+                }
+              })
+            await fetch(`${serverUrl}/check_first`, { method: 'POST', body: JSON.stringify({ userId: userId }), headers });
+          }
         }
         return () => {
           isMounted = false
