@@ -23,7 +23,7 @@ export default memo(function Game({ gamePhase, finalResult, amount = 10.00,
   const [counterFlag, setCounterFlag] = useState(false);
   const [isImgShow, setIsImgShow] = useState(false);
   const [saveLastScore, setSaveLastScore] = useState(0);
-  const [planetPos, setPlanetPos] = useState({ x: 0, y: 0 });
+  const [planetPos, setPlanetPos] = useState({ x: -300, y: -300 });
   const [spaceFogPos, setSpaceFogPos] = useState({ y1: -170, y2: -1251 });
 
   const serverUrl = REACT_APP_SERVER;
@@ -131,8 +131,8 @@ export default memo(function Game({ gamePhase, finalResult, amount = 10.00,
         if (isMounted) {
           try {
             setPlanetPos((prevPos) => ({
-              x: prevPos.x > window.innerWidth ? 0 : prevPos.x + window.innerWidth / 10000, // Create a new x position
-              y: prevPos.y > window.innerHeight ? 0 : prevPos.y + window.innerHeight / 10000, // Create a new y position
+              x: prevPos.x > window.innerWidth ? -300 : prevPos.x + (window.innerWidth + 300) / 10000, // Create a new x position
+              y: prevPos.y > window.innerHeight ? -300 : prevPos.y + (window.innerHeight + 300) / 10000, // Create a new y position
             }));
             setSpaceFogPos((prevPos) => ({
               y1: prevPos.y1 > window.innerHeight ? prevPos.y2 - 1081 : prevPos.y1 + 0.15,
