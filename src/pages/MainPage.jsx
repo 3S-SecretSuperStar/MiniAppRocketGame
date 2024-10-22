@@ -486,8 +486,8 @@ const MainPage = () => {
         },
       }
     )
+    chargeBalance(fallGameScore, 0);
   };
-  chargeBalance(fallGameScore, 0);
 
   const updateGameHistory = (data, status) => {
     const newHistory = [{
