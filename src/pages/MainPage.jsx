@@ -65,6 +65,7 @@ const MainPage = () => {
   const [continueCounter, setCointinueCounter] = useState(1)
   const [autoStopAM, setAutoStopAM] = useState(autoStop);
   const [autoStopManual, setAutoStopManual] = useState(autoStop);
+  const [fallGameScore, setFallGameScore] = useState(0);
   let performTask = [];
   let testCounter = 0;
 
@@ -424,10 +425,11 @@ const MainPage = () => {
     setGames(games + 1);
     setWins(wins + 1);
     adjustBetAfterWin();
+    chargeBalance(data.profit + fallGameScore, 1);
 
-    if (data.profit > 0) {
+    if (data.profit + fallGameScore > 0) {
       setWinstate(true);
-      toast(`${data.profit} coins added to your balance`,
+      toast(`${data.profit + fallGameScore} coins added to your balance`,
         {
           position: "top-center",
           icon: "🥳",
@@ -470,6 +472,7 @@ const MainPage = () => {
     setGames(games + 1);
     setLosses(losses + 1);
     adjustBetAfterLoss();
+    chargeBalance(fallGameScore, 0);
 
     toast(`You lost ${data.profit} coin`,
       {
@@ -542,6 +545,18 @@ const MainPage = () => {
     navigate("/userInfo");
   }
 
+  const chargeBalance = (profit, isWin) => {
+    const headers = new Headers();
+    headers.append('Content-Type', 'application/json');
+    if (isWin === 1) {
+      fetch(`${serverUrl}/charge_balance`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, amount: profit }), headers })
+      updateBalance(profit);
+    } else {
+      updateBalance(profit);
+    }
+    setFallGameScore(0);
+  }
+
   if (tabId === 2) {
     setTabId(1);
     setInfoState(true)
@@ -577,7 +592,7 @@ const MainPage = () => {
                 <PannelScore img={Img.disagree} text2={"Lost"} text3={user.GameLost} />
               </div>
             </div>
-            <div className={` transform translate-y-[100px] bg-cover bg-center bg-opacity-20 justify-between flex gap-2 px-4 py-2 items-center reward-bg h-[76px] rounded-[10px] ${rewardState ? "" : "hidden"}`} style={{ background: `url(${rewardBG})` }}>
+            <div className={`transform translate-y-[100px] bg-cover bg-center bg-opacity-20 justify-between flex gap-2 px-4 py-2 items-center reward-bg h-[76px] rounded-[10px] ${rewardState ? "" : "hidden"}`} style={{ background: `url(${rewardBG})` }}>
               <div>
                 <img src="/image/cup.png" width={48} height={48} className="max-w-12 h-12" alt='cup'></img>
               </div>
@@ -596,7 +611,7 @@ const MainPage = () => {
             <TabButton className={`transform translate-y-[100px] z-10 ${isAction === "start" ? "-translate-y-[150px]" : ""} `} tabList={statsList} tabNo={tabId} setTabNo={setTabId} />
             <Game className={`transition-all ${isAction !== "start" ? "mt-24" : "mt-0"} `} finalResult={finalResult} gamePhase={gamePhase} isWin={winState} stopGame={(e) => stopGame(e)}
               setLoaderIsShown={setLoaderIsShown} amount={balance} bet={bet} autoStop={autoStop} socketFlag={socketStart} realGame={isReal} setInfoState={(e) => setInfoState(e)}
-              startGame={startGame} autoMode={autoMode} updateBalance={updateBalance} />
+              startGame={startGame} autoMode={autoMode} updateBalance={updateBalance} fallGameScore={fallGameScore} setFallGameScore={setFallGameScore} />
             <div className="flex flex-col text-white gap-4 z-10">
               <div >
                 <div className={`flex flex-row justify-center text-base z-10 font-medium ${gamePhase === 'started' ? "opacity-20 !text-white" : ""}`}>

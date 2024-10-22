@@ -11,7 +11,8 @@ import FallGame from '../atom/fallGame'
 import { REACT_APP_SERVER } from '../../utils/privateData'
 
 export default memo(function Game({ gamePhase, finalResult, amount = 10.00,
-  className, bet, autoStop, socketFlag, realGame, isWin, stopGame, startGame, autoMode, updateBalance }) {
+  className, bet, autoStop, socketFlag, realGame, isWin, stopGame, startGame, autoMode, updateBalance, fallGameScore, setFallGameScore }) {
+
   const context = useContext(AppContext);
   const [currentResult, setCurrentResult] = useState(1)
   const [user,] = useAtom(userData)
@@ -21,7 +22,6 @@ export default memo(function Game({ gamePhase, finalResult, amount = 10.00,
   const [timerRounded, setTimerRounded] = useState(0);
   const [counterFlag, setCounterFlag] = useState(false);
   const [isImgShow, setIsImgShow] = useState(false);
-  const [fallGameScore, setFallGameScore] = useState(0);
   const [saveLastScore, setSaveLastScore] = useState(0);
   const [planetPos, setPlanetPos] = useState({ x: -300, y: 0 });
   const [spaceFogPos, setSpaceFogPos] = useState({ y1: -170, y2: -1251 });
@@ -42,19 +42,6 @@ export default memo(function Game({ gamePhase, finalResult, amount = 10.00,
 
   const gameStop = () => {
     if (gameRef.current) {
-      console.log("game info ", game)
-      const headers = new Headers();
-      headers.append('Content-Type', 'application/json')
-      console.log("fetch before user balance", fallGameScore);
-
-      if (gamePhase === 'stopped') {
-        fetch(`${serverUrl}/charge_balance`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, amount: fallGameScore + bet * autoStop }), headers })
-        updateBalance(bet * autoStop);
-      } else {
-        updateBalance(-fallGameScore);
-      }
-
-      setFallGameScore(0);
       setSaveLastScore(0)
       gameRef.current.destroy();
       gameRef.current = null;
@@ -343,7 +330,6 @@ export default memo(function Game({ gamePhase, finalResult, amount = 10.00,
         </div>
 
         <img className={`absolute top-1/3 z-10 max-w-[108px] ${counterNumber > 0 && counterNumber < 1.2 ? "" : "hidden"}`} src={counterItem[0]} width="108px" height="102px" alt="counter number" />
-
         {
           counterNumber < 5 &&
             counterNumber > 1.2 ?
