@@ -474,7 +474,7 @@ const MainPage = () => {
     adjustBetAfterLoss();
     chargeBalance(fallGameScore, 0);
 
-    toast(`You lost ${data.profit} coin`,
+    toast(`You lost ${data.profit + fallGameScore} coin`,
       {
         position: "top-center",
         icon: "😱",
