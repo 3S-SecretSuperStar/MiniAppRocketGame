@@ -473,6 +473,7 @@ const MainPage = () => {
     setLosses(losses + 1);
     adjustBetAfterLoss();
     chargeBalance(fallGameScore, 0);
+    console.log("lost coin", data.profit, ":", fallGameScore);
 
     toast(`You lost ${data.profit + fallGameScore} coin`,
       {
