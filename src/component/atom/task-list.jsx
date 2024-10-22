@@ -450,7 +450,6 @@ const TaskList = () => {
               }
               finally {
                 setTimeout(() => {
-                  setLoading(false)
                   firstLoading && setActionState("ready")
                   setFirstLoading(false);
                 }, 500)
@@ -487,14 +486,14 @@ const TaskList = () => {
       })
   }
 
-  if (loading && firstLoading) {
+  if (loading || firstLoading) {
     setActionState("start")
-    return <FetchLoading />
+    return <FetchLoading firstLoading={firstLoading} setLoading={setLoading} />
   }
 
   return (
     <Suspense fallback={<fetchData />}>
-      <div className="flex flex-col gap-2 text-[14px] overflow-auto pb-4" style={{ height: "calc(100vh - 200px)" }}>
+      <div className="flex flex-col gap-2 text-[14px] overflow-auto pb-4" style={{ height: "calc(100vh - 215px)" }}>
         {
           fixedTaskData
             .sort((a, b) => (a.sort - b.sort))

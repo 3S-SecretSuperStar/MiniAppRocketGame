@@ -96,7 +96,7 @@ const UserInfo = () => {
             }
             finally {
               setTimeout(() => {
-                setLoading(false)
+                setLoading(false);
                 firstLoading && setActionState("ready")
                 setFirstLoading(false);
               }, 500)
@@ -155,9 +155,9 @@ const UserInfo = () => {
 
 
   return (
-    // <Suspense fallback={<FetchLoading />}>
+    // <Suspense fallback={<FetchLoading firstLoading={setFirstLoading} setLoading={setLoading} />}>
     <div className="flex flex-col gap-4 items-center text-white text-base">
-      <div className="font-semibold text-ellipsis overflow-hidden w-52 whitespace-nowrap">{user.RealName}</div>
+      <div className="font-semibold text-ellipsis overflow-hidden w-52 whitespace-nowrap text-center">{user.RealName}</div>
       <TabButton tabList={statsList} tabNo={tabId} setTabNo={setTabId} />
       <div className="flex flex-col gap-4 overflow-auto w-full " style={{ height: "calc(100vh - 200px)" }}>
         <div className="flex gap-[41px] text-blueFaded text-sm justify-center">

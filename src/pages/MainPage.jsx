@@ -125,7 +125,7 @@ const MainPage = () => {
   const handleStartButton = () => {
     startGame()
   }
-  
+
   // Effect to validate and adjust state values
   useEffect(() => {
     if (gamePhase !== 'started') {
@@ -174,6 +174,7 @@ const MainPage = () => {
     operationAfterLossRef.current = operationAfterLoss;
     valueAfterLossRef.current = lostCoefficient;
   }, [operationAfterWin, winCoefficient, operationAfterLoss, lostCoefficient]);
+
   useEffect(() => {
 
   }, [context.socket])
@@ -326,7 +327,6 @@ const MainPage = () => {
                 finally {
 
                   setTimeout(() => {
-                    setLoading(false)
                     firstLoading && setActionState("ready")
                     setFirstLoading(false);
                   }, 500)
@@ -349,7 +349,10 @@ const MainPage = () => {
 
   if (loading && firstLoading) {
     setActionState("start")
-    return <FetchLoading />
+  }
+
+  if (loading || firstLoading) {
+    return <FetchLoading firstLoading={firstLoading} setLoading={setLoading} />
   }
 
   const startGame = () => {
@@ -425,9 +428,9 @@ const MainPage = () => {
 
     setGames(games + 1);
     setWins(wins + 1);
-    adjustBetAfterWin();    
+    adjustBetAfterWin();
     console.log("profit:", data.profit, ":", fallGameScoreRef.current);
-    
+
     if (data.profit + fallGameScoreRef.current > 0) {
       setWinstate(true);
       toast(`${data.profit + fallGameScoreRef.current} coins added to your balance`,
@@ -556,7 +559,7 @@ const MainPage = () => {
       fetch(`${serverUrl}/charge_balance`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, amount: profit }), headers })
       updateBalance(profit);
     } else {
-      updateBalance(profit);
+      updateBalance(-profit);
     }
     fallGameScoreRef.current = 0;
   }
@@ -568,222 +571,220 @@ const MainPage = () => {
 
   return (
     <>
-      <Suspense fallback={<FetchLoading />}>
-        <div className="flex-auto p-4">
-          <div id='index-operations' className={`flex flex-col relative h-full w-full gap-4 justify-between ${autoMode ? 'auto-mode' : ''} transition flex flex-col gap-4 ${isAction === "start" ? "pb-0" : "pb-[76px]"}`}>
-            <div className={`flex w-full absolute bg-white_20 justify-between transition transform duration-200 p-2 rounded-[10px] text-white text-base leading-5 z-10 ${isAction === "start" ? "-translate-y-24" : ""} `} onClick={goToUserInfo}>
-              <div className="flex gap-2.5">
-                <LazyLoadImage
-                  alt="user ranking avatar"
-                  effect="blur"
-                  wrapperProps={{
-                    style: {
-                      height: "64px",
-                      width: "64px",
-                      minWidth: "64px",
-                    },
-                  }}
-                  src={avatarData[RANKINGDATA.indexOf(user.Ranking)]}
-                />
-                <div className="flex flex-col w-full gap-0.5">
-                  <p className="font-semibold text-ellipsis overflow-hidden w-32 whitespace-nowrap">{user.RealName}</p>
-                  <p className="font-semibold">{user.Ranking} · {RANKINGDATA.indexOf(user.Ranking) + 1}/10</p>
-                  <p className="text-[#ffffff99]">{user.Rank}</p>
-                </div>
-              </div>
-              <div className="flex flex-col gap-2">
-                <PannelScore img={Img.agree} text2={"Won"} text3={user.GameWon} />
-                <PannelScore img={Img.disagree} text2={"Lost"} text3={user.GameLost} />
+      <div className="flex-auto p-4">
+        <div id='index-operations' className={`flex flex-col relative h-full w-full gap-4 justify-between ${autoMode ? 'auto-mode' : ''} transition flex flex-col gap-4 ${isAction === "start" ? "pb-0" : "pb-[76px]"}`}>
+          <div className={`flex w-full absolute bg-white_20 justify-between transition transform duration-200 p-2 rounded-[10px] text-white text-base leading-5 z-10 ${isAction === "start" ? "-translate-y-24" : ""} `} onClick={goToUserInfo}>
+            <div className="flex gap-2.5">
+              <LazyLoadImage
+                alt="user ranking avatar"
+                effect="blur"
+                wrapperProps={{
+                  style: {
+                    height: "64px",
+                    width: "64px",
+                    minWidth: "64px",
+                  },
+                }}
+                src={avatarData[RANKINGDATA.indexOf(user.Ranking)]}
+              />
+              <div className="flex flex-col w-full gap-0.5">
+                <p className="font-semibold text-ellipsis overflow-hidden w-32 whitespace-nowrap">{user.RealName}</p>
+                <p className="font-semibold">{user.Ranking} · {RANKINGDATA.indexOf(user.Ranking) + 1}/10</p>
+                <p className="text-[#ffffff99]">{user.Rank}</p>
               </div>
             </div>
-            <div className={`transform translate-y-[100px] bg-black bg-cover bg-center bg-opacity-40 justify-between flex gap-2 px-4 py-2 items-center reward-bg h-[76px] rounded-[10px] z-10 ${rewardState ? "" : "hidden"}`}>
-              <div>
-                <img src="/image/cup.png" width={48} height={48} className="max-w-12 h-12" alt='cup'></img>
+            <div className="flex flex-col gap-2">
+              <PannelScore img={Img.agree} text2={"Won"} text3={user.GameWon} />
+              <PannelScore img={Img.disagree} text2={"Lost"} text3={user.GameLost} />
+            </div>
+          </div>
+          <div className={`transform translate-y-[100px] bg-black bg-cover bg-center bg-opacity-40 justify-between flex gap-2 px-4 py-2 items-center reward-bg h-[76px] rounded-[10px] z-10 ${rewardState ? "" : "hidden"}`}>
+            <div>
+              <img src="/image/cup.png" width={48} height={48} className="max-w-12 h-12" alt='cup'></img>
+            </div>
+            <div className="text-[15px] w-1/2 leading-5 tracking-[-2%] text-white">You have unclaimed tasks that you can get rewards for.</div>
+            <Link to='/earn'>
+              <ShadowButton
+                content="Get Rewards"
+                className={`relative px-3 py-1 bg-[#84CB69] text-white shadow-btn-custom-border h-7 text-sm w-[108px] font-medium invite-btn-setting`}
+                action={() => setRewardState(false)}
+              />
+            </Link>
+            <div className="absolute w-[30px], h-[30px]  top-0 right-0" onClick={() => setRewardState(false)}>
+              <img src="/image/icon/CloseButton.svg" width={30} height={30} className="max-w-[30px] h-[30px]" alt="close" />
+            </div>
+          </div>
+          <TabButton className={`transform translate-y-[100px] z-10 ${isAction === "start" ? "-translate-y-[150px]" : ""} `} tabList={statsList} tabNo={tabId} setTabNo={setTabId} />
+          <Game className={`transition-all ${isAction !== "start" ? "mt-24" : "mt-0"} `} finalResult={finalResult} gamePhase={gamePhase} isWin={winState} stopGame={(e) => stopGame(e)}
+            setLoaderIsShown={setLoaderIsShown} amount={balance} bet={bet} autoStop={autoStop} socketFlag={socketStart} realGame={isReal} setInfoState={(e) => setInfoState(e)}
+            startGame={startGame} autoMode={autoMode} updateBalance={updateBalance} fallGameScore={fallGameScoreRef} />
+          <div className="flex flex-col text-white gap-4 z-10">
+            <div >
+              <div className={`flex flex-row justify-center text-base z-10 font-medium ${gamePhase === 'started' ? "opacity-20 !text-white" : ""}`}>
+                <span className={`${!autoMode ? 'selected text-white ' : 'text-[#FAE365]'}`} onClick={gamePhase !== 'started' ? e => setPlayMode(false) : undefined} >Manual</span>
+                <SwitchButton checked={autoMode} onChange={gamePhase !== 'started' ? (e => setPlayMode(e.target.checked)) : undefined} />
+                <span className={`${autoMode ? 'selected text-white ' : 'text-[#FAE365]'}`} onClick={gamePhase !== 'started' ? e => setPlayMode(true) : undefined} >Auto</span>
               </div>
-              <div className="text-[15px] w-1/2 leading-5 tracking-[-2%] text-white">You have unclaimed tasks that you can get rewards for.</div>
-              <Link to='/earn'>
-                <ShadowButton
-                  content="Get Rewards"
-                  className={`relative px-3 py-1 bg-[#84CB69] text-white shadow-btn-custom-border h-7 text-sm w-[108px] font-medium invite-btn-setting`}
-                  action={() => setRewardState(false)}
-                />
-              </Link>
-              <div className="absolute w-[30px], h-[30px]  top-0 right-0" onClick={() => setRewardState(false)}>
-                <img src="/image/icon/CloseButton.svg" width={30} height={30} className="max-w-[30px] h-[30px]" alt="close" />
+              <div className={`transition duration-300 ${autoMode && "hidden"} flex gap-4  z-10`}>
+                <div className="flex flex-col w-1/2 gap-1">
+                  <div className="text-sm leading-5  z-10">Bet</div>
+                  <InputNumber InputProps={{
+                    value: betManualRef.current, min: 1, step: 1, disabled: gamePhase === 'started', onChange: e => {
+                      setBet(parseFloat(e.target.value));
+                      realBetRef.current = e.target.value;
+                      betManualRef.current = parseFloat(e.target.value)
+                    }
+                  }} />
+                  <div className="text-xs leading-[14px] text-[#FFFFFFCC]  z-10">Minimal Bet is 1 Coin</div>
+                </div>
+                <div className="flex flex-col w-1/2 gap-1">
+                  <div className="text-sm leading-5">Auto Stop</div>
+                  <InputNumber InputProps={{ value: autoStopManual, min: 1.1, max: 100, step: 1, disabled: gamePhase === 'started', type: "xWithNumber", onChange: e => { setAutoStopManual(e.target.value) } }} />
+                  <div className="text-xs leading-[14px] text-[#FFFFFFCC]">Auto Cash Out when this amount will be reached</div>
+                </div>
               </div>
             </div>
-            <TabButton className={`transform translate-y-[100px] z-10 ${isAction === "start" ? "-translate-y-[150px]" : ""} `} tabList={statsList} tabNo={tabId} setTabNo={setTabId} />
-            <Game className={`transition-all ${isAction !== "start" ? "mt-24" : "mt-0"} `} finalResult={finalResult} gamePhase={gamePhase} isWin={winState} stopGame={(e) => stopGame(e)}
-              setLoaderIsShown={setLoaderIsShown} amount={balance} bet={bet} autoStop={autoStop} socketFlag={socketStart} realGame={isReal} setInfoState={(e) => setInfoState(e)}
-              startGame={startGame} autoMode={autoMode} updateBalance={updateBalance} fallGameScore={fallGameScoreRef}/>
-            <div className="flex flex-col text-white gap-4 z-10">
-              <div >
-                <div className={`flex flex-row justify-center text-base z-10 font-medium ${gamePhase === 'started' ? "opacity-20 !text-white" : ""}`}>
-                  <span className={`${!autoMode ? 'selected text-white ' : 'text-[#FAE365]'}`} onClick={gamePhase !== 'started' ? e => setPlayMode(false) : undefined} >Manual</span>
-                  <SwitchButton checked={autoMode} onChange={gamePhase !== 'started' ? (e => setPlayMode(e.target.checked)) : undefined} />
-                  <span className={`${autoMode ? 'selected text-white ' : 'text-[#FAE365]'}`} onClick={gamePhase !== 'started' ? e => setPlayMode(true) : undefined} >Auto</span>
-                </div>
-                <div className={`transition duration-300 ${autoMode && "hidden"} flex gap-4  z-10`}>
-                  <div className="flex flex-col w-1/2 gap-1">
-                    <div className="text-sm leading-5  z-10">Bet</div>
-                    <InputNumber InputProps={{
-                      value: betManualRef.current, min: 1, step: 1, disabled: gamePhase === 'started', onChange: e => {
-                        setBet(parseFloat(e.target.value));
-                        realBetRef.current = e.target.value;
-                        betManualRef.current = parseFloat(e.target.value)
-                      }
-                    }} />
-                    <div className="text-xs leading-[14px] text-[#FFFFFFCC]  z-10">Minimal Bet is 1 Coin</div>
-                  </div>
-                  <div className="flex flex-col w-1/2 gap-1">
-                    <div className="text-sm leading-5">Auto Stop</div>
-                    <InputNumber InputProps={{ value: autoStopManual, min: 1.1, max: 100, step: 1, disabled: gamePhase === 'started', type: "xWithNumber", onChange: e => { setAutoStopManual(e.target.value) } }} />
-                    <div className="text-xs leading-[14px] text-[#FFFFFFCC]">Auto Cash Out when this amount will be reached</div>
-                  </div>
-                </div>
-              </div>
 
-              {
-                gamePhase !== 'started' ?
-                  (
-                    <div className="flex gap-2 w-full justify-between">
-                      {autoMode && <ShadowButton className={`transition-all flex w-1/5 bg-white justify-center items-center invite-btn-setting border-white `}
-                        content={<SettingButton />}
-                        action={() => setIsModalOpen(true)}
-                      />}
+            {
+              gamePhase !== 'started' ?
+                (
+                  <div className="flex gap-2 w-full justify-between">
+                    {autoMode && <ShadowButton className={`transition-all flex w-1/5 bg-white justify-center items-center invite-btn-setting border-white `}
+                      content={<SettingButton />}
+                      action={() => setIsModalOpen(true)}
+                    />}
+                    <ShadowButton
+                      className={"z-10"}
+                      action={handleStartGame}
+                      content={"Start"}
+                      disabled={
+                        balance === '0.00' ||
+                        bet < 1 || autoStop < 1.1 ||
+                        balance < 1 || isNaN(bet) || isNaN(autoStop) || isNaN(winCoefficient)
+                        || isNaN(lostCoefficient)
+                      }
+                    />
+                  </div>
+                ) :
+                (
+                  <ShadowButton
+                    className={"bg-[#CC070A] shadow-btn-red-border invite-btn-red-shadow z-10"}
+                    content={"Stop"}
+                    action={() => stopGame('x')}
+                  />
+                )
+            }
+
+            <SettingModal icon={<AutoIcon />} title="Auto Launch" isOpen={isModalOpen} setIsOpen={setIsModalOpen}>
+              <div className="flex flex-col justify-between max-h-screen pt-2 px-4 pb-4 h-[calc(100vh-60px)]" >
+                <div className="flex flex-col gap-[15px]" >
+                  <div className="flex gap-4">
+                    <div className="flex flex-col w-1/2 gap-1">
+                      <div className="text-sm leading-5">Bet</div>
+                      <InputNumber InputProps={{
+                        value: betAutoRef.current, min: 1, step: 1, onChange: e => {
+                          setBet(parseFloat(e.target.value));
+                          realBetRef.current = e.target.value;
+                          betAutoRef.current = parseFloat(e.target.value)
+                        }
+                      }} />
+                      <div className="text-xs leading-[14px] text-[#FFFFFFCC]">Minimal Bet is 1 Coin</div>
+                    </div>
+                    <div className="flex flex-col w-1/2 gap-1">
+                      <div className="text-sm leading-5">Auto Stop</div>
+                      <InputNumber InputProps={{ value: autoStopAM, min: 1.1, max: 100, step: 1, type: "xWithNumber", onChange: e => { setAutoStopAM(e.target.value) } }} />
+                      <div className="text-xs leading-[14px] text-[#FFFFFFCC]">Auto Cash Out when this amount will be reached</div>
+                    </div>
+                  </div>
+                  <div className="flex flex-col gap-[15px]">
+                    <div className="flex flex-col w-full gap-1">
+                      <div className="text-sm leading-5">If Lose</div>
+                      <SwitchButtonOption contents={operationOption} setSlot={(e) => setOperationAfterLoss(e)} slot={operationAfterLoss} />
+                    </div>
+                    <div className="flex flex-col w-full gap-1">
+                      <div className="text-sm leading-5">Coefficient</div>
+                      <InputNumber InputProps={{ value: lostCoefficient, min: 1, max: 100, step: 1, type: "xWithNumber", disabled: operationAfterLoss === "Return to base Bet", onChange: e => { setLostCoefficient(parseFloat(e.target.value)) } }} />
+                    </div>
+                  </div>
+                  <div className="flex flex-col gap-[15px]">
+                    <div className="flex flex-col w-full gap-1">
+                      <div className="text-sm leading-5">If Win</div>
+                      <SwitchButtonOption contents={operationOption} setSlot={(e) => setOperationAfterWin(e)} slot={operationAfterWin} />
+                    </div>
+                    <div className="flex flex-col w-full gap-1">
+                      <div className="text-sm leading-5 text-[#FFFFFF99]">Coefficeent</div>
+                      <InputNumber InputProps={{ value: winCoefficient, min: 1, max: 100, step: 1, type: "xWithNumber", disabled: operationAfterWin === "Return to base Bet", onChange: e => { setWinCoefficient(e.target.value) } }} />
+                    </div>
+                  </div>
+                </div>
+
+                {
+                  gamePhase !== 'started' ?
+                    (
                       <ShadowButton
                         className={"z-10"}
-                        action={handleStartGame}
+                        action={handleModalButton}
                         content={"Start"}
                         disabled={
-                          balance === '0.00' ||
-                          bet < 1 || autoStop < 1.1 ||
+                          balance === '0.00' || bet < 1 || autoStop < 1.1 ||
                           balance < 1 || isNaN(bet) || isNaN(autoStop) || isNaN(winCoefficient)
                           || isNaN(lostCoefficient)
                         }
                       />
-                    </div>
-                  ) :
-                  (
-                    <ShadowButton
-                      className={"bg-[#CC070A] shadow-btn-red-border invite-btn-red-shadow z-10"}
-                      content={"Stop"}
-                      action={() => stopGame('x')}
-                    />
-                  )
-              }
+                    ) :
+                    (
+                      <ShadowButton
+                        className={"bg-[#CC070A] shadow-btn-red-border invite-btn-red-shadow z-10"}
+                        content={"Stop"}
+                        action={() => stopGame('x')}
+                      />
+                    )
+                }
 
-              <SettingModal icon={<AutoIcon />} title="Auto Launch" isOpen={isModalOpen} setIsOpen={setIsModalOpen}>
-                <div className="flex flex-col justify-between max-h-screen pt-2 px-4 pb-4 h-[calc(100vh-60px)]" >
-                  <div className="flex flex-col gap-[15px]" >
-                    <div className="flex gap-4">
-                      <div className="flex flex-col w-1/2 gap-1">
-                        <div className="text-sm leading-5">Bet</div>
-                        <InputNumber InputProps={{
-                          value: betAutoRef.current, min: 1, step: 1, onChange: e => {
-                            setBet(parseFloat(e.target.value));
-                            realBetRef.current = e.target.value;
-                            betAutoRef.current = parseFloat(e.target.value)
-                          }
-                        }} />
-                        <div className="text-xs leading-[14px] text-[#FFFFFFCC]">Minimal Bet is 1 Coin</div>
-                      </div>
-                      <div className="flex flex-col w-1/2 gap-1">
-                        <div className="text-sm leading-5">Auto Stop</div>
-                        <InputNumber InputProps={{ value: autoStopAM, min: 1.1, max: 100, step: 1, type: "xWithNumber", onChange: e => { setAutoStopAM(e.target.value) } }} />
-                        <div className="text-xs leading-[14px] text-[#FFFFFFCC]">Auto Cash Out when this amount will be reached</div>
-                      </div>
-                    </div>
-                    <div className="flex flex-col gap-[15px]">
-                      <div className="flex flex-col w-full gap-1">
-                        <div className="text-sm leading-5">If Lose</div>
-                        <SwitchButtonOption contents={operationOption} setSlot={(e) => setOperationAfterLoss(e)} slot={operationAfterLoss} />
-                      </div>
-                      <div className="flex flex-col w-full gap-1">
-                        <div className="text-sm leading-5">Coefficient</div>
-                        <InputNumber InputProps={{ value: lostCoefficient, min: 1, max: 100, step: 1, type: "xWithNumber", disabled: operationAfterLoss === "Return to base Bet", onChange: e => { setLostCoefficient(parseFloat(e.target.value)) } }} />
-                      </div>
-                    </div>
-                    <div className="flex flex-col gap-[15px]">
-                      <div className="flex flex-col w-full gap-1">
-                        <div className="text-sm leading-5">If Win</div>
-                        <SwitchButtonOption contents={operationOption} setSlot={(e) => setOperationAfterWin(e)} slot={operationAfterWin} />
-                      </div>
-                      <div className="flex flex-col w-full gap-1">
-                        <div className="text-sm leading-5 text-[#FFFFFF99]">Coefficeent</div>
-                        <InputNumber InputProps={{ value: winCoefficient, min: 1, max: 100, step: 1, type: "xWithNumber", disabled: operationAfterWin === "Return to base Bet", onChange: e => { setWinCoefficient(e.target.value) } }} />
-                      </div>
-                    </div>
-                  </div>
+              </div>
+            </SettingModal>
 
-                  {
-                    gamePhase !== 'started' ?
-                      (
-                        <ShadowButton
-                          className={"z-10"}
-                          action={handleModalButton}
-                          content={"Start"}
-                          disabled={
-                            balance === '0.00' || bet < 1 || autoStop < 1.1 ||
-                            balance < 1 || isNaN(bet) || isNaN(autoStop) || isNaN(winCoefficient)
-                            || isNaN(lostCoefficient)
-                          }
-                        />
-                      ) :
-                      (
-                        <ShadowButton
-                          className={"bg-[#CC070A] shadow-btn-red-border invite-btn-red-shadow z-10"}
-                          content={"Stop"}
-                          action={() => stopGame('x')}
-                        />
-                      )
-                  }
+            <InfoModal title="Welcome, Recruit!" isOpen={firstLogin} setIsOpen={() => setFirstLogin(false)} height="h-[480px]">
+              <div className="flex items-center justify-center">
+                <img src={avatar.avatarBeginner} width="128px" height="128px" className="max-w-[128px] h-[128px]" alt="avatar" />
+              </div>
+              <div className="flex flex-col gap-6 text-black text-center text-[15px] font-normal leading-5 tracking-[-2%]">
+                <div>
+                  🚀 Place your bet and press the Start button to launch the rocket!
+                </div>
+                <div>
+                  💰 As the rocket flies, a multiplier increases your bet. Press the Stop button to get your profit!
+                </div>
+                <div>
+                  💥 But be careful, because the rocket can crash at any moment, and if it does, you'll lose your bet!
+                </div>
+              </div>
+              <div className=" flex gap-4">
+                <Link to={'/help'} className="w-1/2">
+                  <ShadowButton className=" bg-white text-mainFocus invite-btn-setting !border-[#F3E3E3]" content="learn more" />
+                </Link>
+                <ShadowButton className="w-1/2" content="Got it!" action={() => setFirstLogin(false)} />
+              </div>
+            </InfoModal>
 
+            <InfoModal title="Coming soon!" isOpen={infoState} setIsOpen={() => setInfoState(false)} height="h-[280px]">
+              <div className="flex items-center justify-center">
+                <img src='image/icon/rocketx.svg' width="48px" height="48px" className="max-w-[48px] h-[48px]" alt="avatar" />
+              </div>
+              <div className="flex flex-col gap-6 text-black text-center text-[15px] font-normal leading-5 tracking-[-2%]">
+                <div>
+                  🛠 Our token is under development!
                 </div>
-              </SettingModal>
+                <div>
+                  📢 Join our social media to stay up to date.
+                </div>
+                <Contact />
+              </div>
+            </InfoModal>
 
-              <InfoModal title="Welcome, Recruit!" isOpen={firstLogin} setIsOpen={() => setFirstLogin(false)} height="h-[480px]">
-                <div className="flex items-center justify-center">
-                  <img src={avatar.avatarBeginner} width="128px" height="128px" className="max-w-[128px] h-[128px]" alt="avatar" />
-                </div>
-                <div className="flex flex-col gap-6 text-black text-center text-[15px] font-normal leading-5 tracking-[-2%]">
-                  <div>
-                    🚀 Place your bet and press the Start button to launch the rocket!
-                  </div>
-                  <div>
-                    💰 As the rocket flies, a multiplier increases your bet. Press the Stop button to get your profit!
-                  </div>
-                  <div>
-                    💥 But be careful, because the rocket can crash at any moment, and if it does, you'll lose your bet!
-                  </div>
-                </div>
-                <div className=" flex gap-4">
-                  <Link to={'/help'} className="w-1/2">
-                    <ShadowButton className=" bg-white text-mainFocus invite-btn-setting !border-[#F3E3E3]" content="learn more" />
-                  </Link>
-                  <ShadowButton className="w-1/2" content="Got it!" action={() => setFirstLogin(false)} />
-                </div>
-              </InfoModal>
-
-              <InfoModal title="Coming soon!" isOpen={infoState} setIsOpen={() => setInfoState(false)} height="h-[280px]">
-                <div className="flex items-center justify-center">
-                  <img src='image/icon/rocketx.svg' width="48px" height="48px" className="max-w-[48px] h-[48px]" alt="avatar" />
-                </div>
-                <div className="flex flex-col gap-6 text-black text-center text-[15px] font-normal leading-5 tracking-[-2%]">
-                  <div>
-                    🛠 Our token is under development!
-                  </div>
-                  <div>
-                    📢 Join our social media to stay up to date.
-                  </div>
-                  <Contact />
-                </div>
-              </InfoModal>
-
-            </div>
           </div>
         </div>
-      </Suspense>
+      </div>
     </>
   );
 };
