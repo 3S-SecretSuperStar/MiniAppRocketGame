@@ -488,7 +488,7 @@ const TaskList = () => {
 
   if (loading || firstLoading) {
     setActionState("start")
-    return <FetchLoading firstLoading={firstLoading} setLoading={setLoading} />
+    return <FetchLoading firstLoading={firstLoading} setLoading={setLoading} vRate={2}/>
   }
 
   return (

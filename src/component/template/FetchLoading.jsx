@@ -2,16 +2,16 @@ import React, { useEffect, useState } from 'react';
 import { Img } from '../../assets/image';
 import Stars from './Stars';
 
-const FetchLoading = ({ firstLoading, setLoading }) => {
+const FetchLoading = ({ firstLoading, setLoading, vRate }) => {
     const [rocketPos, setRocketPos] = useState(window.innerHeight / 2);
-    const vh = window.innerHeight / 100;
+    const vh = window.innerHeight * vRate / 100;
 
     useEffect(() => {
         if (!firstLoading) {
-            setInterval(() => {
+            const loadingInterval = setInterval(() => {
                 setRocketPos((prevPos) => {
-                    console.log(vh);
                     if (prevPos < 0) {
+                        clearInterval(loadingInterval);
                         setLoading(false);
                     }
                     return prevPos - vh;

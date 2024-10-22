@@ -352,7 +352,7 @@ const MainPage = () => {
   }
 
   if (loading || firstLoading) {
-    return <FetchLoading firstLoading={firstLoading} setLoading={setLoading} />
+    return <FetchLoading firstLoading={firstLoading} setLoading={setLoading} vRate={2} />
   }
 
   const startGame = () => {

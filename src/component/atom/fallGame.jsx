@@ -116,7 +116,6 @@ class FallGame {
       _elements = _elements.filter((_crater) => _crater.id !== crater.id);
       this.elements = [..._elements];
       this.app.stage.removeChild(crater);
-
     }
   };
 
@@ -177,6 +176,9 @@ class FallGame {
             basicText.y = crater.y - 20;
             crater.isDestroyed = 1;
             crater.destroyedTime = Date.now();
+            if (navigator.vibrate) {
+              navigator.vibrate(100); // Vibrate for 100ms
+            }
             this.updateScore(this.score + addCoin);
             this.app.stage.addChild(basicText)
             setTimeout(() => this.app.stage.removeChild(basicText), 500);
@@ -218,6 +220,9 @@ class FallGame {
             basicText.y = meteor.y - 20;
             meteor.isDestroyed = 1;
             meteor.destroyedTime = Date.now();
+            if (navigator.vibrate) {
+              navigator.vibrate(100); // Vibrate for 100ms
+            }
             this.updateScore(this.score + addCoin);
             this.app.stage.addChild(basicText)
             setTimeout(() => this.app.stage.removeChild(basicText), 500);
@@ -263,6 +268,9 @@ class FallGame {
             basicText.y = ufo.y - 20;
             ufo.isDestroyed = 1;
             ufo.destroyedTime = Date.now();
+            if (navigator.vibrate) {
+              navigator.vibrate(100); // Vibrate for 100ms
+            }
             this.updateScore(this.score + addCoin);
             this.app.stage.addChild(basicText)
             setTimeout(() => this.app.stage.removeChild(basicText), 500);
@@ -286,7 +294,7 @@ class FallGame {
     this.craterTOStart = Date.now();
     this.craterTOId = setTimeout(() => {
       try {
-        this.generateElement(); 
+        this.generateElement();
       } catch (error) {
         return;
       }
