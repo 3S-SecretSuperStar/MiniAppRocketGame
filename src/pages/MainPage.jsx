@@ -111,12 +111,14 @@ const MainPage = () => {
     realBetRef.current = currentBet
     setAutoStop(autoMode ? autoStopAM : autoStopManual)
   }
+
   const handleModalButton = () => {
     handleStartGame();
     // setAutoStart(true)
     setIsModalOpen(false);
 
   }
+
   const handleStartGame = () => {
     setInitBet()
     startGame();
@@ -294,7 +296,6 @@ const MainPage = () => {
                     if (myData.gamesHistory.virtual.length > historySize) {
                       gamesHistory.virtual = myData.gamesHistory.virtual.slice(myData.gamesHistory.virtual.length - historySize)
                     }
-
 
                     setGames(myData)
                     const newBalance = parseFloat(isReal ? myData.balance.real : myData.balance.virtual).toFixed(2)
@@ -480,7 +481,7 @@ const MainPage = () => {
     adjustBetAfterLoss();
     console.log("lost coin", data.profit, ":", fallGameScoreRef.current);
 
-    toast(`You lost ${data.profit + fallGameScoreRef.current} coin`,
+    toast(`You lost ${data.profit - fallGameScoreRef.current} coin`,
       {
         position: "top-center",
         icon: "😱",
@@ -507,7 +508,8 @@ const MainPage = () => {
   };
 
   const updateBalance = (profit) => {
-    const newBalance = (parseFloat(user.Balance) + parseFloat(profit)).toFixed(2);
+    console.log("updateBalance", balanceRef.current);
+    const newBalance = (parseFloat(balanceRef.current) + parseFloat(profit)).toFixed(2) > 0 ? (parseFloat(balanceRef.current) + parseFloat(profit)).toFixed(2) : 0;
     balanceRef.current = newBalance;
     setBalance(newBalance);
     const updatedUser = { ...user, Balance: newBalance }
@@ -557,8 +559,9 @@ const MainPage = () => {
     headers.append('Content-Type', 'application/json');
     if (isWin === 1) {
       fetch(`${serverUrl}/charge_balance`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, amount: profit }), headers })
-      updateBalance(profit);
+      updateBalance(profit - fallGameScoreRef.current);
     } else {
+      console.log("profit", profit);
       updateBalance(-profit);
     }
     fallGameScoreRef.current = 0;
@@ -573,7 +576,7 @@ const MainPage = () => {
     <>
       <div className="flex-auto p-4">
         <div id='index-operations' className={`flex flex-col relative h-full w-full gap-4 justify-between ${autoMode ? 'auto-mode' : ''} transition flex flex-col gap-4 ${isAction === "start" ? "pb-0" : "pb-[76px]"}`}>
-          <div className={`flex w-full absolute bg-white_20 justify-between transition transform duration-200 p-2 rounded-[10px] text-white text-base leading-5 z-10 ${isAction === "start" ? "-translate-y-24" : ""} `} onClick={goToUserInfo}>
+          <div className={`flex w-full absolute bg-white_20 justify-between transition transform duration-200 p-2 rounded-[10px] text-white text-base leading-5 z-10 ${isAction === "start" ? "-translate-y-[300px]" : ""} `} onClick={goToUserInfo}>
             <div className="flex gap-2.5">
               <LazyLoadImage
                 alt="user ranking avatar"
@@ -614,7 +617,7 @@ const MainPage = () => {
               <img src="/image/icon/CloseButton.svg" width={30} height={30} className="max-w-[30px] h-[30px]" alt="close" />
             </div>
           </div>
-          <TabButton className={`transform translate-y-[100px] z-10 ${isAction === "start" ? "-translate-y-[150px]" : ""} `} tabList={statsList} tabNo={tabId} setTabNo={setTabId} />
+          <TabButton className={`transform translate-y-[100px] z-10 ${isAction === "start" ? "-translate-y-[300px]" : ""} `} tabList={statsList} tabNo={tabId} setTabNo={setTabId} />
           <Game className={`transition-all ${isAction !== "start" ? "mt-24" : "mt-0"} `} finalResult={finalResult} gamePhase={gamePhase} isWin={winState} stopGame={(e) => stopGame(e)}
             setLoaderIsShown={setLoaderIsShown} amount={balance} bet={bet} autoStop={autoStop} socketFlag={socketStart} realGame={isReal} setInfoState={(e) => setInfoState(e)}
             startGame={startGame} autoMode={autoMode} updateBalance={updateBalance} fallGameScore={fallGameScoreRef} />
@@ -629,7 +632,7 @@ const MainPage = () => {
                 <div className="flex flex-col w-1/2 gap-1">
                   <div className="text-sm leading-5  z-10">Bet</div>
                   <InputNumber InputProps={{
-                    value: betManualRef.current, min: 1, step: 1, disabled: gamePhase === 'started', onChange: e => {
+                    value: betManualRef.current, min: 1, max: balanceRef.current, step: 1, disabled: gamePhase === 'started', onChange: e => {
                       setBet(parseFloat(e.target.value));
                       realBetRef.current = e.target.value;
                       betManualRef.current = parseFloat(e.target.value)
