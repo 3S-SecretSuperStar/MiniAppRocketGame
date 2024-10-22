@@ -131,8 +131,8 @@ export default memo(function Game({ gamePhase, finalResult, amount = 10.00,
         if (isMounted) {
           try {
             setPlanetPos((prevPos) => ({
-              x: prevPos.x > window.innerWidth ? prevPos.x + window.innerWidth / 10 : -300, // Create a new x position
-              y: prevPos.y > window.innerHeight ? prevPos.y + window.innerHeight / 10 : -300, // Create a new y position
+              x: prevPos.x > window.innerWidth ? -300 : prevPos.x + window.innerWidth / 10, // Create a new x position
+              y: prevPos.y > window.innerHeight ? -300 : prevPos.y + window.innerHeight / 10, // Create a new y position
             }));
             setSpaceFogPos((prevPos) => ({
               y1: prevPos.y1 > window.innerHeight ? prevPos.y2 - 1081 : prevPos.y1 + 0.15,
