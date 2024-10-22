@@ -91,7 +91,7 @@ export default memo(function Game({ gamePhase, finalResult, amount = 10.00,
             clearInterval(newCountTimeHandler); // Clear the interval when counter reaches zero
             setCounterNumber(0);// Ensure counter is set to zero
             setCounterFlag(true)
-
+            
             context.socket.send(JSON.stringify({
               operation: 'start',
               bet,

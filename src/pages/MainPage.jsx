@@ -65,6 +65,9 @@ const MainPage = () => {
   const [continueCounter, setCointinueCounter] = useState(1)
   const [autoStopAM, setAutoStopAM] = useState(autoStop);
   const [autoStopManual, setAutoStopManual] = useState(autoStop);
+  const [tabId, setTabId] = useState(1);
+  const [loading, setLoading] = useState(true)
+  const [firstLoading, setFirstLoading] = useState(true);
   let performTask = [];
   let testCounter = 0;
 
@@ -80,9 +83,6 @@ const MainPage = () => {
   const valueAfterLossRef = useRef(lostCoefficient);
   const fallGameScoreRef = useRef(0);
   const navigate = useNavigate();
-  const [tabId, setTabId] = useState(1);
-  const [loading, setLoading] = useState(true)
-  const [firstLoading, setFirstLoading] = useState(true);
   // const [isAutoStart, setAutoStart] = useAtom(isAutoState);
 
   const avatarData = [avatar.avatarBeginner, avatar.avatarPilot, avatar.avatarExplorer,
@@ -125,7 +125,7 @@ const MainPage = () => {
   const handleStartButton = () => {
     startGame()
   }
-  // setRealGame(true)
+  
   // Effect to validate and adjust state values
   useEffect(() => {
     if (gamePhase !== 'started') {
@@ -225,6 +225,7 @@ const MainPage = () => {
       console.log(e)
     }
   }
+
   useEffect(() => {
     const headers = new Headers()
     headers.append('Content-Type', 'application/json')
@@ -241,8 +242,8 @@ const MainPage = () => {
         }
       })
   }, [])
+
   useEffect(() => {
-    // setLoading(true)
     async function fetchData() {
       try {
         const webapp = window.Telegram.WebApp.initDataUnsafe;
@@ -345,6 +346,7 @@ const MainPage = () => {
     }
     fetchData()
   }, [])
+
   if (loading && firstLoading) {
     setActionState("start")
     return <FetchLoading />
@@ -357,9 +359,9 @@ const MainPage = () => {
 
     setRewardState(false);
     setStopWasPressed(false);
-    setGamePhase('started');
     setSocketStart(false);
     setActionState("start");
+    setGamePhase('started');
     console.log("before socket", user.Balance)
     context.socket.onmessage = async e => {
       console.log(user.Balance)
@@ -370,7 +372,6 @@ const MainPage = () => {
           handleGameStarted();
           break;
         case 'stopped':
-
           console.log("stopped", user.Balance)
           handleGameStopped(data);
           break;
@@ -387,11 +388,11 @@ const MainPage = () => {
     console.log("stop game button ", user.Balance)
     setStopWasPressed(true);
     setActionState("stop");
+    setGamePhase('stopped');
     if (amount !== 'x') {
       context.socket.send(JSON.stringify({ operation: 'stop' }));
       console.log("stop game button amount x ", user.Balance)
-    }
-    else {
+    } else {
       context.socket.send(JSON.stringify({ operation: 'stop', stopAmount: amount }));
       console.log("stop game button amount not x ", user.Balance)
     }
