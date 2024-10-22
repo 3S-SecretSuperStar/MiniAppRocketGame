@@ -23,7 +23,7 @@ export default memo(function Game({ gamePhase, finalResult, amount = 10.00,
   const [counterFlag, setCounterFlag] = useState(false);
   const [isImgShow, setIsImgShow] = useState(false);
   const [saveLastScore, setSaveLastScore] = useState(0);
-  const [planetPos, setPlanetPos] = useState({ x: -300, y: 0 });
+  const [planetPos, setPlanetPos] = useState({ x: -300, y: -300 });
   const [spaceFogPos, setSpaceFogPos] = useState({ y1: -170, y2: -1251 });
 
   const serverUrl = REACT_APP_SERVER;
@@ -130,19 +130,10 @@ export default memo(function Game({ gamePhase, finalResult, amount = 10.00,
         let new_timer = new Date().getTime() - timer;
         if (isMounted) {
           try {
-            setPlanetPos((prevPos) => {
-              if (prevPos.x > window.innerWidth || prevPos.y > window.innerHeight) {
-                return {
-                  x: -300, // Create a new x position
-                  y: 0, // Create a new y position
-                }
-              } else {
-                return {
-                  x: prevPos.x + 0.05, // Create a new x position
-                  y: prevPos.y + 0.05, // Create a new y position
-                }
-              }
-            });
+            setPlanetPos((prevPos) => ({
+              x: prevPos.x > window.innerWidth ? prevPos.x + window.innerWidth / 10 : -300, // Create a new x position
+              y: prevPos.y > window.innerHeight ? prevPos.y + window.innerHeight / 10 : -300, // Create a new y position
+            }));
             setSpaceFogPos((prevPos) => ({
               y1: prevPos.y1 > window.innerHeight ? prevPos.y2 - 1081 : prevPos.y1 + 0.15,
               y2: prevPos.y2 > window.innerHeight ? prevPos.y1 - 1081 : prevPos.y2 + 0.15
