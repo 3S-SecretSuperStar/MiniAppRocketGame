@@ -7,8 +7,6 @@ import { cn } from '../../utils';
 
 const InputNumber = memo(({ InputProps }) => {
   const [value, setValue] = useState(InputProps.value);
-
-
   const handleKeyPress = (e) => {
 
     const allowedChars = '0123456789.';
@@ -42,6 +40,8 @@ const InputNumber = memo(({ InputProps }) => {
     if (/^\d*\.?\d*$/.test(newValue)) {
       setValue(newValue);
       // InputProps.onChange && InputProps.onChange({ target: { value: newValue } });
+    } else {
+      setValue(InputProps.min)
     }
 
   };
@@ -50,11 +50,12 @@ const InputNumber = memo(({ InputProps }) => {
     const newValue = e.target.value;
     // Validate input: Only allow numbers and decimal points
     if (/^\d*\.?\d*$/.test(newValue)) {
-      newValue >= InputProps.min || newValue === '' ? setValue(newValue) : setValue(InputProps.min);
+      newValue >= InputProps.min ? setValue(newValue) : setValue(InputProps.min);
       const outValue = newValue >= InputProps.min || newValue === ''? newValue:InputProps.min
       InputProps.onChange && InputProps.onChange({ target: { value: outValue } });
+    } else {
+      setValue(InputProps.min);
     }
-
   };
 
   const incrementValue = () => {
@@ -70,8 +71,7 @@ const InputNumber = memo(({ InputProps }) => {
   };
 
   return (
-    <div className={`input-number-parent relative w-full h-11 hover:outline-[#0000FF4D] hover:outline-4 ${InputProps.disabled ? "text-[#FFFFFF99]" : "text-black"}`}>
-
+    <div className={`input-number-parent relative w-full h-11 hover:outline-mainOpactiy hover:outline-4 ${InputProps.disabled ? "text-[#FFFFFF99]" : "text-black"}`}>
       <input
         className={`input-number absolute w-full h-11 top-0 left-0 box-border rounded-xl pl-4 ${InputProps.disabled ? "text-[#FFFFFF99] bg-white_20 cursor-none contain-none select-none" : ""}`}
         type='number'
@@ -83,6 +83,8 @@ const InputNumber = memo(({ InputProps }) => {
         onKeyPress={handleKeyPress}
         disabled={InputProps.disabled}
         onBlur={handleBulr}
+        min={InputProps.min}
+        max={InputProps.max}
       />
       {InputProps.type === "xWithNumber" && <div className='absolute left-2 top-1/2 transfrom -translate-y-1/2'>x</div>}
       <div className='absolute right-2.5 top-1/2 transform -translate-y-1/2'>

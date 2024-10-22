@@ -340,12 +340,9 @@ const TaskList = () => {
     await fetch(`${serverUrl}/task_perform`, { method: 'POST', body: JSON.stringify({ userId: user.UserId }), headers })
       .then(res => Promise.all([res.status, res.json()]))
       .then(async ([status, data]) => {
-        // console.log("fetch data")
 
         try {
-          // console.log("fetch data : ", data);
           const userBalance = isReal ? parseFloat(data.balance.real.toFixed(2)) : parseFloat(data.balance.virtual.toFixed(2));
-          // console.log(userBalance)
           setUser(user => ({ ...user, Balance: userBalance }))
           const performtask = isReal ? data.task.real.achieve_task : data.task.virtual.achieve_task
           const doneTask = isReal ? data.task.real.done_task : data.task.virtual.done_task
@@ -361,8 +358,6 @@ const TaskList = () => {
             .then(res => Promise.all([res.status, res.json()]))
             .then(([status, data]) => {
               try {
-                // console.log(data)
-                // console.log(data.dailyRewardInfo)
                 const dailyDate = data.dailyRewardInfo.date;
                 dailytaskIndex = taskList[taskList.findIndex(item => item.type === 'daily_reward')].index
                 dailyDays = data.dailyRewardInfo.consecutive_days
@@ -370,13 +365,8 @@ const TaskList = () => {
                 const nowDate = moment().startOf('day');
                 if (dailyDate === "") dailyState = 0;
                 else {
-                  // console.log("dailyRewardDate : ", dailyDate)
                   const selectedDate = moment(dailyDate).utc().local().startOf('day');
-                  // console.log("nowDate : ", nowDate)
-                  // console.log("selected date : ", selectedDate)
                   const diffDate = nowDate.diff(selectedDate, 'days');
-                  // console.log("diff date : ", diffDate)
-                  // console.log('taskstates', taskState)
                   if (diffDate >= 1) dailyState = 0;
                   else dailyState = 2;
                   if (diffDate >= 2) {
@@ -467,32 +457,22 @@ const TaskList = () => {
               }
             })
 
-
         } catch (e) {
           // eslint-disable-next-line no-self-assign
           console.log(e);
         }
 
       })
-
   }
-  // console.log("taskList: ", taskList)
-  // console.log("friend number", user.FriendNumber)
   const stateTask = async () => {
-    // console.log("user in state task :", user)
     performTask = []
     performTask = taskList.reduce((performList, task) => {
       const taskType = task.type;
       if (user.GameWon >= task.count && taskType === "type1-1") {
-        // console.log("game won : ", user.GameWon)
-        // console.log("task count : ", task.count)
-        // console.log("task index : ", task.index)
-        // console.log("state : ", user.GameWon >= task.count)
         performList.push(task.index)
       }
       if ((user.GameLost + user.GameWon) >= task.count && taskType === "type1-2") {
         performList.push(task.index)
-        // console.log("state : ", (user.GameLost + user.GameWon) >= task.count)
       }
       if (task.count <= user.FriendNumber && taskType === "type4")
         performList.push(task.index);
@@ -501,25 +481,17 @@ const TaskList = () => {
     await fetch(`${serverUrl}/add_perform_list`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, performTask: performTask, isReal: isReal }), headers })
       .then(res => Promise.all([res.status, res.json()]))
       .then(async (res) => {
-        // console.log("before fetch data")
         await fetchData().then(
           console.log("fetch data")
         )
       })
-
-    // console.log("after fetch data")
-
   }
 
   if (loading && firstLoading) {
     setActionState("start")
     return <FetchLoading />
   }
-  // console.log("fixedTaskData : ", fixedTaskData)
-  // console.log("otherTaskData : ", otherTaskData)
-  // console.log("task data of taskData : ", taskData)
-  // console.log(user.FriendNumber)
-  // console.log("user Info in taskList : ", user.DailyConsecutiveDays)
+
   return (
     <Suspense fallback={<fetchData />}>
       <div className="flex flex-col gap-2 text-[14px] overflow-auto pb-4" style={{ height: "calc(100vh - 200px)" }}>

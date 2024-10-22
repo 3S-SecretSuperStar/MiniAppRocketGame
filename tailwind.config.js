@@ -12,7 +12,8 @@ module.exports = {
         'blueFaded': "#ACC1D9",
         'gradient-border': 'linear-gradient(180deg, #FFFFFF 0%, #FAD557 100%)',
         'main': "#560D5E",
-        'mainFocus': "#923f9bb5"
+        'mainFocus': "#923f9bb5",
+        'mainOpactiy': "#560D5E4D"
       },
       fontFamily: {
         roboto: ['Roboto', 'sans-serif'],

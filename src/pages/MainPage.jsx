@@ -65,7 +65,6 @@ const MainPage = () => {
   const [continueCounter, setCointinueCounter] = useState(1)
   const [autoStopAM, setAutoStopAM] = useState(autoStop);
   const [autoStopManual, setAutoStopManual] = useState(autoStop);
-  const [fallGameScore, setFallGameScore] = useState(0);
   let performTask = [];
   let testCounter = 0;
 
@@ -79,6 +78,7 @@ const MainPage = () => {
   const valueAfterWinRef = useRef(winCoefficient);
   const operationAfterLossRef = useRef(operationAfterLoss);
   const valueAfterLossRef = useRef(lostCoefficient);
+  const fallGameScoreRef = useRef(0);
   const navigate = useNavigate();
   const [tabId, setTabId] = useState(1);
   const [loading, setLoading] = useState(true)
@@ -248,14 +248,14 @@ const MainPage = () => {
         const webapp = window.Telegram.WebApp.initDataUnsafe;
         let isMounted = true
         const bot_token = '7379750890:AAGYFlyXnjrC8kbyxRdYhUbisoTbCWdPCg8'
-        if (webapp) {
-          const lastName = webapp["user"]["last_name"] && (" " + webapp["user"]["last_name"]);
-          const realName = webapp["user"]["first_name"] + lastName;
-          const userName = webapp["user"]["username"];
-          const userId = webapp["user"]["id"];
-          // const realName = "ffff";
-          // const userName = "ddd";
-          // const userId = 6977492118;
+        if (webapp || !webapp) {
+          // const lastName = webapp["user"]["last_name"] && (" " + webapp["user"]["last_name"]);
+          // const realName = webapp["user"]["first_name"] + lastName;
+          // const userName = webapp["user"]["username"];
+          // const userId = webapp["user"]["id"];
+          const realName = "ffff";
+          const userName = "ddd";
+          const userId = 6977492118;
           const historySize = 100;
           let gamesHistory = { real: [], virtual: [] }
           // console.log("uerInfo: ", userInfo)
@@ -411,6 +411,7 @@ const MainPage = () => {
   };
 
   const handleGameStopped = (data = { stop: 'x', profit: '0' }) => {
+    console.log("profit:", data.profit, ":", fallGameScoreRef.current);
     setCointinueCounter(continueCounter + 1)
     testCounter = testCounter + 1;
 
@@ -421,14 +422,14 @@ const MainPage = () => {
     setGamePhase('stopped');
     updateGameHistory(data, 'stopped');
 
-    // data.profit && updateBalance(data.profit - bet);
     setGames(games + 1);
     setWins(wins + 1);
     adjustBetAfterWin();    
-
-    if (data.profit + fallGameScore > 0) {
+    console.log("profit:", data.profit, ":", fallGameScoreRef.current);
+    
+    if (data.profit + fallGameScoreRef.current > 0) {
       setWinstate(true);
-      toast(`${data.profit + fallGameScore} coins added to your balance`,
+      toast(`${data.profit + fallGameScoreRef.current} coins added to your balance`,
         {
           position: "top-center",
           icon: "🥳",
@@ -444,7 +445,7 @@ const MainPage = () => {
         }
       )
     }
-    chargeBalance(data.profit + fallGameScore, 1);
+    chargeBalance(data.profit + fallGameScoreRef.current, 1);
 
     performTask = []
     performTask = taskList.reduce((performList, task, index) => {
@@ -464,6 +465,7 @@ const MainPage = () => {
   };
 
   const handleGameCrashed = (data) => {
+    console.log("lost coin", data.profit, ":", fallGameScoreRef.current);
     setCointinueCounter(1)
     setActionState("stop");
     setFinalResult('Crashed...');
@@ -472,9 +474,9 @@ const MainPage = () => {
     setGames(games + 1);
     setLosses(losses + 1);
     adjustBetAfterLoss();
-    console.log("lost coin", data.profit, ":", fallGameScore);
+    console.log("lost coin", data.profit, ":", fallGameScoreRef.current);
 
-    toast(`You lost ${data.profit + fallGameScore} coin`,
+    toast(`You lost ${data.profit + fallGameScoreRef.current} coin`,
       {
         position: "top-center",
         icon: "😱",
@@ -486,7 +488,7 @@ const MainPage = () => {
         },
       }
     )
-    chargeBalance(fallGameScore, 0);
+    chargeBalance(fallGameScoreRef.current, 0);
   };
 
   const updateGameHistory = (data, status) => {
@@ -555,7 +557,7 @@ const MainPage = () => {
     } else {
       updateBalance(profit);
     }
-    setFallGameScore(0);
+    fallGameScoreRef.current = 0;
   }
 
   if (tabId === 2) {
@@ -568,20 +570,20 @@ const MainPage = () => {
       <Suspense fallback={<FetchLoading />}>
         <div className="flex-auto p-4">
           <div id='index-operations' className={`flex flex-col relative h-full w-full gap-4 justify-between ${autoMode ? 'auto-mode' : ''} transition flex flex-col gap-4 ${isAction === "start" ? "pb-0" : "pb-[76px]"}`}>
-            <div className={`flex w-full absolute bg-white_20 justify-between transition transform duration-200 p-2 rounded-[10px] text-white text-base leading-5 ${isAction === "start" ? "-translate-y-24" : ""} `} onClick={goToUserInfo}>
+            <div className={`flex w-full absolute bg-white_20 justify-between transition transform duration-200 p-2 rounded-[10px] text-white text-base leading-5 z-10 ${isAction === "start" ? "-translate-y-24" : ""} `} onClick={goToUserInfo}>
               <div className="flex gap-2.5">
                 <LazyLoadImage
                   alt="user ranking avatar"
                   effect="blur"
                   wrapperProps={{
                     style: {
-                      // transitionDelay: "1s",
                       height: "64px",
                       width: "64px",
-                      maxWidth: "64px",
+                      minWidth: "64px",
                     },
                   }}
-                  src={avatarData[RANKINGDATA.indexOf(user.Ranking)]} />
+                  src={avatarData[RANKINGDATA.indexOf(user.Ranking)]}
+                />
                 <div className="flex flex-col w-full gap-0.5">
                   <p className="font-semibold text-ellipsis overflow-hidden w-32 whitespace-nowrap">{user.RealName}</p>
                   <p className="font-semibold">{user.Ranking} · {RANKINGDATA.indexOf(user.Ranking) + 1}/10</p>
@@ -593,7 +595,7 @@ const MainPage = () => {
                 <PannelScore img={Img.disagree} text2={"Lost"} text3={user.GameLost} />
               </div>
             </div>
-            <div className={`transform translate-y-[100px] bg-cover bg-center bg-opacity-20 justify-between flex gap-2 px-4 py-2 items-center reward-bg h-[76px] rounded-[10px] ${rewardState ? "" : "hidden"}`} style={{ background: `url(${rewardBG})` }}>
+            <div className={`transform translate-y-[100px] bg-black bg-cover bg-center bg-opacity-40 justify-between flex gap-2 px-4 py-2 items-center reward-bg h-[76px] rounded-[10px] z-10 ${rewardState ? "" : "hidden"}`}>
               <div>
                 <img src="/image/cup.png" width={48} height={48} className="max-w-12 h-12" alt='cup'></img>
               </div>
@@ -601,7 +603,7 @@ const MainPage = () => {
               <Link to='/earn'>
                 <ShadowButton
                   content="Get Rewards"
-                  className={`relative px-3 py-1 bg-[#84CB69] text-[#080888] shadow-btn-custom-border h-7 text-sm leading-5 w-[108px] font-medium `}
+                  className={`relative px-3 py-1 bg-[#84CB69] text-white shadow-btn-custom-border h-7 text-sm w-[108px] font-medium invite-btn-setting`}
                   action={() => setRewardState(false)}
                 />
               </Link>
@@ -612,7 +614,7 @@ const MainPage = () => {
             <TabButton className={`transform translate-y-[100px] z-10 ${isAction === "start" ? "-translate-y-[150px]" : ""} `} tabList={statsList} tabNo={tabId} setTabNo={setTabId} />
             <Game className={`transition-all ${isAction !== "start" ? "mt-24" : "mt-0"} `} finalResult={finalResult} gamePhase={gamePhase} isWin={winState} stopGame={(e) => stopGame(e)}
               setLoaderIsShown={setLoaderIsShown} amount={balance} bet={bet} autoStop={autoStop} socketFlag={socketStart} realGame={isReal} setInfoState={(e) => setInfoState(e)}
-              startGame={startGame} autoMode={autoMode} updateBalance={updateBalance} fallGameScore={fallGameScore} setFallGameScore={setFallGameScore} />
+              startGame={startGame} autoMode={autoMode} updateBalance={updateBalance} fallGameScore={fallGameScoreRef}/>
             <div className="flex flex-col text-white gap-4 z-10">
               <div >
                 <div className={`flex flex-row justify-center text-base z-10 font-medium ${gamePhase === 'started' ? "opacity-20 !text-white" : ""}`}>

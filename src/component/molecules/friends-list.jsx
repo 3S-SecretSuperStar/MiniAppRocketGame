@@ -24,7 +24,7 @@ const FriendsList = ({ friendData }) => {
             <div className="flex flex-col items-center gap-4 text-center my-auto">
               <LazyLoadImage
                 alt="friend"
-                effect="blur"
+                effect="opacity"
                 wrapperProps={{
                   style: {
                     transitionDelay: "1s",

@@ -14,6 +14,12 @@
   z-index: -3;
 }
 
+.bg-layout {
+  background-size: 100vw 400vh;
+  background-image: linear-gradient(to bottom, black, #480B97, #BA2BA1);
+  background-position-y: 233.33%;
+}
+
 #stars1 {
   width: 1px;
   height: 1px;

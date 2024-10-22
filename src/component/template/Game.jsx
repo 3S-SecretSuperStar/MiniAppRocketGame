@@ -11,7 +11,7 @@ import FallGame from '../atom/fallGame'
 import { REACT_APP_SERVER } from '../../utils/privateData'
 
 export default memo(function Game({ gamePhase, finalResult, amount = 10.00,
-  className, bet, autoStop, socketFlag, realGame, isWin, stopGame, startGame, autoMode, updateBalance, fallGameScore, setFallGameScore }) {
+  className, bet, autoStop, socketFlag, realGame, isWin, stopGame, startGame, autoMode, updateBalance, fallGameScore }) {
 
   const context = useContext(AppContext);
   const [currentResult, setCurrentResult] = useState(1)
@@ -164,16 +164,19 @@ export default memo(function Game({ gamePhase, finalResult, amount = 10.00,
   }, [])
 
   useEffect(() => {
-    if (gameRef.current) setFallGameScore(gameRef.current.getScore())
+    if (gameRef.current) {
+      console.log("score:", gameRef.current.getScore());
+      fallGameScore.current = gameRef.current.getScore();
+    }
   }, [score])
 
   useEffect(() => {
-    console.log("fallGameScore", fallGameScore);
-    if (fallGameScore > 0) {
-      updateBalance((fallGameScore - saveLastScore))
-      setSaveLastScore(fallGameScore)
+    console.log("fallGameScore", fallGameScore.current);
+    if (fallGameScore.current > 0) {
+      updateBalance(fallGameScore.current - saveLastScore)
+      setSaveLastScore(fallGameScore.current)
     }
-  }, [fallGameScore])
+  }, [fallGameScore.current])
 
   const generateGauge = () => {
     const price = 0.5

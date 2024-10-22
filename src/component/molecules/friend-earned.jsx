@@ -31,7 +31,7 @@ const FriendEarned = ({ setIsModalOpen,friendNumber }) => {
                     </div>
                 </div>
             </div>
-            <ShadowButton className={"mt-4 invite-btn-gradient-border bg-mainFocus"} content={"Invite a friend"} action={() => setIsModalOpen(true)} />
+            <ShadowButton className={"mt-4 invite-btn-gradient-border bg-main"} content={"Invite a friend"} action={() => setIsModalOpen(true)} />
         </div>
     )
 }
