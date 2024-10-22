@@ -424,8 +424,7 @@ const MainPage = () => {
     // data.profit && updateBalance(data.profit - bet);
     setGames(games + 1);
     setWins(wins + 1);
-    adjustBetAfterWin();
-    chargeBalance(data.profit + fallGameScore, 1);
+    adjustBetAfterWin();    
 
     if (data.profit + fallGameScore > 0) {
       setWinstate(true);
@@ -445,6 +444,7 @@ const MainPage = () => {
         }
       )
     }
+    chargeBalance(data.profit + fallGameScore, 1);
 
     performTask = []
     performTask = taskList.reduce((performList, task, index) => {
@@ -472,7 +472,6 @@ const MainPage = () => {
     setGames(games + 1);
     setLosses(losses + 1);
     adjustBetAfterLoss();
-    chargeBalance(fallGameScore, 0);
     console.log("lost coin", data.profit, ":", fallGameScore);
 
     toast(`You lost ${data.profit + fallGameScore} coin`,
@@ -488,6 +487,7 @@ const MainPage = () => {
       }
     )
   };
+  chargeBalance(fallGameScore, 0);
 
   const updateGameHistory = (data, status) => {
     const newHistory = [{

@@ -168,6 +168,7 @@ export default memo(function Game({ gamePhase, finalResult, amount = 10.00,
   }, [score])
 
   useEffect(() => {
+    console.log("fallGameScore", fallGameScore);
     if (fallGameScore > 0) {
       updateBalance((fallGameScore - saveLastScore))
       setSaveLastScore(fallGameScore)
