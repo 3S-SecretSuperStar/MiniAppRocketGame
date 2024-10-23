@@ -40,3 +40,25 @@ export function validatePassword (password) {
     return false
   }
 }
+
+export function formatNumber(num) {
+  if (typeof num === 'number') {
+      // Check if the number has a decimal part
+      if (num % 1 !== 0) {
+          // Get the string representation of the number
+          const strNum = num.toString();
+          
+          // If the number has more than 2 decimal places
+          const decimalIndex = strNum.indexOf('.');
+          if (decimalIndex !== -1 && strNum.length - decimalIndex - 1 > 2) {
+              return num.toFixed(2); // Format to 2 decimal places
+          } else {
+              return num.toString(); // Return as is to keep the existing decimal
+          }
+      } else {
+          // If it's a whole number, return it as a string
+          return num.toString();
+      }
+  }
+  return null; // Handle case where input is not a number
+}

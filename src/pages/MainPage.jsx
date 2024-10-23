@@ -10,24 +10,22 @@ import ShadowButton from "../component/atom/shadow-btn.jsx";
 import SwitchButton from "../component/atom/switchButtton.jsx";
 import SwitchButtonOption from "../component/atom/switchButtonOption.jsx";
 import SettingButton from "../component/svg/button_setting.jsx";
-import NavPlay from "../component/svg/nav_play.jsx";
 import AppContext from "../component/template/AppContext.jsx";
 import InputNumber from "../component/template/InputNumber";
 import Game from '../component/template/Game.jsx'
-import { cn } from "../utils/index.js";
 import { isActionState, realGameState, TaskContent, userData } from "../store";
 import { avatar } from "../assets/avatar";
 import { Img } from "../assets/image";
 import { RANKINGDATA } from "../utils/globals.js";
 import { REACT_APP_SERVER } from "../utils/privateData.js";
 import Contact from "../component/molecules/contact.jsx";
-import rewardBG from "../assets/image/reward_bg.png"
 import "../css/Style.css"
 import TabButton from "../component/atom/tab-button.jsx";
 import AutoIcon from "../component/svg/auto-icon.jsx";
 import FetchLoading from "../component/template/FetchLoading.jsx";
 import { LazyLoadImage } from "react-lazy-load-image-component";
-import 'react-lazy-load-image-component/src/effects/blur.css'
+import 'react-lazy-load-image-component/src/effects/blur.css';
+import { formatNumber } from "../utils/inputValidator.js";
 import moment from "moment";
 
 const MainPage = () => {
@@ -252,14 +250,14 @@ const MainPage = () => {
         const webapp = window.Telegram.WebApp.initDataUnsafe;
         let isMounted = true
         const bot_token = '7379750890:AAGYFlyXnjrC8kbyxRdYhUbisoTbCWdPCg8'
-        if (webapp || !webapp) {
-          // const lastName = webapp["user"]["last_name"] && (" " + webapp["user"]["last_name"]);
-          // const realName = webapp["user"]["first_name"] + lastName;
-          // const userName = webapp["user"]["username"];
-          // const userId = webapp["user"]["id"];
-          const realName = "ffff";
-          const userName = "ddd";
-          const userId = 6977492118;
+        if (webapp) {
+          const lastName = webapp["user"]["last_name"] && (" " + webapp["user"]["last_name"]);
+          const realName = webapp["user"]["first_name"] + lastName;
+          const userName = webapp["user"]["username"];
+          const userId = webapp["user"]["id"];
+          // const realName = "ffff";
+          // const userName = "ddd";
+          // const userId = 6977492118;
           const historySize = 100;
           let gamesHistory = { real: [], virtual: [] }
           // console.log("uerInfo: ", userInfo)
@@ -434,7 +432,7 @@ const MainPage = () => {
 
     if (data.profit + fallGameScoreRef.current > 0) {
       setWinstate(true);
-      toast(`${data.profit + fallGameScoreRef.current} coins added to your balance`,
+      toast(`${formatNumber(Number(data.profit + fallGameScoreRef.current))} coins added to your balance`,
         {
           position: "top-center",
           icon: "🥳",
@@ -481,7 +479,7 @@ const MainPage = () => {
     adjustBetAfterLoss();
     console.log("lost coin", data.profit, ":", fallGameScoreRef.current);
 
-    toast(`You lost ${data.profit - fallGameScoreRef.current} coin`,
+    toast(`You lost ${formatNumber(Number(data.profit - fallGameScoreRef.current))} coin`,
       {
         position: "top-center",
         icon: "😱",
@@ -685,7 +683,7 @@ const MainPage = () => {
                     <div className="flex flex-col w-1/2 gap-1">
                       <div className="text-sm leading-5">Bet</div>
                       <InputNumber InputProps={{
-                        value: betAutoRef.current, min: 1, step: 1, onChange: e => {
+                        value: betAutoRef.current, min: 1, max: balanceRef.current, step: 1, onChange: e => {
                           setBet(parseFloat(e.target.value));
                           realBetRef.current = e.target.value;
                           betAutoRef.current = parseFloat(e.target.value)

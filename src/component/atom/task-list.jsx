@@ -346,7 +346,6 @@ const TaskList = () => {
           setUser(user => ({ ...user, Balance: userBalance }))
           const performtask = isReal ? data.task.real.achieve_task : data.task.virtual.achieve_task
           const doneTask = isReal ? data.task.real.done_task : data.task.virtual.done_task
-          // console.log("perform task", performtask)
           taskState = new Array(taskList.length).fill(1)
           performtask.forEach(item => {
             taskState[item] = 0;
@@ -403,12 +402,9 @@ const TaskList = () => {
                       sort: dailyData.sort
                     }
                   }
-                  // setFixedTaskData([dailyItemData])
                   const _fixedTaskData = fixedTaskItems.map(item => {
 
                     const { imgSrc, link } = typeToImageMap[item.type];
-
-                    // console.log("item:", item);
 
                     return {
                       src: imgSrc,
@@ -429,8 +425,6 @@ const TaskList = () => {
                   // console.log('task states:', taskState);
                   const _otherTaskData = otherTaskItems.map(item => {
                     const { imgSrc, link } = typeToImageMap[item.type];
-
-                    // console.log("item:", item);
 
                     return {
                       src: imgSrc,
@@ -488,7 +482,7 @@ const TaskList = () => {
 
   if (loading || firstLoading) {
     setActionState("start")
-    return <FetchLoading firstLoading={firstLoading} setLoading={setLoading} vRate={2}/>
+    return <FetchLoading firstLoading={firstLoading} setLoading={setLoading} vRate={3} />
   }
 
   return (
