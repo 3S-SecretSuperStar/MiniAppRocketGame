@@ -6,6 +6,7 @@ import {
 } from "pixi.js";
 import cnst from "./constants";
 import { Img } from "../../assets/image/index.jsx"
+import { formatNumber } from "../../utils/inputValidator.js";
 
 class FallGame {
   constructor(gameId, autoStop, bet) {
@@ -53,7 +54,6 @@ class FallGame {
     this.app.ticker.add((d) => this.loop(d));
   };
 
-
   loadAssets = async () => {
     const textures = await Promise.all([
       Assets.load(Img.meteor),
@@ -66,6 +66,7 @@ class FallGame {
     this.destroyTexture = textures[2];
     this.ufoTexture = textures[3]
   };
+
   getScore = () => {
     return this.score
   }
@@ -165,7 +166,7 @@ class FallGame {
         crater.zIndex = 1;
         crater.on('pointerdown', () => {
           if (crater.isDestroyed === 0) {
-            const addCoin = 0.2 * this.autoStop * this.bet;
+            const addCoin = formatNumber(cnst.CRATER_POINT * this.autoStop * this.bet);
             // Assign the rendered texture to the crater
             crater.x += crater.width / 2 - this.destroyTexture.width / 2;
             crater.y += crater.height / 2 - this.destroyTexture.height / 2;
@@ -208,7 +209,7 @@ class FallGame {
         meteor.zIndex = 1;
         meteor.on('pointerdown', () => {
           if (meteor.isDestroyed === 0) {
-            const addCoin = 0.1 * this.autoStop * this.bet;
+            const addCoin = formatNumber(cnst.METEOR_POINT * this.autoStop * this.bet);
             const basicText = new Text(` + ${addCoin}`, { fontFamily: 'Roboto', fontSize: 23, fill: 0xFAD557, align: 'center', fontWeight: "bold" });
 
             // Assign the rendered texture to the meteor
@@ -257,7 +258,7 @@ class FallGame {
 
         ufo.on('pointerdown', () => {
           if (ufo.isDestroyed === 0) {
-            const addCoin = 0.5 * this.autoStop * this.bet;
+            const addCoin = formatNumber(cnst.UFO_POINT * this.autoStop * this.bet);
             const basicText = new Text(` + ${addCoin}`, { fontFamily: 'Roboto', fontSize: 23, fill: 0xFAD557, align: 'center', fontWeight: "bold" });
 
             ufo.x += ufo.width / 2 - this.destroyTexture.width / 2;
