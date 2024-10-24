@@ -66,6 +66,8 @@ const MainPage = () => {
   const [tabId, setTabId] = useState(1);
   const [loading, setLoading] = useState(true)
   const [firstLoading, setFirstLoading] = useState(true);
+  const [betStopRef, setBetStopRef] = useState(0);
+  const [currentResult, setCurrentResult] = useState(1)
   let performTask = [];
   let testCounter = 0;
 
@@ -112,9 +114,7 @@ const MainPage = () => {
 
   const handleModalButton = () => {
     handleStartGame();
-    // setAutoStart(true)
     setIsModalOpen(false);
-
   }
 
   const handleStartGame = () => {
@@ -176,10 +176,6 @@ const MainPage = () => {
   }, [operationAfterWin, winCoefficient, operationAfterLoss, lostCoefficient]);
 
   useEffect(() => {
-
-  }, [context.socket])
-
-  useEffect(() => {
     let isMounted = true
     if (gamePhase !== 'started' && autoMode && !stopWasPressed && balance >= betAutoRef.current && betAutoRef.current) {
       if (isMounted) {
@@ -200,7 +196,6 @@ const MainPage = () => {
     try {
       const profilesResponse = await fetch(`https://api.telegram.org/bot${bot_token}/getUserProfilePhotos?user_id=${userId}`);
       const profiles = await profilesResponse.json();
-      // console.log("profiles :", profiles);
 
       if (profiles.result.photos.length > 0) {
         const fileResponse = await fetch(`https://api.telegram.org/bot${bot_token}/getFile?file_id=${profiles.result.photos[0][2].file_id}`);
@@ -209,7 +204,7 @@ const MainPage = () => {
         const userAvatarUrl = `https://api.telegram.org/file/bot${bot_token}/${filePath.result.file_path}`;
         return userAvatarUrl;
       } else {
-        // console.log('No profile photos found.');
+        console.log('No profile photos found.');
       }
     } catch (error) {
       console.error('Error fetching profile photos:', error);
@@ -250,14 +245,14 @@ const MainPage = () => {
         const webapp = window.Telegram.WebApp.initDataUnsafe;
         let isMounted = true
         const bot_token = '7379750890:AAGYFlyXnjrC8kbyxRdYhUbisoTbCWdPCg8'
-        if (webapp) {
-          const lastName = webapp["user"]["last_name"] && (" " + webapp["user"]["last_name"]);
-          const realName = webapp["user"]["first_name"] + lastName;
-          const userName = webapp["user"]["username"];
-          const userId = webapp["user"]["id"];
-          // const realName = "ffff";
-          // const userName = "ddd";
-          // const userId = 6977492118;
+        if (webapp || !webapp) {
+          // const lastName = webapp["user"]["last_name"] && (" " + webapp["user"]["last_name"]);
+          // const realName = webapp["user"]["first_name"] + lastName;
+          // const userName = webapp["user"]["username"];
+          // const userId = webapp["user"]["id"];
+          const realName = "ffff";
+          const userName = "ddd";
+          const userId = 6977492118;
           const historySize = 100;
           let gamesHistory = { real: [], virtual: [] }
           // console.log("uerInfo: ", userInfo)
@@ -273,8 +268,6 @@ const MainPage = () => {
                 try {
                   if (gamePhase !== 'started') {
                     const myData = data.userData;
-                    console.log("myData: ", myData)
-                    console.log("data : ", data)
                     const virtualTaskState = myData.task.virtual;
 
                     const realWins = myData.gamesHistory.real.filter(j => j.crash === 'x').length
@@ -341,7 +334,6 @@ const MainPage = () => {
       catch (e) {
         console.log(e)
       }
-
     }
     fetchData()
   }, [])
@@ -364,39 +356,60 @@ const MainPage = () => {
     setSocketStart(false);
     setActionState("start");
     setGamePhase('started');
-    console.log("before socket", user.Balance)
-    context.socket.onmessage = async e => {
-      console.log(user.Balance)
-      const data = JSON.parse(e.data);
-      switch (data.operation) {
-        case 'started':
-          setSocketStart(true)
-          handleGameStarted();
-          break;
-        case 'stopped':
-          console.log("stopped", user.Balance)
-          handleGameStopped(data);
-          break;
-        case 'crashed':
-          handleGameCrashed(data);
-          break;
-        default:
-          break;
-      }
-    };
   };
 
-  const stopGame = (amount) => {
-    console.log("stop game button ", user.Balance)
+  const stopGame = async (amount) => {
+    console.log("stop game button ", currentResult, ":", fallGameScoreRef.current, ":", autoStop);
     setStopWasPressed(true);
     setActionState("stop");
     setGamePhase('stopped');
-    if (amount !== 'x') {
-      context.socket.send(JSON.stringify({ operation: 'stop' }));
-      console.log("stop game button amount x ", user.Balance)
-    } else {
-      context.socket.send(JSON.stringify({ operation: 'stop', stopAmount: amount }));
-      console.log("stop game button amount not x ", user.Balance)
+    if (socketStart) {
+      const body = { userId: user.UserId, operation: "stop", isSuccess: false, bet: realBetRef.current, result: 0, profit: 0, isReal };
+      if (amount == 'x') {
+        body.isSuccess = true;
+        body.result = currentResult;
+        body.profit = currentResult * realBetRef.current + fallGameScoreRef.current;
+      } else {
+        if (betStopRef < autoStop) {
+          body.isSuccess = false;
+          body.result = amount;
+          body.profit = 0;
+        } else {
+          body.isSuccess = true;
+          body.result = amount;
+          body.profit = currentResult * realBetRef.current + fallGameScoreRef.current;
+        }
+      }
+      const headers = new Headers();
+      headers.append('Content-Type', 'application/json')
+      try {
+        const result = await fetch(`${serverUrl}/operate_game`, {
+          headers,
+          method: 'POST',
+          body: JSON.stringify(body)
+        });
+        const stopResult = await result.json();
+        console.log(stopResult);
+        if (stopResult.data.isSuccess) {
+          console.log("1");
+          handleGameStopped(
+            {
+              stop: currentResult,
+              profit: currentResult * realBetRef.current
+            }
+          );
+        } else {
+          console.log("2");
+          handleGameCrashed(
+            {
+              stop: 'x',
+              profit: realBetRef.current
+            }
+          );
+        }
+      } catch (err) {
+        console.log(err);
+      }
     }
   };
 
@@ -418,7 +431,6 @@ const MainPage = () => {
     setCointinueCounter(continueCounter + 1)
     testCounter = testCounter + 1;
 
-    console.log("stop")
     setActionState("stop");
     setWinstate(false);
     setFinalResult(data.stop);
@@ -446,9 +458,9 @@ const MainPage = () => {
             justifyItems: 'start'
           },
         }
-      )
+      );
+      updateBalance(data.profit);
     }
-    chargeBalance(data.profit + fallGameScoreRef.current, 1);
 
     performTask = []
     performTask = taskList.reduce((performList, task, index) => {
@@ -479,7 +491,7 @@ const MainPage = () => {
     adjustBetAfterLoss();
     console.log("lost coin", data.profit, ":", fallGameScoreRef.current);
 
-    toast(`You lost ${formatNumber(Number(data.profit - fallGameScoreRef.current))} coin`,
+    toast(`You lost ${formatNumber(Number(data.profit + fallGameScoreRef.current))} coin`,
       {
         position: "top-center",
         icon: "😱",
@@ -490,8 +502,8 @@ const MainPage = () => {
           width: '90vw',
         },
       }
-    )
-    chargeBalance(fallGameScoreRef.current, 0);
+    );
+    updateBalance(-fallGameScoreRef.current);
   };
 
   const updateGameHistory = (data, status) => {
@@ -513,6 +525,54 @@ const MainPage = () => {
     const updatedUser = { ...user, Balance: newBalance }
     setUser(updatedUser)
   };
+
+  const gameStartSignal = async () => {
+    const headers = new Headers();
+    headers.append('Content-Type', 'application/json')
+    try {
+      const result = await fetch(`${serverUrl}/operate_game`, {
+        headers,
+        method: 'POST',
+        body: JSON.stringify({ userId: user.UserId, bet: realBetRef.current, isReal: isReal, autoStop, operation: "start" })
+      });
+      const data = await result.json();
+      if (data.status == "success") {
+        setBetStopRef(data.data.gameLimit);
+        handleGameStarted();
+        setSocketStart(true);
+        console.log(data);
+      } else {
+        toast(result.data.msg,
+          {
+            position: "top-center",
+            icon: "😱",
+            style: {
+              borderRadius: '8px',
+              background: '#F56D63',
+              color: '#FFFFFF',
+              width: '90vw',
+            },
+          }
+        )
+        setGamePhase("stopped");
+      }
+    } catch (error) {
+      console.log(error);
+      toast("Unexpected Error",
+        {
+          position: "top-center",
+          icon: "😱",
+          style: {
+            borderRadius: '8px',
+            background: '#F56D63',
+            color: '#FFFFFF',
+            width: '90vw',
+          },
+        }
+      )
+      setGamePhase("stopped");
+    }
+  }
 
   const adjustBetAfterWin = () => {
     if (autoMode) {
@@ -616,9 +676,13 @@ const MainPage = () => {
             </div>
           </div>
           <TabButton className={`transform translate-y-[100px] z-10 ${isAction === "start" ? "-translate-y-[300px]" : ""} `} tabList={statsList} tabNo={tabId} setTabNo={setTabId} />
-          <Game className={`transition-all ${isAction !== "start" ? "mt-24" : "mt-0"} `} finalResult={finalResult} gamePhase={gamePhase} isWin={winState} stopGame={(e) => stopGame(e)}
+          <Game
+            className={`transition-all ${isAction !== "start" ? "mt-24" : "mt-0"} `}
+            finalResult={finalResult} gamePhase={gamePhase} setGamePhase={setGamePhase} isWin={winState} stopGame={(e) => stopGame(e)}
             setLoaderIsShown={setLoaderIsShown} amount={balance} bet={bet} autoStop={autoStop} socketFlag={socketStart} realGame={isReal} setInfoState={(e) => setInfoState(e)}
-            startGame={startGame} autoMode={autoMode} updateBalance={updateBalance} fallGameScore={fallGameScoreRef} />
+            startGame={startGame} autoMode={autoMode} updateBalance={updateBalance} fallGameScore={fallGameScoreRef} betStopRef={betStopRef} gameStartSignal={gameStartSignal}
+            handleGameStarted={handleGameStarted} handleGameStopped={handleGameStopped} setSocketFlag={setSocketStart} currentResult={currentResult} setCurrentResult={setCurrentResult}
+          />
           <div className="flex flex-col text-white gap-4 z-10">
             <div >
               <div className={`flex flex-row justify-center text-base z-10 font-medium ${gamePhase === 'started' ? "opacity-20 !text-white" : ""}`}>
@@ -669,7 +733,7 @@ const MainPage = () => {
                 ) :
                 (
                   <ShadowButton
-                    className={"bg-[#CC070A] shadow-btn-red-border invite-btn-red-shadow z-10"}
+                    className={"bg-[#CC070A] shadow-btn-red-border invite-btn-red-shadow z-10 mb-4"}
                     content={"Stop"}
                     action={() => stopGame('x')}
                   />

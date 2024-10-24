@@ -71,6 +71,10 @@ class FallGame {
     return this.score
   }
 
+  setAutoStop = (autoStop) => {
+    this.autoStop = Math.floor(autoStop);
+  }
+
   loop = (d) => {
     if (this.started == false) return;
     const elementsToRemove = [];

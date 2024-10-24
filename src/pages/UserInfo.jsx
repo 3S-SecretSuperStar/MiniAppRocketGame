@@ -106,7 +106,6 @@ const UserInfo = () => {
       return () => { isMounted = false }
 
     }
-
   }, [])
   function nFormatter(num, digits) {
     const lookup = [
@@ -159,7 +158,7 @@ const UserInfo = () => {
     <div className="flex flex-col gap-4 items-center text-white text-base">
       <div className="font-semibold text-ellipsis overflow-hidden w-52 whitespace-nowrap text-center">{user.RealName}</div>
       <TabButton tabList={statsList} tabNo={tabId} setTabNo={setTabId} />
-      <div className="flex flex-col gap-4 overflow-auto w-full " style={{ height: "calc(100vh - 200px)" }}>
+      <div className="flex flex-col gap-4 overflow-auto w-full" style={{ height: "calc(100vh - 190px)" }}>
         <div className="flex gap-[41px] text-blueFaded text-sm justify-center">
 
           <div>Level <span className="text-white">{RANKINGDATA.indexOf(user.Ranking) + 1}/10</span></div>
@@ -206,7 +205,6 @@ const UserInfo = () => {
             {rankingItems}
           </Carousel>
         </div>
-
 
         <div className=" w-full" style={{ height: "calc(100vh - 630px)" }}>
           <div className="flex flex-col gap-2 pb-8">

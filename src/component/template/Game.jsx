@@ -8,13 +8,14 @@ import { userData } from '../../store'
 import "../../css/Game.css"
 import { Link } from 'react-router-dom'
 import FallGame from '../atom/fallGame'
-import { REACT_APP_SERVER } from '../../utils/privateData'
+import { REACT_APP_SERVER } from '../../utils/privateData';
+import toast from "react-hot-toast";
 
 export default memo(function Game({ gamePhase, finalResult, amount = 10.00,
-  className, bet, autoStop, socketFlag, realGame, isWin, stopGame, startGame, autoMode, updateBalance, fallGameScore }) {
+  className, bet, autoStop, socketFlag, realGame, isWin, stopGame, startGame, autoMode, updateBalance, fallGameScore,
+  betStopRef, gameStartSignal, setGamePhase, handleGameStarted, handleGameStopped, setSocketFlag, currentResult, setCurrentResult }) {
 
   const context = useContext(AppContext);
-  const [currentResult, setCurrentResult] = useState(1)
   const [user,] = useAtom(userData)
   const [timerHandler, setTimerHandler] = useState();
   const [countTimeHandler, setCountTimeHandler] = useState();
@@ -36,7 +37,7 @@ export default memo(function Game({ gamePhase, finalResult, amount = 10.00,
   let gameId = (Math.random() * 10000) | 0;
 
   const gamePlay = () => {
-    gameRef.current = new FallGame(gameId++, autoStop, bet);
+    gameRef.current = new FallGame(gameId++, 1, bet);
     view.current.append(gameRef.current.view);
   }
 
@@ -54,15 +55,18 @@ export default memo(function Game({ gamePhase, finalResult, amount = 10.00,
   }
 
   useEffect(() => {
-    if (autoMode) {
-      if (parseFloat(score.slice(1)) > parseFloat(autoStop) + 0.1 && gamePhase === "started") {
-        stopGame(parseFloat(autoStop))
+    if (gameRef.current) {
+      gameRef.current.setAutoStop(currentResult); 
+    }
+    if (currentResult > betStopRef && gamePhase === "started" && socketFlag) {
+      stopGame(parseFloat(betStopRef));
+      if (autoMode) {
         setTimeout(() => {
           startGame()
         }, 1000)
       }
     }
-  }, [score, gamePhase, autoMode])
+  }, [currentResult, gamePhase, autoMode])
 
   useEffect(() => {
 
@@ -91,15 +95,7 @@ export default memo(function Game({ gamePhase, finalResult, amount = 10.00,
             clearInterval(newCountTimeHandler); // Clear the interval when counter reaches zero
             setCounterNumber(0);// Ensure counter is set to zero
             setCounterFlag(true)
-            
-            context.socket.send(JSON.stringify({
-              operation: 'start',
-              bet,
-              autoStop,
-              isReal: realGame,
-              userId: user.UserId
-            }));
-
+            gameStartSignal();
           } else {
             setCounterNumber(newCounterNumber);
           }
@@ -373,8 +369,6 @@ export default memo(function Game({ gamePhase, finalResult, amount = 10.00,
           alt='inactive rocket'
         />
       </div>
-
-
 
       <div id='game-gauge' className='left'>
         {generateGauge()}

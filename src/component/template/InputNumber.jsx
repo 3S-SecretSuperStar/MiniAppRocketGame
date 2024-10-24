@@ -81,9 +81,9 @@ const InputNumber = memo(({ InputProps }) => {
   };
 
   return (
-    <div className={`input-number-parent relative w-full h-11 hover:outline-mainOpactiy focus:outline-mainOpactiy focus:border-mainOpactiy hover:border-mainOpactiy hover:outline-4 ${InputProps.disabled ? "text-[#FFFFFF99]" : "text-black"}`}>
+    <div className={`input-number-parent relative w-full h-11 ${InputProps.disabled ? "text-[#FFFFFF99]" : "text-black"}`}>
       <input
-        className={`input-number absolute w-full h-11 top-0 left-0 box-border rounded-xl pl-4 hover:outline-mainOpactiy focus:outline-mainOpactiy focus:border-mainOpactiy hover:border-mainOpactiy  ${InputProps.disabled ? "text-[#FFFFFF99] bg-white_20 cursor-none contain-none select-none" : ""}`}
+        className={`input-number absolute w-full h-11 top-0 left-0 box-border rounded-xl pl-4 focus:border-mainFocus focus:outline-none focus:ring-2 focus:ring-mainFocus ${InputProps.disabled ? "text-[#FFFFFF99] bg-white_20 cursor-none contain-none select-none" : ""}`}
         type='number'
         ref={inputElement}
         value={value}
