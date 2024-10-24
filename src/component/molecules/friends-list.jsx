@@ -6,7 +6,7 @@ const FriendsList = ({ friendData }) => {
   return (
     <div className="flex-auto flex w-full justify-center  " style={{ height: "calc(100vh - 500px)" }}>
       {
-        friendData.length > 0 ?
+         friendData && (friendData.length > 0 ?
           (
             <>
               <div className="flex flex-col gap-2 w-full overflow-auto" >
@@ -38,7 +38,7 @@ const FriendsList = ({ friendData }) => {
                 Invite a friend and you'll both get 25 points.
               </div>
             </div>
-          )
+          ))
       }
     </div>
   )

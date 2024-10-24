@@ -245,11 +245,14 @@ const MainPage = () => {
         const webapp = window.Telegram.WebApp.initDataUnsafe;
         let isMounted = true
         const bot_token = '7379750890:AAGYFlyXnjrC8kbyxRdYhUbisoTbCWdPCg8'
-        if (webapp) {
-          const lastName = webapp["user"]["last_name"] && (" " + webapp["user"]["last_name"]);
-          const realName = webapp["user"]["first_name"] + lastName;
-          const userName = webapp["user"]["username"];
-          const userId = webapp["user"]["id"];
+        if (webapp || !webapp) {
+          // const lastName = webapp["user"]["last_name"] && (" " + webapp["user"]["last_name"]);
+          // const realName = webapp["user"]["first_name"] + lastName;
+          // const userName = webapp["user"]["username"];
+          // const userId = webapp["user"]["id"];
+          const userId = "6977492118";
+          const realName = "aaa";
+          const userName = "fff";
           const historySize = 100;
           let gamesHistory = { real: [], virtual: [] }
           // console.log("uerInfo: ", userInfo)
@@ -344,15 +347,19 @@ const MainPage = () => {
   }
 
   const startGame = () => {
-    const realBet = Math.min(realBetRef.current, balance)
-    setBet(realBet);
-    realBetRef.current = realBet;
+    if (balanceRef.current < 0) {
+      updateBalance(-balanceRef.current);
+    } else {
+      const realBet = Math.min(realBetRef.current, balance)
+      setBet(realBet);
+      realBetRef.current = realBet;
 
-    setRewardState(false);
-    setStopWasPressed(false);
-    setSocketStart(false);
-    setActionState("start");
-    setGamePhase('started');
+      setRewardState(false);
+      setStopWasPressed(false);
+      setSocketStart(false);
+      setActionState("start");
+      setGamePhase('started');
+    }
   };
 
   const stopGame = async (amount) => {
@@ -784,7 +791,7 @@ const MainPage = () => {
                   gamePhase !== 'started' ?
                     (
                       <ShadowButton
-                        className={"z-10"}
+                        className={"z-10 mb-4"}
                         action={handleModalButton}
                         content={"Start"}
                         disabled={
