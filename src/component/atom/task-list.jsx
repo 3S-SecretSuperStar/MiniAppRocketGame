@@ -43,24 +43,19 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
       .then(res => Promise.all([res.status, res.json()]))
       .then(() => { stateTask() })
   }
-  // console.log(claimStateListData);
-  // console.log(claimStateList)
+
   const createTransaction = (tokenCount) => {
-    // console.log("begin  ")
     const body = beginCell()
       .storeUint(0, 32)
       .storeStringTail("RocketTON Coins purchased")
-      .endCell()
+      .endCell();
 
-    // console.log("return before")
     return {
 
       // The transaction is valid for 10 minutes from now, in unix epoch seconds.
       validUntil: Math.floor(Date.now() / 1000) + 600,
       messages: [
-
         {
-
           // The receiver's address.
           address: adminWalletAddress,
           // Amount to send in nanoTON. For example, 0.005 TON is 5000000 nanoTON.
@@ -77,24 +72,14 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
   const sendTransaction = async (tokenCount) => {
 
     const tx = createTransaction(tokenCount)
-    // console.log("1 ")
-
-
-    // console.log("transaction : ", tx)
     const userId = user.UserId;
-    // console.log("2 ")
-    // console.log("user Id : ", user.UserId)
-    // console.log("user Id : ", userId)
     try {
 
       if (tonwallet.account.chain === Chain.Mainnet) {
         const transferResult = await tonconnectUi.sendTransaction(tx);
-        // console.log("transfer result : ", transferResult)
         if (transferResult) {
-
           fetch(`${serverUrl}/charge_balance`, { method: 'POST', body: JSON.stringify({ userId: userId, amount: tokenCount }), headers })
             .then(() => {
-
               toast(`${tokenCount} coins added to your balance`,
                 {
                   position: "top-center",

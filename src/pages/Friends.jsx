@@ -21,8 +21,8 @@ const Friends = () => {
   const [friendList, setFriendList] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const serverUrl = REACT_APP_SERVER;
-  // const webapp = window.Telegram.WebApp.initDataUnsafe;
-  const userId = 6977492118;
+  const webapp = window.Telegram.WebApp.initDataUnsafe;
+  const userId = webapp["user"]["id"];
   const [actionState, setActionState] = useAtom(isActionState)
   // const utils = initUtils();
   const [user, setUser] = useAtom(userData)

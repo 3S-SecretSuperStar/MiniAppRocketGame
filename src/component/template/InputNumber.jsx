@@ -49,7 +49,7 @@ const InputNumber = memo(({ InputProps }) => {
     const newValue = e.target.value;
     // Validate input: Only allow numbers and decimal points
     if (/^\d*\.?\d*$/.test(newValue)) {
-      if (newValue >= InputProps.min && newValue <= Number(InputProps.max)) {
+      if (newValue >= InputProps.min && (newValue <= Number(InputProps.max) || !InputProps.max)) {
         setValue(newValue);
         InputProps && InputProps.onChange({ target: {value: newValue}});
         return;
@@ -57,7 +57,7 @@ const InputNumber = memo(({ InputProps }) => {
         setValue(InputProps.min);
         InputProps.onChange({ target: { value: InputProps.min } });
         return;
-      } else if (newValue > Number(InputProps.max) && Number(InputProps.max) > InputProps.min) {
+      } else if (InputProps.max && newValue > Number(InputProps.max) && Number(InputProps.max) > InputProps.min) {
         setValue(InputProps.max)
         InputProps.onChange({ target: { value: InputProps.max } });
         return;

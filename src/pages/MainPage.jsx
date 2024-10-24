@@ -245,14 +245,14 @@ const MainPage = () => {
         const webapp = window.Telegram.WebApp.initDataUnsafe;
         let isMounted = true
         const bot_token = '7379750890:AAGYFlyXnjrC8kbyxRdYhUbisoTbCWdPCg8'
-        if (webapp || !webapp) {
-          // const lastName = webapp["user"]["last_name"] && (" " + webapp["user"]["last_name"]);
-          // const realName = webapp["user"]["first_name"] + lastName;
-          // const userName = webapp["user"]["username"];
-          // const userId = webapp["user"]["id"];
-          const userId = "6977492118";
-          const realName = "aaa";
-          const userName = "fff";
+        if (webapp ) {
+          const lastName = webapp["user"]["last_name"] && (" " + webapp["user"]["last_name"]);
+          const realName = webapp["user"]["first_name"] + lastName;
+          const userName = webapp["user"]["username"];
+          const userId = webapp["user"]["id"];
+          // const userId = 6977492118;
+          // const realName = "aaa";
+          // const userName = "fff";
           const historySize = 100;
           let gamesHistory = { real: [], virtual: [] }
           // console.log("uerInfo: ", userInfo)
@@ -347,19 +347,14 @@ const MainPage = () => {
   }
 
   const startGame = () => {
-    if (balanceRef.current < 0) {
-      updateBalance(-balanceRef.current);
-    } else {
-      const realBet = Math.min(realBetRef.current, balance)
-      setBet(realBet);
-      realBetRef.current = realBet;
-
-      setRewardState(false);
-      setStopWasPressed(false);
-      setSocketStart(false);
-      setActionState("start");
-      setGamePhase('started');
-    }
+    const realBet = Math.max(Math.min(realBetRef.current, balance), 1);
+    setBet(realBet);
+    realBetRef.current = realBet;
+    setRewardState(false);
+    setStopWasPressed(false);
+    setSocketStart(false);
+    setActionState("start");
+    setGamePhase('started');
   };
 
   const stopGame = async (amount) => {
@@ -416,6 +411,13 @@ const MainPage = () => {
       }
     }
   };
+
+  const stopGameOperator = async (amount) => {
+    await stopGame(amount)
+    if (autoMode) {
+      startGame();
+    }
+  }
 
   const handleGameStarted = () => {
     setFirstLogin(false)
@@ -546,46 +548,26 @@ const MainPage = () => {
         setSocketStart(true);
         console.log(data);
       } else {
-        toast(result.data.msg,
-          {
-            position: "top-center",
-            icon: "😱",
-            style: {
-              borderRadius: '8px',
-              background: '#F56D63',
-              color: '#FFFFFF',
-              width: '90vw',
-            },
-          }
-        )
         setGamePhase("stopped");
+        setActionState("stop");
+        setWinstate(false);
       }
     } catch (error) {
       console.log(error);
-      toast("Unexpected Error",
-        {
-          position: "top-center",
-          icon: "😱",
-          style: {
-            borderRadius: '8px',
-            background: '#F56D63',
-            color: '#FFFFFF',
-            width: '90vw',
-          },
-        }
-      )
       setGamePhase("stopped");
+      setActionState("stop");
+      setWinstate(false);
     }
   }
 
   const adjustBetAfterWin = () => {
     if (autoMode) {
       if (operationAfterWinRef.current === 'Increase Bet by') {
-        const afterWinBet = Math.min(realBetRef.current * valueAfterWinRef.current, balance)
+        const afterWinBet = Math.max(Math.min(realBetRef.current * valueAfterWinRef.current, balance), 1);
         realBetRef.current = afterWinBet;
         setBet(afterWinBet)
       } else {
-        const returnBet = Math.min(betAutoRef.current, balance)
+        const returnBet = Math.max(Math.min(betAutoRef.current, balance), 1);
         realBetRef.current = returnBet;
         setBet(returnBet)
       }
@@ -594,12 +576,12 @@ const MainPage = () => {
 
   const adjustBetAfterLoss = () => {
     if (autoMode) {
-      const lostAfterBet = Math.min(realBetRef.current * valueAfterLossRef.current, balance)
+      const lostAfterBet = Math.max(Math.min(realBetRef.current * valueAfterLossRef.current, balance), 1);
       if (operationAfterLossRef.current === 'Increase Bet by') {
         realBetRef.current = lostAfterBet;
         setBet(lostAfterBet)
       } else {
-        const returnBet = Math.min(betAutoRef.current, balance)
+        const returnBet = Math.max(Math.min(betAutoRef.current, balance), 1);
         realBetRef.current = returnBet;
         setBet(returnBet);
       }
@@ -682,7 +664,7 @@ const MainPage = () => {
           <TabButton className={`transform translate-y-[100px] z-10 ${isAction === "start" ? "-translate-y-[300px]" : ""} `} tabList={statsList} tabNo={tabId} setTabNo={setTabId} />
           <Game
             className={`transition-all ${isAction !== "start" ? "mt-24" : "mt-0"} `}
-            finalResult={finalResult} gamePhase={gamePhase} setGamePhase={setGamePhase} isWin={winState} stopGame={(e) => stopGame(e)}
+            finalResult={finalResult} gamePhase={gamePhase} setGamePhase={setGamePhase} isWin={winState} stopGame={(e) => stopGameOperator(e)}
             setLoaderIsShown={setLoaderIsShown} amount={balance} bet={bet} autoStop={autoStop} socketFlag={socketStart} realGame={isReal} setInfoState={(e) => setInfoState(e)}
             startGame={startGame} autoMode={autoMode} updateBalance={updateBalance} fallGameScore={fallGameScoreRef} betStopRef={betStopRef} gameStartSignal={gameStartSignal}
             handleGameStarted={handleGameStarted} handleGameStopped={handleGameStopped} setSocketFlag={setSocketStart} currentResult={currentResult} setCurrentResult={setCurrentResult}
@@ -698,7 +680,7 @@ const MainPage = () => {
                 <div className="flex flex-col w-1/2 gap-1">
                   <div className="text-sm leading-5  z-10">Bet</div>
                   <InputNumber InputProps={{
-                    value: betManualRef.current, min: 1, max: balanceRef.current, step: 1, disabled: gamePhase === 'started', onChange: e => {
+                    value: betManualRef.current, min: 1, step: 1, disabled: gamePhase === 'started', onChange: e => {
                       setBet(parseFloat(e.target.value));
                       realBetRef.current = e.target.value;
                       betManualRef.current = parseFloat(e.target.value)
@@ -751,7 +733,7 @@ const MainPage = () => {
                     <div className="flex flex-col w-1/2 gap-1">
                       <div className="text-sm leading-5">Bet</div>
                       <InputNumber InputProps={{
-                        value: betAutoRef.current, min: 1, max: balanceRef.current, step: 1, onChange: e => {
+                        value: betAutoRef.current, min: 1, step: 1, onChange: e => {
                           setBet(parseFloat(e.target.value));
                           realBetRef.current = e.target.value;
                           betAutoRef.current = parseFloat(e.target.value)

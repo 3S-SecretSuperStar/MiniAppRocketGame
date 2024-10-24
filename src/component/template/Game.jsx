@@ -60,11 +60,6 @@ export default memo(function Game({ gamePhase, finalResult, amount = 10.00,
     }
     if (currentResult > betStopRef && gamePhase === "started" && socketFlag) {
       stopGame(parseFloat(betStopRef));
-      if (autoMode) {
-        setTimeout(() => {
-          startGame()
-        }, 1000)
-      }
     }
   }, [currentResult, gamePhase, autoMode])
 
@@ -147,10 +142,6 @@ export default memo(function Game({ gamePhase, finalResult, amount = 10.00,
   }, [counterFlag, socketFlag])
 
   useEffect(() => {
-    if (context.socket) {
-      context.socket.send(JSON.stringify({ operation: 'stop' }))
-    }
-
     if (gamePhase === 'stopped') {
       document.getElementById('stars1').style.animationPlayState =
         document.getElementById('stars2').style.animationPlayState =
