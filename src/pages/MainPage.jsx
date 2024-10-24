@@ -380,14 +380,7 @@ const MainPage = () => {
       const headers = new Headers();
       headers.append('Content-Type', 'application/json')
       try {
-        const result = await fetch(`${serverUrl}/operate_game`, {
-          headers,
-          method: 'POST',
-          body: JSON.stringify(body)
-        });
-        const stopResult = await result.json();
-        console.log(stopResult);
-        if (stopResult.data.isSuccess) {
+        if (body.isSuccess) {
           console.log("1");
           handleGameStopped(
             {
@@ -404,6 +397,13 @@ const MainPage = () => {
             }
           );
         }
+        const result = await fetch(`${serverUrl}/operate_game`, {
+          headers,
+          method: 'POST',
+          body: JSON.stringify(body)
+        });
+        const stopResult = await result.json();
+        console.log(stopResult);
       } catch (err) {
         console.log(err);
       }

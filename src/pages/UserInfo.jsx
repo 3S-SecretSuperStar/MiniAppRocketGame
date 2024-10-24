@@ -57,7 +57,6 @@ const UserInfo = () => {
       <div className="text-center w-full" key={index}>
         Ranking: {data}
       </div>
-
     )
   })
 
