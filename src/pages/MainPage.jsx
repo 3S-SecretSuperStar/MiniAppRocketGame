@@ -245,7 +245,7 @@ const MainPage = () => {
         const webapp = window.Telegram.WebApp.initDataUnsafe;
         let isMounted = true
         const bot_token = '7379750890:AAGYFlyXnjrC8kbyxRdYhUbisoTbCWdPCg8'
-        if (webapp ) {
+        if (webapp) {
           const lastName = webapp["user"]["last_name"] && (" " + webapp["user"]["last_name"]);
           const realName = webapp["user"]["first_name"] + lastName;
           const userName = webapp["user"]["username"];
@@ -379,26 +379,24 @@ const MainPage = () => {
           body.profit = currentResult * realBetRef.current + fallGameScoreRef.current;
         }
       }
-      const headers = new Headers();
-      headers.append('Content-Type', 'application/json')
+      if (body.isSuccess) {
+        handleGameStopped(
+          {
+            stop: currentResult,
+            profit: currentResult * realBetRef.current
+          }
+        );
+      } else {
+        handleGameCrashed(
+          {
+            stop: 'x',
+            profit: realBetRef.current
+          }
+        );
+      }
       try {
-        if (body.isSuccess) {
-          console.log("1");
-          handleGameStopped(
-            {
-              stop: currentResult,
-              profit: currentResult * realBetRef.current
-            }
-          );
-        } else {
-          console.log("2");
-          handleGameCrashed(
-            {
-              stop: 'x',
-              profit: realBetRef.current
-            }
-          );
-        }
+        const headers = new Headers();
+        headers.append('Content-Type', 'application/json')
         const result = await fetch(`${serverUrl}/operate_game`, {
           headers,
           method: 'POST',
