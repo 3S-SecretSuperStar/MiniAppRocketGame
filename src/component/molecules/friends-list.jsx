@@ -1,12 +1,13 @@
-import { LazyLoadImage } from "react-lazy-load-image-component";
 import FriendInfo from "../atom/friend-info";
+import { LazyLoadImage } from "react-lazy-load-image-component";
+import UserInfoSkeleton from "../component/atom/userInfoSkeleton.jsx";
 
 const FriendsList = ({ friendData }) => {
   // console.log(friendData)
   return (
     <div className="flex-auto flex w-full justify-center  " style={{ height: "calc(100vh - 500px)" }}>
       {
-         friendData && (friendData.length > 0 ?
+        friendData ? (friendData.length > 0 ?
           (
             <>
               <div className="flex flex-col gap-2 w-full overflow-auto" >
@@ -38,7 +39,13 @@ const FriendsList = ({ friendData }) => {
                 Invite a friend and you'll both get 25 points.
               </div>
             </div>
-          ))
+          )
+        ) : (
+          <div className="flex flex-col gap-2">
+            <UserInfoSkeleton />
+            <UserInfoSkeleton />
+          </div>
+        )
       }
     </div>
   )

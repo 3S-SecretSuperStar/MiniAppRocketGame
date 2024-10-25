@@ -17,8 +17,6 @@ import InfoModal from "../component/atom/infoModel.jsx";
 import { realGameState } from "../store/realGameState.jsx";
 import Contact from "../component/molecules/contact.jsx";
 import { isActionState } from "../store/actionState.jsx";
-import FetchLoading from "../component/template/FetchLoading.jsx";
-import Skeleton from "react-loading-skeleton";
 import UserInfoSkeleton from "../component/atom/userInfoSkeleton.jsx";
 
 const UserInfo = () => {
