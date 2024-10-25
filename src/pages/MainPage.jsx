@@ -376,14 +376,14 @@ const MainPage = () => {
         } else {
           body.isSuccess = true;
           body.result = amount;
-          body.profit = currentResult * realBetRef.current + fallGameScoreRef.current;
+          body.profit = amount * realBetRef.current + fallGameScoreRef.current;
         }
       }
       if (body.isSuccess) {
         handleGameStopped(
           {
-            stop: currentResult,
-            profit: currentResult * realBetRef.current
+            stop: amount,
+            profit: amount * realBetRef.current
           }
         );
       } else {
