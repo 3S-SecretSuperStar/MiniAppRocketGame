@@ -56,7 +56,7 @@ export default memo(function Game({ gamePhase, finalResult, amount = 10.00,
 
   useEffect(() => {
     if (gameRef.current) {
-      gameRef.current.setAutoStop(currentResult); 
+      gameRef.current.setAutoStop(currentResult);
     }
     if (currentResult > betStopRef && gamePhase === "started" && socketFlag) {
       stopGame(parseFloat(betStopRef));
@@ -337,7 +337,10 @@ export default memo(function Game({ gamePhase, finalResult, amount = 10.00,
           <div className='text-2xl leading-7 mt-6 text-white font-roboto text-center score-position z-10'>{score}</div>
         }
         <div className='items-center justify-center h-fit absolute top-1/3 z-10'>
-          {comment && gamePhase === "started" && counterNumber === 0 && (<img src={comment} height={43} className='max-w-fit h-11 z-20' alt='commet' />)}
+          {
+            comment && gamePhase === "started" && counterNumber === 0 && 
+            <img src={comment} height={43} className='max-w-fit h-11 z-20' alt='commet' />
+          }
           {isImgShow && <img src={Img.youWon} height={43} className='max-w-fit h-11 z-20' alt="won" />}
         </div>
       </div>

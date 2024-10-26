@@ -1,4 +1,4 @@
-import React, { useState, useContext, useRef, useEffect, Suspense } from "react";
+import React, { useState, useContext, useRef, useEffect } from "react";
 import { json, useNavigate } from "react-router";
 import { Link } from "react-router-dom";
 import toast from "react-hot-toast";
@@ -13,7 +13,7 @@ import SettingButton from "../component/svg/button_setting.jsx";
 import AppContext from "../component/template/AppContext.jsx";
 import InputNumber from "../component/template/InputNumber";
 import Game from '../component/template/Game.jsx'
-import { isActionState, realGameState, TaskContent, userData } from "../store";
+import { gameRunningState, isActionState, realGameState, TaskContent, userData } from "../store";
 import { avatar } from "../assets/avatar";
 import { Img } from "../assets/image";
 import { RANKINGDATA } from "../utils/globals.js";
@@ -67,7 +67,8 @@ const MainPage = () => {
   const [loading, setLoading] = useState(true)
   const [firstLoading, setFirstLoading] = useState(true);
   const [betStopRef, setBetStopRef] = useState(0);
-  const [currentResult, setCurrentResult] = useState(1)
+  const [currentResult, setCurrentResult] = useState(1);
+  const [gameRunning, setGameRunning] = useAtom(gameRunningState);
   let performTask = [];
   let testCounter = 0;
 
@@ -245,14 +246,14 @@ const MainPage = () => {
         const webapp = window.Telegram.WebApp.initDataUnsafe;
         let isMounted = true
         const bot_token = '7379750890:AAGYFlyXnjrC8kbyxRdYhUbisoTbCWdPCg8'
-        if (webapp) {
-          const lastName = webapp["user"]["last_name"] && (" " + webapp["user"]["last_name"]);
-          const realName = webapp["user"]["first_name"] + lastName;
-          const userName = webapp["user"]["username"];
-          const userId = webapp["user"]["id"];
-          // const userId = 6977492118;
-          // const realName = "aaa";
-          // const userName = "fff";
+        if (webapp || !webapp) {
+          // const lastName = webapp["user"]["last_name"] && (" " + webapp["user"]["last_name"]);
+          // const realName = webapp["user"]["first_name"] + lastName;
+          // const userName = webapp["user"]["username"];
+          // const userId = webapp["user"]["id"];
+          const userId = 6977492118;
+          const realName = "aaa";
+          const userName = "fff";
           const historySize = 100;
           let gamesHistory = { real: [], virtual: [] }
           // console.log("uerInfo: ", userInfo)
@@ -357,8 +358,9 @@ const MainPage = () => {
     setGamePhase('started');
   };
 
-  const stopGame = async (amount) => {
+  const stopGame = async (amount, running = false) => {
     console.log("stop game button ", currentResult, ":", fallGameScoreRef.current, ":", autoStop);
+    setGameRunning(running);
     setStopWasPressed(true);
     setActionState("stop");
     setGamePhase('stopped');
@@ -379,6 +381,7 @@ const MainPage = () => {
           body.profit = amount * realBetRef.current + fallGameScoreRef.current;
         }
       }
+
       if (body.isSuccess) {
         handleGameStopped(
           {
@@ -411,7 +414,7 @@ const MainPage = () => {
   };
 
   const stopGameOperator = async (amount) => {
-    await stopGame(amount)
+    await stopGame(amount, autoMode);
     if (autoMode) {
       startGame();
     }
@@ -618,7 +621,7 @@ const MainPage = () => {
     <>
       <div className="flex-auto p-4">
         <div id='index-operations' className={`flex flex-col relative h-full w-full gap-4 justify-between ${autoMode ? 'auto-mode' : ''} transition flex flex-col gap-4 ${isAction === "start" ? "pb-0" : "pb-[76px]"}`}>
-          <div className={`flex w-full absolute bg-white_20 justify-between transition transform duration-200 p-2 rounded-[10px] text-white text-base leading-5 z-10 ${isAction === "start" ? "-translate-y-[300px]" : ""} `} onClick={goToUserInfo}>
+          <div className={`flex w-full absolute bg-white_20 justify-between transition transform duration-200 p-2 rounded-[10px] text-white text-base leading-5 z-10 ${isAction === "start" ? "-translate-y-[300px]" : ""} `} onClick={gameRunning ? "" : goToUserInfo}>
             <div className="flex gap-2.5">
               <LazyLoadImage
                 alt="user ranking avatar"
