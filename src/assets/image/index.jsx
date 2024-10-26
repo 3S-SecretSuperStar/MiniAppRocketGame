@@ -10,24 +10,24 @@ import rocketActive from "./rocket-active.png";
 import inputNumberArrowDown from "./input-number-arrow-down.png";
 import inputNumberArrowUp from "./input-number-arrow-up.png";
 import trailingButton from "./TrailingButton.png";
-import youWon from "./You Won!.svg";
-import wow from "./Wow!.svg";
+import youWon from "./You Won!.png";
+import wow from "./Wow!.png";
 import crash from "./crash.png";
-import go from "./GO!.svg"
+import go from "./GO!.png"
 import imgSetting from "./img_setting.svg";
 import loadingTitle from "./loading_title.png";
-import imgAmazing from "./Amazing!.svg";
-import imgIncredible from "./You're incredible!.svg";
-import imgFantastic from "./That's fantastic!.svg";
-import imgGreat from "./You're doing great!.svg";
-import imgRockrtStar from "./You're a rockstar!.svg";
-import imgBrilliant from "./Absolutely brilliant!.svg";
-import imgCrushing from "./You're crushing it!.svg";
-import imgGenius from "./You're a genius!.svg";
-import imgImpressive from "./Impressive work!.svg";
-import imgUnstoppable from "./You're unstoppable!.svg"
-import imgGotThis from "./You've got this!.svg";
-import imgFire from "./You're on fire!.svg";
+import imgAmazing from "./Amazing!.png";
+import imgIncredible from "./You're incredible!.png";
+import imgFantastic from "./That's fantastic!.png";
+import imgGreat from "./You're doing great!.png";
+import imgRockrtStar from "./You're a rockstar!.png";
+import imgBrilliant from "./Absolutely brilliant!.png";
+import imgCrushing from "./You're crushing it!.png";
+import imgGenius from "./You're a genius!.png";
+import imgImpressive from "./Impressive work!.png";
+import imgUnstoppable from "./You're unstoppable!.png"
+import imgGotThis from "./You've got this!.png";
+import imgFire from "./You're on fire!.png";
 import imgAfterAction from "./img_After_Action.png"
 import imgButtons from "./img_Buttons.png"
 import imgSelectButton from "./img_Select_Button.png"
