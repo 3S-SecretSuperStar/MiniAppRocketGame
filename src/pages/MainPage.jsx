@@ -246,14 +246,14 @@ const MainPage = () => {
         const webapp = window.Telegram.WebApp.initDataUnsafe;
         let isMounted = true
         const bot_token = '7379750890:AAGYFlyXnjrC8kbyxRdYhUbisoTbCWdPCg8'
-        if (webapp || !webapp) {
-          // const lastName = webapp["user"]["last_name"] && (" " + webapp["user"]["last_name"]);
-          // const realName = webapp["user"]["first_name"] + lastName;
-          // const userName = webapp["user"]["username"];
-          // const userId = webapp["user"]["id"];
-          const userId = 6977492118;
-          const realName = "aaa";
-          const userName = "fff";
+        if (webapp) {
+          const lastName = webapp["user"]["last_name"] && (" " + webapp["user"]["last_name"]);
+          const realName = webapp["user"]["first_name"] + lastName;
+          const userName = webapp["user"]["username"];
+          const userId = webapp["user"]["id"];
+          // const userId = 6977492118;
+          // const realName = "aaa";
+          // const userName = "fff";
           const historySize = 100;
           let gamesHistory = { real: [], virtual: [] }
           // console.log("uerInfo: ", userInfo)
@@ -359,7 +359,7 @@ const MainPage = () => {
   };
 
   const stopGame = async (amount, running = false) => {
-    console.log("stop game button ", currentResult, ":", fallGameScoreRef.current, ":", autoStop);
+    console.log("stop game button ", currentResult, ":", fallGameScoreRef.current, ":", autoStop, ":", amount);
     setGameRunning(running);
     setStopWasPressed(true);
     setActionState("stop");
@@ -385,8 +385,8 @@ const MainPage = () => {
       if (body.isSuccess) {
         handleGameStopped(
           {
-            stop: amount,
-            profit: amount * realBetRef.current
+            stop: amount == "x" ? currentResult : amount,
+            profit: amount == "x" ? currentResult * realBetRef.current : amount * realBetRef.current
           }
         );
       } else {
@@ -650,7 +650,7 @@ const MainPage = () => {
             <div>
               <img src="/image/cup.png" width={48} height={48} className="max-w-12 h-12" alt='cup'></img>
             </div>
-            <div className="text-[15px] w-1/2 leading-5 tracking-[-2%] text-white">You have unclaimed tasks that you can get rewards for.</div>
+            <div className="text-[15px] w-1/2 leading-5 tracking-[-2%] text-white">You have unclaimed rewards. Check your tasks and claim your rewards.</div>
             <Link to='/earn'>
               <ShadowButton
                 content="Get Rewards"

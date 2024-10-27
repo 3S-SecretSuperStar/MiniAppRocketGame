@@ -49,4 +49,4 @@ export const Img = {
   imgImpressive, imgUnstoppable, imgGotThis, imgFire,
   imgAfterAction, imgButtons, imgSelectButton, warnningIcon,
   meteor, crater, destroy, ufo, planet, spaceFog
-}; 
+};
