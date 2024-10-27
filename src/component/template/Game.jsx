@@ -50,8 +50,8 @@ export default memo(function Game({ gamePhase, finalResult, amount = 10.00,
   }
 
   if (gamePhase === 'stopped') {
+    score = 0;
     clearInterval(timerHandler)
-    score = 0
   }
 
   useEffect(() => {
@@ -105,6 +105,7 @@ export default memo(function Game({ gamePhase, finalResult, amount = 10.00,
       clearInterval(timerHandler)
       clearInterval(countTimeHandler);
       setCounterFlag(false);
+      score = 0;
       if (counterNumber > 0) {
         setCounterNumber(0)
         setTimerRounded(0)
@@ -231,34 +232,34 @@ export default memo(function Game({ gamePhase, finalResult, amount = 10.00,
   Img.imgImpressive, Img.imgUnstoppable, Img.imgGotThis, Img.imgFire];
 
 
-  if (score <= 0) comment = undefined
-  else if (score >= 2 && score <= 2.5) {
+  if (currentResult <= 0) comment = undefined
+  else if (currentResult >= 2 && currentResult <= 2.5) {
     comment = comments[0]
-  } else if (score >= 3 && score <= 3.5) {
+  } else if (currentResult >= 3 && currentResult <= 3.5) {
     comment = comments[1]
-  } else if (score >= 4 && score <= 4.6) {
+  } else if (currentResult >= 4 && currentResult <= 4.6) {
     comment = comments[2]
-  } else if (score >= 5 && score <= 5.6) {
+  } else if (currentResult >= 5 && currentResult <= 5.6) {
     comment = comments[3]
-  } else if (score >= 6 && score <= 6.7) {
+  } else if (currentResult >= 6 && currentResult <= 6.7) {
     comment = comments[4]
-  } else if (score >= 7 && score <= 7.8) {
+  } else if (currentResult >= 7 && currentResult <= 7.8) {
     comment = comments[5]
-  } else if (score >= 8.1 && score <= 9) {
+  } else if (currentResult >= 8.1 && currentResult <= 9) {
     comment = comments[6]
-  } else if (score >= 9.6 && score <= 10.5) {
+  } else if (currentResult >= 9.6 && currentResult <= 10.5) {
     comment = comments[7]
-  } else if (score >= 11 && score <= 12) {
+  } else if (currentResult >= 11 && currentResult <= 12) {
     comment = comments[8]
-  } else if (score >= 13 && score <= 14) {
+  } else if (currentResult >= 13 && currentResult <= 14) {
     comment = comments[9]
-  } else if (score >= 15 && score <= 16.5) {
+  } else if (currentResult >= 15 && currentResult <= 16.5) {
     comment = comments[10]
-  } else if (score >= 17 && score <= 19) {
+  } else if (currentResult >= 17 && currentResult <= 19) {
     comment = comments[11]
   }
 
-  if (score >= 20 && (score % 5 >= 3 && score % 5 <= 5)) {
+  if (currentResult >= 20 && (currentResult % 5 >= 3 && currentResult % 5 <= 5)) {
     comment = comments[12]
   }
 
