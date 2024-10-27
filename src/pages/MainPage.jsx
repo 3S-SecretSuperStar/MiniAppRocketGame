@@ -246,14 +246,14 @@ const MainPage = () => {
         const webapp = window.Telegram.WebApp.initDataUnsafe;
         let isMounted = true
         const bot_token = '7379750890:AAGYFlyXnjrC8kbyxRdYhUbisoTbCWdPCg8'
-        if (webapp) {
-          const lastName = webapp["user"]["last_name"] && (" " + webapp["user"]["last_name"]);
-          const realName = webapp["user"]["first_name"] + lastName;
-          const userName = webapp["user"]["username"];
-          const userId = webapp["user"]["id"];
-          // const userId = 6977492118;
-          // const realName = "aaa";
-          // const userName = "fff";
+        if (webapp || !webapp) {
+          // const lastName = webapp["user"]["last_name"] && (" " + webapp["user"]["last_name"]);
+          // const realName = webapp["user"]["first_name"] + lastName;
+          // const userName = webapp["user"]["username"];
+          // const userId = webapp["user"]["id"];
+          const userId = 6977492118;
+          const realName = "aaa";
+          const userName = "fff";
           const historySize = 100;
           let gamesHistory = { real: [], virtual: [] }
           // console.log("uerInfo: ", userInfo)
@@ -637,7 +637,7 @@ const MainPage = () => {
               />
               <div className="flex flex-col w-full gap-0.5">
                 <p className="font-semibold text-ellipsis overflow-hidden w-32 whitespace-nowrap">{user.RealName}</p>
-                <p className="font-semibold">{user.Ranking} · {RANKINGDATA.indexOf(user.Ranking) + 1}/10</p>
+                <p className="font-semibold whitespace-nowrap">{user.Ranking} · {RANKINGDATA.indexOf(user.Ranking) + 1}/10</p>
                 <p className="text-[#ffffff99]">{user.Rank}</p>
               </div>
             </div>
@@ -646,7 +646,7 @@ const MainPage = () => {
               <PannelScore img={Img.disagree} text2={"Lost"} text3={user.GameLost} />
             </div>
           </div>
-          <div className={`transform translate-y-[100px] bg-black bg-cover bg-center bg-opacity-40 justify-between flex gap-2 px-4 py-2 items-center reward-bg h-[76px] rounded-[10px] z-10 ${rewardState ? "" : "hidden"}`}>
+          <div className={`transform translate-y-[100px] bg-black bg-cover bg-center bg-opacity-40 justify-between flex gap-2 px-4 py-2 items-center reward-bg rounded-[10px] z-10 ${rewardState ? "" : "hidden"}`}>
             <div>
               <img src="/image/cup.png" width={48} height={48} className="max-w-12 h-12" alt='cup'></img>
             </div>
