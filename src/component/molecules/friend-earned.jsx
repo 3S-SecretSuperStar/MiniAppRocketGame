@@ -17,7 +17,7 @@ const FriendEarned = ({ setIsModalOpen,friendNumber }) => {
                             alt=""
                             className="w-6 h-6"
                         />
-                        <span className="font-bold text-base text-white">+{25*friendNumber}</span>
+                        <span className="font-bold text-base text-white">+{25 * friendNumber || 0}</span>
                     </div>
                 </div>
                 <div className="w-1/2">
@@ -31,7 +31,7 @@ const FriendEarned = ({ setIsModalOpen,friendNumber }) => {
                     </div>
                 </div>
             </div>
-            <ShadowButton className={"mt-4 invite-btn-gradient-border bg-[#3434DA]"} content={"Invite a friend"} action={() => setIsModalOpen(true)} />
+            <ShadowButton className={"mt-4 invite-btn-gradient-border bg-main"} content={"Invite a friend"} action={() => setIsModalOpen(true)} />
         </div>
     )
 }

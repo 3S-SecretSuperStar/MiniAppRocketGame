@@ -9,7 +9,7 @@ const WalletInfo = (
   }
 ) => {
   return (
-    <div className={cn("rounded-[12px] bg-[#1414AA] py-[10px] px-3 flex flex-row justify-between w-full text-blueFaded", className)}>
+    <div className={cn("rounded-[12px] bg-main py-[10px] px-3 flex flex-row justify-between w-full text-blueFaded", className)}>
       <div className="flex flex-row gap-3">
         <NavWallet />
         <div className={`text-base font-medium ${address ? "text-white" : "text-blueFaded"}`}>

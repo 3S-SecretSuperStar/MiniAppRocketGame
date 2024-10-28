@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React, { memo, useContext, useEffect, useState } from 'react'
+import React, { memo, useContext, useEffect, useState, useRef } from 'react'
 import { useAtom } from 'jotai'
 import AppContext from './AppContext'
 import { Img } from '../../assets/image'
@@ -7,11 +7,15 @@ import { ACCELERATION } from '../../utils/globals'
 import { userData } from '../../store'
 import "../../css/Game.css"
 import { Link } from 'react-router-dom'
+import FallGame from '../atom/fallGame'
+import { REACT_APP_SERVER } from '../../utils/privateData';
+import toast from "react-hot-toast";
 
 export default memo(function Game({ gamePhase, finalResult, amount = 10.00,
-  className, bet, autoStop, socketFlag, realGame, isWin, stopGame, startGame, autoMode }) {
+  className, bet, autoStop, socketFlag, realGame, isWin, stopGame, startGame, autoMode, updateBalance, fallGameScore,
+  betStopRef, gameStartSignal, setGamePhase, handleGameStarted, handleGameStopped, setSocketFlag, currentResult, setCurrentResult }) {
+
   const context = useContext(AppContext);
-  const [currentResult, setCurrentResult] = useState(1)
   const [user,] = useAtom(userData)
   const [timerHandler, setTimerHandler] = useState();
   const [countTimeHandler, setCountTimeHandler] = useState();
@@ -19,33 +23,47 @@ export default memo(function Game({ gamePhase, finalResult, amount = 10.00,
   const [timerRounded, setTimerRounded] = useState(0);
   const [counterFlag, setCounterFlag] = useState(false);
   const [isImgShow, setIsImgShow] = useState(false);
+  const [saveLastScore, setSaveLastScore] = useState(0);
+  const [planetPos, setPlanetPos] = useState({ x: -150, y: -300 });
+  const [spaceFogPos, setSpaceFogPos] = useState({ y1: -170, y2: -1251 });
+
+  const serverUrl = REACT_APP_SERVER;
+  let gameRef = useRef(null)
   const counterItem = [Img.go, Img.counter1, Img.counter2, Img.counter3];
   let comment;
   let score = finalResult === 'Crashed...' ? 'Crashed...' : finalResult || currentResult
 
-  if (gamePhase === 'stopped') {
-    clearInterval(timerHandler)
-    score = 0
+  const view = useRef(null);
+  let gameId = (Math.random() * 10000) | 0;
+
+  const gamePlay = () => {
+    gameRef.current = new FallGame(gameId++, 1, bet);
+    view.current.append(gameRef.current.view);
   }
-  // console.log("socket info in game : ", context.socket)
-  // console.log("autoStop in game : ", autoStop)
-  useEffect(() => {
-    if (autoMode) {
-      // console.log("score: ", parseFloat(score.slice(1)), " autostop : ", parseFloat(autoStop) + 0.1, " gamephage: ", gamePhase)
-      // console.log("condition : ", (score > 1.1 && gamePhase === "started"))
-      // if(parseFloat(score.slice(1))>1.1 && gamePhase==="started") stopGame(autoStop)
-      if (parseFloat(score.slice(1)) > parseFloat(autoStop) + 0.1 && gamePhase === "started") {
-        // if (parseFloat(score.slice(1)) > parseFloat(1) + 0.1 && gamePhase === "started") {
-        stopGame(parseFloat(autoStop))
-        setTimeout(() => {
-          startGame()
-        }, 1000)
-      }
+
+  const gameStop = () => {
+    if (gameRef.current) {
+      setSaveLastScore(0)
+      gameRef.current.destroy();
+      gameRef.current = null;
     }
-  }, [score, gamePhase,autoMode])
+  }
+
+  if (gamePhase === 'stopped') {
+    score = 0;
+    clearInterval(timerHandler)
+  }
 
   useEffect(() => {
+    if (gameRef.current) {
+      gameRef.current.setAutoStop(currentResult);
+    }
+    if (currentResult > betStopRef && gamePhase === "started" && socketFlag) {
+      stopGame(parseFloat(betStopRef));
+    }
+  }, [currentResult, gamePhase, autoMode])
 
+  useEffect(() => {
 
     if (gamePhase === 'started') {
       setCurrentResult(1);
@@ -69,35 +87,25 @@ export default memo(function Game({ gamePhase, finalResult, amount = 10.00,
 
           // Check if the counter has reached zero
           if (newCounterNumber <= 0) {
-
             clearInterval(newCountTimeHandler); // Clear the interval when counter reaches zero
             setCounterNumber(0);// Ensure counter is set to zero
             setCounterFlag(true)
-            // console.log("bet in game", bet)
-            context.socket.send(JSON.stringify({
-              operation: 'start',
-              bet,
-              autoStop,
-              isReal: realGame,
-              userId: user.UserId
-            }));
-
-
+            gameStartSignal();
           } else {
             setCounterNumber(newCounterNumber);
           }
-
         }, 10);
 
         // Update the handler reference
         setCountTimeHandler(newCountTimeHandler);
       }
-
     } else if (gamePhase === 'stopped' || gamePhase === 'crashed') {
+      gameStop();
       comment = null
       clearInterval(timerHandler)
       clearInterval(countTimeHandler);
       setCounterFlag(false);
+      score = 0;
       if (counterNumber > 0) {
         setCounterNumber(0)
         setTimerRounded(0)
@@ -109,24 +117,32 @@ export default memo(function Game({ gamePhase, finalResult, amount = 10.00,
     let timer = new Date().getTime();
     let isMounted = true;
 
-    socketFlag && counterFlag && setTimerHandler(setInterval(() => {
-      let new_timer = new Date().getTime() - timer;
-      if (isMounted) {
-        try {
-          setCurrentResult((ACCELERATION * new_timer * new_timer / 2 + 1).toFixed(2))
-        } catch (e) {
-          // eslint-disable-next-line no-self-assign
-          document.location.href = document.location.href
+    if (socketFlag && counterFlag) {
+      setTimerHandler(setInterval(() => {
+        let new_timer = new Date().getTime() - timer;
+        if (isMounted) {
+          try {
+            setPlanetPos((prevPos) => ({
+              x: (prevPos.x > window.innerWidth && prevPos.y > window.innerHeight) ? -150 : prevPos.x + (window.innerWidth) / 10000, // Create a new x position
+              y: (prevPos.x > window.innerWidth && prevPos.y > window.innerHeight) ? -300 : prevPos.y + (window.innerHeight + 300) / 10000, // Create a new y position
+            }));
+            setSpaceFogPos((prevPos) => ({
+              y1: prevPos.y1 > window.innerHeight ? prevPos.y2 - 1081 : prevPos.y1 + 0.15,
+              y2: prevPos.y2 > window.innerHeight ? prevPos.y1 - 1081 : prevPos.y2 + 0.15
+            }));
+            setCurrentResult((ACCELERATION * new_timer * new_timer / 2 + 1).toFixed(2))
+          } catch (e) {
+            // eslint-disable-next-line no-self-assign
+            document.location.href = document.location.href
+          }
         }
-      }
-    }, 1))
+      }, 1));
+      gamePlay();
+    }
+
   }, [counterFlag, socketFlag])
 
-
   useEffect(() => {
-    if (context.socket) {
-      context.socket.send(JSON.stringify({ operation: 'stop' }))
-    }
     if (gamePhase === 'stopped') {
       document.getElementById('stars1').style.animationPlayState =
         document.getElementById('stars2').style.animationPlayState =
@@ -134,6 +150,21 @@ export default memo(function Game({ gamePhase, finalResult, amount = 10.00,
         document.getElementById('stars').style.animationPlayState = 'paused'
     }
   }, [])
+
+  useEffect(() => {
+    if (gameRef.current) {
+      console.log("score:", gameRef.current.getScore());
+      fallGameScore.current = gameRef.current.getScore();
+    }
+  }, [score])
+
+  useEffect(() => {
+    console.log("fallGameScore", fallGameScore.current);
+    if (fallGameScore.current > 0) {
+      updateBalance(fallGameScore.current - saveLastScore)
+      setSaveLastScore(fallGameScore.current)
+    }
+  }, [fallGameScore.current])
 
   const generateGauge = () => {
     const price = 0.5
@@ -193,7 +224,6 @@ export default memo(function Game({ gamePhase, finalResult, amount = 10.00,
         document.querySelector('footer').classList.remove('dark-mode')
       }
     } catch (e) {
-
     }
   }
 
@@ -202,41 +232,40 @@ export default memo(function Game({ gamePhase, finalResult, amount = 10.00,
   Img.imgImpressive, Img.imgUnstoppable, Img.imgGotThis, Img.imgFire];
 
 
-  if (score <= 0) comment = undefined
-  else if (score >= 2 && score <= 2.5) {
+  if (currentResult <= 0) comment = undefined
+  else if (currentResult >= 2 && currentResult <= 2.5) {
     comment = comments[0]
-  } else if (score >= 3 && score <= 3.5) {
+  } else if (currentResult >= 3 && currentResult <= 3.5) {
     comment = comments[1]
-  } else if (score >= 4 && score <= 4.6) {
+  } else if (currentResult >= 4 && currentResult <= 4.6) {
     comment = comments[2]
-  } else if (score >= 5 && score <= 5.6) {
+  } else if (currentResult >= 5 && currentResult <= 5.6) {
     comment = comments[3]
-  } else if (score >= 6 && score <= 6.7) {
+  } else if (currentResult >= 6 && currentResult <= 6.7) {
     comment = comments[4]
-  } else if (score >= 7 && score <= 7.8) {
+  } else if (currentResult >= 7 && currentResult <= 7.8) {
     comment = comments[5]
-  } else if (score >= 8.1 && score <= 9) {
+  } else if (currentResult >= 8.1 && currentResult <= 9) {
     comment = comments[6]
-  } else if (score >= 9.6 && score <= 10.5) {
+  } else if (currentResult >= 9.6 && currentResult <= 10.5) {
     comment = comments[7]
-  } else if (score >= 11 && score <= 12) {
+  } else if (currentResult >= 11 && currentResult <= 12) {
     comment = comments[8]
-  } else if (score >= 13 && score <= 14) {
+  } else if (currentResult >= 13 && currentResult <= 14) {
     comment = comments[9]
-  } else if (score >= 15 && score <= 16.5) {
+  } else if (currentResult >= 15 && currentResult <= 16.5) {
     comment = comments[10]
-  } else if (score >= 17 && score <= 19) {
+  } else if (currentResult >= 17 && currentResult <= 19) {
     comment = comments[11]
   }
 
-  if (score >= 20 && (score % 5 >= 3 && score % 5 <= 5)) {
+  if (currentResult >= 20 && (currentResult % 5 >= 3 && currentResult % 5 <= 5)) {
     comment = comments[12]
   }
 
   if (score.toString().indexOf('.') === -1) {
     score += '.00'
   }
-
 
   score = score === 'Crashed...' ? '' : `x${score}`
 
@@ -247,21 +276,43 @@ export default memo(function Game({ gamePhase, finalResult, amount = 10.00,
     }
   }, [isWin])
 
-
-
   return (
     <div id='game' className={`${className} flex-auto flex flex-col h-fit justify-between items-center relative`}>
+      <img
+        src={Img.spaceFog}
+        alt="spaceFog"
+        width={589}
+        height={1081}
+        className={`max-w-[589px] h-[1081px] fixed`}
+        style={{ top: `${spaceFogPos.y2.toString()}px` }}
+      />
+      <img
+        src={Img.spaceFog}
+        alt="spaceFog"
+        width={589}
+        height={1081}
+        className={`max-w-[589px] h-[1081px] fixed`}
+        style={{ top: `${spaceFogPos.y1.toString()}px` }}
+      />
+      <img
+        src={Img.planet}
+        alt="planet"
+        width={300}
+        height={300}
+        className={`max-w-[300px] h-[300px] fixed`}
+        style={{ top: `${planetPos.y.toString()}px`, right: `${planetPos.x.toString()}px` }}
+      />
+      <div className='top-0 left-0 fixed z-[1]' ref={view}></div>
       <div className='flex flex-col items-center justify-between'>
-        <div className="flex gap-2 items-center justify-center font-extrabold ">
+        <div className="flex gap-2 items-center justify-center font-extrabold z-10 ">
           <img src={Img.coin} width={44} height={44} className="max-w-11 h-11" alt="coin" />
           <p className="text-[40px] text-white font-extrabold">{parseFloat(amount).toFixed(2)}</p>
-          <Link to='/help' className={`bg-[#3434DA] w-8 h-8 rounded-lg p-1 ${gamePhase === 'started' && 'hidden'}`} >
+          <Link to='/help' className={`bg-main w-8 h-8 rounded-lg p-1 ${gamePhase === 'started' && 'hidden'}`} >
             <img src="/image/icon/info.svg" width={24} height={24} className='max-w-6 h-6' alt="info" />
           </Link>
         </div>
 
         <img className={`absolute top-1/3 z-10 max-w-[108px] ${counterNumber > 0 && counterNumber < 1.2 ? "" : "hidden"}`} src={counterItem[0]} width="108px" height="102px" alt="counter number" />
-
         {
           counterNumber < 5 &&
             counterNumber > 1.2 ?
@@ -287,13 +338,16 @@ export default memo(function Game({ gamePhase, finalResult, amount = 10.00,
           <div className='text-2xl leading-7 mt-6 text-white font-roboto text-center score-position z-10'>{score}</div>
         }
         <div className='items-center justify-center h-fit absolute top-1/3 z-10'>
-          {comment && gamePhase === "started" && counterNumber === 0 && (<img src={comment} height={43} className='max-w-fit h-11 z-20' alt='commet' />)}
+          {
+            comment && gamePhase === "started" && counterNumber === 0 && 
+            <img src={comment} height={43} className='max-w-fit h-11 z-20' alt='commet' />
+          }
           {isImgShow && <img src={Img.youWon} height={43} className='max-w-fit h-11 z-20' alt="won" />}
         </div>
       </div>
 
 
-      <div className='flex items-center'>
+      <div className='flex items-center z-10'>
         <img
           src='/image/rocket-active.png'
           className={`shaking game-rocket active ${(counterNumber === 0 && gamePhase === 'started' && socketFlag) ? 'block' : 'hidden'}`}
@@ -310,8 +364,6 @@ export default memo(function Game({ gamePhase, finalResult, amount = 10.00,
           alt='inactive rocket'
         />
       </div>
-
-
 
       <div id='game-gauge' className='left'>
         {generateGauge()}

@@ -49,7 +49,6 @@ const Stats = () => {
           </div>
           <Contact/>
         </div>
-
       </InfoModal>
     </div>
   )

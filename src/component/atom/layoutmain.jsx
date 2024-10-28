@@ -2,7 +2,7 @@ import React from "react";
 
 const Layout = ({ children }) => {
   return (
-    <div className={`p-4 h-screen bg-gradient-to-b from-[#0000D0] to-[#9393EB] absolute bottom-0 w-full`}>
+    <div className={`p-4 h-screen absolute bottom-0 w-full bg-gradient-to-b from-[#480B97] to-[#BA2BA1] `}>
       {children}
     </div>
   )

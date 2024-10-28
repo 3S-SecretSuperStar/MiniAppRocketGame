@@ -33,9 +33,10 @@ const Footer = () => {
       />
     )
   })
+
   return (
-    <div className={`fixed transition transform bottom-0 p-4 w-full z-[1] ${isVisuable === "start" ||isVisuable === "loading" ? "translate-y-20" : ""}`}>
-      <div className="flex bg-bgNavbar w-full gap-1.5 h-15 rounded-xl p-[5px] justify-between">
+    <div className={`fixed transition transform bottom-0 p-4 w-full z-[1] ${isVisuable === "start" || isVisuable === "loading" ? "translate-y-20" : ""}`}>
+      <div className={`flex bg-[#560D5E80] w-full gap-1.5 h-15 rounded-xl p-[5px] justify-between`}>
         {footerItems}
       </div>
     </div>

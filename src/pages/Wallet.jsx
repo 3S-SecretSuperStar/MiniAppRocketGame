@@ -261,7 +261,7 @@ const Wallet = () => {
         }
 
         <ShadowButton
-          className={` ${wallet ? 'bg-[#CC070A] shadow-btn-red-border invite-btn-red-shadow' : 'bg-[#3434DA]'} py-3.5`}
+          className={` ${wallet ? 'bg-[#CC070A] shadow-btn-red-border invite-btn-red-shadow' : 'bg-main'} py-3.5`}
           content={wallet ? "Disconnect wallet" : "Connect wallet"}
           action={() => tonWalletAction()}
         />

@@ -43,24 +43,19 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
       .then(res => Promise.all([res.status, res.json()]))
       .then(() => { stateTask() })
   }
-  // console.log(claimStateListData);
-  // console.log(claimStateList)
+
   const createTransaction = (tokenCount) => {
-    // console.log("begin  ")
     const body = beginCell()
       .storeUint(0, 32)
       .storeStringTail("RocketTON Coins purchased")
-      .endCell()
+      .endCell();
 
-    // console.log("return before")
     return {
 
       // The transaction is valid for 10 minutes from now, in unix epoch seconds.
       validUntil: Math.floor(Date.now() / 1000) + 600,
       messages: [
-
         {
-
           // The receiver's address.
           address: adminWalletAddress,
           // Amount to send in nanoTON. For example, 0.005 TON is 5000000 nanoTON.
@@ -77,24 +72,14 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
   const sendTransaction = async (tokenCount) => {
 
     const tx = createTransaction(tokenCount)
-    // console.log("1 ")
-
-
-    // console.log("transaction : ", tx)
     const userId = user.UserId;
-    // console.log("2 ")
-    // console.log("user Id : ", user.UserId)
-    // console.log("user Id : ", userId)
     try {
 
       if (tonwallet.account.chain === Chain.Mainnet) {
         const transferResult = await tonconnectUi.sendTransaction(tx);
-        // console.log("transfer result : ", transferResult)
         if (transferResult) {
-
           fetch(`${serverUrl}/charge_balance`, { method: 'POST', body: JSON.stringify({ userId: userId, amount: tokenCount }), headers })
             .then(() => {
-
               toast(`${tokenCount} coins added to your balance`,
                 {
                   position: "top-center",
@@ -238,21 +223,21 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
           task.link === "" ?
             task.index === 25 || task.index === 26 && !wallet ?
               <Link to={'/wallet'}>
-                <button className="rounded-lg w-[61px] py-1 px-0 h-7 bg-[#3861FB] text-white text-center text-[14px]" >
+                <button className="rounded-lg w-[61px] py-1 px-0 h-7 bg-mainFocus text-white text-center text-[14px]" >
                   Start
                 </button>
               </Link> :
               (task.index === 26 && wallet) ?
-                <button className="rounded-lg w-[61px] py-1 px-0 h-7 bg-[#3861FB] text-white text-center text-[14px]" onClick={() => sendTransaction(500)} >
+                <button className="rounded-lg w-[61px] py-1 px-0 h-7 bg-mainFocus text-white text-center text-[14px]" onClick={() => sendTransaction(500)} >
                   Start
                 </button> :
                 <Link to={'/play'}>
-                  <button className="rounded-lg w-[61px] py-1 px-0 h-7 bg-[#3861FB] text-white text-center text-[14px]" >
+                  <button className="rounded-lg w-[61px] py-1 px-0 h-7 bg-mainFocus text-white text-center text-[14px]" >
                     Start
                   </button>
                 </Link> :
 
-            <button className="rounded-lg w-[61px] py-1 px-0 h-7 bg-[#3861FB] text-white text-center text-[14px]"
+            <button className="rounded-lg w-[61px] py-1 px-0 h-7 bg-mainFocus text-white text-center text-[14px]"
               onClick={() => followHandle(task.index)} >
               {
                 isPending ?
@@ -340,16 +325,12 @@ const TaskList = () => {
     await fetch(`${serverUrl}/task_perform`, { method: 'POST', body: JSON.stringify({ userId: user.UserId }), headers })
       .then(res => Promise.all([res.status, res.json()]))
       .then(async ([status, data]) => {
-        // console.log("fetch data")
 
         try {
-          // console.log("fetch data : ", data);
           const userBalance = isReal ? parseFloat(data.balance.real.toFixed(2)) : parseFloat(data.balance.virtual.toFixed(2));
-          // console.log(userBalance)
           setUser(user => ({ ...user, Balance: userBalance }))
           const performtask = isReal ? data.task.real.achieve_task : data.task.virtual.achieve_task
           const doneTask = isReal ? data.task.real.done_task : data.task.virtual.done_task
-          // console.log("perform task", performtask)
           taskState = new Array(taskList.length).fill(1)
           performtask.forEach(item => {
             taskState[item] = 0;
@@ -361,8 +342,6 @@ const TaskList = () => {
             .then(res => Promise.all([res.status, res.json()]))
             .then(([status, data]) => {
               try {
-                // console.log(data)
-                // console.log(data.dailyRewardInfo)
                 const dailyDate = data.dailyRewardInfo.date;
                 dailytaskIndex = taskList[taskList.findIndex(item => item.type === 'daily_reward')].index
                 dailyDays = data.dailyRewardInfo.consecutive_days
@@ -370,13 +349,8 @@ const TaskList = () => {
                 const nowDate = moment().startOf('day');
                 if (dailyDate === "") dailyState = 0;
                 else {
-                  // console.log("dailyRewardDate : ", dailyDate)
                   const selectedDate = moment(dailyDate).utc().local().startOf('day');
-                  // console.log("nowDate : ", nowDate)
-                  // console.log("selected date : ", selectedDate)
                   const diffDate = nowDate.diff(selectedDate, 'days');
-                  // console.log("diff date : ", diffDate)
-                  // console.log('taskstates', taskState)
                   if (diffDate >= 1) dailyState = 0;
                   else dailyState = 2;
                   if (diffDate >= 2) {
@@ -413,12 +387,9 @@ const TaskList = () => {
                       sort: dailyData.sort
                     }
                   }
-                  // setFixedTaskData([dailyItemData])
                   const _fixedTaskData = fixedTaskItems.map(item => {
 
                     const { imgSrc, link } = typeToImageMap[item.type];
-
-                    // console.log("item:", item);
 
                     return {
                       src: imgSrc,
@@ -440,8 +411,6 @@ const TaskList = () => {
                   const _otherTaskData = otherTaskItems.map(item => {
                     const { imgSrc, link } = typeToImageMap[item.type];
 
-                    // console.log("item:", item);
-
                     return {
                       src: imgSrc,
                       title: item.title,
@@ -460,13 +429,11 @@ const TaskList = () => {
               }
               finally {
                 setTimeout(() => {
-                  setLoading(false)
                   firstLoading && setActionState("ready")
                   setFirstLoading(false);
                 }, 500)
               }
             })
-
 
         } catch (e) {
           // eslint-disable-next-line no-self-assign
@@ -474,25 +441,16 @@ const TaskList = () => {
         }
 
       })
-
   }
-  // console.log("taskList: ", taskList)
-  // console.log("friend number", user.FriendNumber)
   const stateTask = async () => {
-    // console.log("user in state task :", user)
     performTask = []
     performTask = taskList.reduce((performList, task) => {
       const taskType = task.type;
       if (user.GameWon >= task.count && taskType === "type1-1") {
-        // console.log("game won : ", user.GameWon)
-        // console.log("task count : ", task.count)
-        // console.log("task index : ", task.index)
-        // console.log("state : ", user.GameWon >= task.count)
         performList.push(task.index)
       }
       if ((user.GameLost + user.GameWon) >= task.count && taskType === "type1-2") {
         performList.push(task.index)
-        // console.log("state : ", (user.GameLost + user.GameWon) >= task.count)
       }
       if (task.count <= user.FriendNumber && taskType === "type4")
         performList.push(task.index);
@@ -501,28 +459,20 @@ const TaskList = () => {
     await fetch(`${serverUrl}/add_perform_list`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, performTask: performTask, isReal: isReal }), headers })
       .then(res => Promise.all([res.status, res.json()]))
       .then(async (res) => {
-        // console.log("before fetch data")
         await fetchData().then(
           console.log("fetch data")
         )
       })
-
-    // console.log("after fetch data")
-
   }
 
-  if (loading && firstLoading) {
+  if (loading || firstLoading) {
     setActionState("start")
-    return <FetchLoading />
+    return <FetchLoading firstLoading={firstLoading} setLoading={setLoading} vRate={3} />
   }
-  // console.log("fixedTaskData : ", fixedTaskData)
-  // console.log("otherTaskData : ", otherTaskData)
-  // console.log("task data of taskData : ", taskData)
-  // console.log(user.FriendNumber)
-  // console.log("user Info in taskList : ", user.DailyConsecutiveDays)
+
   return (
     <Suspense fallback={<fetchData />}>
-      <div className="flex flex-col gap-2 text-[14px] overflow-auto pb-4" style={{ height: "calc(100vh - 200px)" }}>
+      <div className="flex flex-col gap-2 text-[14px] overflow-auto pb-4" style={{ height: "calc(100vh - 215px)" }}>
         {
           fixedTaskData
             .sort((a, b) => (a.sort - b.sort))

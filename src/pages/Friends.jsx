@@ -18,17 +18,17 @@ import { userData } from "../store/userData.jsx";
 
 
 const Friends = () => {
-  const [friendList, setFriendList] = useState([]);
+  const [friendList, setFriendList] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
-  const serverUrl = REACT_APP_SERVER; 
+  const serverUrl = REACT_APP_SERVER;
   const webapp = window.Telegram.WebApp.initDataUnsafe;
   const userId = webapp["user"]["id"];
   const [actionState, setActionState] = useAtom(isActionState)
-  const utils = initUtils();
-  const [user,setUser] = useAtom(userData)
+  // const utils = initUtils();
+  const [user, setUser] = useAtom(userData)
   const avatarData = [avatar.avatarBeginner, avatar.avatarPilot, avatar.avatarExplorer,
-    avatar.avatarAstronaut, avatar.avatarCaptain, avatar.avatarCommander, avatar.avatarAdmiral,
-    avatar.avatarLegend, avatar.avatarMasterOfTheUniverse, avatar.avatarGodOfSpace]
+  avatar.avatarAstronaut, avatar.avatarCaptain, avatar.avatarCommander, avatar.avatarAdmiral,
+  avatar.avatarLegend, avatar.avatarMasterOfTheUniverse, avatar.avatarGodOfSpace]
   setActionState('stop')
   function nFormatter(num, digits) {
 
@@ -42,46 +42,41 @@ const Friends = () => {
     const item = lookup.findLast(item => num >= item.value);
     return item ? (num / item.value).toFixed(digits).replace(regexp, "").concat(item.symbol) : "0";
   }
+
   useEffect(() => {
     let isMounted = true
-    const webapp = window.Telegram.WebApp.initDataUnsafe;
-    if (webapp) {
+    const headers = new Headers()
+    headers.append('Content-Type', 'application/json')
+    if (isMounted) {
+      fetch(`${serverUrl}/get_friend`, { method: 'POST', body: JSON.stringify({ userId: userId }), headers })
+        .then(res => Promise.all([res.status, res.json()]))
+        .then(([status, data]) => {
+          try {
+            const myData = data.friendData
+              .sort((a, b) => b.balance.virtual - a.balance.virtual)
+              .map((i, index) => { i.rank = index + 1; return i })
+              .filter(i => parseInt(i.friend) === userId)
+            const friendData = myData.map((data) => {
+              return {
+                url: data.avatar_url ? data.avatar_url : avatarData[RANKINGDATA.indexOf(data.ranking.virtual)],
+                name: data.name,
+                label: data.ranking.virtual,
+                rate: (RANKINGDATA.indexOf(data.ranking.virtual) + 1),
+                id: data.rank,
+                coin: nFormatter(data.balance.virtual, 2),
+                token: ""
+              }
+            })
+            // console.log(friendData)
+            setFriendList(friendData);
 
-      const userId = webapp["user"]["id"];
-      const headers = new Headers()
-
-      headers.append('Content-Type', 'application/json')
-      if (isMounted) {
-        fetch(`${serverUrl}/get_friend`, { method: 'POST', body: JSON.stringify({ userId: userId }), headers })
-          .then(res => Promise.all([res.status, res.json()]))
-          .then(([status, data]) => {
-            try {
-              const myData = data.friendData
-                .sort((a, b) => b.balance.virtual - a.balance.virtual)
-                .map((i, index) => { i.rank = index + 1; return i })
-                .filter(i => parseInt(i.friend) === userId)
-              const friendData = myData.map((data) => {
-                return {
-                  url: data.avatar_url?data.avatar_url:avatarData[RANKINGDATA.indexOf(data.ranking.virtual)],
-                  name: data.name,
-                  label: data.ranking.virtual,
-                  rate: (RANKINGDATA.indexOf(data.ranking.virtual) + 1),
-                  id: data.rank,
-                  coin: nFormatter(data.balance.virtual,2),
-                  token: ""
-                }
-              })
-              // console.log(friendData)
-              setFriendList(friendData);
-
-            } catch (e) {
-              console.log(e)
-            }
-          })
-        return () => { isMounted = false }
-      }
+          } catch (e) {
+            console.log(e)
+          }
+        })
+      return () => { isMounted = false }
     }
-    setUser({...user,FriendNumber:friendList.length})
+    setUser({ ...user, FriendNumber: friendList.length })
   }, [])
 
   // Function to generate an invite link
@@ -96,8 +91,6 @@ const Friends = () => {
   const inviteUser = () => {
     utils.openTelegramLink(generateInviteLink());
   };
-
-
 
   const copyLink = async () => {
     toast('Referral link is copied',
@@ -114,7 +107,7 @@ const Friends = () => {
     )
     const link = `https://t.me/GetYourRocketBot?start=${userId}`;
 
-    
+
     // console.log(link);
     try {
       const textField = document.createElement('textarea');
@@ -135,11 +128,11 @@ const Friends = () => {
     <div className="flex flex-col h-full gap-4 pb-[76px] justify-between">
       <FriendComment friendData={friendList} />
       <FriendsList friendData={friendList} />
-      <FriendEarned setIsModalOpen={setIsOpen} friendNumber= {friendList.length} />
+      <FriendEarned setIsModalOpen={setIsOpen} friendNumber={friendList.length} />
       <ScrollModal icon={<NavFriends />} title={"Invite a Friend"} isOpen={isOpen} setIsOpen={setIsOpen}>
         <div className="pb-6 flex flex-col gap-4 px-4" id="clipboard">
-          <ShadowButton className={"bg-[#3434DA] shadow-btn-lightblue-border"} content={"Send invitation"} action={inviteUser} />
-          <ShadowButton className={"bg-[#3434DA] shadow-btn-lightblue-border"} content={"Copy link"} action={copyLink} />
+          <ShadowButton className={"bg-main shadow-btn-lightblue-border"} content={"Send invitation"} action={inviteUser} />
+          <ShadowButton className={"bg-main shadow-btn-lightblue-border"} content={"Copy link"} action={copyLink} />
         </div>
       </ScrollModal>
     </div>

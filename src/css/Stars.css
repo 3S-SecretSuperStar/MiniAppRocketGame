@@ -7,11 +7,17 @@
   overflow: hidden;
   pointer-events: none;
   background-size: 100vw 400vh;
-  background-image: linear-gradient(to bottom, black, black, #001AFF, #001AFF, rgba(196, 196, 196, 0));
-  background-position-y: 233.33%;
+  background-image: linear-gradient(to bottom, black, black, #54298b 60%, #480B97 75%, #BA2BA1 100%);
+  background-position-y: bottom;
   animation: 40s flying forwards;
   animation-play-state: paused;
   z-index: -3;
+}
+
+.bg-layout {
+  background-size: 100vw 400vh;
+  background-image: linear-gradient(to bottom, black, #480B97, #BA2BA1);
+  background-position-y: 233.33%;
 }
 
 #stars1 {

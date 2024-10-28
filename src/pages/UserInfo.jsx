@@ -17,8 +17,6 @@ import InfoModal from "../component/atom/infoModel.jsx";
 import { realGameState } from "../store/realGameState.jsx";
 import Contact from "../component/molecules/contact.jsx";
 import { isActionState } from "../store/actionState.jsx";
-import FetchLoading from "../component/template/FetchLoading.jsx";
-import Skeleton from "react-loading-skeleton";
 import UserInfoSkeleton from "../component/atom/userInfoSkeleton.jsx";
 
 const UserInfo = () => {
@@ -57,7 +55,6 @@ const UserInfo = () => {
       <div className="text-center w-full" key={index}>
         Ranking: {data}
       </div>
-
     )
   })
 
@@ -96,7 +93,7 @@ const UserInfo = () => {
             }
             finally {
               setTimeout(() => {
-                setLoading(false)
+                setLoading(false);
                 firstLoading && setActionState("ready")
                 setFirstLoading(false);
               }, 500)
@@ -106,7 +103,6 @@ const UserInfo = () => {
       return () => { isMounted = false }
 
     }
-
   }, [])
   function nFormatter(num, digits) {
     const lookup = [
@@ -155,11 +151,11 @@ const UserInfo = () => {
 
 
   return (
-    // <Suspense fallback={<FetchLoading />}>
+    // <Suspense fallback={<FetchLoading firstLoading={setFirstLoading} setLoading={setLoading} />}>
     <div className="flex flex-col gap-4 items-center text-white text-base">
-      <div className="font-semibold text-ellipsis overflow-hidden w-52 whitespace-nowrap">{user.RealName}</div>
+      <div className="font-semibold text-ellipsis overflow-hidden w-52 whitespace-nowrap text-center">{user.RealName}</div>
       <TabButton tabList={statsList} tabNo={tabId} setTabNo={setTabId} />
-      <div className="flex flex-col gap-4 overflow-auto w-full " style={{ height: "calc(100vh - 200px)" }}>
+      <div className="flex flex-col gap-4 overflow-auto w-full" style={{ height: "calc(100vh - 190px)" }}>
         <div className="flex gap-[41px] text-blueFaded text-sm justify-center">
 
           <div>Level <span className="text-white">{RANKINGDATA.indexOf(user.Ranking) + 1}/10</span></div>
@@ -206,7 +202,6 @@ const UserInfo = () => {
             {rankingItems}
           </Carousel>
         </div>
-
 
         <div className=" w-full" style={{ height: "calc(100vh - 630px)" }}>
           <div className="flex flex-col gap-2 pb-8">

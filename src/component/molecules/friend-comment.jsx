@@ -5,7 +5,7 @@ const FriendComment = ({ friendData }) => {
     return (
         <div className="flex justify-between items-center">
             <AtomLabel content={"Friends"} />
-            <AtomBadge content={friendData.length} />
+            <AtomBadge content={friendData.length || 0} />
         </div>
     )
 }

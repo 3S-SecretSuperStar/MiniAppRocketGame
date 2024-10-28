@@ -11,6 +11,9 @@ module.exports = {
         'bgNavbar': '#3861fb',
         'blueFaded': "#ACC1D9",
         'gradient-border': 'linear-gradient(180deg, #FFFFFF 0%, #FAD557 100%)',
+        'main': "#560D5E",
+        'mainFocus': "#923f9bb5",
+        'mainOpactiy': "#560D5E4D"
       },
       fontFamily: {
         roboto: ['Roboto', 'sans-serif'],
@@ -23,6 +26,7 @@ module.exports = {
         'slide-in-top': 'slideInTop 0.5s ease-out forwards',
         'slide-out-bottom': 'slideOutBottom 0.5s ease-in forwards',
         "fade-out": 'fade-out 0.2s ease-out',
+        sparkle: 'sparkle 1s infinite'
       },
       keyframes: {
         slideInTop: {
@@ -36,7 +40,11 @@ module.exports = {
         "fade-out": {
           'from': { opacity: 0 },
           'to': { opacity: 1 }
-        }
+        },
+        sparkle: {
+          '0%': { opacity: '0.5' },
+          '100%': { opacity: '1' },
+        },
       },
     },
   },
