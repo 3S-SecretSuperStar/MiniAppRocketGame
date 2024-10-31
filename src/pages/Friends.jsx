@@ -15,23 +15,20 @@ import { isActionState } from "../store/actionState.jsx";
 import { useAtom } from "jotai";
 import { userData } from "../store/userData.jsx";
 
-
-
 const Friends = () => {
   const [friendList, setFriendList] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+  const [actionState, setActionState] = useAtom(isActionState);
+  const [user, setUser] = useAtom(userData)
   const serverUrl = REACT_APP_SERVER;
   const webapp = window.Telegram.WebApp.initDataUnsafe;
   const userId = webapp["user"]["id"];
-  const [actionState, setActionState] = useAtom(isActionState)
-  // const utils = initUtils();
-  const [user, setUser] = useAtom(userData)
+  const utils = initUtils();
   const avatarData = [avatar.avatarBeginner, avatar.avatarPilot, avatar.avatarExplorer,
   avatar.avatarAstronaut, avatar.avatarCaptain, avatar.avatarCommander, avatar.avatarAdmiral,
   avatar.avatarLegend, avatar.avatarMasterOfTheUniverse, avatar.avatarGodOfSpace]
   setActionState('stop')
   function nFormatter(num, digits) {
-
     const lookup = [
       { value: 1, symbol: "" },
       { value: 1e3, symbol: "K" },
@@ -107,8 +104,6 @@ const Friends = () => {
     )
     const link = `https://t.me/GetYourRocketBot?start=${userId}`;
 
-
-    // console.log(link);
     try {
       const textField = document.createElement('textarea');
       textField.innerText = link;
@@ -117,12 +112,10 @@ const Friends = () => {
       textField.select();
       document.execCommand('copy');
       parentElement.removeChild(textField);
-      // console.log("success");
     } catch (err) {
       console.log(err);
     }
   }
-
 
   return (
     <div className="flex flex-col h-full gap-4 pb-[76px] justify-between">
