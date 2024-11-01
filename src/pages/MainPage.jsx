@@ -669,6 +669,7 @@ const MainPage = () => {
             setLoaderIsShown={setLoaderIsShown} amount={balance} bet={bet} autoStop={autoStop} socketFlag={socketStart} realGame={isReal} setInfoState={(e) => setInfoState(e)}
             startGame={startGame} autoMode={autoMode} updateBalance={updateBalance} fallGameScore={fallGameScoreRef} betStopRef={betStopRef} gameStartSignal={gameStartSignal}
             handleGameStarted={handleGameStarted} handleGameStopped={handleGameStopped} setSocketFlag={setSocketStart} currentResult={currentResult} setCurrentResult={setCurrentResult}
+            gameRunning={gameRunning}
           />
           <div className="flex flex-col text-white gap-4 z-10">
             <div >
