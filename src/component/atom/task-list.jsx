@@ -212,7 +212,7 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
   return (
     <div className="bg-[#0000001A] rounded-lg flex justify-between items-center gap-2 py-2 pl-2 pr-4 text-[14px]">
       <div className="flex gap-2 items-center">
-        <img src={`/image/task/${task.src}`} alt="" className="w-8 h-8 rounded-full" />
+        <img src={task.src} alt="" className="w-8 h-8 rounded-full" />
         <div className="flex flex-col">
           <div className="text-white">{task.title}</div>
           <div className="text-[#ffffff99] w-[210px]">+{task.amount}</div>
@@ -220,7 +220,7 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
       </div>
       {
         task.status === 1 ?
-          task.link === "" ?
+          task.link === null || task.link ==="" ?
             task.index === 25 || task.index === 26 && !wallet ?
               <Link to={'/wallet'}>
                 <button className="rounded-lg w-[61px] py-1 px-0 h-7 bg-mainFocus text-white text-center text-[14px]" >
@@ -292,28 +292,6 @@ const TaskList = () => {
   let dailyDays = 1;
   let dailyState = 0;
 
-  const typeToImageMap = {
-    'type1-1': { imgSrc: "Type1.png", link: "" },
-    'type1-2': { imgSrc: "Type1.png", link: "" },
-    'sub-tg': { imgSrc: "Avatar-tg.png", link: "https://t.me/rocketton_official" },
-    'join-partner-filemarketapiplaybot': { imgSrc: "Avatar-partner-filemarketapiplaybot.png", link: " https://t.me/FileMarketAIPlayBot/game?startapp=13174" },
-    'join-partner-clockiechaosbot': { imgSrc: "Avatar-partner-clockiechaosbot.png", link: " https://t.me/ClockieChaosBot?start=source_GetYourRocketBot" },
-    'join-tg': { imgSrc: "Avatar-tg.png", link: "https://t.me/RocketTON_Chat" },
-    'sub-you': { imgSrc: "Avatar-you.png", link: "https://www.youtube.com/@RocketTON_Official" },
-    'sub-X': { imgSrc: "Avatar-X.png", link: "https://x.com/RocketTONApp" },
-    'sub-ins': { imgSrc: "Avatar-ins.png", link: "https://www.instagram.com/rocketton_official" },
-    'type2-2': { imgSrc: "Type2-2.png", link: "" },
-    'type2-3': { imgSrc: "Type2-3.png", link: "" },
-    'type2-5': { imgSrc: "Type2-5.png", link: "" },
-    'type2-10': { imgSrc: "Type2-10.png", link: "" },
-    'type2-25': { imgSrc: "Type2-25.png", link: "" },
-    'type3': { imgSrc: "Type3.png", link: "" },
-    'type4': { imgSrc: "Type4.png", link: "" },
-    'type5': { imgSrc: "Type5.png", link: "" },
-    'type6': { imgSrc: "Type6.png", link: "" },
-  };
-
-
   useEffect(() => {
     let isMounted = true
     if (isMounted) {
@@ -368,36 +346,34 @@ const TaskList = () => {
             .then(res => Promise.all([res.status, res.json()]))
             .then(([status, data]) => {
               try {
-                // console.log("task data", data)
                 const taskItemData = data.task;
-                const fixedTaskItems = taskItemData.filter(item => (item.type === 'type6'));
-                const otherTaskItems = taskItemData.filter(item => !(item.type === "daily_reward" || item.type === 'type6'));
-                // console.log('otherTaskItems: ', otherTaskItems)
+                console.log(taskItemData)
+                const fixedTaskItems = taskItemData.filter(item => (item.fixed === 1 && item.type !== "daily_reward"));
+                const otherTaskItems = taskItemData.filter(item => (item.fixed !== 1));
+                console.log('otherTaskItems: ', otherTaskItems)
                 let dailyItemData = {}
                 if (fixedTaskItems.length > 0) {
-                  // console.log('fixed task: ', fixedTaskItems)
+                  console.log('fixed task: ', fixedTaskItems)
                   const dailyData = taskItemData.find(item => item.type === "daily_reward");
                   if (dailyData) {
                     dailyItemData = {
-                      src: "DailyReward.png",
+                      src: dailyData.icon_url,
                       title: dailyData.title,
                       amount: (dailyData.amount + (20 * dailyDays) + " Coins " + dailyData.description),
                       status: dailyState,
-                      link: "",
+                      link: dailyData.link_url,
                       index: dailyData.index,
                       sort: dailyData.sort
                     }
                   }
                   const _fixedTaskData = fixedTaskItems.map(item => {
 
-                    const { imgSrc, link } = typeToImageMap[item.type];
-
                     return {
-                      src: imgSrc,
+                      src: item.icon_url,
                       title: item.title,
                       amount: (item.amount + " Coins"),
                       status: taskState[item.index],
-                      link: link,
+                      link: item.link_url,
                       index: item.index,
                       sort: item.sort
                     };
@@ -410,14 +386,13 @@ const TaskList = () => {
                 if (otherTaskItems.length > 0) {
                   // console.log('task states:', taskState);
                   const _otherTaskData = otherTaskItems.map(item => {
-                    const { imgSrc, link } = typeToImageMap[item.type];
 
                     return {
-                      src: imgSrc,
+                      src: item.icon_url,
                       title: item.title,
                       amount: (item.amount + " Coins"),
                       status: taskState[item.index],
-                      link: link,
+                      link: item.link_url,
                       index: item.index,
                       sort: item.sort
                     };
