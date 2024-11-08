@@ -348,9 +348,9 @@ const MainPage = () => {
   }
 
   const startGame = () => {
-    const realBet = Math.max(Math.min(realBetRef.current, balance), 1);
-    setBet(realBet);
-    realBetRef.current = realBet;
+    if (realBetRef.current > balance) {
+        return;      
+    }
     setRewardState(false);
     setStopWasPressed(false);
     setSocketStart(false);
