@@ -126,10 +126,10 @@ const MainPage = () => {
   // Effect to validate and adjust state values
   useEffect(() => {
     if (gamePhase !== 'started') {
-      if (bet < 1 || isNaN(bet)) {
+      if (realBetRef.current < 1 || isNaN(realBetRef.current)) {
         betAutoRef.current = 1;
         betManualRef.current = 1;
-      } else if (bet > balance && balance !== '0.00') {
+      } else if (realBetRef.current > balance && balance !== '0.00') {
         betAutoRef.current = parseFloat(balance)
         betManualRef.current = parseFloat(balance)
       }
@@ -161,7 +161,7 @@ const MainPage = () => {
         setLostCoefficient(100)
       }
     }
-  }, [bet, autoStop, balance, lostCoefficient, winCoefficient]);
+  }, [realBetRef.current, autoStop, balance, lostCoefficient, winCoefficient]);
 
   useEffect(() => {
     operationAfterWinRef.current = operationAfterWin;
@@ -417,7 +417,7 @@ const MainPage = () => {
     setFirstLogin(false)
     setWinstate(false)
     const animation = document.getElementById('stars').style.animation;
-    updateBalance(-1 * bet)
+    updateBalance(-1 * realBetRef.current)
     document.getElementById('stars').style.animation = 'none'
     setTimeout(() => {
       setFinalResult(0);
@@ -467,7 +467,7 @@ const MainPage = () => {
         performList.push(task.index);
       if (task.count === continueCounter && taskType === "type3")
         performList.push(task.index);
-      if (parseFloat(data.profit - bet) >= task.count && taskType === "type5")
+      if (parseFloat(data.profit - realBetRef.current) >= task.count && taskType === "type5")
         performList.push(task.index)
 
       return performList
@@ -691,8 +691,8 @@ const MainPage = () => {
                       content={"Start"}
                       disabled={
                         balance === '0.00' ||
-                        bet < 1 || autoStop < 1.1 ||
-                        balance < 1 || isNaN(bet) || isNaN(autoStop) || isNaN(winCoefficient)
+                        realBetRef.current < 1 || autoStop < 1.1 ||
+                        balance < 1 || isNaN(realBetRef.current) || isNaN(autoStop) || isNaN(winCoefficient)
                         || isNaN(lostCoefficient)
                       }
                     />
@@ -757,8 +757,8 @@ const MainPage = () => {
                         action={handleModalButton}
                         content={"Start"}
                         disabled={
-                          balance === '0.00' || bet < 1 || autoStop < 1.1 ||
-                          balance < 1 || isNaN(bet) || isNaN(autoStop) || isNaN(winCoefficient)
+                          balance === '0.00' || realBetRef.current < 1 || autoStop < 1.1 ||
+                          balance < 1 || isNaN(realBetRef.current) || isNaN(autoStop) || isNaN(winCoefficient)
                           || isNaN(lostCoefficient)
                         }
                       />
