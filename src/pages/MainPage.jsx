@@ -103,22 +103,19 @@ const MainPage = () => {
     }
   ]
 
-  const setInitBet = () => {
-    const currentBet =
-      autoMode
-        ? betAutoRef.current
-        : betManualRef.current
-    realBetRef.current = currentBet
-    setAutoStop(autoMode ? autoStopAM : autoStopManual)
-  }
-
   const handleModalButton = () => {
     handleStartGame();
     setIsModalOpen(false);
   }
 
   const handleStartGame = () => {
-    setInitBet()
+    console.log(realBetRef.current, ":", balanceRef.current);
+    const currentBet =
+      autoMode
+        ? betAutoRef.current
+        : betManualRef.current;
+    realBetRef.current = currentBet;
+    setAutoStop(autoMode ? autoStopAM : autoStopManual)
     startGame();
   }
 
@@ -345,8 +342,10 @@ const MainPage = () => {
   }
 
   const startGame = () => {
+    console.log(realBetRef.current, ":", balanceRef.current);
+    
     if (realBetRef.current > balanceRef.current) {
-        return;      
+      return;
     }
     setRewardState(false);
     setStopWasPressed(false);

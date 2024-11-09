@@ -52,9 +52,9 @@ const Wallet = () => {
           // eslint-disable-next-line no-self-assign
           console.log(e);
         }
-
       })
   }
+  
   const addPerformList = async (performTask) => {
     await fetch(`${serverUrl}/add_perform_list`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, performTask: performTask, isReal: isReal }), headers })
   }
