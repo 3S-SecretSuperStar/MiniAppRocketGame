@@ -36,7 +36,6 @@ const MainPage = () => {
   const [autoMode, setAutoMode] = useState(false);
   const [autoStop, setAutoStop] = useState(5);
   const [balance, setBalance] = useState(userData.balance);
-  const [bet, setBet] = useState(1);
   const context = useContext(AppContext);
   const [finalResult, setFinalResult] = useState(0);
   const [firstLogin, setFirstLogin] = useState(false);
@@ -75,9 +74,9 @@ const MainPage = () => {
   // Refs for mutable state
   const balanceRef = useRef(balance);
   const historyGamesRef = useRef(historyGames);
-  const betAutoRef = useRef(bet);
-  const betManualRef = useRef(bet);
-  const realBetRef = useRef(bet);
+  const betAutoRef = useRef(1);
+  const betManualRef = useRef(1);
+  const realBetRef = useRef(1);
   const operationAfterWinRef = useRef(operationAfterWin);
   const valueAfterWinRef = useRef(winCoefficient);
   const operationAfterLossRef = useRef(operationAfterLoss);
@@ -109,12 +108,13 @@ const MainPage = () => {
   }
 
   const handleStartGame = () => {
-    console.log(realBetRef.current, ":", balanceRef.current);
+    console.log("checkRealBetRef", realBetRef.current, ":", balanceRef.current);
     const currentBet =
       autoMode
         ? betAutoRef.current
         : betManualRef.current;
     realBetRef.current = currentBet;
+    console.log("checkRealBetRefAgain", realBetRef.current, ":", balanceRef.current);
     setAutoStop(autoMode ? autoStopAM : autoStopManual)
     startGame();
   }
@@ -127,11 +127,9 @@ const MainPage = () => {
   useEffect(() => {
     if (gamePhase !== 'started') {
       if (bet < 1 || isNaN(bet)) {
-        setBet(1);
         betAutoRef.current = 1;
         betManualRef.current = 1;
       } else if (bet > balance && balance !== '0.00') {
-        setBet(parseFloat(balance));
         betAutoRef.current = parseFloat(balance)
         betManualRef.current = parseFloat(balance)
       }
@@ -342,7 +340,7 @@ const MainPage = () => {
   }
 
   const startGame = () => {
-    console.log(realBetRef.current, ":", balanceRef.current);
+    console.log("gameStart", realBetRef.current, ":", balanceRef.current);
     
     if (realBetRef.current > balanceRef.current) {
       return;
@@ -553,27 +551,19 @@ const MainPage = () => {
   const adjustBetAfterWin = () => {
     if (autoMode) {
       if (operationAfterWinRef.current === 'Increase Bet by') {
-        const afterWinBet = Math.max(Math.min(realBetRef.current * valueAfterWinRef.current, balance), 1);
-        realBetRef.current = afterWinBet;
-        setBet(afterWinBet)
+        realBetRef.current = realBetRef.current * valueAfterWinRef.current;
       } else {
-        const returnBet = Math.max(Math.min(betAutoRef.current, balance), 1);
-        realBetRef.current = returnBet;
-        setBet(returnBet)
+        realBetRef.current = betAutoRef.current;
       }
     }
   };
 
   const adjustBetAfterLoss = () => {
     if (autoMode) {
-      const lostAfterBet = Math.max(Math.min(realBetRef.current * valueAfterLossRef.current, balance), 1);
       if (operationAfterLossRef.current === 'Increase Bet by') {
-        realBetRef.current = lostAfterBet;
-        setBet(lostAfterBet)
+        realBetRef.current = realBetRef.current * valueAfterLossRef.current;
       } else {
-        const returnBet = Math.max(Math.min(betAutoRef.current, balance), 1);
-        realBetRef.current = returnBet;
-        setBet(returnBet);
+        realBetRef.current = betAutoRef.current;
       }
     }
   };
@@ -654,7 +644,7 @@ const MainPage = () => {
           <Game
             className={`transition-all ${isAction !== "start" ? "mt-24" : "mt-0"} `}
             finalResult={finalResult} gamePhase={gamePhase} setGamePhase={setGamePhase} isWin={winState} stopGame={(e) => stopGameOperator(e)}
-            setLoaderIsShown={setLoaderIsShown} amount={balance} bet={bet} autoStop={autoStop} socketFlag={socketStart} realGame={isReal} setInfoState={(e) => setInfoState(e)}
+            setLoaderIsShown={setLoaderIsShown} amount={balance} bet={realBetRef.current} autoStop={autoStop} socketFlag={socketStart} realGame={isReal} setInfoState={(e) => setInfoState(e)}
             startGame={startGame} autoMode={autoMode} updateBalance={updateBalance} fallGameScore={fallGameScoreRef} betStopRef={betStopRef} gameStartSignal={gameStartSignal}
             handleGameStarted={handleGameStarted} handleGameStopped={handleGameStopped} setSocketFlag={setSocketStart} currentResult={currentResult} setCurrentResult={setCurrentResult}
             gameRunning={gameRunning}
@@ -671,7 +661,6 @@ const MainPage = () => {
                   <div className="text-sm leading-5  z-10">Bet</div>
                   <InputNumber InputProps={{
                     value: betManualRef.current, min: 1, step: 1, disabled: gamePhase === 'started', onChange: e => {
-                      setBet(parseFloat(e.target.value));
                       realBetRef.current = e.target.value;
                       betManualRef.current = parseFloat(e.target.value)
                     }
@@ -724,7 +713,6 @@ const MainPage = () => {
                       <div className="text-sm leading-5">Bet</div>
                       <InputNumber InputProps={{
                         value: betAutoRef.current, min: 1, step: 1, onChange: e => {
-                          setBet(parseFloat(e.target.value));
                           realBetRef.current = e.target.value;
                           betAutoRef.current = parseFloat(e.target.value)
                         }
