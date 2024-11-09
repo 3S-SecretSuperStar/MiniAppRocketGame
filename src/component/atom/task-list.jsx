@@ -37,8 +37,6 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
   const addPerformList = async (performTask) => {
     const headers = new Headers();
     headers.append('Content-Type', 'application/json')
-    console.log("perform task: ", performTask)
-    console.log("headers", headers)
     await fetch(`${serverUrl}/add_perform_list`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, performTask: performTask, isReal: isReal }), headers })
       .then(res => Promise.all([res.status, res.json()]))
       .then(() => { stateTask() })
@@ -91,7 +89,6 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
                     width: '90vw'
                   },
                 })
-              console.log("add perform task 26")
               addPerformList([26]);
             }
             )
@@ -137,9 +134,7 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
     setClaimStateList((prev) => [...prev, task.index])
     setIsClaim(true);
 
-    // console.log("task index", task.index)
     if (task.index !== dailytaskIndex) {
-      // console.log("index indaily: ", index)
       fetch(`${serverUrl}/task_balance`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, amount: task.amount, task: task.index, isReal: isReal }), headers })
         .then(res => Promise.all([res.status, res.json()]))
         .then(() => {
@@ -169,9 +164,6 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
       // stateTask();
     } else {
       let dailyAmount = parseFloat(task.amount.split(" ")[0])
-      // console.log("index : ", index)
-      // console.log("task index : ", task.index)
-      // console.log("Daily Amount : ", dailyAmount)
       fetch(`${serverUrl}/perform_dailyReward`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, isReal: isReal, amount: dailyAmount, consecutiveDays: user.DailyConsecutiveDays }), headers })
         .then(res => Promise.all([res.status, res.json()]))
         .then(() => {
@@ -207,8 +199,7 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
     }, 1000 * 60)
     return () => setIsPending(false)
   }
-  // console.log("friend number", user.FriendNumber)
-  // console.log("user Info in generate task : ", user.DailyConsecutiveDays)
+
   return (
     <div className="bg-[#0000001A] rounded-lg flex justify-between items-center gap-2 py-2 pl-2 pr-4 text-[14px]">
       <div className="flex gap-2 items-center">
@@ -220,7 +211,7 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
       </div>
       {
         task.status === 1 ?
-          task.link === null || task.link ==="" ?
+          task.link === null || task.link === "" ?
             task.index === 25 || task.index === 26 && !wallet ?
               <Link to={'/wallet'}>
                 <button className="rounded-lg w-[61px] py-1 px-0 h-7 bg-mainFocus text-white text-center text-[14px]" >
@@ -347,13 +338,10 @@ const TaskList = () => {
             .then(([status, data]) => {
               try {
                 const taskItemData = data.task;
-                console.log(taskItemData)
                 const fixedTaskItems = taskItemData.filter(item => (item.fixed === 1 && item.type !== "daily_reward"));
                 const otherTaskItems = taskItemData.filter(item => (item.fixed !== 1));
-                console.log('otherTaskItems: ', otherTaskItems)
                 let dailyItemData = {}
                 if (fixedTaskItems.length > 0) {
-                  console.log('fixed task: ', fixedTaskItems)
                   const dailyData = taskItemData.find(item => item.type === "daily_reward");
                   if (dailyData) {
                     dailyItemData = {
@@ -384,7 +372,6 @@ const TaskList = () => {
                 }
 
                 if (otherTaskItems.length > 0) {
-                  // console.log('task states:', taskState);
                   const _otherTaskData = otherTaskItems.map(item => {
 
                     return {

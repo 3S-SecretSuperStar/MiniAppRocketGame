@@ -18,11 +18,7 @@ const StatList = () => {
     const nowDate = moment().startOf('day');
     const selectedDate = moment(date).utc().local().startOf('day');
     const selectedDate1 = moment(date).utc().startOf('day');
-    // console.log("nowDate : ",nowDate)
-    // console.log("selected date : ",selectedDate)
-    // console.log("selected date1 : ",selectedDate1)
     const diffDate = nowDate.diff(selectedDate, 'days');
-    // console.log("diff date : ",diffDate)
     if (diffDate === 0) return "Today";
     if (diffDate === 1) return "Yesterday";
     return selectedDate.format('L');
@@ -36,14 +32,10 @@ const StatList = () => {
       .then(([status, data]) => {
         if (isMounted) {
           try {
-            // console.log("stats real state",isReal)
             const myData = data.gamesHistory
             const newHistoryGames = isReal ? myData.real.reverse() : myData.virtual.reverse()
-            // console.log(newHistoryGames)
             const groupedData = newHistoryGames.reduce((_statsData, current) => {
-              // console.log("database date", current.date)
               const currentDate = convertFormatData(current.date)
-              // console.log(currentDate)
               if (!_statsData[currentDate]) {
                 _statsData[currentDate] =
                 {

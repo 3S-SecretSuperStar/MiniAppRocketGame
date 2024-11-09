@@ -64,7 +64,6 @@ const Friends = () => {
                 token: ""
               }
             })
-            // console.log(friendData)
             setFriendList(friendData);
 
           } catch (e) {

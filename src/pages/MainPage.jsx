@@ -104,11 +104,10 @@ const MainPage = () => {
   ]
 
   const setInitBet = () => {
-    const currentBalanceRef = balanceRef.current;
     const currentBet =
       autoMode
-        ? Math.min(betAutoRef.current, currentBalanceRef)
-        : Math.min(betManualRef.current, currentBalanceRef)
+        ? betAutoRef.current
+        : betManualRef.current
     realBetRef.current = currentBet
     setAutoStop(autoMode ? autoStopAM : autoStopManual)
   }
@@ -201,7 +200,6 @@ const MainPage = () => {
       if (profiles.result.photos.length > 0) {
         const fileResponse = await fetch(`https://api.telegram.org/bot${bot_token}/getFile?file_id=${profiles.result.photos[0][2].file_id}`);
         const filePath = await fileResponse.json();
-        // console.log("fileInfo:", filePath)
         const userAvatarUrl = `https://api.telegram.org/file/bot${bot_token}/${filePath.result.file_path}`;
         return userAvatarUrl;
       } else {
@@ -256,7 +254,6 @@ const MainPage = () => {
           // const userName = "fff";
           const historySize = 100;
           let gamesHistory = { real: [], virtual: [] }
-          // console.log("uerInfo: ", userInfo)
           const headers = new Headers()
           headers.append('Content-Type', 'application/json')
           if (isMounted) {
@@ -348,7 +345,7 @@ const MainPage = () => {
   }
 
   const startGame = () => {
-    if (realBetRef.current > balance) {
+    if (realBetRef.current > balanceRef.current) {
         return;      
     }
     setRewardState(false);
@@ -359,7 +356,6 @@ const MainPage = () => {
   };
 
   const stopGame = async (amount, running = false) => {
-    console.log("stop game button ", currentResult, ":", fallGameScoreRef.current, ":", autoStop, ":", amount);
     setGameRunning(running);
     setStopWasPressed(true);
     setActionState("stop");
@@ -434,7 +430,6 @@ const MainPage = () => {
   };
 
   const handleGameStopped = (data = { stop: 'x', profit: '0' }) => {
-    console.log("profit:", data.profit, ":", fallGameScoreRef.current);
     setCointinueCounter(continueCounter + 1)
     testCounter = testCounter + 1;
 
@@ -447,7 +442,6 @@ const MainPage = () => {
     setGames(games + 1);
     setWins(wins + 1);
     adjustBetAfterWin();
-    console.log("profit:", data.profit, ":", fallGameScoreRef.current);
 
     if (data.profit + fallGameScoreRef.current > 0) {
       setWinstate(true);
@@ -487,7 +481,6 @@ const MainPage = () => {
   };
 
   const handleGameCrashed = (data) => {
-    console.log("lost coin", data.profit, ":", fallGameScoreRef.current);
     setCointinueCounter(1)
     setActionState("stop");
     setFinalResult('Crashed...');
@@ -496,7 +489,6 @@ const MainPage = () => {
     setGames(games + 1);
     setLosses(losses + 1);
     adjustBetAfterLoss();
-    console.log("lost coin", data.profit, ":", fallGameScoreRef.current);
 
     toast(`You lost ${formatNumber(Number(data.profit + fallGameScoreRef.current))} coin`,
       {
@@ -525,7 +517,6 @@ const MainPage = () => {
   };
 
   const updateBalance = (profit) => {
-    console.log("updateBalance", balanceRef.current);
     const newBalance = (parseFloat(balanceRef.current) + parseFloat(profit)).toFixed(2) > 0 ? (parseFloat(balanceRef.current) + parseFloat(profit)).toFixed(2) : 0;
     balanceRef.current = newBalance;
     setBalance(newBalance);
@@ -547,7 +538,6 @@ const MainPage = () => {
         setBetStopRef(data.data.gameLimit);
         handleGameStarted();
         setSocketStart(true);
-        console.log(data);
       } else {
         setGamePhase("stopped");
         setActionState("stop");
@@ -606,7 +596,6 @@ const MainPage = () => {
       fetch(`${serverUrl}/charge_balance`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, amount: profit }), headers })
       updateBalance(profit - fallGameScoreRef.current);
     } else {
-      console.log("profit", profit);
       updateBalance(-profit);
     }
     fallGameScoreRef.current = 0;

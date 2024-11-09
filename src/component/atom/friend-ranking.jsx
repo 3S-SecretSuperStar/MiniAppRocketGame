@@ -2,8 +2,6 @@ import Skeleton from "react-loading-skeleton";
 import 'react-loading-skeleton/dist/skeleton.css'
 
 const FriendRanking = ({ data }) => {
-   // console.log(data)
-
     return (
         <div className="flex justify-between rounded-[10px] bg-[#0000001A] py-2 px-4 items-center">
             <div className="flex gap-1 items-center">

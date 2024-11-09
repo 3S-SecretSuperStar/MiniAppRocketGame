@@ -153,13 +153,11 @@ export default memo(function Game({ gamePhase, finalResult, amount = 10.00,
 
   useEffect(() => {
     if (gameRef.current) {
-      console.log("score:", gameRef.current.getScore());
       fallGameScore.current = gameRef.current.getScore();
     }
   }, [score])
 
   useEffect(() => {
-    console.log("fallGameScore", fallGameScore.current);
     if (fallGameScore.current > 0) {
       updateBalance(fallGameScore.current - saveLastScore)
       setSaveLastScore(fallGameScore.current)

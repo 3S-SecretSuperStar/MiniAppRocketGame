@@ -46,11 +46,8 @@ const Wallet = () => {
       .then(res => Promise.all([res.status, res.json()]))
       .then(async ([status, data]) => {
         try {
-          // console.log("is real : ", isReal)
-          // console.log("data", data)
           const performTask = isReal ? data.task.real.achieve_task : data.task.virtual.achieve_task
           setPerformList(performTask)
-          // console.log("performList : ", performTask)
         } catch (e) {
           // eslint-disable-next-line no-self-assign
           console.log(e);
@@ -59,21 +56,12 @@ const Wallet = () => {
       })
   }
   const addPerformList = async (performTask) => {
-    // console.log("perform task: ", performTask)
     await fetch(`${serverUrl}/add_perform_list`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, performTask: performTask, isReal: isReal }), headers })
   }
 
-
-
-
-
-
   // const wallet = "0x23265323454232";
   const [tonconnectUi] = useTonConnectUI();
-  // console.log("adminWalletAdress", adminWalletAddress)
-
   const [tokenNumber, setTokenNumber] = useState(1000);
-
 
   const disconnectFunction = async () => {
     await tonconnectUi.disconnect();
@@ -86,15 +74,11 @@ const Wallet = () => {
       .storeStringTail("RocketTON Coins purchased")
       .endCell()
 
-
     return {
-
       // The transaction is valid for 10 minutes from now, in unix epoch seconds.
       validUntil: Math.floor(Date.now() / 1000) + 600,
       messages: [
-
         {
-
           // The receiver's address.
           address: adminWalletAddress,
           // Amount to send in nanoTON. For example, 0.005 TON is 5000000 nanoTON.
@@ -104,25 +88,12 @@ const Wallet = () => {
           // (optional) Payload in boc base64 format.
           payload: body.toBoc().toString("base64"),
         },
-
-        // Uncomment the following message to send two messages in one transaction.
-        /*
-        {
-          // Note: Funds sent to this address will not be returned back to the sender.
-          address: 'UQAuz15H1ZHrZ_psVrAra7HealMIVeFq0wguqlmFno1f3B-m',
-          amount: toNano('0.01').toString(),
-        }
-        */
-
       ],
     };
   }
 
-
-
   useEffect(() => {
     if (wallet) {
-      // console.log(performList)
       if (!performList.length || !performList.includes(25))
         addPerformList([25]);
     }
@@ -140,21 +111,16 @@ const Wallet = () => {
   const transactionProcess = async (tokenCount) => {
 
     const tx = createTransaction(tokenCount)
-    // console.log("transaction : ", tx)
     const userId = user.UserId;
-    // console.log("user Id : ", user.UserId)
-    // console.log("user Id : ", userId)
-    try {
 
+    try {
       if (tonwallet.account.chain === Chain.Mainnet) {
         const transferResult = await tonconnectUi.sendTransaction(tx);
-        // console.log("transfer result : ", transferResult)
         if (transferResult) {
           const headers = new Headers();
           headers.append('Content-Type', 'application/json')
           fetch(`${serverUrl}/charge_balance`, { method: 'POST', body: JSON.stringify({ userId: userId, amount: tokenCount }), headers })
             .then(() => {
-
               toast(`${tokenCount} coins added to your balance`,
                 {
                   position: "top-center",
@@ -166,11 +132,9 @@ const Wallet = () => {
                     width: '90vw'
                   },
                 })
-              if ((!performList.length || !performList.includes(26))&&tokenCount>=500)
+              if ((!performList.length || !performList.includes(26)) && tokenCount >= 500)
                 addPerformList([26])
-            }
-            )
-
+            })
         }
       }
       else {
@@ -201,11 +165,6 @@ const Wallet = () => {
     }
   }
 
-  // const onChange = useCallback((value) => setTx(value.updated_src), [])
-  // console.log("wallet", tonwallet)
-  // console.log("ton number", tokenNumber)
-  // console.log("wallet network : ", tonwallet.account.address)
-  // console.log("wallet network : ", wallet)
   setActionState('stop')
   return (
     <div className="h-full pb-[76px] flex flex-col gap-4 font-roboto">
