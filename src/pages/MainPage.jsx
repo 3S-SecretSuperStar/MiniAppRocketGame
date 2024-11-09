@@ -399,7 +399,7 @@ const MainPage = () => {
           body: JSON.stringify(body)
         });
         const stopResult = await result.json();
-        console.log(stopResult);
+        console.log("stop", stopResult);
       } catch (err) {
         console.log(err);
       }
@@ -531,6 +531,8 @@ const MainPage = () => {
         body: JSON.stringify({ userId: user.UserId, bet: realBetRef.current, isReal: isReal, autoStop, operation: "start" })
       });
       const data = await result.json();
+      console.log("start", data);
+      
       if (data.status == "success") {
         setBetStopRef(data.data.gameLimit);
         handleGameStarted();
