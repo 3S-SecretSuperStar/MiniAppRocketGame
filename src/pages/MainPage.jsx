@@ -343,6 +343,7 @@ const MainPage = () => {
     console.log("gameStart", realBetRef.current, ":", balanceRef.current);
     
     if (realBetRef.current > balanceRef.current) {
+      setGameRunning(false);
       return;
     }
     setRewardState(false);
