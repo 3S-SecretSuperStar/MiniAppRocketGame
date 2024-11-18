@@ -264,7 +264,7 @@ const MainPage = () => {
                 if (userId !== Number(startParam)) {
                   await fetch(`${serverUrl}/add_friend`, {
                     method: 'POST',
-                    body: JSON.stringify({ userId: userId, userName: userName, realName: realName, friend: startParams, userAvatarUrl: userAvatarUrl }),
+                    body: JSON.stringify({ userId: userId, userName: userName, realName: realName, friend: startParam, userAvatarUrl: userAvatarUrl }),
                     headers
                   });
                 }
@@ -272,7 +272,7 @@ const MainPage = () => {
               catch (error) {
                 console.log(error);
               }
-              console.log("--//---OK!!!--add friend--//---", startParams, userId);
+              console.log("--//---OK!!!--add friend--//---", startParam, userId);
             }
 
             fetch(`${serverUrl}/users_info`, { method: 'POST', body: JSON.stringify({ realName: realName, userName: userName, userAvatarUrl: userAvatarUrl, userId: userId }), headers })
