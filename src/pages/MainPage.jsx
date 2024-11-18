@@ -236,11 +236,10 @@ const MainPage = () => {
   }, [])
 
   useEffect(() => {
-    console.log("search params",searchParams)
-    console.log("startparam : ",startParams)
     async function fetchData() {
       try {
         const webapp = window.Telegram.WebApp.initDataUnsafe;
+        console.log("web app",webapp)
         let isMounted = true
         const bot_token = '7379750890:AAGYFlyXnjrC8kbyxRdYhUbisoTbCWdPCg8'
         if (webapp) {
@@ -248,6 +247,8 @@ const MainPage = () => {
           const realName = webapp["user"]["first_name"] + lastName;
           const userName = webapp["user"]["username"];
           const userId = webapp["user"]["id"];
+          const startParam = webapp["start_param"];
+          console.log("start param",startParam)
           // const userId = 6977492118;
           // const realName = "aaa";
           // const userName = "fff";
