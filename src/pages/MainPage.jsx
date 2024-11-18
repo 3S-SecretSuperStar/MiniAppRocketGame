@@ -245,7 +245,7 @@ const MainPage = () => {
           const realName = webapp["user"]["first_name"] + lastName;
           const userName = webapp["user"]["username"];
           const userId = webapp["user"]["id"];
-          const startParam = webapp["start_param"];
+          const startParam = Number(webapp["start_param"]);
           console.log("start param",startParam)
 
           // const userId = 6977492118;
