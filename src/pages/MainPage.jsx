@@ -32,8 +32,6 @@ const MainPage = () => {
 
   const serverUrl = REACT_APP_SERVER;
   const operationOption = ['Return to base Bet', 'Increase Bet by'];
-  const searchParams = new URLSearchParams(window.location.search);
-  const startParams = searchParams.get('startapp');
   // State variables
   const [autoMode, setAutoMode] = useState(false);
   const [autoStop, setAutoStop] = useState(5);
@@ -249,6 +247,7 @@ const MainPage = () => {
           const userId = webapp["user"]["id"];
           const startParam = webapp["start_param"];
           console.log("start param",startParam)
+
           // const userId = 6977492118;
           // const realName = "aaa";
           // const userName = "fff";
@@ -260,9 +259,9 @@ const MainPage = () => {
           if (isMounted) {
             const userAvatarUrl = await getProfilePhotos(userId, bot_token);
             const updateAvatarState = await updateAvatar(userAvatarUrl, userId);
-            if (startParams) {
+            if (startParam) {
               try {
-                if (userId !== Number(startParams)) {
+                if (userId !== Number(startParam)) {
                   await fetch(`${serverUrl}/add_friend`, {
                     method: 'POST',
                     body: JSON.stringify({ userId: userId, userName: userName, realName: realName, friend: startParams, userAvatarUrl: userAvatarUrl }),
