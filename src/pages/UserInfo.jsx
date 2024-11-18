@@ -231,10 +231,10 @@ const UserInfo = () => {
                     triggerOnce: true,
                   });
 
-                  // Call handleIntersection when the component comes into view
-                  if (inView && entry.isIntersecting) {
-                    handleIntersection(entry);
-                  }
+                  // // Call handleIntersection when the component comes into view
+                  // if (inView && entry.isIntersecting) {
+                  //   handleIntersection(entry);
+                  // }
 
                   return (
                     <FriendRanking
