@@ -18,6 +18,7 @@ import { realGameState } from "../store/realGameState.jsx";
 import Contact from "../component/molecules/contact.jsx";
 import { isActionState } from "../store/actionState.jsx";
 import UserInfoSkeleton from "../component/atom/userInfoSkeleton.jsx";
+import {useInView} from 'react-intersection-observer'
 
 const UserInfo = () => {
   const [user,] = useAtom(userData);
@@ -34,6 +35,7 @@ const UserInfo = () => {
   const [loading, setLoading] = useState(true)
   const [firstLoading, setFirstLoading] = useState(true);
   const [scrollPosition, setScrollPosition] = useState(0);
+  const [visibleItems, setVisibleItems] = useState([])
 
  
 
@@ -159,11 +161,19 @@ const UserInfo = () => {
 
         }
       })
-      setFriendData(filterData.slice(startIndex,endIndex))
+      setVisibleItems(filterData.slice(0,itemPerPage))
+      
+      // setFriendData(filterData.slice(startIndex,endIndex))
     }
   }, [rankingIndex, gameDataLength])
 
-
+  const handleIntersection = (inView, entry) =>{
+    if(inView){
+      const startIndex  = Math.floor(entry.boundingClientReact.top/itemHeight)*itemPerPage;
+      const endIndex = startIndex + itemPerPage;
+      setVisibleItems(filterData.slice(startIndex, endIndex))
+    }
+  }
 
   if (tabId === 2) {
     setTabId(1);
@@ -228,8 +238,8 @@ const UserInfo = () => {
           <div className="flex flex-col gap-2 pb-8">
             {
 
-              (friendData.length > 0 ?
-                friendData.map((_data, _index) => <FriendRanking data={_data} key={_index} />)
+              (visibleItems.length > 0 ?
+                visibleItems.map((_data, _index) => <FriendRanking data={_data} ref={useInView({threshold:0,triggerOnce:true},handleIntersection)} key={_index} />)
                 : (loading && firstLoading) ? (
                   <div className="flex flex-col gap-2">
                     <UserInfoSkeleton />
