@@ -123,18 +123,6 @@ const UserInfo = () => {
     return item ? (num / item.value).toFixed(digits).replace(regexp, "").concat(item.symbol) : "0";
   }
   useEffect(() => {
-    const handleScroll = () => {
-      setScrollPosition(window.scrollY);
-    }
-
-    window.addEventListener('scroll', handleScroll);
-
-    return () => {
-      window.removeEventListener('scroll', handleScroll)
-    }
-
-  }, [])
-  useEffect(() => {
     if (gameDataLength) {
 
       const currentRanking = RANKINGDATA[rankingIndex];
