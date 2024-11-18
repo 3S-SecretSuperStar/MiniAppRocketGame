@@ -33,7 +33,7 @@ const MainPage = () => {
   const serverUrl = REACT_APP_SERVER;
   const operationOption = ['Return to base Bet', 'Increase Bet by'];
   const searchParams = new URLSearchParams(window.location.search);
-  const startParams = searchParams.get('startParam');
+  const startParams = searchParams.get('startapp');
   // State variables
   const [autoMode, setAutoMode] = useState(false);
   const [autoStop, setAutoStop] = useState(5);
@@ -236,6 +236,8 @@ const MainPage = () => {
   }, [])
 
   useEffect(() => {
+    console.log("search params",searchParams)
+    console.log("startparam : ",startParams)
     async function fetchData() {
       try {
         const webapp = window.Telegram.WebApp.initDataUnsafe;
