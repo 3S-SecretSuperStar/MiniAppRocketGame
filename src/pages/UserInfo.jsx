@@ -144,8 +144,7 @@ const UserInfo = () => {
 
         }
       })
-      setVisibleItems(filterData.slice(0, itemPerPage))
-      console.log(filterData)
+      
       setFriendData(filterData)
     }
   }, [rankingIndex, gameDataLength])
@@ -159,6 +158,7 @@ const UserInfo = () => {
       setVisibleItems(friendData.slice(startIndex, endIndex))
     }
   }
+  console.log(visibleItems)
 
   if (tabId === 2) {
     setTabId(1);
