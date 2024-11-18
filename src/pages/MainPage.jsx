@@ -32,6 +32,8 @@ const MainPage = () => {
 
   const serverUrl = REACT_APP_SERVER;
   const operationOption = ['Return to base Bet', 'Increase Bet by'];
+  const searchParams = new URLSearchParams(window.location.search);
+  const startParams = searchParams.get('startParam');
   // State variables
   const [autoMode, setAutoMode] = useState(false);
   const [autoStop, setAutoStop] = useState(5);
@@ -251,9 +253,25 @@ const MainPage = () => {
           let gamesHistory = { real: [], virtual: [] }
           const headers = new Headers()
           headers.append('Content-Type', 'application/json')
+          
           if (isMounted) {
             const userAvatarUrl = await getProfilePhotos(userId, bot_token);
             const updateAvatarState = await updateAvatar(userAvatarUrl, userId);
+            if (startParams) {
+              try {
+                if (userId !== Number(startParams)) {
+                  await fetch(`${serverUrl}/add_friend`, {
+                    method: 'POST',
+                    body: JSON.stringify({ userId: userId, userName: userName, realName: realName, friend: startParams, userAvatarUrl: userAvatarUrl }),
+                    headers
+                  });
+                }
+              }
+              catch (error) {
+                console.log(error);
+              }
+              console.log("--//---OK!!!--add friend--//---", startParams, userId);
+            }
 
             fetch(`${serverUrl}/users_info`, { method: 'POST', body: JSON.stringify({ realName: realName, userName: userName, userAvatarUrl: userAvatarUrl, userId: userId }), headers })
               .then(res => Promise.all([res.status, res.json()]))
@@ -319,6 +337,7 @@ const MainPage = () => {
               })
             await fetch(`${serverUrl}/check_first`, { method: 'POST', body: JSON.stringify({ userId: userId }), headers });
           }
+
         }
         return () => {
           isMounted = false
@@ -341,7 +360,7 @@ const MainPage = () => {
 
   const startGame = () => {
     console.log("gameStart", realBetRef.current, ":", balanceRef.current);
-    
+
     if (realBetRef.current > balanceRef.current) {
       setGameRunning(false);
       return;
@@ -533,7 +552,7 @@ const MainPage = () => {
       });
       const data = await result.json();
       console.log("start", data);
-      
+
       if (data.status == "success") {
         setBetStopRef(data.data.gameLimit);
         handleGameStarted();
@@ -597,7 +616,6 @@ const MainPage = () => {
     setTabId(1);
     setInfoState(true)
   }
-
   return (
     <>
       <div className="flex-auto p-4">
