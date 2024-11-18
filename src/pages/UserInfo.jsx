@@ -163,7 +163,7 @@ const UserInfo = () => {
       })
       setVisibleItems(filterData.slice(0,itemPerPage))
       
-      // setFriendData(filterData.slice(startIndex,endIndex))
+      setFriendData(filterData)
     }
   }, [rankingIndex, gameDataLength])
 
@@ -171,7 +171,7 @@ const UserInfo = () => {
     if(inView){
       const startIndex  = Math.floor(entry.boundingClientReact.top/itemHeight)*itemPerPage;
       const endIndex = startIndex + itemPerPage;
-      setVisibleItems(filterData.slice(startIndex, endIndex))
+      setVisibleItems(friendData.slice(startIndex, endIndex))
     }
   }
 
