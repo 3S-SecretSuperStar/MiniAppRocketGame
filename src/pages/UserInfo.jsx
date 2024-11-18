@@ -36,9 +36,8 @@ const UserInfo = () => {
   const [, setActionState] = useAtom(isActionState);
   const [loading, setLoading] = useState(true)
   const [firstLoading, setFirstLoading] = useState(true);
-  const [visibleItems, setVisibleItems] = useState([])
-  setVisibleItems(friendData.slice(0,itemPerPage))
-
+  const [visibleItems, setVisibleItems] = useState(friendData.slice(0,itemPerPage))
+ 
  
 
   const statsList = [
