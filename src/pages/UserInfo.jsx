@@ -227,7 +227,7 @@ const UserInfo = () => {
                 visibleItems.map((_data, _index) => (
                   <FriendRanking
                     data={_data}
-                    ref={useInView({ threshold: 0, triggerOnce: true }, handleIntersection)}
+                    // ref={useInView({ threshold: 0, triggerOnce: true }, handleIntersection)}
                     key={_index}
                   />
                 ))
