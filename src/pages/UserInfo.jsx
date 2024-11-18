@@ -37,6 +37,7 @@ const UserInfo = () => {
   const [loading, setLoading] = useState(true)
   const [firstLoading, setFirstLoading] = useState(true);
   const [visibleItems, setVisibleItems] = useState(friendData.slice(0, itemPerPage))
+  const [ref, inView] = useInView({ threshold: 0, triggerOnce: true });
 
 
 
@@ -144,9 +145,9 @@ const UserInfo = () => {
 
         }
       })
-      
+
       setFriendData(filterData)
-      setVisibleItems(filterData.slice(0,itemPerPage))
+      setVisibleItems(filterData.slice(0, itemPerPage))
     }
   }, [rankingIndex, gameDataLength])
 
@@ -155,7 +156,7 @@ const UserInfo = () => {
     if (inView) {
       const startIndex = Math.floor(entry.boundingClientReact.top / itemHeight) * itemPerPage;
       const endIndex = startIndex + itemPerPage;
-      console.log("start index",startIndex,"end index",endIndex)
+      console.log("start index", startIndex, "end index", endIndex)
       setVisibleItems(friendData.slice(startIndex, endIndex))
     }
   }
@@ -224,13 +225,26 @@ const UserInfo = () => {
           <div className="flex flex-col gap-2 pb-8">
             {
               visibleItems.length > 0 ?
-                visibleItems.map((_data, _index) => (
-                  <FriendRanking
-                    data={_data}
-                    // ref={useInView({ threshold: 0, triggerOnce: true }, handleIntersection)}
-                    key={_index}
-                  />
-                ))
+                visibleItems.map((_data, _index) => {
+                  const { ref, inView, entry } = useInView({
+                    threshold: 0,
+                    triggerOnce: true,
+                  });
+
+                  // Call handleIntersection when the component comes into view
+                  if (inView && entry.isIntersecting) {
+                    handleIntersection(entry);
+                  }
+
+                  return (
+                    <FriendRanking
+                      data={_data}
+                      ref={ref}
+                      key={_index}
+                    />
+                  );
+                }
+                )
                 : loading && firstLoading ? (
                   <div className="flex flex-col gap-2">
                     <UserInfoSkeleton />
