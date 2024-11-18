@@ -35,10 +35,7 @@ const UserInfo = () => {
   const [firstLoading, setFirstLoading] = useState(true);
   const [scrollPosition, setScrollPosition] = useState(0);
 
-  const itemPerPage = 20;
-  const itemHeight = 70;
-  const startIndex = Math.floor(scrollPosition / itemHeight) * itemPerPage;
-  const endIndex = startIndex + itemPerPage;
+ 
 
   const statsList = [
     {
@@ -136,6 +133,13 @@ const UserInfo = () => {
   }, [])
   useEffect(() => {
     if (gameDataLength) {
+      const itemPerPage = 20;
+      const itemHeight = 70;
+      const startIndex = Math.floor(scrollPosition / itemHeight) * itemPerPage;
+      const endIndex = startIndex + itemPerPage;
+    
+      console.log(startIndex,"start + end",endIndex)
+      console.log("scroll position",scrollPosition)
       const currentRanking = RANKINGDATA[rankingIndex];
 
       const myData = gameData.allUsersData
@@ -165,8 +169,6 @@ const UserInfo = () => {
     setTabId(1);
     setInfoState(true)
   }
-
-
 
 
   return (
