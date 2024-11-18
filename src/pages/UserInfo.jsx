@@ -33,6 +33,13 @@ const UserInfo = () => {
   const [, setActionState] = useAtom(isActionState);
   const [loading, setLoading] = useState(true)
   const [firstLoading, setFirstLoading] = useState(true);
+  const [scrollPosition, setScrollPosition] = useState(0);
+
+  const itemPerPage = 20;
+  const itemHeight = 70;
+  const startIndex = Math.floor(scrollPosition / itemHeight) * itemPerPage;
+  const endIndex = startIndex + itemPerPage;
+
   const statsList = [
     {
       src: "coin-y.svg",
@@ -80,7 +87,7 @@ const UserInfo = () => {
 
       const headers = new Headers()
       headers.append('Content-Type', 'application/json')
-      fetch(`${serverUrl}/all_users_info`, { method: 'POST', body: JSON.stringify({ }), headers })
+      fetch(`${serverUrl}/all_users_info`, { method: 'POST', body: JSON.stringify({}), headers })
         .then(res => Promise.all([res.status, res.json()]))
         .then(([status, data]) => {
           if (isMounted) {
@@ -116,9 +123,21 @@ const UserInfo = () => {
     return item ? (num / item.value).toFixed(digits).replace(regexp, "").concat(item.symbol) : "0";
   }
   useEffect(() => {
+    const handleScroll = () => {
+      setScrollPosition(window.scrollY);
+    }
+
+    window.addEventListener('scroll', handleScroll);
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll)
+    }
+
+  }, [])
+  useEffect(() => {
     if (gameDataLength) {
       const currentRanking = RANKINGDATA[rankingIndex];
-      
+
       const myData = gameData.allUsersData
         .sort((a, b) => isReal ? (b.balance.real - a.balance.real) : (b.balance.virtual - a.balance.virtual))
         .map((i, index) => { i.rank = index + 1; return i })
@@ -136,7 +155,7 @@ const UserInfo = () => {
 
         }
       })
-      setFriendData(filterData)
+      setFriendData(filterData.slice(startIndex,endIndex))
     }
   }, [rankingIndex, gameDataLength])
 
