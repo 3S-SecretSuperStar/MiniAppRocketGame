@@ -36,6 +36,7 @@ const UserInfo = () => {
   const [firstLoading, setFirstLoading] = useState(true);
   const [scrollPosition, setScrollPosition] = useState(0);
   const [visibleItems, setVisibleItems] = useState([])
+  setVisibleItems(friendData.slice(0,itemPerPage))
 
  
 
@@ -161,13 +162,13 @@ const UserInfo = () => {
 
         }
       })
-      setVisibleItems(filterData.slice(0,itemPerPage))
       
       setFriendData(filterData)
     }
   }, [rankingIndex, gameDataLength])
 
   const handleIntersection = (inView, entry) =>{
+    console.log(inView, "inView + entry",entry)
     if(inView){
       const startIndex  = Math.floor(entry.boundingClientReact.top/itemHeight)*itemPerPage;
       const endIndex = startIndex + itemPerPage;
