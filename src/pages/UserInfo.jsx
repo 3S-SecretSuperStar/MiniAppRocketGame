@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Suspense } from "react";
+import React, { useState, useEffect, Suspense, useRef } from "react";
 import { Carousel } from 'react-responsive-carousel';
 import { useAtom } from "jotai";
 import FriendRanking from "../component/atom/friend-ranking.jsx";
@@ -38,6 +38,11 @@ const UserInfo = () => {
   const [firstLoading, setFirstLoading] = useState(true);
   const [visibleItems, setVisibleItems] = useState(friendData.slice(0, itemPerPage))
   const [ref, inView] = useInView({ threshold: 0, triggerOnce: true });
+  const listRef = useRef(null);
+  const handleScroll = ()=>{
+    const scrollTop = listRef.current.scrollTop;
+    console.log("scroll top",scrollTop)
+  }
 
 
 
@@ -222,24 +227,24 @@ const UserInfo = () => {
         </div>
 
         <div className=" w-full" style={{ height: "calc(100vh - 630px)" }}>
-          <div className="flex flex-col gap-2 pb-8">
+          <div className="flex flex-col gap-2 pb-8" ref = {listRef} onScroll={onscroll}>
             {
               visibleItems.length > 0 ?
                 visibleItems.map((_data, _index) => {
-                  const { ref, inView, entry } = useInView({
-                    threshold: 0,
-                    triggerOnce: true,
-                  });
+                  // const { ref, inView, entry } = useInView({
+                  //   threshold: 0,
+                  //   triggerOnce: true,
+                  // });
 
-                  // // Call handleIntersection when the component comes into view
-                  // if (inView && entry.isIntersecting) {
-                  //   handleIntersection(entry);
-                  // }
+                  // // // Call handleIntersection when the component comes into view
+                  // // if (inView && entry.isIntersecting) {
+                  // //   handleIntersection(entry);
+                  // // }
 
                   return (
                     <FriendRanking
                       data={_data}
-                      ref={ref}
+                      // ref={ref}
                       key={_index}
                     />
                   );
