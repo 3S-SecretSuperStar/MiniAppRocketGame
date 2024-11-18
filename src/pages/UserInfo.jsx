@@ -21,6 +21,8 @@ import UserInfoSkeleton from "../component/atom/userInfoSkeleton.jsx";
 import {useInView} from 'react-intersection-observer'
 
 const UserInfo = () => {
+  const itemPerPage = 20;
+  const itemHeight = 70;
   const [user,] = useAtom(userData);
   const [tabId, setTabId] = useState(1);
   const [rankingIndex, setRankingIndex] = useState(0);
@@ -34,7 +36,6 @@ const UserInfo = () => {
   const [, setActionState] = useAtom(isActionState);
   const [loading, setLoading] = useState(true)
   const [firstLoading, setFirstLoading] = useState(true);
-  const [scrollPosition, setScrollPosition] = useState(0);
   const [visibleItems, setVisibleItems] = useState([])
   setVisibleItems(friendData.slice(0,itemPerPage))
 
@@ -136,13 +137,7 @@ const UserInfo = () => {
   }, [])
   useEffect(() => {
     if (gameDataLength) {
-      const itemPerPage = 20;
-      const itemHeight = 70;
-      const startIndex = Math.floor(scrollPosition / itemHeight) * itemPerPage;
-      const endIndex = startIndex + itemPerPage;
-    
-      console.log(startIndex,"start + end",endIndex)
-      console.log("scroll position",scrollPosition)
+
       const currentRanking = RANKINGDATA[rankingIndex];
 
       const myData = gameData.allUsersData
