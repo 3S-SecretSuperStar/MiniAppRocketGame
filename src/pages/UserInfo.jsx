@@ -18,7 +18,7 @@ import { realGameState } from "../store/realGameState.jsx";
 import Contact from "../component/molecules/contact.jsx";
 import { isActionState } from "../store/actionState.jsx";
 import UserInfoSkeleton from "../component/atom/userInfoSkeleton.jsx";
-import {useInView} from 'react-intersection-observer'
+import { useInView } from 'react-intersection-observer'
 
 const UserInfo = () => {
   const itemPerPage = 20;
@@ -36,9 +36,9 @@ const UserInfo = () => {
   const [, setActionState] = useAtom(isActionState);
   const [loading, setLoading] = useState(true)
   const [firstLoading, setFirstLoading] = useState(true);
-  const [visibleItems, setVisibleItems] = useState(friendData.slice(0,itemPerPage))
- 
- 
+  const [visibleItems, setVisibleItems] = useState(friendData.slice(0, itemPerPage))
+
+
 
   const statsList = [
     {
@@ -144,16 +144,17 @@ const UserInfo = () => {
 
         }
       })
-      
+
       setFriendData(filterData)
     }
   }, [rankingIndex, gameDataLength])
 
-  const handleIntersection = (inView, entry) =>{
-    console.log(inView, "inView + entry",entry)
-    if(inView){
-      const startIndex  = Math.floor(entry.boundingClientReact.top/itemHeight)*itemPerPage;
+  const handleIntersection = (inView, entry) => {
+    console.log(inView, "inView + entry", entry)
+    if (inView) {
+      const startIndex = Math.floor(entry.boundingClientReact.top / itemHeight) * itemPerPage;
       const endIndex = startIndex + itemPerPage;
+      console.log("start index",startIndex,"end index",endIndex)
       setVisibleItems(friendData.slice(startIndex, endIndex))
     }
   }
@@ -220,17 +221,22 @@ const UserInfo = () => {
         <div className=" w-full" style={{ height: "calc(100vh - 630px)" }}>
           <div className="flex flex-col gap-2 pb-8">
             {
-
-              (visibleItems.length > 0 ?
-                visibleItems.map((_data, _index) => <FriendRanking data={_data} ref={useInView({threshold:0,triggerOnce:true},handleIntersection)} key={_index} />)
-                : (loading && firstLoading) ? (
+              visibleItems.length > 0 ?
+                visibleItems.map((_data, _index) => (
+                  <FriendRanking
+                    data={_data}
+                    ref={useInView({ threshold: 0, triggerOnce: true }, handleIntersection)}
+                    key={_index}
+                  />
+                ))
+                : loading && firstLoading ? (
                   <div className="flex flex-col gap-2">
                     <UserInfoSkeleton />
                     <UserInfoSkeleton />
                   </div>
 
                 )
-                  : <div className="text-center text-[#ACC1D9]">No {RANKINGDATA[rankingIndex]}s yet.</div>)
+                  : <div className="text-center text-[#ACC1D9]">No {RANKINGDATA[rankingIndex]}s yet.</div>
             }
 
           </div>
