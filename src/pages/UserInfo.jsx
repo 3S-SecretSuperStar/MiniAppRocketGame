@@ -146,6 +146,7 @@ const UserInfo = () => {
       })
       
       setFriendData(filterData)
+      setVisibleItems(filterData.slice(0,itemPerPage))
     }
   }, [rankingIndex, gameDataLength])
 
