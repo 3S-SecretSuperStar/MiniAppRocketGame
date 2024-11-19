@@ -338,20 +338,7 @@ const MainPage = () => {
               finally {
                 firstLoading && setActionState("ready")
                 setFirstLoading(false);
-                const webapp = window.Telegram.WebApp.initDataUnsafe;
-                // const userId = 6977492118;
-                const headers = new Headers()
-                headers.append('Content-Type', 'application/json')
-                if (webapp) {
-                const userId = webapp["user"]["id"];
-                fetch(`${serverUrl}/get_ranking`, { method: 'POST', body: JSON.stringify({ userId: userId }), headers })
-                  .then(res => Promise.all([res.status, res.json()]))
-                  .then(([status, data]) => {
-                    const realRank = isReal ? data.realRank : data.virtualRank
-                    setUser(user => ({ ...user, Rank: realRank }))
-                  })
-
-                }
+      
               }
             })
           await fetch(`${serverUrl}/check_first`, { method: 'POST', body: JSON.stringify({ userId: userId }), headers });
@@ -369,7 +356,19 @@ const MainPage = () => {
     fetchData()
   }, [])
   useEffect(() => {
+    const webapp = window.Telegram.WebApp.initDataUnsafe;
+    const headers = new Headers()
+    headers.append('Content-Type', 'application/json')
+    if (webapp) {
+      const userId = webapp["user"]["id"];
+      fetch(`${serverUrl}/get_ranking`, { method: 'POST', body: JSON.stringify({ userId: userId }), headers })
+        .then(res => Promise.all([res.status, res.json()]))
+        .then(([status, data]) => {
+          console.log("ranking data", data)
+          setUser(user => ({ ...user, Rank: isReal ? data.realRank : data.virtualRank, }))
+        })
 
+    }
 
   }, [])
 
