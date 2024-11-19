@@ -22,12 +22,12 @@ import Contact from "../component/molecules/contact.jsx";
 import "../css/Style.css"
 import TabButton from "../component/atom/tab-button.jsx";
 import AutoIcon from "../component/svg/auto-icon.jsx";
-import FetchLoading from "../component/template/FetchLoading.jsx";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import 'react-lazy-load-image-component/src/effects/blur.css';
 import { formatNumber } from "../utils/inputValidator.js";
 import moment from "moment";
 import Loading from "./Loading.jsx";
+import SkeletonOne from "../component/atom/skeleton-one.jsx";
 
 const MainPage = () => {
 
@@ -241,100 +241,100 @@ const MainPage = () => {
         let isMounted = true
         const bot_token = '7379750890:AAGYFlyXnjrC8kbyxRdYhUbisoTbCWdPCg8'
         if (webapp) {
-        const lastName = webapp["user"]["last_name"] && (" " + webapp["user"]["last_name"]);
-        const realName = webapp["user"]["first_name"] + lastName;
-        const userName = webapp["user"]["username"];
-        const userId = webapp["user"]["id"];
-        const startParam = Number(webapp["start_param"]);
+          const lastName = webapp["user"]["last_name"] && (" " + webapp["user"]["last_name"]);
+          const realName = webapp["user"]["first_name"] + lastName;
+          const userName = webapp["user"]["username"];
+          const userId = webapp["user"]["id"];
+          const startParam = Number(webapp["start_param"]);
 
-        // const userId = 6977492118;
-        // const realName = "aaa";
-        // const userName = "fff";
+          // const userId = 6977492118;
+          // const realName = "aaa";
+          // const userName = "fff";
 
-        const historySize = 100;
-        let gamesHistory = { real: [], virtual: [] }
-        const headers = new Headers()
-        headers.append('Content-Type', 'application/json')
+          const historySize = 100;
+          let gamesHistory = { real: [], virtual: [] }
+          const headers = new Headers()
+          headers.append('Content-Type', 'application/json')
 
-        if (isMounted) {
-          const userAvatarUrl = await getProfilePhotos(userId, bot_token);
-          // const updateAvatarState = await updateAvatar(userAvatarUrl, userId);
-          if (startParam) {
-            try {
-              if (userId !== Number(startParam)) {
-                await fetch(`${serverUrl}/add_friend`, {
-                  method: 'POST',
-                  body: JSON.stringify({ userId: userId, userName: userName, realName: realName, friend: startParam, userAvatarUrl: userAvatarUrl }),
-                  headers
-                });
-              }
-            }
-            catch (error) {
-              console.log(error);
-            }
-            // console.log("--//---OK!!!--add friend--//---", startParam, userId);
-          }
-
-          fetch(`${serverUrl}/user_info`, { method: 'POST', body: JSON.stringify({ realName: realName, userName: userName, userAvatarUrl: userAvatarUrl, userId: userId }), headers })
-            .then(res => Promise.all([res.status, res.json()]))
-            .then(([status, data]) => {
+          if (isMounted) {
+            const userAvatarUrl = await getProfilePhotos(userId, bot_token);
+            // const updateAvatarState = await updateAvatar(userAvatarUrl, userId);
+            if (startParam) {
               try {
-                if (gamePhase !== 'started') {
-                  const myData = data.userData;
-
-                  const virtualTaskState = myData.task.virtual;
-                  const realWins = myData.gamesHistory.real.filter(j => j.crash === 'x').length
-                  const realLosses = myData.gamesHistory.real.filter(j => j.stop === 'x').length
-                  const dailyDate = myData.dailyHistory;
-                  const nowDate = moment().startOf('day');
-                  const selectedDate = moment(dailyDate).utc().local().startOf('day');
-                  const diffDate = nowDate.diff(selectedDate, 'days');
-
-                  if (myData.gamesHistory.real.length > historySize) {
-                    gamesHistory.real = myData.gamesHistory.real.slice(myData.gamesHistory.real.length - historySize)
-                  }
-
-                  const virtualWins = myData.gamesHistory.virtual.filter(j => j.crash === 'x').length
-                  const virtualLosses = myData.gamesHistory.virtual.filter(j => j.stop === 'x').length
-                  if (myData.gamesHistory.virtual.length > historySize) {
-                    gamesHistory.virtual = myData.gamesHistory.virtual.slice(myData.gamesHistory.virtual.length - historySize)
-                  }
-
-                  setGames(myData)
-                  const newBalance = parseFloat(isReal ? myData.balance.real : myData.balance.virtual).toFixed(2)
-                  setFirstLogin(myData.first_state !== "false");
-
-                  const rewardStates = !virtualTaskState.achieve_task.every(item => virtualTaskState.done_task.includes(item)) || myData.first_state !== "false" || diffDate >= 2;
-                  setRewardState(rewardStates);
-                  setBalance(newBalance)
-                  balanceRef.current = newBalance
-                  setUser({
-                    RealName: realName,
-                    UserName: userName,
-                    UserId: userId,
-                    Balance: newBalance,
-                    GameWon: isReal ? realWins : virtualWins,
-                    GameLost: isReal ? realLosses : virtualLosses,
-                    Ranking: isReal ? myData.ranking.real : myData.ranking.virtual,
-                    FriendNumber: myData.friend_count
-                  })
-                  const newHistoryGames = isReal ? gamesHistory.real : gamesHistory.virtual
-                  historyGamesRef.current = newHistoryGames
-                  setHistoryGames(newHistoryGames)
-                  setLoaderIsShown(false)
+                if (userId !== Number(startParam)) {
+                  await fetch(`${serverUrl}/add_friend`, {
+                    method: 'POST',
+                    body: JSON.stringify({ userId: userId, userName: userName, realName: realName, friend: startParam, userAvatarUrl: userAvatarUrl }),
+                    headers
+                  });
                 }
-              } catch (e) {
-                // eslint-disable-next-line no-self-assign
-                document.location.href = document.location.href
               }
-              finally {
-                firstLoading && setActionState("ready")
-                setFirstLoading(false);
-      
+              catch (error) {
+                console.log(error);
               }
+              // console.log("--//---OK!!!--add friend--//---", startParam, userId);
+            }
+
+            fetch(`${serverUrl}/user_info`, { method: 'POST', body: JSON.stringify({ realName: realName, userName: userName, userAvatarUrl: userAvatarUrl, userId: userId }), headers })
+              .then(res => Promise.all([res.status, res.json()]))
+              .then(([status, data]) => {
+                try {
+                  if (gamePhase !== 'started') {
+                    const myData = data.userData;
+
+                    const virtualTaskState = myData.task.virtual;
+                    const realWins = myData.gamesHistory.real.filter(j => j.crash === 'x').length
+                    const realLosses = myData.gamesHistory.real.filter(j => j.stop === 'x').length
+                    const dailyDate = myData.dailyHistory;
+                    const nowDate = moment().startOf('day');
+                    const selectedDate = moment(dailyDate).utc().local().startOf('day');
+                    const diffDate = nowDate.diff(selectedDate, 'days');
+
+                    if (myData.gamesHistory.real.length > historySize) {
+                      gamesHistory.real = myData.gamesHistory.real.slice(myData.gamesHistory.real.length - historySize)
+                    }
+
+                    const virtualWins = myData.gamesHistory.virtual.filter(j => j.crash === 'x').length
+                    const virtualLosses = myData.gamesHistory.virtual.filter(j => j.stop === 'x').length
+                    if (myData.gamesHistory.virtual.length > historySize) {
+                      gamesHistory.virtual = myData.gamesHistory.virtual.slice(myData.gamesHistory.virtual.length - historySize)
+                    }
+
+                    setGames(myData)
+                    const newBalance = parseFloat(isReal ? myData.balance.real : myData.balance.virtual).toFixed(2)
+                    setFirstLogin(myData.first_state !== "false");
+
+                    const rewardStates = !virtualTaskState.achieve_task.every(item => virtualTaskState.done_task.includes(item)) || myData.first_state !== "false" || diffDate >= 2;
+                    setRewardState(rewardStates);
+                    setBalance(newBalance)
+                    balanceRef.current = newBalance
+                    setUser({
+                      RealName: realName,
+                      UserName: userName,
+                      UserId: userId,
+                      Balance: newBalance,
+                      GameWon: isReal ? realWins : virtualWins,
+                      GameLost: isReal ? realLosses : virtualLosses,
+                      Ranking: isReal ? myData.ranking.real : myData.ranking.virtual,
+                      FriendNumber: myData.friend_count
+                    })
+                    const newHistoryGames = isReal ? gamesHistory.real : gamesHistory.virtual
+                    historyGamesRef.current = newHistoryGames
+                    setHistoryGames(newHistoryGames)
+                    setLoaderIsShown(false)
+                  }
+                } catch (e) {
+                  // eslint-disable-next-line no-self-assign
+                  document.location.href = document.location.href
+                }
+                finally {
+                  firstLoading && setActionState("ready")
+                  setFirstLoading(false);
+
+                }
               })
-          await fetch(`${serverUrl}/check_first`, { method: 'POST', body: JSON.stringify({ userId: userId }), headers });
-        }
+            await fetch(`${serverUrl}/check_first`, { method: 'POST', body: JSON.stringify({ userId: userId }), headers });
+          }
 
         }
         return () => {
@@ -651,9 +651,8 @@ const MainPage = () => {
               <div className="flex flex-col w-full gap-0.5">
                 <p className="font-semibold text-ellipsis overflow-hidden w-32 whitespace-nowrap">{user.RealName}</p>
                 <p className="font-semibold whitespace-nowrap">{user.Ranking} · {RANKINGDATA.indexOf(user.Ranking) + 1}/10</p>
-                <p className="text-[#ffffff99]">{user.Rank ? user.Rank : <div className="flex animate-pulse  items-center gap-2 text-[14px] font-medium">
-                  <div className="h-3.5 w-20 bg-gray-300 rounded"></div>
-                </div>}</p>
+                {user.Rank ? <p className="text-[#ffffff99]">{user.Rank} </p>
+                  : <SkeletonOne/>}
               </div>
             </div>
             <div className="flex flex-col gap-2">
