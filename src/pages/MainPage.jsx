@@ -283,8 +283,8 @@ const MainPage = () => {
                 try {
                   if (gamePhase !== 'started') {
                     const myData = data.userData;
-                    
-                    console.log("mydata: ",myData)
+
+                    console.log("mydata: ", myData)
 
                     const virtualTaskState = myData.task.virtual;
 
@@ -357,13 +357,19 @@ const MainPage = () => {
     fetchData()
   }, [])
   useEffect(() => {
+    const webapp = window.Telegram.WebApp.initDataUnsafe;
     const headers = new Headers()
     headers.append('Content-Type', 'application/json')
-    fetch(`${serverUrl}/user_info`, { method: 'POST', body: JSON.stringify({ realName: realName, userName: userName, userAvatarUrl: userAvatarUrl, userId: userId }), headers })
-      .then(res => Promise.all([res.status, res.json()]))
-      .then(([status, data]) => {
-        setUser(user => ({...user, Rank: isReal ? data.realRank : data.virtualRank,}))
-      })
+    if (webapp) {
+      const userId = webapp["user"]["id"];
+      fetch(`${serverUrl}/user_info`, { method: 'POST', body: JSON.stringify({ userId: userId }), headers })
+        .then(res => Promise.all([res.status, res.json()]))
+        .then(([status, data]) => {
+          setUser(user => ({ ...user, Rank: isReal ? data.realRank : data.virtualRank, }))
+        })
+
+    }
+
   }, [])
 
   if (loading && firstLoading) {
