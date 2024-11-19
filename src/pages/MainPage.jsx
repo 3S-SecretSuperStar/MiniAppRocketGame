@@ -365,6 +365,7 @@ const MainPage = () => {
       fetch(`${serverUrl}/user_info`, { method: 'POST', body: JSON.stringify({ userId: userId }), headers })
         .then(res => Promise.all([res.status, res.json()]))
         .then(([status, data]) => {
+          console.log("ranking data",data)
           setUser(user => ({ ...user, Rank: isReal ? data.realRank : data.virtualRank, }))
         })
 
