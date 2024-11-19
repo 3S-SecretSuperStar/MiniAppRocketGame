@@ -20,6 +20,7 @@ import { isActionState } from "../store/actionState.jsx";
 import UserInfoSkeleton from "../component/atom/userInfoSkeleton.jsx";
 import { useInView } from 'react-intersection-observer'
 import InfiniteScroll from "react-infinite-scroll-component";
+import SkeletonOne from "../component/atom/skeleton-one.jsx";
 
 const UserInfo = () => {
   const itemPerPage = 20;
