@@ -80,40 +80,40 @@ const UserInfo = () => {
     let isMounted = true
     if (webapp) {
 
-    const lastName = webapp["user"]["last_name"] && (" " + webapp["user"]["last_name"]);
+      const lastName = webapp["user"]["last_name"] && (" " + webapp["user"]["last_name"]);
 
-    const realName = webapp["user"]["first_name"] + lastName;
-    const userName = webapp["user"]["username"];
-    const userId = webapp["user"]["id"];
-    // const userId = 6977492118;
-    // const realName = "aaa";
-    // const userName = "fff";
-    // const historySize = 100;
-    setRealName(realName)
+      const realName = webapp["user"]["first_name"] + lastName;
+      const userName = webapp["user"]["username"];
+      const userId = webapp["user"]["id"];
+      // const userId = 6977492118;
+      // const realName = "aaa";
+      // const userName = "fff";
+      // const historySize = 100;
+      setRealName(realName)
 
-    const headers = new Headers()
-    headers.append('Content-Type', 'application/json')
-    fetch(`${serverUrl}/all_users_info`, { method: 'POST', body: JSON.stringify({}), headers })
-      .then(res => Promise.all([res.status, res.json()]))
-      .then(([status, data]) => {
-        if (isMounted) {
-          try {
-            setGameData(data);
-            setGameDataLength(Object.keys(data).length)
-          } catch (e) {
-            // eslint-disable-next-line no-self-assign
-            document.location.href = document.location.href
+      const headers = new Headers()
+      headers.append('Content-Type', 'application/json')
+      fetch(`${serverUrl}/all_users_info`, { method: 'POST', body: JSON.stringify({}), headers })
+        .then(res => Promise.all([res.status, res.json()]))
+        .then(([status, data]) => {
+          if (isMounted) {
+            try {
+              setGameData(data);
+              setGameDataLength(Object.keys(data).length)
+            } catch (e) {
+              // eslint-disable-next-line no-self-assign
+              document.location.href = document.location.href
+            }
+            finally {
+              setTimeout(() => {
+                setLoading(false);
+                firstLoading && setActionState("ready")
+                setFirstLoading(false);
+              }, 500)
+            }
           }
-          finally {
-            setTimeout(() => {
-              setLoading(false);
-              firstLoading && setActionState("ready")
-              setFirstLoading(false);
-            }, 500)
-          }
-        }
-      })
-    return () => { isMounted = false }
+        })
+      return () => { isMounted = false }
 
     }
   }, [])
@@ -162,11 +162,11 @@ const UserInfo = () => {
   }, [rankingIndex, gameDataLength])
 
   const showData = () => {
-      const startIndex = page * itemPerPage;
-      const endIndex = startIndex + itemPerPage;
-      setItems((prevItems) => [...prevItems, ...friendData.slice(startIndex, endIndex)]);
-      setHasMore(endIndex < friendData.length);
-      setPage((prevPage) => prevPage + 1)
+    const startIndex = page * itemPerPage;
+    const endIndex = startIndex + itemPerPage;
+    setItems((prevItems) => [...prevItems, ...friendData.slice(startIndex, endIndex)]);
+    setHasMore(endIndex < friendData.length);
+    setPage((prevPage) => prevPage + 1)
   }
 
 
@@ -181,86 +181,86 @@ const UserInfo = () => {
     <div className="flex flex-col gap-4 items-center text-white text-base">
       <div className="font-semibold text-ellipsis overflow-hidden w-52 whitespace-nowrap text-center">{user.RealName}</div>
       <TabButton tabList={statsList} tabNo={tabId} setTabNo={setTabId} />
-      <div  style={{ height: "calc(100vh - 190px)" }}>
-        <InfiniteScroll
+      <InfiniteScroll
         className="flex flex-col gap-4 overflow-auto w-full"
-          dataLength={items.length}
-          next={showData}
-          hasMore={hasMore}
-          loader={<div>Loading...</div>}
-          height={"calc(100vh - 190px)"}
-        >
-          <div className="flex gap-[41px] text-blueFaded text-sm justify-center">
+        style={{ height: "calc(100vh - 190px)" }}
+        dataLength={items.length}
+        next={showData}
+        hasMore={hasMore}
+        loader={<div>Loading...</div>}
+        height={"calc(100vh - 190px)"}
+      >
+        <div className="flex gap-[41px] text-blueFaded text-sm justify-center">
 
-            <div>Level <span className="text-white">{RANKINGDATA.indexOf(user.Ranking) + 1}/10</span></div>
-            <div>Rank <span className="text-white">{user.Rank}</span></div>
+          <div>Level <span className="text-white">{RANKINGDATA.indexOf(user.Ranking) + 1}/10</span></div>
+          <div>Rank <span className="text-white">{user.Rank}</span></div>
+
+        </div>
+        <div className="flex flex-col items-center gap-2">
+          <img src={avatarData[RANKINGDATA.indexOf(user.Ranking)]} width="200px" height="200px" className="max-w-[200px] h-[200px]" alt="avatar" />
+          <div className="rounded-[8px] border-[3px] border-[#56D0EA] py-2 w-[200px] text-center text-white">
+            {user.Ranking}
+          </div>
+        </div>
+        <div className="flex gap-4 w-full">
+          <div className="w-1/2">
+            <PannelScore img={Img.agree} text2={"Won"} text3={nFormatter(user.GameWon, 1)} className="w-full py-[10px]" />
+          </div>
+          <div className="w-1/2">
+            <PannelScore img={Img.disagree} text2={"Lost"} text3={nFormatter(user.GameLost, 1)} className="w-full py-[10px]" />
+          </div>
+        </div>
+
+        <div className="h-9 text-center relative">
+          <Carousel
+            showThumbs={false} showStatus={false} showIndicators={false} infiniteLoop={true}
+            emulateTouch={false} useKeyboardArrows={false} swipeable={false}
+            centerSlidePercentage={100}
+            renderArrowNext={(clickHandler, hasNext, labelNext) => (hasNext && <div
+              type="button" aria-level={labelNext} className="absolute right-0 top-1/2 transform -translate-y-1/2 w-20 pl-12  z-10"
+              onClick={() => {
+                clickHandler()
+                rankingNext()
+              }}>
+              <ArrowRight className={"w-4 h-4 m-auto"} />
+            </div>)}
+            renderArrowPrev={(clickHandler, hasPrev, labelPrev) => (hasPrev && <div
+              type="button" aria-level={labelPrev} className="absolute left-0 top-1/2 w-20 transform -translate-y-1/2 pr-12 z-10"
+              onClick={() => {
+                clickHandler()
+                rankingPrev()
+              }}>
+              <ArrowLeft className={"w-4 h-4 m-auto"} />
+            </div>)}
+          >
+            {rankingItems}
+          </Carousel>
+        </div>
+
+        <div className=" w-full" style={{ height: "calc(100vh - 630px)" }}>
+          <div className="flex flex-col gap-2 pb-8" >
+            {
+              items.length > 0 ?
+                items.map((_data, _index) =>
+                  <FriendRanking
+                    data={_data}
+                    key={_index}
+                  />
+                )
+                : loading && firstLoading ? (
+                  <div className="flex flex-col gap-2">
+                    <UserInfoSkeleton />
+                    <UserInfoSkeleton />
+                  </div>
+
+                )
+                  : <div className="text-center text-[#ACC1D9]">No {RANKINGDATA[rankingIndex]}s yet.</div>
+            }
 
           </div>
-          <div className="flex flex-col items-center gap-2">
-            <img src={avatarData[RANKINGDATA.indexOf(user.Ranking)]} width="200px" height="200px" className="max-w-[200px] h-[200px]" alt="avatar" />
-            <div className="rounded-[8px] border-[3px] border-[#56D0EA] py-2 w-[200px] text-center text-white">
-              {user.Ranking}
-            </div>
-          </div>
-          <div className="flex gap-4 w-full">
-            <div className="w-1/2">
-              <PannelScore img={Img.agree} text2={"Won"} text3={nFormatter(user.GameWon, 1)} className="w-full py-[10px]" />
-            </div>
-            <div className="w-1/2">
-              <PannelScore img={Img.disagree} text2={"Lost"} text3={nFormatter(user.GameLost, 1)} className="w-full py-[10px]" />
-            </div>
-          </div>
+        </div>
+      </InfiniteScroll>
 
-          <div className="h-9 text-center relative">
-            <Carousel
-              showThumbs={false} showStatus={false} showIndicators={false} infiniteLoop={true}
-              emulateTouch={false} useKeyboardArrows={false} swipeable={false}
-              centerSlidePercentage={100}
-              renderArrowNext={(clickHandler, hasNext, labelNext) => (hasNext && <div
-                type="button" aria-level={labelNext} className="absolute right-0 top-1/2 transform -translate-y-1/2 w-20 pl-12  z-10"
-                onClick={() => {
-                  clickHandler()
-                  rankingNext()
-                }}>
-                <ArrowRight className={"w-4 h-4 m-auto"} />
-              </div>)}
-              renderArrowPrev={(clickHandler, hasPrev, labelPrev) => (hasPrev && <div
-                type="button" aria-level={labelPrev} className="absolute left-0 top-1/2 w-20 transform -translate-y-1/2 pr-12 z-10"
-                onClick={() => {
-                  clickHandler()
-                  rankingPrev()
-                }}>
-                <ArrowLeft className={"w-4 h-4 m-auto"} />
-              </div>)}
-            >
-              {rankingItems}
-            </Carousel>
-          </div>
-
-          <div className=" w-full" style={{ height: "calc(100vh - 630px)" }}>
-            <div className="flex flex-col gap-2 pb-8" >
-              {
-                items.length > 0 ?
-                  items.map((_data, _index) =>
-                    <FriendRanking
-                      data={_data}
-                      key={_index}
-                    />
-                  )
-                  : loading && firstLoading ? (
-                    <div className="flex flex-col gap-2">
-                      <UserInfoSkeleton />
-                      <UserInfoSkeleton />
-                    </div>
-
-                  )
-                    : <div className="text-center text-[#ACC1D9]">No {RANKINGDATA[rankingIndex]}s yet.</div>
-              }
-
-            </div>
-          </div>
-        </InfiniteScroll>
-      </div>
       <InfoModal title="Coming soon!" isOpen={infoState} setIsOpen={() => setInfoState(false)} height="h-[280px]">
         <div className="flex items-center justify-center">
           <img src='/image/icon/rocketx.svg' width="48px" height="48px" className="max-w-[48px] h-[48px]" alt="avatar" />
