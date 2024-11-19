@@ -195,7 +195,7 @@ const UserInfo = () => {
         <div className="flex gap-[41px] text-blueFaded text-sm justify-center">
 
           <div>Level <span className="text-white">{RANKINGDATA.indexOf(user.Ranking) + 1}/10</span></div>
-          <div className="flex flex-row" ><p>Rank </p>
+          <div className="flex flex-row gap-0.5" ><p>Rank </p>
             {user.Rank ? <p className="text-[#ffffff99]">{user.Rank} </p>
               : <SkeletonOne />}
           </div>
