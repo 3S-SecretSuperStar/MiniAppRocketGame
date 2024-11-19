@@ -1,5 +1,5 @@
 import React, { useState, useEffect, Suspense, useRef } from "react";
-import { Carousel } from 'react-responsive-carousel';
+import { Carousel } from '  ';
 import { useAtom } from "jotai";
 import FriendRanking from "../component/atom/friend-ranking.jsx";
 import PannelScore from "../component/atom/PannelScore";
@@ -23,9 +23,10 @@ import InfiniteScroll from "react-infinite-scroll-component";
 
 const UserInfo = () => {
   const itemPerPage = 20;
+  const userRankIndex = RANKINGDATA.indexOf(user.Ranking);
   const [user,] = useAtom(userData);
   const [tabId, setTabId] = useState(1);
-  const [rankingIndex, setRankingIndex] = useState(RANKINGDATA.indexOf(user.Ranking));
+  const [rankingIndex, setRankingIndex] = useState(userRankIndex);
   const [friendData, setFriendData] = useState([])
   const [infoState, setInfoState] = useState(false);
   const [isReal, setIsReal] = useAtom(realGameState)
@@ -183,7 +184,7 @@ const UserInfo = () => {
       <TabButton tabList={statsList} tabNo={tabId} setTabNo={setTabId} />
       <InfiniteScroll
         className="flex flex-col gap-4 overflow-auto w-full"
-        style={{ height: "calc(100vh - 190px)" }}
+        style={{ width:"100%", height: "calc(100vh - 190px)" }}
         dataLength={items.length}
         next={showData}
         hasMore={hasMore}
@@ -215,7 +216,7 @@ const UserInfo = () => {
           <Carousel
             showThumbs={false} showStatus={false} showIndicators={false} infiniteLoop={true}
             emulateTouch={false} useKeyboardArrows={false} swipeable={false}
-            centerSlidePercentage={100}
+            centerSlidePercentage={100} selectedItem={userRankIndex}
             renderArrowNext={(clickHandler, hasNext, labelNext) => (hasNext && <div
               type="button" aria-level={labelNext} className="absolute right-0 top-1/2 transform -translate-y-1/2 w-20 pl-12  z-10"
               onClick={() => {
