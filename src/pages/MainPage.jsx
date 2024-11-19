@@ -241,108 +241,120 @@ const MainPage = () => {
         let isMounted = true
         const bot_token = '7379750890:AAGYFlyXnjrC8kbyxRdYhUbisoTbCWdPCg8'
         if (webapp) {
-          const lastName = webapp["user"]["last_name"] && (" " + webapp["user"]["last_name"]);
-          const realName = webapp["user"]["first_name"] + lastName;
-          const userName = webapp["user"]["username"];
-          const userId = webapp["user"]["id"];
-          const startParam = Number(webapp["start_param"]);
-          console.log("start param", startParam)
-          console.log("userId", userId)
+        const lastName = webapp["user"]["last_name"] && (" " + webapp["user"]["last_name"]);
+        const realName = webapp["user"]["first_name"] + lastName;
+        const userName = webapp["user"]["username"];
+        const userId = webapp["user"]["id"];
+        const startParam = Number(webapp["start_param"]);
+        // const startParam = null;
+        // console.log("start param", startParam)
+        // console.log("userId", userId)
 
-          // const userId = 6977492118;
-          // const realName = "aaa";
-          // const userName = "fff";
+        // const userId = 6977492118;
+        // const realName = "aaa";
+        // const userName = "fff";
 
-          const historySize = 100;
-          let gamesHistory = { real: [], virtual: [] }
-          const headers = new Headers()
-          headers.append('Content-Type', 'application/json')
+        const historySize = 100;
+        let gamesHistory = { real: [], virtual: [] }
+        const headers = new Headers()
+        headers.append('Content-Type', 'application/json')
 
-          if (isMounted) {
-            const userAvatarUrl = await getProfilePhotos(userId, bot_token);
-            const updateAvatarState = await updateAvatar(userAvatarUrl, userId);
-            if (startParam) {
-              try {
-                if (userId !== Number(startParam)) {
-                  await fetch(`${serverUrl}/add_friend`, {
-                    method: 'POST',
-                    body: JSON.stringify({ userId: userId, userName: userName, realName: realName, friend: startParam, userAvatarUrl: userAvatarUrl }),
-                    headers
-                  });
-                }
+        if (isMounted) {
+          const userAvatarUrl = await getProfilePhotos(userId, bot_token);
+          const updateAvatarState = await updateAvatar(userAvatarUrl, userId);
+          if (startParam) {
+            try {
+              if (userId !== Number(startParam)) {
+                await fetch(`${serverUrl}/add_friend`, {
+                  method: 'POST',
+                  body: JSON.stringify({ userId: userId, userName: userName, realName: realName, friend: startParam, userAvatarUrl: userAvatarUrl }),
+                  headers
+                });
               }
-              catch (error) {
-                console.log(error);
-              }
-              console.log("--//---OK!!!--add friend--//---", startParam, userId);
             }
+            catch (error) {
+              console.log(error);
+            }
+            console.log("--//---OK!!!--add friend--//---", startParam, userId);
+          }
 
-            fetch(`${serverUrl}/user_info`, { method: 'POST', body: JSON.stringify({ realName: realName, userName: userName, userAvatarUrl: userAvatarUrl, userId: userId }), headers })
-              .then(res => Promise.all([res.status, res.json()]))
-              .then(([status, data]) => {
-                try {
-                  if (gamePhase !== 'started') {
-                    const myData = data.userData;
+          fetch(`${serverUrl}/user_info`, { method: 'POST', body: JSON.stringify({ realName: realName, userName: userName, userAvatarUrl: userAvatarUrl, userId: userId }), headers })
+            .then(res => Promise.all([res.status, res.json()]))
+            .then(([status, data]) => {
+              try {
+                if (gamePhase !== 'started') {
+                  const myData = data.userData;
 
-                    console.log("mydata: ", myData)
+                  console.log("mydata: ", myData)
 
-                    const virtualTaskState = myData.task.virtual;
+                  const virtualTaskState = myData.task.virtual;
 
-                    const realWins = myData.gamesHistory.real.filter(j => j.crash === 'x').length
-                    const realLosses = myData.gamesHistory.real.filter(j => j.stop === 'x').length
+                  const realWins = myData.gamesHistory.real.filter(j => j.crash === 'x').length
+                  const realLosses = myData.gamesHistory.real.filter(j => j.stop === 'x').length
 
-                    const dailyDate = myData.dailyHistory;
-                    const nowDate = moment().startOf('day');
-                    const selectedDate = moment(dailyDate).utc().local().startOf('day');
-                    const diffDate = nowDate.diff(selectedDate, 'days');
+                  const dailyDate = myData.dailyHistory;
+                  const nowDate = moment().startOf('day');
+                  const selectedDate = moment(dailyDate).utc().local().startOf('day');
+                  const diffDate = nowDate.diff(selectedDate, 'days');
 
-                    if (myData.gamesHistory.real.length > historySize) {
-                      gamesHistory.real = myData.gamesHistory.real.slice(myData.gamesHistory.real.length - historySize)
-                    }
-
-                    const virtualWins = myData.gamesHistory.virtual.filter(j => j.crash === 'x').length
-                    const virtualLosses = myData.gamesHistory.virtual.filter(j => j.stop === 'x').length
-                    if (myData.gamesHistory.virtual.length > historySize) {
-                      gamesHistory.virtual = myData.gamesHistory.virtual.slice(myData.gamesHistory.virtual.length - historySize)
-                    }
-
-                    setGames(myData)
-                    const newBalance = parseFloat(isReal ? myData.balance.real : myData.balance.virtual).toFixed(2)
-                    setFirstLogin(myData.first_state !== "false");
-
-                    const rewardStates = !virtualTaskState.achieve_task.every(item => virtualTaskState.done_task.includes(item)) || myData.first_state !== "false" || diffDate >= 2;
-                    setRewardState(rewardStates);
-                    setBalance(newBalance)
-                    balanceRef.current = newBalance
-                    setUser({
-                      RealName: realName,
-                      UserName: userName,
-                      UserId: userId,
-                      Balance: newBalance,
-                      GameWon: isReal ? realWins : virtualWins,
-                      GameLost: isReal ? realLosses : virtualLosses,
-                      // Rank: isReal ? data.realRank : data.virtualRank,
-                      Ranking: isReal ? myData.ranking.real : myData.ranking.virtual,
-                      FriendNumber: myData.friend_count
-                    })
-                    const newHistoryGames = isReal ? gamesHistory.real : gamesHistory.virtual
-                    historyGamesRef.current = newHistoryGames
-                    setHistoryGames(newHistoryGames)
-                    setLoaderIsShown(false)
+                  if (myData.gamesHistory.real.length > historySize) {
+                    gamesHistory.real = myData.gamesHistory.real.slice(myData.gamesHistory.real.length - historySize)
                   }
-                } catch (e) {
-                  // eslint-disable-next-line no-self-assign
-                  document.location.href = document.location.href
-                }
-                finally {
 
-                  setTimeout(() => {
-                    firstLoading && setActionState("ready")
-                    setFirstLoading(false);
-                  }, 500)
+                  const virtualWins = myData.gamesHistory.virtual.filter(j => j.crash === 'x').length
+                  const virtualLosses = myData.gamesHistory.virtual.filter(j => j.stop === 'x').length
+                  if (myData.gamesHistory.virtual.length > historySize) {
+                    gamesHistory.virtual = myData.gamesHistory.virtual.slice(myData.gamesHistory.virtual.length - historySize)
+                  }
+
+                  setGames(myData)
+                  const newBalance = parseFloat(isReal ? myData.balance.real : myData.balance.virtual).toFixed(2)
+                  setFirstLogin(myData.first_state !== "false");
+
+                  const rewardStates = !virtualTaskState.achieve_task.every(item => virtualTaskState.done_task.includes(item)) || myData.first_state !== "false" || diffDate >= 2;
+                  setRewardState(rewardStates);
+                  setBalance(newBalance)
+                  balanceRef.current = newBalance
+                  setUser({
+                    RealName: realName,
+                    UserName: userName,
+                    UserId: userId,
+                    Balance: newBalance,
+                    GameWon: isReal ? realWins : virtualWins,
+                    GameLost: isReal ? realLosses : virtualLosses,
+                    // Rank: isReal ? data.realRank : data.virtualRank,
+                    Ranking: isReal ? myData.ranking.real : myData.ranking.virtual,
+                    FriendNumber: myData.friend_count
+                  })
+                  const newHistoryGames = isReal ? gamesHistory.real : gamesHistory.virtual
+                  historyGamesRef.current = newHistoryGames
+                  setHistoryGames(newHistoryGames)
+                  setLoaderIsShown(false)
                 }
-              })
-            await fetch(`${serverUrl}/check_first`, { method: 'POST', body: JSON.stringify({ userId: userId }), headers });
+              } catch (e) {
+                // eslint-disable-next-line no-self-assign
+                document.location.href = document.location.href
+              }
+              finally {
+                firstLoading && setActionState("ready")
+                setFirstLoading(false);
+                const webapp = window.Telegram.WebApp.initDataUnsafe;
+                // const userId = 6977492118;
+                const headers = new Headers()
+                headers.append('Content-Type', 'application/json')
+                if (webapp) {
+                const userId = webapp["user"]["id"];
+                fetch(`${serverUrl}/get_ranking`, { method: 'POST', body: JSON.stringify({ userId: userId }), headers })
+                  .then(res => Promise.all([res.status, res.json()]))
+                  .then(([status, data]) => {
+                    const realRank = isReal ? data.realRank : data.virtualRank
+                    setUser(user => ({ ...user, Rank: realRank }))
+                  })
+
+                }
+              }
+            })
+          await fetch(`${serverUrl}/check_first`, { method: 'POST', body: JSON.stringify({ userId: userId }), headers });
           }
 
         }
@@ -357,19 +369,7 @@ const MainPage = () => {
     fetchData()
   }, [])
   useEffect(() => {
-    const webapp = window.Telegram.WebApp.initDataUnsafe;
-    const headers = new Headers()
-    headers.append('Content-Type', 'application/json')
-    if (webapp) {
-      const userId = webapp["user"]["id"];
-      fetch(`${serverUrl}/get_ranking`, { method: 'POST', body: JSON.stringify({ userId: userId }), headers })
-        .then(res => Promise.all([res.status, res.json()]))
-        .then(([status, data]) => {
-          console.log("ranking data", data)
-          setUser(user => ({ ...user, Rank: isReal ? data.realRank : data.virtualRank, }))
-        })
 
-    }
 
   }, [])
 
@@ -468,7 +468,8 @@ const MainPage = () => {
       document.getElementById('stars').style.animation = animation;
     }, 50);
   };
-
+  console.log("user rank", user.Rank)
+  console.log("user", user)
   const handleGameStopped = (data = { stop: 'x', profit: '0' }) => {
     setCointinueCounter(continueCounter + 1)
     testCounter = testCounter + 1;
@@ -519,7 +520,7 @@ const MainPage = () => {
     headers.append('Content-Type', 'application/json')
     fetch(`${serverUrl}/add_perform_list`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, performTask: performTask, isReal: isReal }), headers })
   };
-  console.log("user rank",user.Rank)
+
   const handleGameCrashed = (data) => {
     setCointinueCounter(1)
     setActionState("stop");
