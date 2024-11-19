@@ -85,6 +85,10 @@ code {
   top: 15%;
 }
 
+.infinite-scroll-component__outerdiv{
+  width: 100%;
+}
+
 @media screen and (max-height: 620px) {
   .score-position {
     right: 20%;
