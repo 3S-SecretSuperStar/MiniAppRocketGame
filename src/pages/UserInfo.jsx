@@ -25,7 +25,7 @@ const UserInfo = () => {
   const itemPerPage = 20;
   const [user,] = useAtom(userData);
   const [tabId, setTabId] = useState(1);
-  const [rankingIndex, setRankingIndex] = useState(0);
+  const [rankingIndex, setRankingIndex] = useState(RANKINGDATA.indexOf(user.Ranking));
   const [friendData, setFriendData] = useState([])
   const [infoState, setInfoState] = useState(false);
   const [isReal, setIsReal] = useAtom(realGameState)
@@ -181,8 +181,9 @@ const UserInfo = () => {
     <div className="flex flex-col gap-4 items-center text-white text-base">
       <div className="font-semibold text-ellipsis overflow-hidden w-52 whitespace-nowrap text-center">{user.RealName}</div>
       <TabButton tabList={statsList} tabNo={tabId} setTabNo={setTabId} />
-      <div className="flex flex-col gap-4 overflow-auto w-full" style={{ height: "calc(100vh - 190px)" }}>
+      <div  style={{ height: "calc(100vh - 190px)" }}>
         <InfiniteScroll
+        className="flex flex-col gap-4 overflow-auto w-full"
           dataLength={items.length}
           next={showData}
           hasMore={hasMore}
