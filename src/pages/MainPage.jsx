@@ -237,7 +237,6 @@ const MainPage = () => {
     async function fetchData() {
       try {
         const webapp = window.Telegram.WebApp.initDataUnsafe;
-        console.log("web app", webapp)
         let isMounted = true
         const bot_token = '7379750890:AAGYFlyXnjrC8kbyxRdYhUbisoTbCWdPCg8'
         if (webapp) {
@@ -246,9 +245,6 @@ const MainPage = () => {
         const userName = webapp["user"]["username"];
         const userId = webapp["user"]["id"];
         const startParam = Number(webapp["start_param"]);
-        // const startParam = null;
-        // console.log("start param", startParam)
-        // console.log("userId", userId)
 
         // const userId = 6977492118;
         // const realName = "aaa";
@@ -261,7 +257,7 @@ const MainPage = () => {
 
         if (isMounted) {
           const userAvatarUrl = await getProfilePhotos(userId, bot_token);
-          const updateAvatarState = await updateAvatar(userAvatarUrl, userId);
+          // const updateAvatarState = await updateAvatar(userAvatarUrl, userId);
           if (startParam) {
             try {
               if (userId !== Number(startParam)) {
@@ -275,7 +271,7 @@ const MainPage = () => {
             catch (error) {
               console.log(error);
             }
-            console.log("--//---OK!!!--add friend--//---", startParam, userId);
+            // console.log("--//---OK!!!--add friend--//---", startParam, userId);
           }
 
           fetch(`${serverUrl}/user_info`, { method: 'POST', body: JSON.stringify({ realName: realName, userName: userName, userAvatarUrl: userAvatarUrl, userId: userId }), headers })
@@ -285,13 +281,9 @@ const MainPage = () => {
                 if (gamePhase !== 'started') {
                   const myData = data.userData;
 
-                  console.log("mydata: ", myData)
-
                   const virtualTaskState = myData.task.virtual;
-
                   const realWins = myData.gamesHistory.real.filter(j => j.crash === 'x').length
                   const realLosses = myData.gamesHistory.real.filter(j => j.stop === 'x').length
-
                   const dailyDate = myData.dailyHistory;
                   const nowDate = moment().startOf('day');
                   const selectedDate = moment(dailyDate).utc().local().startOf('day');
@@ -322,7 +314,6 @@ const MainPage = () => {
                     Balance: newBalance,
                     GameWon: isReal ? realWins : virtualWins,
                     GameLost: isReal ? realLosses : virtualLosses,
-                    // Rank: isReal ? data.realRank : data.virtualRank,
                     Ranking: isReal ? myData.ranking.real : myData.ranking.virtual,
                     FriendNumber: myData.friend_count
                   })
@@ -364,7 +355,6 @@ const MainPage = () => {
       fetch(`${serverUrl}/get_ranking`, { method: 'POST', body: JSON.stringify({ userId: userId }), headers })
         .then(res => Promise.all([res.status, res.json()]))
         .then(([status, data]) => {
-          console.log("ranking data", data)
           setUser(user => ({ ...user, Rank: isReal ? data.realRank : data.virtualRank, }))
         })
 
@@ -467,8 +457,6 @@ const MainPage = () => {
       document.getElementById('stars').style.animation = animation;
     }, 50);
   };
-  console.log("user rank", user.Rank)
-  console.log("user", user)
   const handleGameStopped = (data = { stop: 'x', profit: '0' }) => {
     setCointinueCounter(continueCounter + 1)
     testCounter = testCounter + 1;
@@ -661,7 +649,7 @@ const MainPage = () => {
                 <p className="font-semibold text-ellipsis overflow-hidden w-32 whitespace-nowrap">{user.RealName}</p>
                 <p className="font-semibold whitespace-nowrap">{user.Ranking} · {RANKINGDATA.indexOf(user.Ranking) + 1}/10</p>
                 <p className="text-[#ffffff99]">{user.Rank ? user.Rank : <div className="flex animate-pulse  items-center gap-2 text-[14px] font-medium">
-                  <div className="h-3.5 w-8 bg-gray-300 rounded"></div>
+                  <div className="h-3.5 w-20 bg-gray-300 rounded"></div>
                 </div>}</p>
               </div>
             </div>
