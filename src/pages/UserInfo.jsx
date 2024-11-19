@@ -184,7 +184,7 @@ const UserInfo = () => {
       <TabButton tabList={statsList} tabNo={tabId} setTabNo={setTabId} />
       <InfiniteScroll
         className="flex flex-col gap-4 overflow-auto w-full"
-        style={{ width:"100%", height: "calc(100vh - 190px)" }}
+        style={{ width: "100%", height: "calc(100vh - 190px)" }}
         dataLength={items.length}
         next={showData}
         hasMore={hasMore}
@@ -194,7 +194,10 @@ const UserInfo = () => {
         <div className="flex gap-[41px] text-blueFaded text-sm justify-center">
 
           <div>Level <span className="text-white">{RANKINGDATA.indexOf(user.Ranking) + 1}/10</span></div>
-          <div>Rank <span className="text-white">{user.Rank}</span></div>
+          <div className="flex flex-row" ><p>Rank</p>
+            {user.Rank ? <p className="text-[#ffffff99]">{user.Rank} </p>
+              : <SkeletonOne />}
+          </div>
 
         </div>
         <div className="flex flex-col items-center gap-2">
