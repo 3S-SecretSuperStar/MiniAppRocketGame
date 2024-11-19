@@ -12,6 +12,7 @@ import { isActionState } from "../../store";
 import { useTonAddress, useTonConnectUI, useTonWallet } from "@tonconnect/ui-react";
 import { beginCell } from "@ton/ton";
 import WarnningIcon from "../svg/warning";
+import Loading from "../../pages/Loading";
 
 const serverUrl = REACT_APP_SERVER;
 
@@ -430,7 +431,10 @@ const TaskList = () => {
 
   if (loading || firstLoading) {
     setActionState("start")
-    return <FetchLoading firstLoading={firstLoading} setLoading={setLoading} vRate={3} />
+    return <Loading  from={0} to={95} time={10} />
+  }
+  if(loading || !firstLoading){
+    setLoading(false)
   }
 
   return (

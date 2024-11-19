@@ -2,18 +2,18 @@ import React, { useEffect, useState } from "react";
 import { Img } from "../assets/image";
 import "../css/Loading.css"
 
-const Loading = ({ setLoading }) => {
-  const [progress, setProgress] = useState(0);
+const Loading = ({ setLoading,from,to,time }) => {
+  const [progress, setProgress] = useState(from);
 
   useEffect(() => {
-    if (progress < 100) {
+    if (progress < to) {
       const timer = setTimeout(() => {
         setProgress((preProgress) => preProgress + 1);
-      }, 10)
+      }, time)
       return () => clearTimeout(timer);
     }
     else {
-      setLoading(false);
+      if(setLoading)setLoading(false);
     }
   }, [progress, setLoading]);
 

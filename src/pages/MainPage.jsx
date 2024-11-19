@@ -27,6 +27,7 @@ import { LazyLoadImage } from "react-lazy-load-image-component";
 import 'react-lazy-load-image-component/src/effects/blur.css';
 import { formatNumber } from "../utils/inputValidator.js";
 import moment from "moment";
+import Loading from "./Loading.jsx";
 
 const MainPage = () => {
 
@@ -331,9 +332,9 @@ const MainPage = () => {
                 setFirstLoading(false);
       
               }
-            })
+              })
           await fetch(`${serverUrl}/check_first`, { method: 'POST', body: JSON.stringify({ userId: userId }), headers });
-          }
+        }
 
         }
         return () => {
@@ -366,9 +367,11 @@ const MainPage = () => {
     setActionState("start")
   }
 
-  if (loading || firstLoading) {
-    return <FetchLoading firstLoading={firstLoading} setLoading={setLoading} vRate={2} />
+  if (!firstLoading && loading) {
+    setLoading(false)
   }
+  if (firstLoading)
+    return <Loading setLoading={setLoading} from={60} to={100} time={15} />
 
   const startGame = () => {
     console.log("gameStart", realBetRef.current, ":", balanceRef.current);

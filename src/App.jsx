@@ -24,10 +24,6 @@ function App() {
   const [isLoading, setLoadingState] = useState(true);
   const [socket, setSocket] = useState();
 
-  const handleLoadingState = (loading) => {
-    setLoadingState(loading);
-  }
-
   useEffect(() => {
     const adjustHeight = () => {
       const vh = window.innerHeight * 0.01;
@@ -180,7 +176,7 @@ function App() {
                 <Footer />
               </BrowserRouter>
             </>)
-            : <Loading setLoading={handleLoadingState} />
+            : <Loading setLoading={setLoadingState}  from={0} to={60} time = {10} />
           }
         </div>
         </TonConnectUIProvider>
