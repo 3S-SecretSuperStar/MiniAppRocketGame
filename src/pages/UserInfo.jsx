@@ -23,8 +23,8 @@ import InfiniteScroll from "react-infinite-scroll-component";
 
 const UserInfo = () => {
   const itemPerPage = 20;
-  const userRankIndex = RANKINGDATA.indexOf(user.Ranking);
   const [user,] = useAtom(userData);
+  const userRankIndex = RANKINGDATA.indexOf(user.Ranking);
   const [tabId, setTabId] = useState(1);
   const [rankingIndex, setRankingIndex] = useState(userRankIndex);
   const [friendData, setFriendData] = useState([])
