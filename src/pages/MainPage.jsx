@@ -237,7 +237,7 @@ const MainPage = () => {
     async function fetchData() {
       try {
         const webapp = window.Telegram.WebApp.initDataUnsafe;
-        console.log("web app",webapp)
+        console.log("web app", webapp)
         let isMounted = true
         const bot_token = '7379750890:AAGYFlyXnjrC8kbyxRdYhUbisoTbCWdPCg8'
         if (webapp) {
@@ -246,18 +246,18 @@ const MainPage = () => {
           const userName = webapp["user"]["username"];
           const userId = webapp["user"]["id"];
           const startParam = Number(webapp["start_param"]);
-          console.log("start param",startParam)
-          console.log("userId",userId)
+          console.log("start param", startParam)
+          console.log("userId", userId)
 
           // const userId = 6977492118;
           // const realName = "aaa";
           // const userName = "fff";
-          
+
           const historySize = 100;
           let gamesHistory = { real: [], virtual: [] }
           const headers = new Headers()
           headers.append('Content-Type', 'application/json')
-          
+
           if (isMounted) {
             const userAvatarUrl = await getProfilePhotos(userId, bot_token);
             const updateAvatarState = await updateAvatar(userAvatarUrl, userId);
@@ -277,12 +277,15 @@ const MainPage = () => {
               console.log("--//---OK!!!--add friend--//---", startParam, userId);
             }
 
-            fetch(`${serverUrl}/users_info`, { method: 'POST', body: JSON.stringify({ realName: realName, userName: userName, userAvatarUrl: userAvatarUrl, userId: userId }), headers })
+            fetch(`${serverUrl}/user_info`, { method: 'POST', body: JSON.stringify({ realName: realName, userName: userName, userAvatarUrl: userAvatarUrl, userId: userId }), headers })
               .then(res => Promise.all([res.status, res.json()]))
               .then(([status, data]) => {
                 try {
                   if (gamePhase !== 'started') {
                     const myData = data.userData;
+                    
+                    console.log("mydata: ",myData)
+
                     const virtualTaskState = myData.task.virtual;
 
                     const realWins = myData.gamesHistory.real.filter(j => j.crash === 'x').length
@@ -318,7 +321,7 @@ const MainPage = () => {
                       Balance: newBalance,
                       GameWon: isReal ? realWins : virtualWins,
                       GameLost: isReal ? realLosses : virtualLosses,
-                      Rank: isReal ? data.realRank : data.virtualRank,
+                      // Rank: isReal ? data.realRank : data.virtualRank,
                       Ranking: isReal ? myData.ranking.real : myData.ranking.virtual,
                       FriendNumber: myData.friendNumber
                     })
@@ -352,6 +355,15 @@ const MainPage = () => {
       }
     }
     fetchData()
+  }, [])
+  useEffect(() => {
+    const headers = new Headers()
+    headers.append('Content-Type', 'application/json')
+    fetch(`${serverUrl}/user_info`, { method: 'POST', body: JSON.stringify({ realName: realName, userName: userName, userAvatarUrl: userAvatarUrl, userId: userId }), headers })
+      .then(res => Promise.all([res.status, res.json()]))
+      .then(([status, data]) => {
+        setUser(user => ({...user, Rank: isReal ? data.realRank : data.virtualRank,}))
+      })
   }, [])
 
   if (loading && firstLoading) {
