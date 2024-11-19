@@ -19,10 +19,10 @@ import Contact from "../component/molecules/contact.jsx";
 import { isActionState } from "../store/actionState.jsx";
 import UserInfoSkeleton from "../component/atom/userInfoSkeleton.jsx";
 import { useInView } from 'react-intersection-observer'
+import InfiniteScroll from "react-infinite-scroll-component";
 
 const UserInfo = () => {
   const itemPerPage = 20;
-  const itemHeight = 70;
   const [user,] = useAtom(userData);
   const [tabId, setTabId] = useState(1);
   const [rankingIndex, setRankingIndex] = useState(0);
@@ -36,13 +36,9 @@ const UserInfo = () => {
   const [, setActionState] = useAtom(isActionState);
   const [loading, setLoading] = useState(true)
   const [firstLoading, setFirstLoading] = useState(true);
-  const [visibleItems, setVisibleItems] = useState(friendData.slice(0, itemPerPage))
-  const [ref, inView] = useInView({ threshold: 0, triggerOnce: true });
-  const listRef = useRef(null);
-  const handleScroll = ()=>{
-    const scrollTop = listRef.current.scrollTop;
-    console.log("scroll top",scrollTop)
-  }
+  const [items, setItems] = useState([]);
+  const [hasMore, setHasMore] = useState(true)
+  const [page, setPage] = useState(0)
 
 
 
@@ -84,39 +80,44 @@ const UserInfo = () => {
     let isMounted = true
     if (webapp) {
 
-      const lastName = webapp["user"]["last_name"] && (" " + webapp["user"]["last_name"]);
+    const lastName = webapp["user"]["last_name"] && (" " + webapp["user"]["last_name"]);
 
-      const realName = webapp["user"]["first_name"] + lastName;
-      const userName = webapp["user"]["username"];
-      const userId = webapp["user"]["id"];
-      setRealName(realName)
+    const realName = webapp["user"]["first_name"] + lastName;
+    const userName = webapp["user"]["username"];
+    const userId = webapp["user"]["id"];
+    // const userId = 6977492118;
+    // const realName = "aaa";
+    // const userName = "fff";
+    // const historySize = 100;
+    setRealName(realName)
 
-      const headers = new Headers()
-      headers.append('Content-Type', 'application/json')
-      fetch(`${serverUrl}/all_users_info`, { method: 'POST', body: JSON.stringify({}), headers })
-        .then(res => Promise.all([res.status, res.json()]))
-        .then(([status, data]) => {
-          if (isMounted) {
-            try {
-              setGameData(data);
-              setGameDataLength(Object.keys(data).length)
-            } catch (e) {
-              // eslint-disable-next-line no-self-assign
-              document.location.href = document.location.href
-            }
-            finally {
-              setTimeout(() => {
-                setLoading(false);
-                firstLoading && setActionState("ready")
-                setFirstLoading(false);
-              }, 500)
-            }
+    const headers = new Headers()
+    headers.append('Content-Type', 'application/json')
+    fetch(`${serverUrl}/all_users_info`, { method: 'POST', body: JSON.stringify({}), headers })
+      .then(res => Promise.all([res.status, res.json()]))
+      .then(([status, data]) => {
+        if (isMounted) {
+          try {
+            setGameData(data);
+            setGameDataLength(Object.keys(data).length)
+          } catch (e) {
+            // eslint-disable-next-line no-self-assign
+            document.location.href = document.location.href
           }
-        })
-      return () => { isMounted = false }
+          finally {
+            setTimeout(() => {
+              setLoading(false);
+              firstLoading && setActionState("ready")
+              setFirstLoading(false);
+            }, 500)
+          }
+        }
+      })
+    return () => { isMounted = false }
 
     }
   }, [])
+
   function nFormatter(num, digits) {
     const lookup = [
       { value: 1, symbol: "" },
@@ -152,20 +153,22 @@ const UserInfo = () => {
       })
 
       setFriendData(filterData)
-      setVisibleItems(filterData.slice(0, itemPerPage))
+
+      setItems(filterData.slice(0, 20));
+      setHasMore(filterData.length > 20);
+      setPage(1)
+      console.log("finish showmore111")
     }
   }, [rankingIndex, gameDataLength])
 
-  const handleIntersection = (inView, entry) => {
-    console.log(inView, "inView + entry", entry)
-    if (inView) {
-      const startIndex = Math.floor(entry.boundingClientReact.top / itemHeight) * itemPerPage;
+  const showData = () => {
+      const startIndex = page * itemPerPage;
       const endIndex = startIndex + itemPerPage;
-      console.log("start index", startIndex, "end index", endIndex)
-      setVisibleItems(friendData.slice(startIndex, endIndex))
-    }
+      setItems((prevItems) => [...prevItems, ...friendData.slice(startIndex, endIndex)]);
+      setHasMore(endIndex < friendData.length);
+      setPage((prevPage) => prevPage + 1)
   }
-  console.log(visibleItems)
+
 
   if (tabId === 2) {
     setTabId(1);
@@ -179,89 +182,83 @@ const UserInfo = () => {
       <div className="font-semibold text-ellipsis overflow-hidden w-52 whitespace-nowrap text-center">{user.RealName}</div>
       <TabButton tabList={statsList} tabNo={tabId} setTabNo={setTabId} />
       <div className="flex flex-col gap-4 overflow-auto w-full" style={{ height: "calc(100vh - 190px)" }}>
-        <div className="flex gap-[41px] text-blueFaded text-sm justify-center">
+        <InfiniteScroll
+          dataLength={items.length}
+          next={showData}
+          hasMore={hasMore}
+          loader={<div>Loading...</div>}
+          height={"calc(100vh - 190px)"}
+        >
+          <div className="flex gap-[41px] text-blueFaded text-sm justify-center">
 
-          <div>Level <span className="text-white">{RANKINGDATA.indexOf(user.Ranking) + 1}/10</span></div>
-          <div>Rank <span className="text-white">{user.Rank}</span></div>
+            <div>Level <span className="text-white">{RANKINGDATA.indexOf(user.Ranking) + 1}/10</span></div>
+            <div>Rank <span className="text-white">{user.Rank}</span></div>
 
-        </div>
-        <div className="flex flex-col items-center gap-2">
-          <img src={avatarData[RANKINGDATA.indexOf(user.Ranking)]} width="200px" height="200px" className="max-w-[200px] h-[200px]" alt="avatar" />
-          <div className="rounded-[8px] border-[3px] border-[#56D0EA] py-2 w-[200px] text-center text-white">
-            {user.Ranking}
           </div>
-        </div>
-        <div className="flex gap-4 w-full">
-          <div className="w-1/2">
-            <PannelScore img={Img.agree} text2={"Won"} text3={nFormatter(user.GameWon, 1)} className="w-full py-[10px]" />
+          <div className="flex flex-col items-center gap-2">
+            <img src={avatarData[RANKINGDATA.indexOf(user.Ranking)]} width="200px" height="200px" className="max-w-[200px] h-[200px]" alt="avatar" />
+            <div className="rounded-[8px] border-[3px] border-[#56D0EA] py-2 w-[200px] text-center text-white">
+              {user.Ranking}
+            </div>
           </div>
-          <div className="w-1/2">
-            <PannelScore img={Img.disagree} text2={"Lost"} text3={nFormatter(user.GameLost, 1)} className="w-full py-[10px]" />
+          <div className="flex gap-4 w-full">
+            <div className="w-1/2">
+              <PannelScore img={Img.agree} text2={"Won"} text3={nFormatter(user.GameWon, 1)} className="w-full py-[10px]" />
+            </div>
+            <div className="w-1/2">
+              <PannelScore img={Img.disagree} text2={"Lost"} text3={nFormatter(user.GameLost, 1)} className="w-full py-[10px]" />
+            </div>
           </div>
-        </div>
 
-        <div className="h-9 text-center relative">
-          <Carousel
-            showThumbs={false} showStatus={false} showIndicators={false} infiniteLoop={true}
-            emulateTouch={false} useKeyboardArrows={false} swipeable={false}
-            centerSlidePercentage={100}
-            renderArrowNext={(clickHandler, hasNext, labelNext) => (hasNext && <div
-              type="button" aria-level={labelNext} className="absolute right-0 top-1/2 transform -translate-y-1/2 w-20 pl-12  z-10"
-              onClick={() => {
-                clickHandler()
-                rankingNext()
-              }}>
-              <ArrowRight className={"w-4 h-4 m-auto"} />
-            </div>)}
-            renderArrowPrev={(clickHandler, hasPrev, labelPrev) => (hasPrev && <div
-              type="button" aria-level={labelPrev} className="absolute left-0 top-1/2 w-20 transform -translate-y-1/2 pr-12 z-10"
-              onClick={() => {
-                clickHandler()
-                rankingPrev()
-              }}>
-              <ArrowLeft className={"w-4 h-4 m-auto"} />
-            </div>)}
-          >
-            {rankingItems}
-          </Carousel>
-        </div>
+          <div className="h-9 text-center relative">
+            <Carousel
+              showThumbs={false} showStatus={false} showIndicators={false} infiniteLoop={true}
+              emulateTouch={false} useKeyboardArrows={false} swipeable={false}
+              centerSlidePercentage={100}
+              renderArrowNext={(clickHandler, hasNext, labelNext) => (hasNext && <div
+                type="button" aria-level={labelNext} className="absolute right-0 top-1/2 transform -translate-y-1/2 w-20 pl-12  z-10"
+                onClick={() => {
+                  clickHandler()
+                  rankingNext()
+                }}>
+                <ArrowRight className={"w-4 h-4 m-auto"} />
+              </div>)}
+              renderArrowPrev={(clickHandler, hasPrev, labelPrev) => (hasPrev && <div
+                type="button" aria-level={labelPrev} className="absolute left-0 top-1/2 w-20 transform -translate-y-1/2 pr-12 z-10"
+                onClick={() => {
+                  clickHandler()
+                  rankingPrev()
+                }}>
+                <ArrowLeft className={"w-4 h-4 m-auto"} />
+              </div>)}
+            >
+              {rankingItems}
+            </Carousel>
+          </div>
 
-        <div className=" w-full" style={{ height: "calc(100vh - 630px)" }}>
-          <div className="flex flex-col gap-2 pb-8" ref = {listRef} onScroll={onscroll}>
-            {
-              visibleItems.length > 0 ?
-                visibleItems.map((_data, _index) => {
-                  // const { ref, inView, entry } = useInView({
-                  //   threshold: 0,
-                  //   triggerOnce: true,
-                  // });
-
-                  // // // Call handleIntersection when the component comes into view
-                  // // if (inView && entry.isIntersecting) {
-                  // //   handleIntersection(entry);
-                  // // }
-
-                  return (
+          <div className=" w-full" style={{ height: "calc(100vh - 630px)" }}>
+            <div className="flex flex-col gap-2 pb-8" >
+              {
+                items.length > 0 ?
+                  items.map((_data, _index) =>
                     <FriendRanking
                       data={_data}
-                      // ref={ref}
                       key={_index}
                     />
-                  );
-                }
-                )
-                : loading && firstLoading ? (
-                  <div className="flex flex-col gap-2">
-                    <UserInfoSkeleton />
-                    <UserInfoSkeleton />
-                  </div>
+                  )
+                  : loading && firstLoading ? (
+                    <div className="flex flex-col gap-2">
+                      <UserInfoSkeleton />
+                      <UserInfoSkeleton />
+                    </div>
 
-                )
-                  : <div className="text-center text-[#ACC1D9]">No {RANKINGDATA[rankingIndex]}s yet.</div>
-            }
+                  )
+                    : <div className="text-center text-[#ACC1D9]">No {RANKINGDATA[rankingIndex]}s yet.</div>
+              }
 
+            </div>
           </div>
-        </div>
+        </InfiniteScroll>
       </div>
       <InfoModal title="Coming soon!" isOpen={infoState} setIsOpen={() => setInfoState(false)} height="h-[280px]">
         <div className="flex items-center justify-center">

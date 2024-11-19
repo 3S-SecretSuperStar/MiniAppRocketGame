@@ -236,21 +236,21 @@ const MainPage = () => {
   useEffect(() => {
     async function fetchData() {
       try {
-        const webapp = window.Telegram.WebApp.initDataUnsafe;
-        console.log("web app",webapp)
+        // const webapp = window.Telegram.WebApp.initDataUnsafe;
+        // console.log("web app",webapp)
         let isMounted = true
         const bot_token = '7379750890:AAGYFlyXnjrC8kbyxRdYhUbisoTbCWdPCg8'
-        if (webapp) {
-          const lastName = webapp["user"]["last_name"] && (" " + webapp["user"]["last_name"]);
-          const realName = webapp["user"]["first_name"] + lastName;
-          const userName = webapp["user"]["username"];
-          const userId = webapp["user"]["id"];
-          const startParam = Number(webapp["start_param"]);
-          console.log("start param",startParam)
+        // if (webapp) {
+          // const lastName = webapp["user"]["last_name"] && (" " + webapp["user"]["last_name"]);
+          // const realName = webapp["user"]["first_name"] + lastName;
+          // const userName = webapp["user"]["username"];
+          // const userId = webapp["user"]["id"];
+          // const startParam = Number(webapp["start_param"]);
+          // console.log("start param",startParam)
 
-          // const userId = 6977492118;
-          // const realName = "aaa";
-          // const userName = "fff";
+          const userId = 6977492118;
+          const realName = "aaa";
+          const userName = "fff";
           const historySize = 100;
           let gamesHistory = { real: [], virtual: [] }
           const headers = new Headers()
@@ -259,21 +259,21 @@ const MainPage = () => {
           if (isMounted) {
             const userAvatarUrl = await getProfilePhotos(userId, bot_token);
             const updateAvatarState = await updateAvatar(userAvatarUrl, userId);
-            if (startParam) {
-              try {
-                if (userId !== Number(startParam)) {
-                  await fetch(`${serverUrl}/add_friend`, {
-                    method: 'POST',
-                    body: JSON.stringify({ userId: userId, userName: userName, realName: realName, friend: startParam, userAvatarUrl: userAvatarUrl }),
-                    headers
-                  });
-                }
-              }
-              catch (error) {
-                console.log(error);
-              }
-              console.log("--//---OK!!!--add friend--//---", startParam, userId);
-            }
+            // if (startParam) {
+            //   try {
+            //     if (userId !== Number(startParam)) {
+            //       await fetch(`${serverUrl}/add_friend`, {
+            //         method: 'POST',
+            //         body: JSON.stringify({ userId: userId, userName: userName, realName: realName, friend: startParam, userAvatarUrl: userAvatarUrl }),
+            //         headers
+            //       });
+            //     }
+            //   }
+            //   catch (error) {
+            //     console.log(error);
+            //   }
+            //   console.log("--//---OK!!!--add friend--//---", startParam, userId);
+            // }
 
             fetch(`${serverUrl}/users_info`, { method: 'POST', body: JSON.stringify({ realName: realName, userName: userName, userAvatarUrl: userAvatarUrl, userId: userId }), headers })
               .then(res => Promise.all([res.status, res.json()]))
@@ -338,7 +338,7 @@ const MainPage = () => {
                 }
               })
             await fetch(`${serverUrl}/check_first`, { method: 'POST', body: JSON.stringify({ userId: userId }), headers });
-          }
+          // }
 
         }
         return () => {
