@@ -323,7 +323,7 @@ const MainPage = () => {
                       GameLost: isReal ? realLosses : virtualLosses,
                       // Rank: isReal ? data.realRank : data.virtualRank,
                       Ranking: isReal ? myData.ranking.real : myData.ranking.virtual,
-                      FriendNumber: myData.friendNumber
+                      FriendNumber: myData.friend_count
                     })
                     const newHistoryGames = isReal ? gamesHistory.real : gamesHistory.virtual
                     historyGamesRef.current = newHistoryGames
