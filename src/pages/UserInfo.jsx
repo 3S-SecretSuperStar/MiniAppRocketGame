@@ -1,5 +1,5 @@
 import React, { useState, useEffect, Suspense, useRef } from "react";
-import { Carousel } from '  ';
+import { Carousel } from 'react-responsive-carousel';
 import { useAtom } from "jotai";
 import FriendRanking from "../component/atom/friend-ranking.jsx";
 import PannelScore from "../component/atom/PannelScore";
