@@ -365,7 +365,7 @@ const MainPage = () => {
       fetch(`${serverUrl}/get_ranking`, { method: 'POST', body: JSON.stringify({ userId: userId }), headers })
         .then(res => Promise.all([res.status, res.json()]))
         .then(([status, data]) => {
-          console.log("ranking data",data)
+          console.log("ranking data", data)
           setUser(user => ({ ...user, Rank: isReal ? data.realRank : data.virtualRank, }))
         })
 
@@ -519,7 +519,7 @@ const MainPage = () => {
     headers.append('Content-Type', 'application/json')
     fetch(`${serverUrl}/add_perform_list`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, performTask: performTask, isReal: isReal }), headers })
   };
-
+  console.log("user rank",user.Rank)
   const handleGameCrashed = (data) => {
     setCointinueCounter(1)
     setActionState("stop");
@@ -660,7 +660,9 @@ const MainPage = () => {
               <div className="flex flex-col w-full gap-0.5">
                 <p className="font-semibold text-ellipsis overflow-hidden w-32 whitespace-nowrap">{user.RealName}</p>
                 <p className="font-semibold whitespace-nowrap">{user.Ranking} · {RANKINGDATA.indexOf(user.Ranking) + 1}/10</p>
-                <p className="text-[#ffffff99]">{user.Rank}</p>
+                <p className="text-[#ffffff99]">{user.Rank ? user.Rank : <div className="flex animate-pulse  items-center gap-2 text-[14px] font-medium">
+                  <div className="h-3.5 w-8 bg-gray-300 rounded"></div>
+                </div>}</p>
               </div>
             </div>
             <div className="flex flex-col gap-2">
