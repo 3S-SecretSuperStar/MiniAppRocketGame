@@ -237,7 +237,7 @@ const MainPage = () => {
     async function fetchData() {
       try {
         const webapp = window.Telegram.WebApp.initDataUnsafe;
-        // console.log("web app",webapp)
+        console.log("web app",webapp)
         let isMounted = true
         const bot_token = '7379750890:AAGYFlyXnjrC8kbyxRdYhUbisoTbCWdPCg8'
         if (webapp) {
@@ -247,11 +247,13 @@ const MainPage = () => {
           const userId = webapp["user"]["id"];
           const startParam = Number(webapp["start_param"]);
           console.log("start param",startParam)
+          console.log("userId",userId)
 
           // const userId = 6977492118;
           // const realName = "aaa";
           // const userName = "fff";
-          // const historySize = 100;
+          
+          const historySize = 100;
           let gamesHistory = { real: [], virtual: [] }
           const headers = new Headers()
           headers.append('Content-Type', 'application/json')
