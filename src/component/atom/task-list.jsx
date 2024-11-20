@@ -333,7 +333,7 @@ const TaskList = () => {
               }
             })
 
-          fetch(`${serverUrl}/get_task`, { method: 'POST', body: JSON.stringify({userId:user.UserId}), headers })
+          fetch(`${serverUrl}/get_task`, { method: 'POST', body: JSON.stringify({ userId: user.UserId }), headers })
             .then(res => Promise.all([res.status, res.json()]))
             .then(([status, data]) => {
               try {
@@ -437,14 +437,25 @@ const TaskList = () => {
     <Suspense fallback={<fetchData />}>
       <div className="flex flex-col gap-2 text-[14px] overflow-auto pb-4" style={{ height: "calc(100vh - 215px)" }}>
         {
-          fixedTaskData
-            .sort((a, b) => (a.sort - b.sort))
-            .map((_task, _index) => <GenerateTask task={_task} stateTask={stateTask} key={_index} index={_index} dailytaskIndex={dailytaskIndex} fetchData={fetchData} claimStateList={claimStateList} setClaimStateList={setClaimStateList} />)
-        }
-        {
-          otherTaskData
-            .sort((a, b) => (a.status - b.status || a.sort - b.sort))
-            .map((_task, _index) => <GenerateTask task={_task} stateTask={stateTask} key={_index + 1} index={_index + 1} dailytaskIndex={dailytaskIndex} claimStateList={claimStateList} setClaimStateList={setClaimStateList} fetchData={fetchData} />)
+          fixedTaskData.length === 0 && otherTaskData.length === 0
+            ?
+            <div className="flex flex-col gap-2 w-full">
+              <UserInfoSkeleton />
+              <UserInfoSkeleton />
+            </div>
+            :
+            <>
+              {
+                fixedTaskData
+                  .sort((a, b) => (a.sort - b.sort))
+                  .map((_task, _index) => <GenerateTask task={_task} stateTask={stateTask} key={_index} index={_index} dailytaskIndex={dailytaskIndex} fetchData={fetchData} claimStateList={claimStateList} setClaimStateList={setClaimStateList} />)
+              }
+              {
+                otherTaskData
+                  .sort((a, b) => (a.status - b.status || a.sort - b.sort))
+                  .map((_task, _index) => <GenerateTask task={_task} stateTask={stateTask} key={_index + 1} index={_index + 1} dailytaskIndex={dailytaskIndex} claimStateList={claimStateList} setClaimStateList={setClaimStateList} fetchData={fetchData} />)
+              }
+            </>
         }
       </div>
     </Suspense>
