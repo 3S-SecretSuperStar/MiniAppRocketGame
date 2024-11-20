@@ -170,7 +170,8 @@ class FallGame {
         crater.zIndex = 1;
         crater.on('pointerdown', () => {
           if (crater.isDestroyed === 0) {
-            const addCoin = Number(formatNumber(cnst.CRATER_POINT * this.autoStop * this.bet));
+            const expectedCoin = Number(formatNumber(cnst.CRATER_POINT * this.autoStop * this.bet));
+            const addCoin = Math.min(expectedCoin, 500);
             // Assign the rendered texture to the crater
             crater.x += crater.width / 2 - this.destroyTexture.width / 2;
             crater.y += crater.height / 2 - this.destroyTexture.height / 2;
@@ -213,7 +214,7 @@ class FallGame {
         meteor.zIndex = 1;
         meteor.on('pointerdown', () => {
           if (meteor.isDestroyed === 0) {
-            const addCoin = Number(formatNumber(cnst.METEOR_POINT * this.autoStop * this.bet));
+            const addCoin = Math.min(Number(formatNumber(cnst.METEOR_POINT * this.autoStop * this.bet)), 250);
             const basicText = new Text(` + ${addCoin}`, { fontFamily: 'Roboto', fontSize: 23, fill: 0xFAD557, align: 'center', fontWeight: "bold" });
 
             // Assign the rendered texture to the meteor
@@ -262,7 +263,7 @@ class FallGame {
 
         ufo.on('pointerdown', () => {
           if (ufo.isDestroyed === 0) {
-            const addCoin = Number(formatNumber(cnst.UFO_POINT * this.autoStop * this.bet));
+            const addCoin = Math.min(Number(formatNumber(cnst.UFO_POINT * this.autoStop * this.bet)), 1000);
             const basicText = new Text(` + ${addCoin}`, { fontFamily: 'Roboto', fontSize: 23, fill: 0xFAD557, align: 'center', fontWeight: "bold" });
 
             ufo.x += ufo.width / 2 - this.destroyTexture.width / 2;
