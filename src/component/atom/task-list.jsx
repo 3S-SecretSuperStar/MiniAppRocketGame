@@ -227,7 +227,7 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
                     Start
                   </button>
                 </Link> :
-                
+
 
             <button className="rounded-lg w-[61px] py-1 px-0 h-7 bg-mainFocus text-white text-center text-[14px]"
               onClick={() => followHandle(task.index)} >
@@ -429,10 +429,10 @@ const TaskList = () => {
       })
   }
 
-  if (loading || firstLoading) {
-    setActionState("start")
-    return <FetchLoading firstLoading={firstLoading} setLoading={setLoading} vRate={3} />
-  }
+  // if (loading || firstLoading) {
+  //   setActionState("start")
+  //   return <FetchLoading firstLoading={firstLoading} setLoading={setLoading} vRate={3} />
+  // }
 
   return (
     <Suspense fallback={<fetchData />}>
