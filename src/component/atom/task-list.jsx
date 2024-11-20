@@ -133,14 +133,14 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
   };
 
 
-  const goDisabale = () => {
+  const goDisabale = async() => {
     followHandle(task.index)
-    setDisableList((prev)=>[...prev, task.index])
+    // setDisableList((prev)=>[...prev, task.index])
   }
 
   const goClaim = () => {
     setClaimStateList((prev) => [...prev, task.index])
-    setIsClaim(true);
+    // setIsClaim(true);
 
     if (task.index !== dailytaskIndex) {
       fetch(`${serverUrl}/task_balance`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, amount: task.amount, task: task.index, isReal: isReal }), headers })
