@@ -133,10 +133,7 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
   };
 
 
-  const goDisabale = async() => {
-    followHandle(task.index)
-    // setDisableList((prev)=>[...prev, task.index])
-  }
+
 
   const goClaim = () => {
     setClaimStateList((prev) => [...prev, task.index])
@@ -236,11 +233,11 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
                   </button>
                 </Link> :
 
-            task.index === 31 ?
-              <button className="rounded-lg w-[61px] py-1 px-0 h-7 bg-mainFocus text-white text-center text-[14px]" 
-              onClick={() => goDisabale} disabled ={disableList.includes(task.index)} >
-                Start
-              </button> :
+            // task.index === 31 ?
+            //   <button className="rounded-lg w-[61px] py-1 px-0 h-7 bg-mainFocus text-white text-center text-[14px]" 
+            //   onClick={() => goDisabale} disabled ={disableList.includes(task.index)} >
+            //     Start
+            //   </button> :
               <button className="rounded-lg w-[61px] py-1 px-0 h-7 bg-mainFocus text-white text-center text-[14px]"
                 onClick={() => followHandle(task.index)} >
                 {
