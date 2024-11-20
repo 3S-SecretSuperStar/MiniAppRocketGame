@@ -134,8 +134,8 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
 
 
   const goDisabale = () => {
-    setDisableList((prev)=>[...prev, task.index])
     followHandle(task.index)
+    setDisableList((prev)=>[...prev, task.index])
   }
 
   const goClaim = () => {
