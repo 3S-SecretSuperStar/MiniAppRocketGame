@@ -16,7 +16,7 @@ import UserInfoSkeleton from "./userInfoSkeleton";
 
 const serverUrl = REACT_APP_SERVER;
 
-const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claimStateList, setClaimStateList }) => {
+const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claimStateList, setClaimStateList, disableList, setDisableList }) => {
 
 
   const [isClaim, setIsClaim] = useState(false);
@@ -24,6 +24,7 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
   const [user, setUser] = useAtom(userData)
   const [isPending, setIsPending] = useState(false)
   const claimStateListData = claimStateList;
+  const disableListData = disableList
   let wallet = useTonAddress();
   const tonwallet = useTonWallet()
   const [tonconnectUi] = useTonConnectUI();
@@ -131,6 +132,11 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
     })
   };
 
+
+  const goDisabale = () => {
+    setDisableList((prev)=>[...prev, task.index])
+  }
+
   const goClaim = () => {
     setClaimStateList((prev) => [...prev, task.index])
     setIsClaim(true);
@@ -229,18 +235,22 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
                   </button>
                 </Link> :
 
-
-            <button className="rounded-lg w-[61px] py-1 px-0 h-7 bg-mainFocus text-white text-center text-[14px]"
-              onClick={() => followHandle(task.index)} >
-              {
-                isPending ?
-                  <div className="flex w-full items-center text-center justify-center gap-1">
-                    <LoadingSpinner className="w-4 h-4  my-auto mx-0 stroke-white" />
-                    Wait
-                  </div> :
-                  "Start"
-              }
-            </button>
+            task.index === 31 ?
+              <button className="rounded-lg w-[61px] py-1 px-0 h-7 bg-mainFocus text-white text-center text-[14px]" 
+              onClick={() => goDisabale} disabled ={disableList.includes(task.index)} >
+                Start
+              </button> :
+              <button className="rounded-lg w-[61px] py-1 px-0 h-7 bg-mainFocus text-white text-center text-[14px]"
+                onClick={() => followHandle(task.index)} >
+                {
+                  isPending ?
+                    <div className="flex w-full items-center text-center justify-center gap-1">
+                      <LoadingSpinner className="w-4 h-4  my-auto mx-0 stroke-white" />
+                      Wait
+                    </div> :
+                    "Start"
+                }
+              </button>
 
 
           :
@@ -277,6 +287,7 @@ const TaskList = () => {
   const [isAction, setActionState] = useAtom(isActionState);
   const [fixedTaskData, setFixedTaskData] = useState([]);
   const [claimStateList, setClaimStateList] = useState([]);
+  const [disableList, setDisableList] = useState([]);
   const headers = new Headers();
   headers.append('Content-Type', 'application/json')
 
@@ -430,11 +441,6 @@ const TaskList = () => {
       })
   }
 
-  // if (loading || firstLoading) {
-  //   setActionState("start")
-  //   return <FetchLoading firstLoading={firstLoading} setLoading={setLoading} vRate={3} />
-  // }
-
   return (
     <Suspense fallback={<fetchData />}>
       <div className="flex flex-col gap-2 text-[14px] overflow-auto pb-4" style={{ height: "calc(100vh - 215px)" }}>
@@ -450,12 +456,14 @@ const TaskList = () => {
               {
                 fixedTaskData
                   .sort((a, b) => (a.sort - b.sort))
-                  .map((_task, _index) => <GenerateTask task={_task} stateTask={stateTask} key={_index} index={_index} dailytaskIndex={dailytaskIndex} fetchData={fetchData} claimStateList={claimStateList} setClaimStateList={setClaimStateList} />)
+                  .map((_task, _index) => <GenerateTask task={_task} stateTask={stateTask} key={_index} index={_index} dailytaskIndex={dailytaskIndex}
+                    fetchData={fetchData} claimStateList={claimStateList} setClaimStateList={setClaimStateList} disableList={disableList} setDisableList={setDisableList} />)
               }
               {
                 otherTaskData
                   .sort((a, b) => (a.status - b.status || a.sort - b.sort))
-                  .map((_task, _index) => <GenerateTask task={_task} stateTask={stateTask} key={_index + 1} index={_index + 1} dailytaskIndex={dailytaskIndex} claimStateList={claimStateList} setClaimStateList={setClaimStateList} fetchData={fetchData} />)
+                  .map((_task, _index) => <GenerateTask task={_task} stateTask={stateTask} key={_index + 1} index={_index + 1} dailytaskIndex={dailytaskIndex}
+                    claimStateList={claimStateList} setClaimStateList={setClaimStateList} fetchData={fetchData} disableList={disableList} setDisableList={setDisableList} />)
               }
             </>
         }
