@@ -12,6 +12,7 @@ import { isActionState } from "../../store";
 import { useTonAddress, useTonConnectUI, useTonWallet } from "@tonconnect/ui-react";
 import { beginCell } from "@ton/ton";
 import WarnningIcon from "../svg/warning";
+import UserInfoSkeleton from "./userInfoSkeleton";
 
 const serverUrl = REACT_APP_SERVER;
 
