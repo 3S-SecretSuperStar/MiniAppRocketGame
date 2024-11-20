@@ -220,7 +220,7 @@ const MainPage = () => {
   useEffect(() => {
     const headers = new Headers()
     headers.append('Content-Type', 'application/json')
-    fetch(`${serverUrl}/get_task`, { method: 'POST', body: JSON.stringify({}), headers })
+    fetch(`${serverUrl}/get_task`, { method: 'POST', body: JSON.stringify({userId:user.UserId}), headers })
       .then(res => Promise.all([res.status, res.json()]))
       .then(([status, data]) => {
         try {
