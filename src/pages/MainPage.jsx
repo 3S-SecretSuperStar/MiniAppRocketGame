@@ -69,6 +69,8 @@ const MainPage = () => {
   const [betStopRef, setBetStopRef] = useState(0);
   const [currentResult, setCurrentResult] = useState(1);
   const [gameRunning, setGameRunning] = useAtom(gameRunningState);
+  const [betAuto, setBetAuto]= useState(1)
+  const [betManual, setBetManual]= useState(1)
   let performTask = [];
   let testCounter = 0;
 
@@ -704,6 +706,7 @@ const MainPage = () => {
                   <InputNumber InputProps={{
                     value: betManualRef.current, min: 1, step: 1, disabled: gamePhase === 'started', onChange: e => {
                       realBetRef.current = betManualRef.current = parseFloat(e.target.value)
+                      setBetManual(e.target.value)
                     }
                   }} />
                   <div className="text-xs leading-[14px] text-[#FFFFFFCC]  z-10">Minimal Bet is 1 Coin</div>
@@ -732,7 +735,7 @@ const MainPage = () => {
                         balance === '0.00' ||
                         realBetRef.current < 1 || autoStop < 1.1 ||
                         balance < 1 || isNaN(realBetRef.current) || isNaN(autoStop) || isNaN(winCoefficient)
-                        || isNaN(lostCoefficient) || autoMode && betAutoRef.current > balance || !autoMode && betManualRef.current > balance
+                        || isNaN(lostCoefficient) || autoMode && betAuto > balance || !autoMode && betManual > balance
                       }
                     />
                   </div>
@@ -754,7 +757,8 @@ const MainPage = () => {
                       <div className="text-sm leading-5">Bet</div>
                       <InputNumber InputProps={{
                         value: betAutoRef.current, min: 1, step: 1, onChange: e => {
-                          realBetRef.current = betAutoRef.current = parseFloat(e.target.value)
+                          realBetRef.current = betAutoRef.current = parseFloat(e.target.value),
+                          setBetAuto(e.target.value)
                         }
                       }} />
                       <div className="text-xs leading-[14px] text-[#FFFFFFCC]">Minimal Bet is 1 Coin</div>
@@ -797,7 +801,7 @@ const MainPage = () => {
                         disabled={
                           balance === '0.00' || realBetRef.current < 1 || autoStop < 1.1 ||
                           balance < 1 || isNaN(realBetRef.current) || isNaN(autoStop) || isNaN(winCoefficient)
-                          || isNaN(lostCoefficient) || autoMode && betAutoRef.current > balance || !autoMode && betManualRef.current > balance
+                          || isNaN(lostCoefficient) || autoMode && betAuto > balance || !autoMode && betManual > balance
                         }
                       />
                     ) :
