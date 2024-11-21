@@ -728,7 +728,7 @@ const MainPage = () => {
                         balance === '0.00' ||
                         realBetRef.current < 1 || autoStop < 1.1 ||
                         balance < 1 || isNaN(realBetRef.current) || isNaN(autoStop) || isNaN(winCoefficient)
-                        || isNaN(lostCoefficient) 
+                        || isNaN(lostCoefficient) || betAutoRef.current > balance
                       }
                     />
                   </div>
@@ -794,7 +794,7 @@ const MainPage = () => {
                         disabled={
                           balance === '0.00' || realBetRef.current < 1 || autoStop < 1.1 ||
                           balance < 1 || isNaN(realBetRef.current) || isNaN(autoStop) || isNaN(winCoefficient)
-                          || isNaN(lostCoefficient) 
+                          || isNaN(lostCoefficient) || betAutoRef.current > balance
                         }
                       />
                     ) :
