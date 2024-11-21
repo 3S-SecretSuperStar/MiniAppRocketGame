@@ -130,10 +130,12 @@ const MainPage = () => {
       if (realBetRef.current < 1 || isNaN(realBetRef.current)) {
         betAutoRef.current = 1;
         betManualRef.current = 1;
-      } else if (realBetRef.current > balance && balance !== '0.00') {
-        betAutoRef.current = parseFloat(balance)
-        betManualRef.current = parseFloat(balance)
       }
+      // } else if (realBetRef.current > balance && balance !== '0.00') {
+      //   // betAutoRef.current = parseFloat(balance)
+      //   // betManualRef.current = parseFloat(balance)
+
+      // }
 
       if (autoStop < 1.1) {
         setAutoStop(1.1)
