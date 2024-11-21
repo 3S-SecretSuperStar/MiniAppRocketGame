@@ -612,6 +612,7 @@ const MainPage = () => {
     setAutoMode(condition);
     setIsModalOpen(condition);
     betAutoRef.current = realBetRef.current;
+    setBetAuto(realBetRef.current)
   }
 
   const goToUserInfo = () => {
