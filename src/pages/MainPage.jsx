@@ -634,7 +634,7 @@ const MainPage = () => {
     setInfoState(true)
   }
 
-  console.log("test bet auto ref",betAutoRef.current, balance)
+  console.log("test bet auto ref", betAutoRef.current, balance)
 
   return (
     <>
@@ -703,7 +703,7 @@ const MainPage = () => {
                   <div className="text-sm leading-5  z-10">Bet</div>
                   <InputNumber InputProps={{
                     value: betManualRef.current, min: 1, step: 1, disabled: gamePhase === 'started', onChange: e => {
-                      realBetRef.current =betManualRef.current = parseFloat(e.target.value)
+                      realBetRef.current = betManualRef.current = parseFloat(e.target.value)
                     }
                   }} />
                   <div className="text-xs leading-[14px] text-[#FFFFFFCC]  z-10">Minimal Bet is 1 Coin</div>
@@ -732,7 +732,7 @@ const MainPage = () => {
                         balance === '0.00' ||
                         realBetRef.current < 1 || autoStop < 1.1 ||
                         balance < 1 || isNaN(realBetRef.current) || isNaN(autoStop) || isNaN(winCoefficient)
-                        || isNaN(lostCoefficient) || autoMode && betAutoRef.current > balance ||!autoMode && betManualRef.current>balance
+                        || isNaN(lostCoefficient) || autoMode && betAutoRef.current > balance || !autoMode && betManualRef.current > balance
                       }
                     />
                   </div>
@@ -797,7 +797,7 @@ const MainPage = () => {
                         disabled={
                           balance === '0.00' || realBetRef.current < 1 || autoStop < 1.1 ||
                           balance < 1 || isNaN(realBetRef.current) || isNaN(autoStop) || isNaN(winCoefficient)
-                          || isNaN(lostCoefficient) || betAutoRef.current > balance
+                          || isNaN(lostCoefficient) || autoMode && betAutoRef.current > balance || !autoMode && betManualRef.current > balance
                         }
                       />
                     ) :
