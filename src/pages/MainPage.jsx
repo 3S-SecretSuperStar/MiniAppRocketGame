@@ -220,7 +220,7 @@ const MainPage = () => {
   useEffect(() => {
     const headers = new Headers()
     headers.append('Content-Type', 'application/json')
-    fetch(`${serverUrl}/get_task`, { method: 'POST', body: JSON.stringify({userId:user.UserId}), headers })
+    fetch(`${serverUrl}/get_task`, { method: 'POST', body: JSON.stringify({ userId: user.UserId }), headers })
       .then(res => Promise.all([res.status, res.json()]))
       .then(([status, data]) => {
         try {
@@ -449,6 +449,10 @@ const MainPage = () => {
   }
 
   const handleGameStarted = () => {
+    if (realBetRef.current > balanceRef.current) {
+      setGameRunning(false);
+      return;
+    }
     setFirstLogin(false)
     setWinstate(false)
     const animation = document.getElementById('stars').style.animation;
@@ -652,7 +656,7 @@ const MainPage = () => {
                 <p className="font-semibold text-ellipsis overflow-hidden w-32 whitespace-nowrap">{user.RealName}</p>
                 <p className="font-semibold whitespace-nowrap">{user.Ranking} · {RANKINGDATA.indexOf(user.Ranking) + 1}/10</p>
                 {user.Rank ? <p className="text-[#ffffff99]">{user.Rank} </p>
-                  : <SkeletonOne/>}
+                  : <SkeletonOne />}
               </div>
             </div>
             <div className="flex flex-col gap-2">
