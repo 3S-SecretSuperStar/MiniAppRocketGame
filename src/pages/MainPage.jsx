@@ -633,6 +633,9 @@ const MainPage = () => {
     setTabId(1);
     setInfoState(true)
   }
+
+  console.log("test bet auto ref",betAutoRef.current, balance)
+
   return (
     <>
       <div className="flex-auto p-4">
