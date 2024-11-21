@@ -105,7 +105,7 @@ const MainPage = () => {
 
   const handleModalButton = () => {
     handleStartGame();
-    betAutoRef.current = 
+    betAutoRef.current = realBetRef.current
     setIsModalOpen(false);
   }
 
@@ -614,7 +614,7 @@ const MainPage = () => {
   const setPlayMode = (condition) => {
     setAutoMode(condition);
     setIsModalOpen(condition);
-    betAutoRef.current = realBetRef.current
+    betAutoRef.current = realBetRef.current;
   }
 
   const goToUserInfo = () => {
