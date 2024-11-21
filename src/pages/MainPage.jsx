@@ -706,7 +706,7 @@ const MainPage = () => {
                   <InputNumber InputProps={{
                     value: betManualRef.current, min: 1, step: 1, disabled: gamePhase === 'started', onChange: e => {
                       realBetRef.current = betManualRef.current = parseFloat(e.target.value)
-                      setBetManual(e.target.value)
+                      setBetManual(parseFloat(e.target.value))
                     }
                   }} />
                   <div className="text-xs leading-[14px] text-[#FFFFFFCC]  z-10">Minimal Bet is 1 Coin</div>
@@ -758,7 +758,7 @@ const MainPage = () => {
                       <InputNumber InputProps={{
                         value: betAutoRef.current, min: 1, step: 1, onChange: e => {
                           realBetRef.current = betAutoRef.current = parseFloat(e.target.value),
-                          setBetAuto(e.target.value)
+                          setBetAuto(parseFloat(e.target.value))
                         }
                       }} />
                       <div className="text-xs leading-[14px] text-[#FFFFFFCC]">Minimal Bet is 1 Coin</div>
