@@ -109,6 +109,7 @@ const MainPage = () => {
   }
 
   const handleStartGame = () => {
+    console.log("checkBetAutoRef", betAutoRef.current, ":", balanceRef.current);
     console.log("checkRealBetRef", realBetRef.current, ":", balanceRef.current);
     const currentBet =
       autoMode
@@ -728,7 +729,7 @@ const MainPage = () => {
                         balance === '0.00' ||
                         realBetRef.current < 1 || autoStop < 1.1 ||
                         balance < 1 || isNaN(realBetRef.current) || isNaN(autoStop) || isNaN(winCoefficient)
-                        || isNaN(lostCoefficient) || betAutoRef.current > balance
+                        || isNaN(lostCoefficient) || autoMode && betAutoRef.current > balance ||!autoMode && betManualRef.current>balance
                       }
                     />
                   </div>
@@ -750,8 +751,7 @@ const MainPage = () => {
                       <div className="text-sm leading-5">Bet</div>
                       <InputNumber InputProps={{
                         value: betAutoRef.current, min: 1, step: 1, onChange: e => {
-                          realBetRef.current = e.target.value;
-                          betAutoRef.current = parseFloat(e.target.value)
+                          realBetRef.current = betAutoRef.current = parseFloat(e.target.value)
                         }
                       }} />
                       <div className="text-xs leading-[14px] text-[#FFFFFFCC]">Minimal Bet is 1 Coin</div>
