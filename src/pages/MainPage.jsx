@@ -636,7 +636,7 @@ const MainPage = () => {
     setInfoState(true)
   }
 
-  console.log("test bet auto ref", betAutoRef.current, balance)
+  console.log("test bet auto ref", betAuto, balance)
 
   return (
     <>
