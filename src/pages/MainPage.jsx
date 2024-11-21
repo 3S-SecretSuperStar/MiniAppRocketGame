@@ -105,7 +105,6 @@ const MainPage = () => {
 
   const handleModalButton = () => {
     handleStartGame();
-    betAutoRef.current = realBetRef.current
     setIsModalOpen(false);
   }
 
@@ -132,11 +131,6 @@ const MainPage = () => {
         betAutoRef.current = 1;
         betManualRef.current = 1;
       }
-      // } else if (realBetRef.current > balance && balance !== '0.00') {
-      //   // betAutoRef.current = parseFloat(balance)
-      //   // betManualRef.current = parseFloat(balance)
-
-      // }
 
       if (autoStop < 1.1) {
         setAutoStop(1.1)
@@ -705,8 +699,7 @@ const MainPage = () => {
                   <div className="text-sm leading-5  z-10">Bet</div>
                   <InputNumber InputProps={{
                     value: betManualRef.current, min: 1, step: 1, disabled: gamePhase === 'started', onChange: e => {
-                      realBetRef.current = e.target.value;
-                      betManualRef.current = parseFloat(e.target.value)
+                      realBetRef.current =betManualRef.current = parseFloat(e.target.value)
                     }
                   }} />
                   <div className="text-xs leading-[14px] text-[#FFFFFFCC]  z-10">Minimal Bet is 1 Coin</div>
@@ -735,7 +728,7 @@ const MainPage = () => {
                         balance === '0.00' ||
                         realBetRef.current < 1 || autoStop < 1.1 ||
                         balance < 1 || isNaN(realBetRef.current) || isNaN(autoStop) || isNaN(winCoefficient)
-                        || isNaN(lostCoefficient) || realBetRef.current > balance
+                        || isNaN(lostCoefficient) 
                       }
                     />
                   </div>
@@ -801,7 +794,7 @@ const MainPage = () => {
                         disabled={
                           balance === '0.00' || realBetRef.current < 1 || autoStop < 1.1 ||
                           balance < 1 || isNaN(realBetRef.current) || isNaN(autoStop) || isNaN(winCoefficient)
-                          || isNaN(lostCoefficient) || realBetRef.current > balance
+                          || isNaN(lostCoefficient) 
                         }
                       />
                     ) :
