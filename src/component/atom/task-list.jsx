@@ -132,8 +132,14 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
     })
   };
 
-
-
+  const showAdButton = (taskIndex) => {
+    show_8545698().then(() => {
+      fetch(`${serverUrl}/add_perform_list`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, performTask: [taskIndex], isReal: isReal }), headers })
+        .then(() => {
+          alert('You have seen ad ad!');
+        })
+    })
+  }
 
   const goClaim = () => {
     setClaimStateList((prev) => [...prev, task.index])
@@ -198,7 +204,7 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
   const followHandle = (index) => {
     setIsPending(true)
     window.open(task.link, '_blank')
-    task.index!==31 && fetch(`${serverUrl}/add_perform_list`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, performTask: [task.index,], isReal: isReal }), headers })
+    task.index !== 31 && fetch(`${serverUrl}/add_perform_list`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, performTask: [task.index,], isReal: isReal }), headers })
     setTimeout(() => {
       fetchData()
     }, 1000 * 60)
@@ -217,38 +223,44 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
       {
         task.status === 1 ?
           task.link === null || task.link === "" ?
-            task.index === 25 || task.index === 26 && !wallet ?
-              <Link to={'/wallet'}>
-                <button className="rounded-lg w-[61px] py-1 px-0 h-7 bg-mainFocus text-white text-center text-[14px]" >
-                  Start
-                </button>
-              </Link> :
-              (task.index === 26 && wallet) ?
-                <button className="rounded-lg w-[61px] py-1 px-0 h-7 bg-mainFocus text-white text-center text-[14px]" onClick={() => sendTransaction(500)} >
-                  Start
-                </button> :
-                <Link to={'/play'}>
+            task.index === 33 ?
+              <button className="rounded-lg w-[61px] py-1 px-0 h-7 bg-mainFocus text-white text-center text-[14px]"
+                onClick={() => showAdButton(task.index)} >
+                Start
+              </button>
+              :
+              task.index === 25 || task.index === 26 && !wallet ?
+                <Link to={'/wallet'}>
                   <button className="rounded-lg w-[61px] py-1 px-0 h-7 bg-mainFocus text-white text-center text-[14px]" >
                     Start
                   </button>
                 </Link> :
+                (task.index === 26 && wallet) ?
+                  <button className="rounded-lg w-[61px] py-1 px-0 h-7 bg-mainFocus text-white text-center text-[14px]" onClick={() => sendTransaction(500)} >
+                    Start
+                  </button> :
+                  <Link to={'/play'}>
+                    <button className="rounded-lg w-[61px] py-1 px-0 h-7 bg-mainFocus text-white text-center text-[14px]" >
+                      Start
+                    </button>
+                  </Link> :
 
             // task.index === 31 ?
             //   <button className="rounded-lg w-[61px] py-1 px-0 h-7 bg-mainFocus text-white text-center text-[14px]" 
             //   onClick={() => goDisabale} disabled ={disableList.includes(task.index)} >
             //     Start
             //   </button> :
-              <button className="rounded-lg w-[61px] py-1 px-0 h-7 bg-mainFocus text-white text-center text-[14px]"
-                onClick={() => followHandle(task.index)} >
-                {
-                  isPending ?
-                    <div className="flex w-full items-center text-center justify-center gap-1">
-                      <LoadingSpinner className="w-4 h-4  my-auto mx-0 stroke-white" />
-                      Wait
-                    </div> :
-                    "Start"
-                }
-              </button>
+            <button className="rounded-lg w-[61px] py-1 px-0 h-7 bg-mainFocus text-white text-center text-[14px]"
+              onClick={() => followHandle(task.index)} >
+              {
+                isPending ?
+                  <div className="flex w-full items-center text-center justify-center gap-1">
+                    <LoadingSpinner className="w-4 h-4  my-auto mx-0 stroke-white" />
+                    Wait
+                  </div> :
+                  "Start"
+              }
+            </button>
 
 
           :
