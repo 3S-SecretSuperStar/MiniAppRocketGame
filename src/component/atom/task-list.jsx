@@ -41,7 +41,7 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
   headers.append('Content-Type', 'application/json')
   const adminWalletAddress = ADMIN_WALLET_ADDRESS;
 
-  const ShowAdButton = (taskIndex) => {
+  const ShowAdButton = ({taskIndex}) => {
     // useEffect(() => {
     //   if (window.show_8545698) { return };
     //   const tag = document.createElement('script');
