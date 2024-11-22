@@ -18,30 +18,7 @@ import UserInfoSkeleton from "./userInfoSkeleton";
 const serverUrl = REACT_APP_SERVER;
 
 
-const ShowAdButton = () => {
-  useEffect(() => {
-    if (window.show_8545698) { return };
-    const tag = document.createElement('script');
-    tag.src = '//jagnaimsee.net/vignette.min.js';
-    tag.dataset.zone = '8545698';
-    tag.dataset.sdk = 'show_8545698';
-    document.body.appendChild(tag)
-  }, []);
-  // const showAd = () => { show_8545698().then(() => { alert('You have seen an ad!') }) };
-  const showAd = () => {
-    show_8545698().then(() => {
-      console.log("show button req")
-      fetch(`${serverUrl}/add_perform_list`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, performTask: [taskIndex], isReal: isReal }), headers })
-      .then(res => Promise.all([res.status, res.json()]))
-      .then(() => { stateTask() })
-    })
-  };
-  // return <button onClick={showAd}>Show ad</button>
-  return <button className="rounded-lg w-[61px] py-1 px-0 h-7 bg-mainFocus text-white text-center text-[14px]"
-    onClick={showAd} >
-    Start
-  </button>
-}
+
 
 
 const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claimStateList, setClaimStateList, disableList, setDisableList }) => {
@@ -64,6 +41,33 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
   headers.append('Content-Type', 'application/json')
   const adminWalletAddress = ADMIN_WALLET_ADDRESS;
 
+  const ShowAdButton = () => {
+    // useEffect(() => {
+    //   if (window.show_8545698) { return };
+    //   const tag = document.createElement('script');
+    //   tag.src = '//jagnaimsee.net/vignette.min.js';
+    //   tag.dataset.zone = '8545698';
+    //   tag.dataset.sdk = 'show_8545698';
+    //   document.body.appendChild(tag)
+    // }, []);
+    // const showAd = () => { show_8545698().then(() => { alert('You have seen an ad!') }) };
+    const showAd = () => {
+      show_8545698().then(() => {
+        console.log("show button req")
+        fetch(`${serverUrl}/add_perform_list`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, performTask: [taskIndex], isReal: isReal }), headers })
+          .then(res => Promise.all([res.status, res.json()]))
+          .then(() => {
+            console.log("refresh data")
+            stateTask()
+          })
+      })
+    };
+    // return <button onClick={showAd}>Show ad</button>
+    return <button className="rounded-lg w-[61px] py-1 px-0 h-7 bg-mainFocus text-white text-center text-[14px]"
+      onClick={showAd} >
+      Start
+    </button>
+  }
   const addPerformList = async (performTask) => {
     const headers = new Headers();
     headers.append('Content-Type', 'application/json')
