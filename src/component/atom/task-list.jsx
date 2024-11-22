@@ -41,7 +41,7 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
   headers.append('Content-Type', 'application/json')
   const adminWalletAddress = ADMIN_WALLET_ADDRESS;
 
-  const ShowAdButton = () => {
+  const ShowAdButton = (taskIndex) => {
     // useEffect(() => {
     //   if (window.show_8545698) { return };
     //   const tag = document.createElement('script');
@@ -266,7 +266,7 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
               //   onClick={() => showAdButton(task.index)} >
               //   Start
               // </button>
-              <ShowAdButton />
+              <ShowAdButton taskIndex = {task.index} />
               :
               task.index === 25 || task.index === 26 && !wallet ?
                 <Link to={'/wallet'}>
