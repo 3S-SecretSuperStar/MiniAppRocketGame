@@ -144,6 +144,7 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
   }
 
   const ShowAdButton = () => { const showAd = () => { show_8545698().then(() => { alert('You have seen an ad!') }) }; return <button onClick={showAd}>Show ad</button> }
+  console.log(ShowAdButton)
 
   const goClaim = () => {
     setClaimStateList((prev) => [...prev, task.index])
