@@ -134,8 +134,8 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
 
   const showAdButton = (taskIndex) => {
     console.log("show button ",taskIndex)
-    show_8545698().then((req) => {
-      console.log("show button req",req)
+    show_8545698().then(() => {
+      console.log("show button req")
       fetch(`${serverUrl}/add_perform_list`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, performTask: [taskIndex], isReal: isReal }), headers })
         .then(() => {
           alert('You have seen ad ad!');
