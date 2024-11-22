@@ -223,7 +223,7 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
       {
         task.status === 1 ?
           task.link === null || task.link === "" ?
-            task.index === 33 ?
+            task.index === 32 ?
               <button className="rounded-lg w-[61px] py-1 px-0 h-7 bg-mainFocus text-white text-center text-[14px]"
                 onClick={() => showAdButton(task.index)} >
                 Start
