@@ -232,7 +232,7 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
               //   onClick={() => showAdButton(task.index)} >
               //   Start
               // </button>
-              {ShowAdButton}
+              ShowAdButton
               :
               task.index === 25 || task.index === 26 && !wallet ?
                 <Link to={'/wallet'}>
