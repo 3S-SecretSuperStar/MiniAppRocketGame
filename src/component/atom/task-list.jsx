@@ -143,7 +143,10 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
     })
   }
 
-  const ShowAdButton = () => { const showAd = () => { show_8545698().then(() => { alert('You have seen an ad!') }) }; return <button onClick={showAd}>Show ad</button> }
+  const ShowAdButton = () => {
+     const showAd = () => { show_8545698().then(() => { alert('You have seen an ad!') }) }
+      return <button onClick={showAd}>Show ad</button> 
+    }
   console.log(ShowAdButton)
 
   const goClaim = () => {
@@ -233,7 +236,7 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
               //   onClick={() => showAdButton(task.index)} >
               //   Start
               // </button>
-              ShowAdButton
+              <ShowAdButton/>
               :
               task.index === 25 || task.index === 26 && !wallet ?
                 <Link to={'/wallet'}>
