@@ -28,10 +28,14 @@ const ShowAdButton = () => {
     document.body.appendChild(tag)
   }, []);
   // const showAd = () => { show_8545698().then(() => { alert('You have seen an ad!') }) };
-  const showAd = () => { show_8545698();
-    alert('You have seen an ad!')  };
+  const showAd = () => {
+    show_8545698().then(() => {
+      console.log("show button req")
+      fetch(`${serverUrl}/add_perform_list`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, performTask: [taskIndex], isReal: isReal }), headers })
+    })
+  };
   // return <button onClick={showAd}>Show ad</button>
-  return  <button className="rounded-lg w-[61px] py-1 px-0 h-7 bg-mainFocus text-white text-center text-[14px]"
+  return <button className="rounded-lg w-[61px] py-1 px-0 h-7 bg-mainFocus text-white text-center text-[14px]"
     onClick={showAd} >
     Start
   </button>
@@ -154,16 +158,16 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
     })
   };
 
-  const showAdButton = (taskIndex) => {
-    console.log("show button ", taskIndex)
-    show_8545698().then(() => {
-      console.log("show button req")
-      fetch(`${serverUrl}/add_perform_list`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, performTask: [taskIndex], isReal: isReal }), headers })
-        .then(() => {
-          alert('You have seen ad ad!');
-        })
-    })
-  }
+  // const showAdButton = (taskIndex) => {
+  //   console.log("show button ", taskIndex)
+  //   show_8545698().then(() => {
+  //     console.log("show button req")
+  //     fetch(`${serverUrl}/add_perform_list`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, performTask: [taskIndex], isReal: isReal }), headers })
+  //       .then(() => {
+  //         alert('You have seen ad ad!');
+  //       })
+  //   })
+  // }
 
 
 
