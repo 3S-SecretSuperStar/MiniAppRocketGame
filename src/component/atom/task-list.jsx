@@ -30,7 +30,11 @@ const ShowAdButton = () => {
   // const showAd = () => { show_8545698().then(() => { alert('You have seen an ad!') }) };
   const showAd = () => { show_8545698();
     alert('You have seen an ad!')  };
-  return <button onClick={showAd}>Show ad</button>
+  // return <button onClick={showAd}>Show ad</button>
+  return  <button className="rounded-lg w-[61px] py-1 px-0 h-7 bg-mainFocus text-white text-center text-[14px]"
+    onClick={showAd} >
+    Start
+  </button>
 }
 
 
