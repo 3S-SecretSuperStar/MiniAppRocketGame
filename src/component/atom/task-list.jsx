@@ -27,7 +27,9 @@ const ShowAdButton = () => {
     tag.dataset.sdk = 'show_8545698';
     document.body.appendChild(tag)
   }, []);
-  const showAd = () => { show_8545698().then(() => { alert('You have seen an ad!') }) };
+  // const showAd = () => { show_8545698().then(() => { alert('You have seen an ad!') }) };
+  const showAd = () => { show_8545698();
+    alert('You have seen an ad!')  };
   return <button onClick={showAd}>Show ad</button>
 }
 
