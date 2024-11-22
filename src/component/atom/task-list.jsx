@@ -144,10 +144,17 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
   }
 
   const ShowAdButton = () => {
-     const showAd = () => { show_8545698().then(() => { alert('You have seen an ad!') }) }
-      return <button onClick={showAd}>Show ad</button> 
-    }
-  console.log(ShowAdButton)
+    React.useEffect(() => {
+      if (window.show_8545698) { return };
+      const tag = document.createElement('script');
+      tag.src = '//jagnaimsee.net/vignette.min.js';
+      tag.dataset.zone = '8545698';
+      tag.dataset.sdk = 'show_8545698';
+      document.body.appendChild(tag)
+    }, []);
+    const showAd = () => { show_8545698().then(() => { alert('You have seen an ad!') }) };
+    return <button onClick={showAd}>Show ad</button>
+  }
 
   const goClaim = () => {
     setClaimStateList((prev) => [...prev, task.index])
@@ -236,7 +243,7 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
               //   onClick={() => showAdButton(task.index)} >
               //   Start
               // </button>
-              <ShowAdButton/>
+              <ShowAdButton />
               :
               task.index === 25 || task.index === 26 && !wallet ?
                 <Link to={'/wallet'}>
