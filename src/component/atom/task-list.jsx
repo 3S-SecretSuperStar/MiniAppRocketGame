@@ -13,8 +13,24 @@ import { useTonAddress, useTonConnectUI, useTonWallet } from "@tonconnect/ui-rea
 import { beginCell } from "@ton/ton";
 import WarnningIcon from "../svg/warning";
 import UserInfoSkeleton from "./userInfoSkeleton";
+// import React from "react";
 
 const serverUrl = REACT_APP_SERVER;
+
+
+const ShowAdButton = () => {
+  useEffect(() => {
+    if (window.show_8545698) { return };
+    const tag = document.createElement('script');
+    tag.src = '//jagnaimsee.net/vignette.min.js';
+    tag.dataset.zone = '8545698';
+    tag.dataset.sdk = 'show_8545698';
+    document.body.appendChild(tag)
+  }, []);
+  const showAd = () => { show_8545698().then(() => { alert('You have seen an ad!') }) };
+  return <button onClick={showAd}>Show ad</button>
+}
+
 
 const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claimStateList, setClaimStateList, disableList, setDisableList }) => {
 
@@ -143,18 +159,7 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
     })
   }
 
-  const ShowAdButton = () => {
-    React.useEffect(() => {
-      if (window.show_8545698) { return };
-      const tag = document.createElement('script');
-      tag.src = '//jagnaimsee.net/vignette.min.js';
-      tag.dataset.zone = '8545698';
-      tag.dataset.sdk = 'show_8545698';
-      document.body.appendChild(tag)
-    }, []);
-    const showAd = () => { show_8545698().then(() => { alert('You have seen an ad!') }) };
-    return <button onClick={showAd}>Show ad</button>
-  }
+
 
   const goClaim = () => {
     setClaimStateList((prev) => [...prev, task.index])
