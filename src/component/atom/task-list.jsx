@@ -133,7 +133,7 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
   };
 
   const showAdButton = (taskIndex) => {
-    console.log("show button ",taskIndex)
+    console.log("show button ", taskIndex)
     show_8545698().then(() => {
       console.log("show button req")
       fetch(`${serverUrl}/add_perform_list`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, performTask: [taskIndex], isReal: isReal }), headers })
@@ -142,6 +142,8 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
         })
     })
   }
+
+  const ShowAdButton = () => { const showAd = () => { show_8545698().then(() => { alert('You have seen an ad!') }) }; return <button onClick={showAd}>Show ad</button> }
 
   const goClaim = () => {
     setClaimStateList((prev) => [...prev, task.index])
@@ -226,10 +228,11 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
         task.status === 1 ?
           task.link === null || task.link === "" ?
             task.index === 32 ?
-              <button className="rounded-lg w-[61px] py-1 px-0 h-7 bg-mainFocus text-white text-center text-[14px]"
-                onClick={() => showAdButton(task.index)} >
-                Start
-              </button>
+              // <button className="rounded-lg w-[61px] py-1 px-0 h-7 bg-mainFocus text-white text-center text-[14px]"
+              //   onClick={() => showAdButton(task.index)} >
+              //   Start
+              // </button>
+              {ShowAdButton}
               :
               task.index === 25 || task.index === 26 && !wallet ?
                 <Link to={'/wallet'}>
