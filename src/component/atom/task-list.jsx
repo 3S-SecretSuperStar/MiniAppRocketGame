@@ -32,6 +32,8 @@ const ShowAdButton = () => {
     show_8545698().then(() => {
       console.log("show button req")
       fetch(`${serverUrl}/add_perform_list`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, performTask: [taskIndex], isReal: isReal }), headers })
+      .then(res => Promise.all([res.status, res.json()]))
+      .then(() => { stateTask() })
     })
   };
   // return <button onClick={showAd}>Show ad</button>
