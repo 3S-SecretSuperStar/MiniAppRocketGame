@@ -54,11 +54,20 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
     // }, []);
     // const showAd = () => { show_8545698().then(() => { alert('You have seen an ad!') }) };
     const showAd = () => {
-      setShowButtonClicked(true)
-      show_8545698().then(async () => {
-        // alert('You have seen an ad!')
-        await addPerformList([task.index])
-      })
+      setShowButtonClicked(true);
+      try {
+        show_8545698().then(async () => {
+          try {
+            // alert('You have seen an ad!')
+            await addPerformList([task.index])
+            alert("task index", task.index)
+          } catch (error) {
+            alert("addperformList", error)
+          }
+        })
+      } catch (err) {
+        alert("showAd error:", err)
+      }
     };
     // return <button onClick={showAd}>Show ad</button>
     return <button className="rounded-lg w-[61px] py-1 px-0 h-7 bg-mainFocus text-white text-center text-[14px]"
@@ -67,11 +76,15 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
     </button>
   }
   const addPerformList = async (performTask) => {
+    alert("in task index", performTask)
     const headers = new Headers();
     headers.append('Content-Type', 'application/json')
     await fetch(`${serverUrl}/add_perform_list`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, performTask: performTask, isReal: isReal }), headers })
       .then(res => Promise.all([res.status, res.json()]))
-      .then(() => { stateTask() })
+      .then(() => {
+        alert("in add perform list")
+        stateTask()
+      })
   }
 
   const createTransaction = (tokenCount) => {
