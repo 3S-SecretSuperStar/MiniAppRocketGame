@@ -42,7 +42,7 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
   const adminWalletAddress = ADMIN_WALLET_ADDRESS;
 
   const ShowAdButton = () => {
-    const [showButtonClicked, setShowButtonClicked] = false;
+    const [showButtonClicked, setShowButtonClicked] = useState(false);
     console.log(task.index)
     // useEffect(() => {
     //   if (window.show_8545698) { return };
