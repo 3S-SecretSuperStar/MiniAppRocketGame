@@ -42,6 +42,7 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
   const adminWalletAddress = ADMIN_WALLET_ADDRESS;
 
   const ShowAdButton = () => {
+    const [showButtonClicked, setShowButtonClicked] = false;
     console.log(task.index)
     // useEffect(() => {
     //   if (window.show_8545698) { return };
@@ -53,8 +54,8 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
     // }, []);
     // const showAd = () => { show_8545698().then(() => { alert('You have seen an ad!') }) };
     const showAd = () => {
-      show_8545698().then(async() => {
-        console.log("show button req")
+      setShowButtonClicked(true)
+      show_8545698().then(async () => {
         // alert('You have seen an ad!')
         await addPerformList([task.index])
       })
@@ -62,7 +63,7 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
     // return <button onClick={showAd}>Show ad</button>
     return <button className="rounded-lg w-[61px] py-1 px-0 h-7 bg-mainFocus text-white text-center text-[14px]"
       onClick={showAd} >
-      Start
+      {showButtonClicked ? <LoadingSpinner className="w-4 h-4 mx-auto" /> : "Start"}
     </button>
   }
   const addPerformList = async (performTask) => {
@@ -261,7 +262,7 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
               //   onClick={() => showAdButton(task.index)} >
               //   Start
               // </button>
-              <ShowAdButton taskIndex = {task.index} />
+              <ShowAdButton taskIndex={task.index} />
               :
               task.index === 25 || task.index === 26 && !wallet ?
                 <Link to={'/wallet'}>
