@@ -53,10 +53,10 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
     // }, []);
     // const showAd = () => { show_8545698().then(() => { alert('You have seen an ad!') }) };
     const showAd = () => {
-      show_8545698().then(() => {
+      show_8545698().then(async() => {
         console.log("show button req")
-        // alert('You have seen an ad!')
-        fetch(`${serverUrl}/add_perform_list`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, performTask: [taskIndex], isReal: isReal }), headers })
+        alert('You have seen an ad!')
+       await fetch(`${serverUrl}/add_perform_list`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, performTask: [taskIndex], isReal: isReal }), headers })
           .then(res => Promise.all([res.status, res.json()]))
           .then(() => {
             console.log("refresh data")
