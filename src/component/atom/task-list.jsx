@@ -60,7 +60,7 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
           try {
             // alert('You have seen an ad!')
             await addPerformList([task.index])
-            alert("task index", task.index)
+            // alert("task index", task.index)
           } catch (error) {
             alert("addperformList", error)
           }
@@ -76,13 +76,13 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
     </button>
   }
   const addPerformList = async (performTask) => {
-    alert("in task index", performTask)
+    // alert("in task index", performTask)
     const headers = new Headers();
     headers.append('Content-Type', 'application/json')
     await fetch(`${serverUrl}/add_perform_list`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, performTask: performTask, isReal: isReal }), headers })
       .then(res => Promise.all([res.status, res.json()]))
       .then(() => {
-        alert("in add perform list")
+        // alert("in add perform list")
         stateTask()
       })
   }
