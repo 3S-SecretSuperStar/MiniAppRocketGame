@@ -62,7 +62,7 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
       }
     };
     // return <button onClick={showAd}>Show ad</button>
-    return <button className="rounded-lg w-[61px] py-1 px-0 h-7 bg-mainFocus text-white text-center text-[14px]"
+    return <button className={`rounded-lg w-[61px] py-1 px-0 h-7 bg-mainFocus text-white text-center text-[14px] ${showButtonClicked && 'bg-white'}`}
       onClick={showAd} >
       {showButtonClicked ? <LoadingSpinner className="w-4 h-4 mx-auto" /> : "Start"}
     </button>
