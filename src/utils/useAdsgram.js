@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useRef } from 'react';
 
 export function useAdsgram({ blockId, onReward, onError }) {
-  console.log(blockId, onReward, onError)
   const AdControllerRef = useRef(undefined);
 
   useEffect(() => {
@@ -14,11 +13,9 @@ export function useAdsgram({ blockId, onReward, onError }) {
         .show()
         .then(() => {
           // user watch ad till the end or close it in interstitial format
-          alert("success!")
           onReward();
         })
         .catch((result) => {
-          console.log("error result",result)
           // user get error during playing ad
           onError?.(result);
         });

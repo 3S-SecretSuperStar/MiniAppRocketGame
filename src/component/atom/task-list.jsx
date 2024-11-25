@@ -74,18 +74,21 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
     const onReward = useCallback(() => {
       alert('Reward');
       addPerformList([task.index])
-    },[]);
-    const onError = (result) => {
+    }, []);
+    const onError = useCallback((result) => {
       alert(JSON.stringify(result, null, 4));
-    };
+    }, []);
 
     /**
      * insert your-block-id
      */
     const showAd = () => {
+      try {
         setShowButtonClicked(true);
         useAdsgram({ blockId: 5562, onReward, onError });
-
+      } catch (err) {
+        alert("showAd error:", err)
+      }
     };
 
     return <button className="rounded-lg w-[61px] py-1 px-0 h-7 bg-mainFocus text-white text-center text-[14px]"
@@ -300,7 +303,7 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
   const followHandle = (index) => {
     setIsPending(true)
     window.open(task.link, '_blank')
-    (task.index !== 32 ||  task.index !== 36) && fetch(`${serverUrl}/add_perform_list`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, performTask: [task.index,], isReal: isReal }), headers })
+      (task.index !== 32 || task.index !== 36) && fetch(`${serverUrl}/add_perform_list`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, performTask: [task.index,], isReal: isReal }), headers })
     setTimeout(() => {
       fetchData()
     }, 1000 * 60)
