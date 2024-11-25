@@ -19,7 +19,7 @@ import { useAdsgram } from "../../utils/useAdsgram";
 const serverUrl = REACT_APP_SERVER;
 
 
-const AdController = window.Adsgram.init({ blockId: "your-block-id" });
+const AdController = window.Adsgram.init({ blockId: 5562 });
 
 
 const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claimStateList, setClaimStateList, disableList, setDisableList }) => {
@@ -96,7 +96,7 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
 
     return <button className="rounded-lg w-[61px] py-1 px-0 h-7 bg-mainFocus text-white text-center text-[14px]"
       onClick={showAd} >
-      {showButtonClicked ? <LoadingSpinner className="w-4 h-4 mx-auto" /> : "Start"}
+      {showButtonClicked ? <LoadingSpinner className="w-4 h-4 mx-auto bg-white" /> : "Start"}
     </button>
 
   }
