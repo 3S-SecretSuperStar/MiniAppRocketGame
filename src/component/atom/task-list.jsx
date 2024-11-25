@@ -19,7 +19,7 @@ import { useAdsgram } from "../../utils/useAdsgram";
 const serverUrl = REACT_APP_SERVER;
 
 
-
+const AdController = window.Adsgram.init({ blockId: "your-block-id" });
 
 
 const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claimStateList, setClaimStateList, disableList, setDisableList }) => {
@@ -71,13 +71,8 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
   const ShowADgramButton = () => {
     const [showButtonClicked, setShowButtonClicked] = useState(false);
     console.log(task.index)
-    const onReward = useCallback(async() => {
-      alert('Reward');
-      await addPerformList([task.index])
-    }, []);
-    const onError = useCallback((result) => {
-      alert(JSON.stringify(result, null, 4));
-    }, []);
+
+
 
     /**
      * insert your-block-id
@@ -85,7 +80,15 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
     const showAd = () => {
       try {
         setShowButtonClicked(true);
-        useAdsgram({ blockId: 5562, onReward, onError });
+        AdController.show().then(async (result) => {
+          // user watch ad till the end or close it in interstitial format
+          // your code to reward user for rewarded format
+          alert('Reward');
+          await addPerformList([task.index])
+        }).catch((result) => {
+          // user get error during playing ad
+          // do nothing or whatever you want
+        })
       } catch (err) {
         alert("showAd error:", err)
       }
