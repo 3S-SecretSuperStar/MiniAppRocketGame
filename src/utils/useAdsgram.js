@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef } from 'react';
 
 export function useAdsgram({ blockId, onReward, onError }) {
+  console.log(blockId, onReward, onError)
   const AdControllerRef = useRef(undefined);
 
   useEffect(() => {
@@ -17,6 +18,7 @@ export function useAdsgram({ blockId, onReward, onError }) {
           alert("success!")
         })
         .catch((result) => {
+          console.log("error result",result)
           // user get error during playing ad
           onError?.(result);
         });
