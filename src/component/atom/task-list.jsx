@@ -429,7 +429,7 @@ const TaskList = () => {
                     dailyDays = 0;
                   };
                 }
-                if (dailyADSDate === "") dailyADSState = 0;
+                if (dailyADSDate === "") dailyADSState = 1;
                 else {
                   const selectedDate = moment(dailyADSDate).utc().local().startOf('day');
                   const diffDate = nowDate.diff(selectedDate, 'days');
