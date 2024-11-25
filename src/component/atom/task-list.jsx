@@ -468,7 +468,7 @@ const TaskList = () => {
                       src: item.icon_url,
                       title: item.title,
                       amount: (item.amount + " Coins"),
-                      status: item.index === 34 ? dailyADSState===1 ? taskState[item.index]: dailyADSState : taskState[item.index],
+                      status: item.index === 34 ? (dailyADSState===1 ? taskState[item.index]: dailyADSState) : taskState[item.index],
                       link: item.link_url,
                       index: item.index,
                       sort: item.sort
