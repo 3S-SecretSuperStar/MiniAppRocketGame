@@ -14,8 +14,8 @@ export function useAdsgram({ blockId, onReward, onError }) {
         .show()
         .then(() => {
           // user watch ad till the end or close it in interstitial format
-          onReward();
           alert("success!")
+          onReward();
         })
         .catch((result) => {
           console.log("error result",result)

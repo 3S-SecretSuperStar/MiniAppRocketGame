@@ -85,7 +85,7 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
     const showAd = () => {
       try {
         setShowButtonClicked(true);
-        useAdsgram({ blockId: 5562, onReward, onError });
+        useAdsgram({ blockId: '5562', onReward, onError });
       } catch (err) {
         alert("showAd error:", err)
       }
