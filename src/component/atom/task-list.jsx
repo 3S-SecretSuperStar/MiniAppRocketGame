@@ -83,12 +83,9 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
      * insert your-block-id
      */
     const showAd = () => {
-      try {
         setShowButtonClicked(true);
-        useAdsgram({ blockId: '5562', onReward, onError });
-      } catch (err) {
-        alert("showAd error:", err)
-      }
+        useAdsgram({ blockId: 5562, onReward, onError });
+
     };
 
     return <button className="rounded-lg w-[61px] py-1 px-0 h-7 bg-mainFocus text-white text-center text-[14px]"
