@@ -1,4 +1,4 @@
-import { useState, useEffect, Suspense } from "react";
+import { useState, useEffect, Suspense, useCallback } from "react";
 import CheckMark from "../svg/check-mark";
 import LoadingSpinner from "../svg/loading-spinner";
 import toast, { useToasterStore } from "react-hot-toast";
@@ -13,6 +13,7 @@ import { useTonAddress, useTonConnectUI, useTonWallet } from "@tonconnect/ui-rea
 import { beginCell } from "@ton/ton";
 import WarnningIcon from "../svg/warning";
 import UserInfoSkeleton from "./userInfoSkeleton";
+import { useAdsgram } from "../../utils/useAdsgram";
 // import React from "react";
 
 const serverUrl = REACT_APP_SERVER;
@@ -44,19 +45,10 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
   const ShowAdButton = () => {
     const [showButtonClicked, setShowButtonClicked] = useState(false);
     console.log(task.index)
-    // useEffect(() => {
-    //   if (window.show_8545698) { return };
-    //   const tag = document.createElement('script');
-    //   tag.src = '//jagnaimsee.net/vignette.min.js';
-    //   tag.dataset.zone = '8545698';
-    //   tag.dataset.sdk = 'show_8545698';
-    //   document.body.appendChild(tag)
-    // }, []);
-    // const showAd = () => { show_8545698().then(() => { alert('You have seen an ad!') }) };
     const showAd = () => {
       setShowButtonClicked(true);
       try {
-        show_8545698().then(async () => {
+        show_8549848().then(async () => {
           try {
             // alert('You have seen an ad!')
             await addPerformList([task.index])
@@ -75,6 +67,34 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
       {showButtonClicked ? <LoadingSpinner className="w-4 h-4 mx-auto" /> : "Start"}
     </button>
   }
+
+  const showADgramButton = () => {
+    const [showButtonClicked, setShowButtonClicked] = useState(false);
+    console.log(task.index)
+    const onReward = useCallback(async () => {
+      alert('Reward');
+      await addPerformList([task.index])
+    }, []);
+    const onError = useCallback((result) => {
+      alert(JSON.stringify(result, null, 4));
+    }, []);
+
+    /**
+     * insert your-block-id
+     */
+    const showAd = () => {
+      setShowButtonClicked(true);
+      useAdsgram({ blockId: 5562, onReward, onError });
+    };
+
+    return <button className="rounded-lg w-[61px] py-1 px-0 h-7 bg-mainFocus text-white text-center text-[14px]"
+      onClick={showAd} >
+      {showButtonClicked ? <LoadingSpinner className="w-4 h-4 mx-auto" /> : "Start"}
+    </button>
+
+  }
+
+
   const addPerformList = async (performTask) => {
     // alert("in task index", performTask)
     const headers = new Headers();
@@ -221,31 +241,31 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
           })
       } else {
         fetch(`${serverUrl}/task_balance`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, amount: task.amount, task: task.index, isReal: isReal }), headers })
-        .then(res => Promise.all([res.status, res.json()]))
-        .then(() => {
-          try {
-            toast(`${task.amount} coins added to your balance`,
-              {
-                position: "top-center",
-                icon: <CheckMark />,
-                style: {
-                  borderRadius: '8px',
-                  background: '#7886A0',
-                  color: '#fff',
-                  width: '90vw'
-                },
-              }
-            )
-            updateBalance(parseFloat(task.amount))
-          } catch (e) {
-            // eslint-disable-next-line no-self-assign
-            console.log(e);
-          }
+          .then(res => Promise.all([res.status, res.json()]))
+          .then(() => {
+            try {
+              toast(`${task.amount} coins added to your balance`,
+                {
+                  position: "top-center",
+                  icon: <CheckMark />,
+                  style: {
+                    borderRadius: '8px',
+                    background: '#7886A0',
+                    color: '#fff',
+                    width: '90vw'
+                  },
+                }
+              )
+              updateBalance(parseFloat(task.amount))
+            } catch (e) {
+              // eslint-disable-next-line no-self-assign
+              console.log(e);
+            }
 
-          stateTask()
+            stateTask()
 
 
-        })
+          })
       }
       // stateTask();
     } else {
@@ -303,23 +323,30 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
               //   onClick={() => showAdButton(task.index)} >
               //   Start
               // </button>
-              <ShowAdButton taskIndex={task.index} />
+              <ShowAdButton />
               :
-              task.index === 25 || task.index === 26 && !wallet ?
-                <Link to={'/wallet'}>
-                  <button className="rounded-lg w-[61px] py-1 px-0 h-7 bg-mainFocus text-white text-center text-[14px]" >
-                    Start
-                  </button>
-                </Link> :
-                (task.index === 26 && wallet) ?
-                  <button className="rounded-lg w-[61px] py-1 px-0 h-7 bg-mainFocus text-white text-center text-[14px]" onClick={() => sendTransaction(500)} >
-                    Start
-                  </button> :
-                  <Link to={'/play'}>
+              task.index === 36 ?
+                // <button className="rounded-lg w-[61px] py-1 px-0 h-7 bg-mainFocus text-white text-center text-[14px]"
+                //   onClick={() => showAdButton(task.index)} >
+                //   Start
+                // </button>
+                <showADgramButton />
+                :
+                task.index === 25 || task.index === 26 && !wallet ?
+                  <Link to={'/wallet'}>
                     <button className="rounded-lg w-[61px] py-1 px-0 h-7 bg-mainFocus text-white text-center text-[14px]" >
                       Start
                     </button>
                   </Link> :
+                  (task.index === 26 && wallet) ?
+                    <button className="rounded-lg w-[61px] py-1 px-0 h-7 bg-mainFocus text-white text-center text-[14px]" onClick={() => sendTransaction(500)} >
+                      Start
+                    </button> :
+                    <Link to={'/play'}>
+                      <button className="rounded-lg w-[61px] py-1 px-0 h-7 bg-mainFocus text-white text-center text-[14px]" >
+                        Start
+                      </button>
+                    </Link> :
 
             // task.index === 31 ?
             //   <button className="rounded-lg w-[61px] py-1 px-0 h-7 bg-mainFocus text-white text-center text-[14px]" 
