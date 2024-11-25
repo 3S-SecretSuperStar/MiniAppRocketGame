@@ -408,7 +408,7 @@ const TaskList = () => {
                 else {
                   const selectedDate = moment(dailyADSDate).utc().local().startOf('day');
                   const diffDate = nowDate.diff(selectedDate, 'days');
-                  if (diffDate >= 1) dailyADSState = 0;
+                  if (diffDate >= 1) dailyADSState = 1;
                   else dailyADSState = 2;
                 }
               } catch (e) {
