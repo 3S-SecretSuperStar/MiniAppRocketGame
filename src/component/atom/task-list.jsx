@@ -194,7 +194,7 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
 
     if (task.index !== dailytaskIndex) {
 
-      if (task.index !== 34) {
+      if (task.index === 34) {
         fetch(`${serverUrl}/perform_dailyADS`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, isReal: isReal, amount: task.amount }), headers })
           .then(res => Promise.all([res.status, res.json()]))
           .then(() => {
