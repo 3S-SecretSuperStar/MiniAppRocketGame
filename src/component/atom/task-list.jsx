@@ -68,23 +68,27 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
     </button>
   }
 
-  const showADgramButton = () => {
+  const ShowADgramButton = () => {
     const [showButtonClicked, setShowButtonClicked] = useState(false);
     console.log(task.index)
-    const onReward = useCallback(async () => {
+    const onReward = async () => {
       alert('Reward');
       await addPerformList([task.index])
-    }, []);
-    const onError = useCallback((result) => {
+    };
+    const onError = (result) => {
       alert(JSON.stringify(result, null, 4));
-    }, []);
+    };
 
     /**
      * insert your-block-id
      */
     const showAd = () => {
-      setShowButtonClicked(true);
-      useAdsgram({ blockId: 5562, onReward, onError });
+      try {
+        setShowButtonClicked(true);
+        useAdsgram({ blockId: 5562, onReward, onError });
+      } catch (err) {
+        alert("showAd error:", err)
+      }
     };
 
     return <button className="rounded-lg w-[61px] py-1 px-0 h-7 bg-mainFocus text-white text-center text-[14px]"
@@ -330,7 +334,7 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
                 //   onClick={() => showAdButton(task.index)} >
                 //   Start
                 // </button>
-                <showADgramButton />
+                <ShowADgramButton />
                 :
                 task.index === 25 || task.index === 26 && !wallet ?
                   <Link to={'/wallet'}>
