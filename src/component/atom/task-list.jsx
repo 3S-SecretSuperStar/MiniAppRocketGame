@@ -74,7 +74,7 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
     const onReward = useCallback(async () => {
       alert('Reward');
       await addPerformList([task.index])
-    });
+    },[]);
     const onError = (result) => {
       alert(JSON.stringify(result, null, 4));
     };
