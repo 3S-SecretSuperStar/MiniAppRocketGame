@@ -193,7 +193,34 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
     // setIsClaim(true);
 
     if (task.index !== dailytaskIndex) {
-      fetch(`${serverUrl}/task_balance`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, amount: task.amount, task: task.index, isReal: isReal }), headers })
+
+      if (task.index !== 34) {
+        fetch(`${serverUrl}/perform_dailyADS`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, isReal: isReal, amount: task.amount }), headers })
+          .then(res => Promise.all([res.status, res.json()]))
+          .then(() => {
+            try {
+              toast(`${task.amount} coins added to your balance`,
+                {
+                  position: "top-center",
+                  icon: <CheckMark />,
+                  style: {
+                    borderRadius: '8px',
+                    background: '#7886A0',
+                    color: '#fff',
+                    width: '90vw'
+                  },
+                }
+              )
+              updateBalance(task.amount)
+            } catch (e) {
+              // eslint-disable-next-line no-self-assign
+              console.log(e);
+            }
+            stateTask()
+
+          })
+      } else {
+        fetch(`${serverUrl}/task_balance`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, amount: task.amount, task: task.index, isReal: isReal }), headers })
         .then(res => Promise.all([res.status, res.json()]))
         .then(() => {
           try {
@@ -219,32 +246,8 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
 
 
         })
+      }
       // stateTask();
-    } else if (task.index !== 34) {
-      fetch(`${serverUrl}/perform_dailyADS`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, isReal: isReal, amount: task.amount }), headers })
-        .then(res => Promise.all([res.status, res.json()]))
-        .then(() => {
-          try {
-            toast(`${task.amount} coins added to your balance`,
-              {
-                position: "top-center",
-                icon: <CheckMark />,
-                style: {
-                  borderRadius: '8px',
-                  background: '#7886A0',
-                  color: '#fff',
-                  width: '90vw'
-                },
-              }
-            )
-            updateBalance(task.amount)
-          } catch (e) {
-            // eslint-disable-next-line no-self-assign
-            console.log(e);
-          }
-          stateTask()
-
-        })
     } else {
       let dailyAmount = parseFloat(task.amount.split(" ")[0])
       fetch(`${serverUrl}/perform_dailyReward`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, isReal: isReal, amount: dailyAmount, consecutiveDays: user.DailyConsecutiveDays }), headers })
@@ -463,14 +466,14 @@ const TaskList = () => {
                     }
                   }
                   const _fixedTaskData = fixedTaskItems.map(item => {
-                    console.log("dailyADSState",dailyADSState)
-                    console.log("taskState",taskState[item.index])
+                    console.log("dailyADSState", dailyADSState)
+                    console.log("taskState", taskState[item.index])
 
                     return {
                       src: item.icon_url,
                       title: item.title,
                       amount: (item.amount + " Coins"),
-                      status: item.index === 34 ? (dailyADSState===1 ? taskState[item.index]: dailyADSState) : taskState[item.index],
+                      status: item.index === 34 ? (dailyADSState === 1 ? taskState[item.index] : dailyADSState) : taskState[item.index],
                       link: item.link_url,
                       index: item.index,
                       sort: item.sort
