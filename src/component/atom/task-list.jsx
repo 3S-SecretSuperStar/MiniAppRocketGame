@@ -220,6 +220,31 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
 
         })
       // stateTask();
+    } else if (task.index !== 34) {
+      fetch(`${serverUrl}/perform_dailyADS`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, isReal: isReal, amount: task.amount }), headers })
+        .then(res => Promise.all([res.status, res.json()]))
+        .then(() => {
+          try {
+            toast(`${task.amount} coins added to your balance`,
+              {
+                position: "top-center",
+                icon: <CheckMark />,
+                style: {
+                  borderRadius: '8px',
+                  background: '#7886A0',
+                  color: '#fff',
+                  width: '90vw'
+                },
+              }
+            )
+            updateBalance(task.amount)
+          } catch (e) {
+            // eslint-disable-next-line no-self-assign
+            console.log(e);
+          }
+          stateTask()
+
+        })
     } else {
       let dailyAmount = parseFloat(task.amount.split(" ")[0])
       fetch(`${serverUrl}/perform_dailyReward`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, isReal: isReal, amount: dailyAmount, consecutiveDays: user.DailyConsecutiveDays }), headers })
@@ -251,7 +276,7 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
   const followHandle = (index) => {
     setIsPending(true)
     window.open(task.link, '_blank')
-    task.index !== 31 && fetch(`${serverUrl}/add_perform_list`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, performTask: [task.index,], isReal: isReal }), headers })
+    task.index !== 32 && fetch(`${serverUrl}/add_perform_list`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, performTask: [task.index,], isReal: isReal }), headers })
     setTimeout(() => {
       fetchData()
     }, 1000 * 60)
@@ -354,7 +379,7 @@ const TaskList = () => {
   let performTask = []
   let dailyDays = 1;
   let dailyState = 0;
-  let dailyADSState=0;
+  let dailyADSState = 0;
 
   useEffect(() => {
     let isMounted = true
@@ -389,7 +414,7 @@ const TaskList = () => {
                 const dailyADSDate = data.dailyADSInfo.date;
                 dailytaskIndex = taskList[taskList.findIndex(item => item.type === 'daily_reward')].index
                 dailyADSIndex = taskList[taskList.findIndex(item => item.index === 34)].index
-                console.log("daily ads index : ",dailyADSIndex)
+                console.log("daily ads index : ", dailyADSIndex)
                 dailyDays = data.dailyRewardInfo.consecutive_days
                 setUser((user) => ({ ...user, DailyConsecutiveDays: dailyDays + 1 }));
                 const nowDate = moment().startOf('day');
@@ -443,7 +468,7 @@ const TaskList = () => {
                       src: item.icon_url,
                       title: item.title,
                       amount: (item.amount + " Coins"),
-                      status: item.index===34?dailyADSState:taskState[item.index],
+                      status: item.index === 34 ? dailyADSState : taskState[item.index],
                       link: item.link_url,
                       index: item.index,
                       sort: item.sort
@@ -461,7 +486,7 @@ const TaskList = () => {
                       src: item.icon_url,
                       title: item.title,
                       amount: (item.amount + " Coins"),
-                      status: item.index===34?dailyADSState:taskState[item.index],
+                      status: item.index === 34 ? dailyADSState : taskState[item.index],
                       link: item.link_url,
                       index: item.index,
                       sort: item.sort
