@@ -71,9 +71,9 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
   const ShowADgramButton = () => {
     const [showButtonClicked, setShowButtonClicked] = useState(false);
     console.log(task.index)
-    const onReward = useCallback(() => {
+    const onReward = useCallback(async() => {
       alert('Reward');
-      addPerformList([task.index])
+      await addPerformList([task.index])
     }, []);
     const onError = useCallback((result) => {
       alert(JSON.stringify(result, null, 4));
