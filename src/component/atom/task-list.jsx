@@ -433,7 +433,7 @@ const TaskList = () => {
                 else {
                   const selectedDate = moment(dailyADSDate).utc().local().startOf('day');
                   const diffDate = nowDate.diff(selectedDate, 'days');
-                  if (diffDate >= 1) dailyADSState = 1;
+                  if (diffDate > 0) dailyADSState = 1;
                   else dailyADSState = 2;
                 }
               } catch (e) {
@@ -463,6 +463,8 @@ const TaskList = () => {
                     }
                   }
                   const _fixedTaskData = fixedTaskItems.map(item => {
+                    console.log("dailyADSState",dailyADSState)
+                    console.log("taskState",taskState[item.index])
 
                     return {
                       src: item.icon_url,
