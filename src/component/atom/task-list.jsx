@@ -81,6 +81,7 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
       try {
         setShowButtonClicked(true);
         AdController.show().then(async (result) => {
+          console.log(result)
           // user watch ad till the end or close it in interstitial format
           // your code to reward user for rewarded format
           alert('Reward');
@@ -94,9 +95,9 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
       }
     };
 
-    return <button className="rounded-lg w-[61px] py-1 px-0 h-7 bg-mainFocus text-white text-center text-[14px]"
+    return <button className={`rounded-lg w-[61px] py-1 px-0 h-7 bg-mainFocus text-white text-center text-[14px] ${showButtonClicked && 'bg-white'}`}
       onClick={showAd} >
-      {showButtonClicked ? <LoadingSpinner className="w-4 h-4 mx-auto bg-white" /> : "Start"}
+      {showButtonClicked ? <LoadingSpinner className="w-4 h-4 mx-auto " /> : "Start"}
     </button>
 
   }
