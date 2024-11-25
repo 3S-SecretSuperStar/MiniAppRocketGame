@@ -350,9 +350,11 @@ const TaskList = () => {
   headers.append('Content-Type', 'application/json')
 
   let dailytaskIndex = 3
+  let dailyADSIndex = 34
   let performTask = []
   let dailyDays = 1;
   let dailyState = 0;
+  let dailyADSState=0;
 
   useEffect(() => {
     let isMounted = true
@@ -384,7 +386,10 @@ const TaskList = () => {
             .then(([status, data]) => {
               try {
                 const dailyDate = data.dailyRewardInfo.date;
+                const dailyADSDate = data.dailyADSInfo.date;
                 dailytaskIndex = taskList[taskList.findIndex(item => item.type === 'daily_reward')].index
+                dailyADSIndex = taskList[taskList.findIndex(item => item.index === 34)].index
+                console.log("daily ads index : ",dailyADSIndex)
                 dailyDays = data.dailyRewardInfo.consecutive_days
                 setUser((user) => ({ ...user, DailyConsecutiveDays: dailyDays + 1 }));
                 const nowDate = moment().startOf('day');
@@ -398,6 +403,13 @@ const TaskList = () => {
                     setUser((user) => ({ ...user, DailyConsecutiveDays: 1 }))
                     dailyDays = 0;
                   };
+                }
+                if (dailyADSDate === "") dailyADSState = 0;
+                else {
+                  const selectedDate = moment(dailyADSDate).utc().local().startOf('day');
+                  const diffDate = nowDate.diff(selectedDate, 'days');
+                  if (diffDate >= 1) dailyADSState = 0;
+                  else dailyADSState = 2;
                 }
               } catch (e) {
                 console.log(e)
@@ -431,7 +443,7 @@ const TaskList = () => {
                       src: item.icon_url,
                       title: item.title,
                       amount: (item.amount + " Coins"),
-                      status: taskState[item.index],
+                      status: item.index===34?dailyADSState:taskState[item.index],
                       link: item.link_url,
                       index: item.index,
                       sort: item.sort
@@ -449,7 +461,7 @@ const TaskList = () => {
                       src: item.icon_url,
                       title: item.title,
                       amount: (item.amount + " Coins"),
-                      status: taskState[item.index],
+                      status: item.index===34?dailyADSState:taskState[item.index],
                       link: item.link_url,
                       index: item.index,
                       sort: item.sort
