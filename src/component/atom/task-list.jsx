@@ -19,7 +19,7 @@ import { useAdsgram } from "../../utils/useAdsgram";
 const serverUrl = REACT_APP_SERVER;
 
 
-const AdController = window.Adsgram.init({ blockId: 5562 });
+const AdController = window.Adsgram.init({ blockId: '5562' });
 
 
 const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claimStateList, setClaimStateList, disableList, setDisableList }) => {
