@@ -379,13 +379,13 @@ const TaskList = () => {
             taskState[item] = 2;
           })
           const res = await fetch(`${serverUrl}/check_dailyReward`, { method: 'POST', body: JSON.stringify({ userId: user.UserId }), headers });
-          const data = await res.json();
-          const dailyDate = data.dailyRewardInfo.date;
-          const dailyADSDate = data.dailyADSInfo.date;
+          const dailyData = await res.json();
+          const dailyDate = dailyData.dailyRewardInfo.date;
+          const dailyADSDate = dailyData.dailyADSInfo.date;
           dailytaskIndex = taskList[taskList.findIndex(item => item.type === 'daily_reward')].index
           dailyADSIndex = taskList[taskList.findIndex(item => item.index === 34)].index
           console.log("daily ads index : ", dailyADSIndex)
-          dailyDays = data.dailyRewardInfo.consecutive_days
+          dailyDays = dailyData.dailyRewardInfo.consecutive_days
           setUser((user) => ({ ...user, DailyConsecutiveDays: dailyDays + 1 }));
           const nowDate = moment().startOf('day');
           if (dailyDate === "") dailyState = 0;
