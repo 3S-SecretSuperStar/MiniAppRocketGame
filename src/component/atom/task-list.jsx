@@ -28,7 +28,8 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
   const [isReal, setIsReal] = useAtom(realGameState);
   const [user, setUser] = useAtom(userData)
   const [isPending, setIsPending] = useState(false)
-  const claimStateListData = claimStateList;
+  const 
+   = claimStateList;
   const disableListData = disableList
   let wallet = useTonAddress();
   const tonwallet = useTonWallet()
@@ -482,20 +483,20 @@ const TaskList = () => {
 
   const stateTask = async () => {
     performTask = []
-    performTask = taskList.reduce((performList, task) => {
-      const taskType = task.type;
-      if (user.GameWon >= task.count && taskType === "type1-1") {
-        performList.push(task.index)
-      }
-      if ((user.GameLost + user.GameWon) >= task.count && taskType === "type1-2") {
-        performList.push(task.index)
-      }
-      if (task.count <= user.FriendNumber && taskType === "type4")
-        performList.push(task.index);
-      return performList
-    }, [])
+    // performTask = taskList.reduce((performList, task) => {
+    //   const taskType = task.type;
+    //   if (user.GameWon >= task.count && taskType === "type1-1") {
+    //     performList.push(task.index)
+    //   }
+    //   if ((user.GameLost + user.GameWon) >= task.count && taskType === "type1-2") {
+    //     performList.push(task.index)
+    //   }
+    //   if (task.count <= user.FriendNumber && taskType === "type4")
+    //     performList.push(task.index);
+    //   return performList
+    // }, [])
 
-    await fetch(`${serverUrl}/add_perform_list`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, performTask: performTask, isReal: isReal }), headers })
+    // await fetch(`${serverUrl}/add_perform_list`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, performTask: performTask, isReal: isReal }), headers })
     fetchData()
   }
 
