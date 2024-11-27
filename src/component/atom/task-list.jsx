@@ -28,8 +28,7 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
   const [isReal, setIsReal] = useAtom(realGameState);
   const [user, setUser] = useAtom(userData)
   const [isPending, setIsPending] = useState(false)
-  const 
-   = claimStateList;
+  const claimStateListData = claimStateList;
   const disableListData = disableList
   let wallet = useTonAddress();
   const tonwallet = useTonWallet()
