@@ -178,12 +178,12 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
   };
 
   const goClaim = () => {
-    setClaimStateList((prev) => [...prev, task.index])
+    setIsClaim(true);
     if (task.index !== dailytaskIndex) {
       if (task.index === 34 || task.index === 32 || task.index === 36) {
         fetch(`${serverUrl}/perform_dailyADS`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, isReal: isReal, amount: task.amount, task: task.index }), headers })
           .then(res => Promise.all([res.status, res.json()]))
-          .then(() => {
+          .then(async () => {
             try {
               toast(`${task.amount} coins added to your balance`,
                 {
@@ -201,12 +201,13 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
             } catch (e) {
               console.log(e);
             }
-            stateTask()
+            await stateTask();
+            setIsClaim(false);
           })
       } else {
         fetch(`${serverUrl}/task_balance`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, amount: task.amount, task: task.index, isReal: isReal }), headers })
           .then(res => Promise.all([res.status, res.json()]))
-          .then(() => {
+          .then(async () => {
             try {
               toast(`${task.amount} coins added to your balance`,
                 {
@@ -224,7 +225,8 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
             } catch (e) {
               console.log(e);
             }
-            stateTask()
+            await stateTask()
+            setIsClaim(false);
           })
       }
     } else {
@@ -315,10 +317,10 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
             <button
               className="rounded-lg w-[61px] py-1 px-0 h-7 bg-white text-[#080888] text-center text-[14px]"
               onClick={goClaim}
-              disabled={claimStateListData.includes(task.index)}
+              disabled={isClaim}
             >
               {
-                claimStateListData.includes(task.index) ?
+                isClaim ?
                   <LoadingSpinner className="w-4 h-4 mx-auto" /> :
                   "Claim"
               }
