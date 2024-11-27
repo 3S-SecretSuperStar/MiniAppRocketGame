@@ -24,7 +24,6 @@ const AdController = window.Adsgram.init({ blockId: '5562' });
 
 const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claimStateList, setClaimStateList, disableList, setDisableList }) => {
 
-
   const [isClaim, setIsClaim] = useState(false);
   const [isReal, setIsReal] = useAtom(realGameState);
   const [user, setUser] = useAtom(userData)
@@ -45,23 +44,16 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
   const ShowAdButton = () => {
     const [showButtonClicked, setShowButtonClicked] = useState(false);
     console.log(task.index)
-    const showAd = () => {
+    const showAd = async () => {
       setShowButtonClicked(true);
       try {
-        show_8549848().then(async () => {
-          try {
-            // alert('You have seen an ad!')
-            await addPerformList([task.index])
-            // alert("task index", task.index)
-          } catch (error) {
-            alert("addperformList", error)
-          }
-        })
+        await show_8549848();
+        await addPerformList([task.index]);
       } catch (err) {
         alert("showAd error:", err)
       }
     };
-    // return <button onClick={showAd}>Show ad</button>
+
     return <button className={`rounded-lg w-[61px] py-1 px-0 h-7 bg-mainFocus text-white text-center text-[14px] ${showButtonClicked && 'bg-white'}`}
       onClick={showAd} >
       {showButtonClicked ? <LoadingSpinner className="w-4 h-4 mx-auto" /> : "Start"}
@@ -71,25 +63,14 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
   const ShowADgramButton = () => {
     const [showButtonClicked, setShowButtonClicked] = useState(false);
     console.log(task.index)
-
-
-
     /**
      * insert your-block-id
      */
-    const showAd = () => {
+    const showAd = async () => {
       try {
         setShowButtonClicked(true);
-        AdController.show().then(async (result) => {
-          console.log(result)
-          // user watch ad till the end or close it in interstitial format
-          // your code to reward user for rewarded format
-          alert('Reward');
-          await addPerformList([task.index])
-        }).catch((result) => {
-          // user get error during playing ad
-          // do nothing or whatever you want
-        })
+        await AdController.show();
+        await addPerformList([task.index])
       } catch (err) {
         alert("showAd error:", err)
       }
@@ -99,20 +80,13 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
       onClick={showAd} >
       {showButtonClicked ? <LoadingSpinner className="w-4 h-4 mx-auto " /> : "Start"}
     </button>
-
   }
 
-
   const addPerformList = async (performTask) => {
-    // alert("in task index", performTask)
     const headers = new Headers();
     headers.append('Content-Type', 'application/json')
-    await fetch(`${serverUrl}/add_perform_list`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, performTask: performTask, isReal: isReal }), headers })
-      .then(res => Promise.all([res.status, res.json()]))
-      .then(() => {
-        // alert("in add perform list")
-        stateTask()
-      })
+    await fetch(`${serverUrl}/add_perform_list`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, performTask: performTask, isReal: isReal }), headers });
+    stateTask();
   }
 
   const createTransaction = (tokenCount) => {
@@ -203,27 +177,11 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
     })
   };
 
-  // const showAdButton = (taskIndex) => {
-  //   console.log("show button ", taskIndex)
-  //   show_8545698().then(() => {
-  //     console.log("show button req")
-  //     fetch(`${serverUrl}/add_perform_list`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, performTask: [taskIndex], isReal: isReal }), headers })
-  //       .then(() => {
-  //         alert('You have seen ad ad!');
-  //       })
-  //   })
-  // }
-
-
-
   const goClaim = () => {
     setClaimStateList((prev) => [...prev, task.index])
-    // setIsClaim(true);
-
     if (task.index !== dailytaskIndex) {
-
-      if (task.index === 34) {
-        fetch(`${serverUrl}/perform_dailyADS`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, isReal: isReal, amount: task.amount }), headers })
+      if (task.index === 34 || task.index === 32 || task.index === 36) {
+        fetch(`${serverUrl}/perform_dailyADS`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, isReal: isReal, amount: task.amount, task: task.index }), headers })
           .then(res => Promise.all([res.status, res.json()]))
           .then(() => {
             try {
@@ -241,11 +199,9 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
               )
               updateBalance(task.amount)
             } catch (e) {
-              // eslint-disable-next-line no-self-assign
               console.log(e);
             }
             stateTask()
-
           })
       } else {
         fetch(`${serverUrl}/task_balance`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, amount: task.amount, task: task.index, isReal: isReal }), headers })
@@ -266,16 +222,11 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
               )
               updateBalance(parseFloat(task.amount))
             } catch (e) {
-              // eslint-disable-next-line no-self-assign
               console.log(e);
             }
-
             stateTask()
-
-
           })
       }
-      // stateTask();
     } else {
       let dailyAmount = parseFloat(task.amount.split(" ")[0])
       fetch(`${serverUrl}/perform_dailyReward`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, isReal: isReal, amount: dailyAmount, consecutiveDays: user.DailyConsecutiveDays }), headers })
@@ -304,6 +255,7 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
         })
     }
   }
+
   const followHandle = (index) => {
     setIsPending(true)
     window.open(task.link, '_blank')
@@ -327,20 +279,12 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
         task.status === 1 ?
           task.link === null || task.link === "" ?
             task.index === 32 ?
-              // <button className="rounded-lg w-[61px] py-1 px-0 h-7 bg-mainFocus text-white text-center text-[14px]"
-              //   onClick={() => showAdButton(task.index)} >
-              //   Start
-              // </button>
               <ShowAdButton />
               :
               task.index === 36 ?
-                // <button className="rounded-lg w-[61px] py-1 px-0 h-7 bg-mainFocus text-white text-center text-[14px]"
-                //   onClick={() => showAdButton(task.index)} >
-                //   Start
-                // </button>
                 <ShowADgramButton />
                 :
-                task.index === 25 || task.index === 26 && !wallet ?
+                (task.index === 25 || task.index === 26 && !wallet) ?
                   <Link to={'/wallet'}>
                     <button className="rounded-lg w-[61px] py-1 px-0 h-7 bg-mainFocus text-white text-center text-[14px]" >
                       Start
@@ -355,25 +299,17 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
                         Start
                       </button>
                     </Link> :
-
-            // task.index === 31 ?
-            //   <button className="rounded-lg w-[61px] py-1 px-0 h-7 bg-mainFocus text-white text-center text-[14px]" 
-            //   onClick={() => goDisabale} disabled ={disableList.includes(task.index)} >
-            //     Start
-            //   </button> :
             <button className="rounded-lg w-[61px] py-1 px-0 h-7 bg-mainFocus text-white text-center text-[14px]"
               onClick={() => followHandle(task.index)} >
               {
                 isPending ?
                   <div className="flex w-full items-center text-center justify-center gap-1">
-                    <LoadingSpinner className="w-4 h-4  my-auto mx-0 stroke-white" />
+                    <LoadingSpinner className="w-4 h-4 my-auto mx-0 stroke-white" />
                     Wait
                   </div> :
                   "Start"
               }
             </button>
-
-
           :
           task.status === 0 ?
             <button
@@ -388,7 +324,6 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
               }
             </button> :
             <div className="text-white">
-
               <CheckMark />
             </div>
       }
@@ -431,7 +366,6 @@ const TaskList = () => {
     await fetch(`${serverUrl}/task_perform`, { method: 'POST', body: JSON.stringify({ userId: user.UserId }), headers })
       .then(res => Promise.all([res.status, res.json()]))
       .then(async ([status, data]) => {
-
         try {
           const userBalance = isReal ? parseFloat(data.balance.real.toFixed(2)) : parseFloat(data.balance.virtual.toFixed(2));
           setUser(user => ({ ...user, Balance: userBalance }))
@@ -444,40 +378,34 @@ const TaskList = () => {
           doneTask.forEach(item => {
             taskState[item] = 2;
           })
-          await fetch(`${serverUrl}/check_dailyReward`, { method: 'POST', body: JSON.stringify({ userId: user.UserId }), headers })
-            .then(res => Promise.all([res.status, res.json()]))
-            .then(([status, data]) => {
-              try {
-                const dailyDate = data.dailyRewardInfo.date;
-                const dailyADSDate = data.dailyADSInfo.date;
-                dailytaskIndex = taskList[taskList.findIndex(item => item.type === 'daily_reward')].index
-                dailyADSIndex = taskList[taskList.findIndex(item => item.index === 34)].index
-                console.log("daily ads index : ", dailyADSIndex)
-                dailyDays = data.dailyRewardInfo.consecutive_days
-                setUser((user) => ({ ...user, DailyConsecutiveDays: dailyDays + 1 }));
-                const nowDate = moment().startOf('day');
-                if (dailyDate === "") dailyState = 0;
-                else {
-                  const selectedDate = moment(dailyDate).utc().local().startOf('day');
-                  const diffDate = nowDate.diff(selectedDate, 'days');
-                  if (diffDate >= 1) dailyState = 0;
-                  else dailyState = 2;
-                  if (diffDate >= 2) {
-                    setUser((user) => ({ ...user, DailyConsecutiveDays: 1 }))
-                    dailyDays = 0;
-                  };
-                }
-                if (dailyADSDate === "") dailyADSState = 1;
-                else {
-                  const selectedDate = moment(dailyADSDate).utc().local().startOf('day');
-                  const diffDate = nowDate.diff(selectedDate, 'days');
-                  if (diffDate > 0) dailyADSState = 1;
-                  else dailyADSState = 2;
-                }
-              } catch (e) {
-                console.log(e)
-              }
-            })
+          const res = await fetch(`${serverUrl}/check_dailyReward`, { method: 'POST', body: JSON.stringify({ userId: user.UserId }), headers });
+          const data = await res.json();
+          const dailyDate = data.dailyRewardInfo.date;
+          const dailyADSDate = data.dailyADSInfo.date;
+          dailytaskIndex = taskList[taskList.findIndex(item => item.type === 'daily_reward')].index
+          dailyADSIndex = taskList[taskList.findIndex(item => item.index === 34)].index
+          console.log("daily ads index : ", dailyADSIndex)
+          dailyDays = data.dailyRewardInfo.consecutive_days
+          setUser((user) => ({ ...user, DailyConsecutiveDays: dailyDays + 1 }));
+          const nowDate = moment().startOf('day');
+          if (dailyDate === "") dailyState = 0;
+          else {
+            const selectedDate = moment(dailyDate).utc().local().startOf('day');
+            const diffDate = nowDate.diff(selectedDate, 'days');
+            if (diffDate >= 1) dailyState = 0;
+            else dailyState = 2;
+            if (diffDate >= 2) {
+              setUser((user) => ({ ...user, DailyConsecutiveDays: 1 }))
+              dailyDays = 0;
+            };
+          }
+          if (dailyADSDate === "") dailyADSState = 1;
+          else {
+            const selectedDate = moment(dailyADSDate).utc().local().startOf('day');
+            const diffDate = nowDate.diff(selectedDate, 'days');
+            if (diffDate > 0) dailyADSState = 1;
+            else dailyADSState = 2;
+          }
 
           fetch(`${serverUrl}/get_task`, { method: 'POST', body: JSON.stringify({ userId: user.UserId }), headers })
             .then(res => Promise.all([res.status, res.json()]))
@@ -500,6 +428,7 @@ const TaskList = () => {
                       sort: dailyData.sort
                     }
                   }
+
                   const _fixedTaskData = fixedTaskItems.map(item => {
                     console.log("dailyADSState", dailyADSState)
                     console.log("taskState", taskState[item.index])
@@ -508,7 +437,7 @@ const TaskList = () => {
                       src: item.icon_url,
                       title: item.title,
                       amount: (item.amount + " Coins"),
-                      status: item.index === 34 ? (dailyADSState === 1 ? taskState[item.index] : dailyADSState) : taskState[item.index],
+                      status: taskState[item.index],
                       link: item.link_url,
                       index: item.index,
                       sort: item.sort
@@ -516,17 +445,15 @@ const TaskList = () => {
 
                   })
                   setFixedTaskData([dailyItemData, ..._fixedTaskData])
-
                 }
 
                 if (otherTaskItems.length > 0) {
                   const _otherTaskData = otherTaskItems.map(item => {
-
                     return {
                       src: item.icon_url,
                       title: item.title,
                       amount: (item.amount + " Coins"),
-                      status: item.index === 34 ? dailyADSState : taskState[item.index],
+                      status: taskState[item.index],
                       link: item.link_url,
                       index: item.index,
                       sort: item.sort
@@ -545,7 +472,6 @@ const TaskList = () => {
                 }, 500)
               }
             })
-
         } catch (e) {
           // eslint-disable-next-line no-self-assign
           console.log(e);
@@ -567,13 +493,9 @@ const TaskList = () => {
         performList.push(task.index);
       return performList
     }, [])
+
     await fetch(`${serverUrl}/add_perform_list`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, performTask: performTask, isReal: isReal }), headers })
-      .then(res => Promise.all([res.status, res.json()]))
-      .then(async (res) => {
-        await fetchData().then(
-          console.log("fetch data")
-        )
-      })
+    await fetchData()
   }
 
   return (
