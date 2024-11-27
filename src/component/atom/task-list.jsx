@@ -46,6 +46,7 @@ const GenerateTask = ({ task, stateTask, dailytaskIndex, fetchData}) => {
       setShowButtonClicked(true);
       try {
         await show_8549848();
+        setShowButtonClicked(true);
         await addPerformList([task.index]);
       } catch (err) {
         alert("showAd error:", err)
@@ -68,6 +69,7 @@ const GenerateTask = ({ task, stateTask, dailytaskIndex, fetchData}) => {
       try {
         setShowButtonClicked(true);
         await AdController.show();
+        setShowButtonClicked(true);
         await addPerformList([task.index])
       } catch (err) {
         alert("showAd error:", err)
