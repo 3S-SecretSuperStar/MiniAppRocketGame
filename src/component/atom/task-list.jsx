@@ -51,7 +51,8 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
         await show_8549848();
         await addPerformList([task.index]);
       } catch (err) {
-        alert("showAd error:", err)
+        console.log(err);
+        setDisableList(disableList.filter(item => item !== task.index))
       }
     };
 
@@ -74,7 +75,8 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
         await AdController.show();
         await addPerformList([task.index])
       } catch (err) {
-        alert("showAd error:", err)
+        console.log(err);
+        setDisableList(disableList.filter(item => item !== task.index))
       }
     };
 
