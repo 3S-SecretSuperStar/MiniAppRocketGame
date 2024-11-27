@@ -363,7 +363,7 @@ const TaskList = () => {
   }, [])
 
   const fetchData = async () => {
-    await fetch(`${serverUrl}/task_perform`, { method: 'POST', body: JSON.stringify({ userId: user.UserId }), headers })
+    fetch(`${serverUrl}/task_perform`, { method: 'POST', body: JSON.stringify({ userId: user.UserId }), headers })
       .then(res => Promise.all([res.status, res.json()]))
       .then(async ([status, data]) => {
         try {
@@ -479,6 +479,7 @@ const TaskList = () => {
 
       })
   }
+
   const stateTask = async () => {
     performTask = []
     performTask = taskList.reduce((performList, task) => {
@@ -495,7 +496,7 @@ const TaskList = () => {
     }, [])
 
     await fetch(`${serverUrl}/add_perform_list`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, performTask: performTask, isReal: isReal }), headers })
-    await fetchData()
+    fetchData()
   }
 
   return (
