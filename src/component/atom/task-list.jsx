@@ -204,7 +204,6 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
               console.log(e);
             }
             await stateTask();
-            setClaimStateList(claimStateList.filter(item => item !== task.index));
           })
       } else {
         fetch(`${serverUrl}/task_balance`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, amount: task.amount, task: task.index, isReal: isReal }), headers })
@@ -465,6 +464,7 @@ const TaskList = () => {
 
                   setOtherTaskData(_otherTaskData);
                   setDisableList([]);
+                  setClaimStateList([]);
                 }
               } catch (e) {
                 console.log(e)
