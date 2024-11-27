@@ -22,12 +22,14 @@ const serverUrl = REACT_APP_SERVER;
 const AdController = window.Adsgram.init({ blockId: '5562' });
 
 
-const GenerateTask = ({ task, stateTask, dailytaskIndex, fetchData}) => {
+const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claimStateList, setClaimStateList, disableList, setDisableList }) => {
 
   const [isClaim, setIsClaim] = useState(false);
   const [isReal, setIsReal] = useAtom(realGameState);
   const [user, setUser] = useAtom(userData)
   const [isPending, setIsPending] = useState(false)
+  const claimStateListData = claimStateList;
+  const disableListData = disableList
   let wallet = useTonAddress();
   const tonwallet = useTonWallet()
   const [tonconnectUi] = useTonConnectUI();
@@ -45,8 +47,8 @@ const GenerateTask = ({ task, stateTask, dailytaskIndex, fetchData}) => {
     const showAd = async () => {
       setShowButtonClicked(true);
       try {
+        setDisableList((prev) => [...prev, task.index])
         await show_8549848();
-        setShowButtonClicked(true);
         await addPerformList([task.index]);
       } catch (err) {
         alert("showAd error:", err)
@@ -54,8 +56,8 @@ const GenerateTask = ({ task, stateTask, dailytaskIndex, fetchData}) => {
     };
 
     return <button className={`rounded-lg w-[61px] py-1 px-0 h-7 bg-mainFocus text-white text-center text-[14px] ${showButtonClicked && 'bg-white'}`}
-      onClick={showAd} >
-      {showButtonClicked ? <LoadingSpinner className="w-4 h-4 mx-auto" /> : "Start"}
+      onClick={showAd} disabled={disableList.includes(task.index)}>
+      {disableList.includes(task.index) ? <LoadingSpinner className="w-4 h-4 mx-auto" /> : "Start"}
     </button>
   }
 
@@ -67,9 +69,9 @@ const GenerateTask = ({ task, stateTask, dailytaskIndex, fetchData}) => {
      */
     const showAd = async () => {
       try {
+        setDisableList((prev) => [...prev, task.index])
         setShowButtonClicked(true);
         await AdController.show();
-        setShowButtonClicked(true);
         await addPerformList([task.index])
       } catch (err) {
         alert("showAd error:", err)
@@ -77,8 +79,8 @@ const GenerateTask = ({ task, stateTask, dailytaskIndex, fetchData}) => {
     };
 
     return <button className={`rounded-lg w-[61px] py-1 px-0 h-7 bg-mainFocus text-white text-center text-[14px] ${showButtonClicked && 'bg-white'}`}
-      onClick={showAd} >
-      {showButtonClicked ? <LoadingSpinner className="w-4 h-4 mx-auto " /> : "Start"}
+      onClick={showAd} disabled={disableList.includes(task.index)}>
+      {disableList.includes(task.index) ? <LoadingSpinner className="w-4 h-4 mx-auto " /> : "Start"}
     </button>
   }
 
@@ -178,7 +180,7 @@ const GenerateTask = ({ task, stateTask, dailytaskIndex, fetchData}) => {
   };
 
   const goClaim = () => {
-    setIsClaim(true);
+    setClaimStateList((prev) => [...prev, task.index])
     if (task.index !== dailytaskIndex) {
       if (task.index === 34 || task.index === 32 || task.index === 36) {
         fetch(`${serverUrl}/perform_dailyADS`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, isReal: isReal, amount: task.amount, task: task.index }), headers })
@@ -202,12 +204,12 @@ const GenerateTask = ({ task, stateTask, dailytaskIndex, fetchData}) => {
               console.log(e);
             }
             await stateTask();
-            setIsClaim(false);
+            setClaimStateList(claimStateList.filter(item => item !== task.index));
           })
       } else {
         fetch(`${serverUrl}/task_balance`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, amount: task.amount, task: task.index, isReal: isReal }), headers })
           .then(res => Promise.all([res.status, res.json()]))
-          .then(async () => {
+          .then(() => {
             try {
               toast(`${task.amount} coins added to your balance`,
                 {
@@ -225,8 +227,7 @@ const GenerateTask = ({ task, stateTask, dailytaskIndex, fetchData}) => {
             } catch (e) {
               console.log(e);
             }
-            setIsClaim(false);
-            await stateTask()
+            stateTask()
           })
       }
     } else {
@@ -317,10 +318,10 @@ const GenerateTask = ({ task, stateTask, dailytaskIndex, fetchData}) => {
             <button
               className="rounded-lg w-[61px] py-1 px-0 h-7 bg-white text-[#080888] text-center text-[14px]"
               onClick={goClaim}
-              disabled={isClaim}
+              disabled={claimStateListData.includes(task.index)}
             >
               {
-                isClaim ?
+                claimStateListData.includes(task.index) ?
                   <LoadingSpinner className="w-4 h-4 mx-auto" /> :
                   "Claim"
               }
@@ -463,6 +464,7 @@ const TaskList = () => {
                   });
 
                   setOtherTaskData(_otherTaskData);
+                  setDisableList([]);
                 }
               } catch (e) {
                 console.log(e)
@@ -483,19 +485,7 @@ const TaskList = () => {
   }
 
   const stateTask = async () => {
-    performTask = []
-    // performTask = taskList.reduce((performList, task) => {
-    //   const taskType = task.type;
-    //   if (user.GameWon >= task.count && taskType === "type1-1") {
-    //     performList.push(task.index)
-    //   }
-    //   if ((user.GameLost + user.GameWon) >= task.count && taskType === "type1-2") {
-    //     performList.push(task.index)
-    //   }
-    //   if (task.count <= user.FriendNumber && taskType === "type4")
-    //     performList.push(task.index);
-    //   return performList
-    // }, [])
+    performTask = []   
 
     // await fetch(`${serverUrl}/add_perform_list`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, performTask: performTask, isReal: isReal }), headers })
     fetchData()
@@ -516,12 +506,14 @@ const TaskList = () => {
               {
                 fixedTaskData
                   .sort((a, b) => (a.sort - b.sort))
-                  .map((_task, _index) => <GenerateTask task={_task} stateTask={stateTask} key={_index} dailytaskIndex={dailytaskIndex} fetchData={fetchData} />)
+                  .map((_task, _index) => <GenerateTask task={_task} stateTask={stateTask} key={_index} index={_index} dailytaskIndex={dailytaskIndex}
+                    fetchData={fetchData} claimStateList={claimStateList} setClaimStateList={setClaimStateList} disableList={disableList} setDisableList={setDisableList} />)
               }
               {
                 otherTaskData
                   .sort((a, b) => (a.status - b.status || a.sort - b.sort))
-                  .map((_task, _index) => <GenerateTask task={_task} stateTask={stateTask} key={_index + 1} dailytaskIndex={dailytaskIndex} fetchData={fetchData} />)
+                  .map((_task, _index) => <GenerateTask task={_task} stateTask={stateTask} key={_index + 1} index={_index + 1} dailytaskIndex={dailytaskIndex}
+                    claimStateList={claimStateList} setClaimStateList={setClaimStateList} fetchData={fetchData} disableList={disableList} setDisableList={setDisableList} />)
               }
             </>
         }
