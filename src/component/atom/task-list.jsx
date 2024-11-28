@@ -470,12 +470,8 @@ const TaskList = () => {
                 }
               } catch (e) {
                 console.log(e)
-              }
-              finally {
-                setTimeout(() => {
-                  firstLoading && setActionState("ready")
-                  setFirstLoading(false);
-                }, 500)
+                setDisableList([]);
+                setClaimStateList([]);
               }
             })
         } catch (e) {
@@ -487,7 +483,7 @@ const TaskList = () => {
   }
 
   const stateTask = async () => {
-    performTask = []   
+    performTask = []
 
     // await fetch(`${serverUrl}/add_perform_list`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, performTask: performTask, isReal: isReal }), headers })
     fetchData()
