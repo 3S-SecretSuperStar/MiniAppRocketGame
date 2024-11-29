@@ -71,9 +71,9 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
         (
           <button className={`rounded-lg w-[61px] py-1 px-0 h-7 text-center text-[14px] ${task.status ? 'bg-mainFocus text-white' : 'bg-white text-[#080888]'}`}
             onClick={showAd} disabled={isPending}>
-            task.status == 1 ?
+            {task.status == 1 ?
             "Start" :
-            "Claim"
+            "Claim"}
           </button>
         )
     )
@@ -112,9 +112,9 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
         (
           <button className={`rounded-lg w-[61px] py-1 px-0 h-7 text-center text-[14px] ${task.status ? 'bg-mainFocus text-white' : 'bg-white text-[#080888]'}`}
             onClick={showAd} disabled={isPending}>
-            task.status == 1 ?
+            {task.status == 1 ?
             "Start" :
-            "Claim"
+            "Claim"}
           </button>
         )
     )
@@ -153,9 +153,9 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
         (
           <button className={`rounded-lg w-[61px] py-1 px-0 h-7 text-center text-[14px] ${task.status ? 'bg-mainFocus text-white' : 'bg-white text-[#080888]'}`}
             onClick={showAd} disabled={isPending}>
-            task.status == 1 ?
-            "Start" :
-            "Claim"
+            {task.status == 1 ?
+              "Start" :
+              "Claim"}
           </button>
         )
     )
