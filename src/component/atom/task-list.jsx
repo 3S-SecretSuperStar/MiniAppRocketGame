@@ -128,7 +128,6 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
       try {
         let result = false;
         if (task.status == 1) {
-          await AdController.show();
           window.open(task.link, '_blank');
           setShowButtonClicked(true);
           result = await addPerformList([task.index])
