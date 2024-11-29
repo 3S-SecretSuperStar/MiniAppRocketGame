@@ -1,19 +1,17 @@
-import { useState, useEffect, Suspense, useCallback } from "react";
+import { useState, useEffect, Suspense } from "react";
 import CheckMark from "../svg/check-mark";
 import LoadingSpinner from "../svg/loading-spinner";
-import toast, { useToasterStore } from "react-hot-toast";
+import toast from "react-hot-toast";
 import { ADMIN_WALLET_ADDRESS, REACT_APP_SERVER } from "../../utils/privateData";
 import { useAtom } from "jotai";
 import { realGameState, TaskContent, userData } from "../../store";
-import { Link, useActionData } from "react-router-dom";
+import { Link } from "react-router-dom";
 import moment from "moment";
-import FetchLoading from "../template/FetchLoading";
 import { isActionState } from "../../store";
 import { useTonAddress, useTonConnectUI, useTonWallet } from "@tonconnect/ui-react";
 import { beginCell } from "@ton/ton";
 import WarnningIcon from "../svg/warning";
 import UserInfoSkeleton from "./userInfoSkeleton";
-import { useAdsgram } from "../../utils/useAdsgram";
 // import React from "react";
 
 const serverUrl = REACT_APP_SERVER;
@@ -47,50 +45,123 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
     const showAd = async () => {
       setShowButtonClicked(true);
       try {
-        setDisableList((prev) => [...prev, task.index])
-        await show_8549848();
-        await addPerformList([task.index]);
+        let result = false;
+        if (task.status == 0) {
+          await show_8549848();
+          result = await addPerformList([task.index]);
+        } else {
+          result = await goClaim();
+        }
+        if (result) {
+          task.status = !task.status;
+        }
+        setShowButtonClicked(false);
       } catch (err) {
         console.log(err);
-        setDisableList(disableList.filter(item => item !== task.index))
+        setShowButtonClicked(false);
       }
     };
 
     return <button className={`rounded-lg w-[61px] py-1 px-0 h-7 bg-mainFocus text-white text-center text-[14px] ${showButtonClicked && 'bg-white'}`}
-      onClick={showAd} disabled={disableList.includes(task.index)}>
-      {disableList.includes(task.index) ? <LoadingSpinner className="w-4 h-4 mx-auto" /> : "Start"}
+      onClick={showAd} disabled={isPending}>
+      {
+        showButtonClicked ?
+          <LoadingSpinner className="w-4 h-4 mx-auto" /> :
+          task.status == 1 ?
+            "Start" :
+            "Claim"
+      }
     </button>
   }
 
   const ShowADgramButton = () => {
     const [showButtonClicked, setShowButtonClicked] = useState(false);
-    console.log(task.index)
-    /**
-     * insert your-block-id
-     */
+
     const showAd = async () => {
+      setShowButtonClicked(true);
       try {
-        setDisableList((prev) => [...prev, task.index])
-        setShowButtonClicked(true);
-        await AdController.show();
-        await addPerformList([task.index])
+        let result = false;
+        if (task.status == 0) {
+          await AdController.show();
+          result = await addPerformList([task.index]);
+        } else {
+          result = await goClaim();
+        }
+        if (result) {
+          task.status = !task.status;
+        }
+        setShowButtonClicked(false);
       } catch (err) {
         console.log(err);
-        setDisableList(disableList.filter(item => item !== task.index))
+        setShowButtonClicked(false);
       }
     };
 
     return <button className={`rounded-lg w-[61px] py-1 px-0 h-7 bg-mainFocus text-white text-center text-[14px] ${showButtonClicked && 'bg-white'}`}
       onClick={showAd} disabled={disableList.includes(task.index)}>
-      {disableList.includes(task.index) ? <LoadingSpinner className="w-4 h-4 mx-auto " /> : "Start"}
+      {
+        showButtonClicked ?
+          <LoadingSpinner className="w-4 h-4 mx-auto" /> :
+          task.status == 1 ?
+            "Start" :
+            "Claim"
+      }
+    </button>
+  }
+
+  const ShowPromoLinkButton = () => {
+    const [showButtonClicked, setShowButtonClicked] = useState(false);
+
+    const showAd = async () => {
+      setShowButtonClicked(true);
+      try {
+        let result = false;
+        if (task.status == 0) {
+          await AdController.show();
+          window.open(task.link, '_blank');
+          result = await addPerformList([task.index])
+        } else {
+          result = await goClaim();
+        }
+        if (result) {
+          task.status = !task.status;
+        }
+        setTimeout(async () => {
+          setShowButtonClicked(false);
+        }, 2000)
+      } catch (err) {
+        console.log(err);
+        setShowButtonClicked(false);
+      }
+    };
+
+    return <button className={`rounded-lg w-[61px] py-1 px-0 h-7 bg-mainFocus text-white text-center text-[14px] ${showButtonClicked && 'bg-white'}`}
+      onClick={showAd} disabled={disableList.includes(task.index)}>
+      {
+        showButtonClicked ?
+          <LoadingSpinner className="w-4 h-4 mx-auto" /> :
+          task.status == 1 ?
+            "Start" :
+            "Claim"
+      }
     </button>
   }
 
   const addPerformList = async (performTask) => {
-    const headers = new Headers();
-    headers.append('Content-Type', 'application/json')
-    await fetch(`${serverUrl}/add_perform_list`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, performTask: performTask, isReal: isReal }), headers });
-    stateTask();
+    try {
+      const headers = new Headers();
+      headers.append('Content-Type', 'application/json')
+      await fetch(`${serverUrl}/add_perform_list`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, performTask: performTask, isReal: isReal }), headers });
+      if (!performTask.includes('32') && !performTask.includes('34') && !performTask.includes('36')) {
+        stateTask();
+      } else {
+        return true;
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error(error);
+      return false;
+    }
   }
 
   const createTransaction = (tokenCount) => {
@@ -181,32 +252,31 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
     })
   };
 
-  const goClaim = () => {
+  const goClaim = async () => {
     setClaimStateList((prev) => [...prev, task.index])
     if (task.index !== dailytaskIndex) {
       if (task.index === 34 || task.index === 32 || task.index === 36) {
-        fetch(`${serverUrl}/perform_dailyADS`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, isReal: isReal, amount: task.amount, task: task.index }), headers })
-          .then(res => Promise.all([res.status, res.json()]))
-          .then(async () => {
-            try {
-              toast(`${task.amount} coins added to your balance`,
-                {
-                  position: "top-center",
-                  icon: <CheckMark />,
-                  style: {
-                    borderRadius: '8px',
-                    background: '#7886A0',
-                    color: '#fff',
-                    width: '90vw'
-                  },
-                }
-              )
-              updateBalance(task.amount)
-            } catch (e) {
-              console.log(e);
+        try {
+          await fetch(`${serverUrl}/perform_dailyADS`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, isReal: isReal, amount: task.amount, task: task.index }), headers })
+          toast(`${task.amount} coins added to your balance`,
+            {
+              position: "top-center",
+              icon: <CheckMark />,
+              style: {
+                borderRadius: '8px',
+                background: '#7886A0',
+                color: '#fff',
+                width: '90vw'
+              },
             }
-            await stateTask();
-          })
+          )
+          updateBalance(task.amount)
+          return true;
+        } catch (error) {
+          console.log(error);
+          toast.error(error);
+          return false;
+        }
       } else {
         fetch(`${serverUrl}/task_balance`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, amount: task.amount, task: task.index, isReal: isReal }), headers })
           .then(res => Promise.all([res.status, res.json()]))
@@ -280,56 +350,66 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
         </div>
       </div>
       {
-        task.status === 1 ?
-          task.link === null || task.link === "" ?
-            task.index === 32 ?
-              <ShowAdButton />
-              :
-              task.index === 36 ?
-                <ShowADgramButton />
-                :
-                (task.index === 25 || task.index === 26 && !wallet) ?
-                  <Link to={'/wallet'}>
-                    <button className="rounded-lg w-[61px] py-1 px-0 h-7 bg-mainFocus text-white text-center text-[14px]" >
-                      Start
-                    </button>
-                  </Link> :
-                  (task.index === 26 && wallet) ?
-                    <button className="rounded-lg w-[61px] py-1 px-0 h-7 bg-mainFocus text-white text-center text-[14px]" onClick={() => sendTransaction(500)} >
-                      Start
-                    </button> :
-                    <Link to={'/play'}>
+        task.index === 32 || task.index == 34 || task.index == 36 ?
+          (
+            task.index == 32 ?
+              <ShowAdButton /> :
+              (
+                task.index == 34 ?
+                  <ShowPromoLinkButton /> :
+                  <ShowADgramButton />
+              )
+          ) :
+          task.status === 1 ?
+            (
+              (task.link === null || task.link === "") ?
+                (
+                  (task.index === 25 || task.index === 26 && !wallet) ?
+                    <Link to={'/wallet'}>
                       <button className="rounded-lg w-[61px] py-1 px-0 h-7 bg-mainFocus text-white text-center text-[14px]" >
                         Start
                       </button>
                     </Link> :
-            <button className="rounded-lg w-[61px] py-1 px-0 h-7 bg-mainFocus text-white text-center text-[14px]"
-              onClick={() => followHandle(task.index)} >
-              {
-                isPending ?
-                  <div className="flex w-full items-center text-center justify-center gap-1">
-                    <LoadingSpinner className="w-4 h-4 my-auto mx-0 stroke-white" />
-                    Wait
-                  </div> :
-                  "Start"
-              }
-            </button>
-          :
-          task.status === 0 ?
-            <button
-              className="rounded-lg w-[61px] py-1 px-0 h-7 bg-white text-[#080888] text-center text-[14px]"
-              onClick={goClaim}
-              disabled={claimStateListData.includes(task.index)}
-            >
-              {
-                claimStateListData.includes(task.index) ?
-                  <LoadingSpinner className="w-4 h-4 mx-auto" /> :
-                  "Claim"
-              }
-            </button> :
-            <div className="text-white">
-              <CheckMark />
-            </div>
+                    (
+                      (task.index === 26 && wallet) ?
+                        <button className="rounded-lg w-[61px] py-1 px-0 h-7 bg-mainFocus text-white text-center text-[14px]" onClick={() => sendTransaction(500)} >
+                          Start
+                        </button> :
+                        <Link to={'/play'}>
+                          <button className="rounded-lg w-[61px] py-1 px-0 h-7 bg-mainFocus text-white text-center text-[14px]" >
+                            Start
+                          </button>
+                        </Link>
+                    )
+                ) :
+                <button className="rounded-lg w-[61px] py-1 px-0 h-7 bg-mainFocus text-white text-center text-[14px]"
+                  onClick={() => followHandle(task.index)} >
+                  {
+                    isPending ?
+                      <div className="flex w-full items-center text-center justify-center gap-1">
+                        <LoadingSpinner className="w-4 h-4 my-auto mx-0 stroke-white" />
+                        Wait
+                      </div> :
+                      "Start"
+                  }
+                </button>
+            ) :
+            (
+              task.status === 0 ?
+                <button
+                  className="rounded-lg w-[61px] py-1 px-0 h-7 bg-white text-[#080888] text-center text-[14px]"
+                  onClick={goClaim}
+                  disabled={claimStateListData.includes(task.index)}
+                >
+                  {
+                    claimStateListData.includes(task.index) ?
+                      <LoadingSpinner className="w-4 h-4 mx-auto" /> :
+                      "Claim"
+                  }
+                </button> :
+                <div className="text-white">
+                  <CheckMark />
+                </div>)
       }
     </div>
   )
