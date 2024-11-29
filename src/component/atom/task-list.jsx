@@ -67,13 +67,15 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
 
     return (
       showButtonClicked ?
-        <LoadingSpinner className="w-4 h-4 mx-auto" /> :
+        <div className="flex w-fit items-center text-center justify-center gap-1">
+          <LoadingSpinner className="w-4 h-4 my-auto mx-0 stroke-white" />
+        </div> :
         (
           <button className={`rounded-lg w-[61px] py-1 px-0 h-7 text-center text-[14px] ${task.status ? 'bg-mainFocus text-white' : 'bg-white text-[#080888]'}`}
             onClick={showAd} disabled={isPending}>
             {task.status == 1 ?
-            "Start" :
-            "Claim"}
+              "Start" :
+              "Claim"}
           </button>
         )
     )
@@ -108,13 +110,15 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
 
     return (
       showButtonClicked ?
-        <LoadingSpinner className="w-4 h-4 mx-auto" /> :
+        <div className="flex w-fit items-center text-center justify-center gap-1">
+          <LoadingSpinner className="w-4 h-4 my-auto mx-0 stroke-white" />
+        </div> :
         (
           <button className={`rounded-lg w-[61px] py-1 px-0 h-7 text-center text-[14px] ${task.status ? 'bg-mainFocus text-white' : 'bg-white text-[#080888]'}`}
             onClick={showAd} disabled={isPending}>
             {task.status == 1 ?
-            "Start" :
-            "Claim"}
+              "Start" :
+              "Claim"}
           </button>
         )
     )
@@ -148,7 +152,9 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
 
     return (
       showButtonClicked ?
-        <LoadingSpinner className="w-4 h-4 mx-auto" /> :
+        <div className="flex w-fit items-center text-center justify-center gap-1">
+          <LoadingSpinner className="w-4 h-4 my-auto mx-0 stroke-white" />
+        </div> :
         (
           <button className={`rounded-lg w-[61px] py-1 px-0 h-7 text-center text-[14px] ${task.status ? 'bg-mainFocus text-white' : 'bg-white text-[#080888]'}`}
             onClick={showAd} disabled={isPending}>
@@ -396,31 +402,31 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
                         </Link>
                     )
                 ) :
-                <button className="rounded-lg w-[61px] py-1 px-0 h-7 bg-mainFocus text-white text-center text-[14px]"
-                  onClick={() => followHandle(task.index)} >
-                  {
-                    isPending ?
-                      <div className="flex w-full items-center text-center justify-center gap-1">
-                        <LoadingSpinner className="w-4 h-4 my-auto mx-0 stroke-white" />
-                        Wait
-                      </div> :
-                      "Start"
-                  }
-                </button>
+                (
+                  isPending ?
+                    <div className="flex w-fit items-center text-center justify-center gap-1">
+                      <LoadingSpinner className="w-4 h-4 my-auto mx-0 stroke-white" />
+                    </div> :
+                    <button className="rounded-lg w-[61px] py-1 px-0 h-7 bg-mainFocus text-white text-center text-[14px]"
+                      onClick={() => followHandle(task.index)} >
+                    </button>
+                )
             ) :
             (
               task.status === 0 ?
-                <button
-                  className="rounded-lg w-[61px] py-1 px-0 h-7 bg-white text-[#080888] text-center text-[14px]"
-                  onClick={goClaim}
-                  disabled={claimStateListData.includes(task.index)}
-                >
-                  {
-                    claimStateListData.includes(task.index) ?
-                      <LoadingSpinner className="w-4 h-4 mx-auto" /> :
+                (
+                  claimStateListData.includes(task.index) ?
+                    <div className="flex w-fit items-center text-center justify-center gap-1">
+                      <LoadingSpinner className="w-4 h-4 my-auto mx-0 stroke-white" />
+                    </div> :
+                    <button
+                      className="rounded-lg w-[61px] py-1 px-0 h-7 bg-white text-[#080888] text-center text-[14px]"
+                      onClick={goClaim}
+                      disabled={claimStateListData.includes(task.index)}
+                    >
                       "Claim"
-                  }
-                </button> :
+                    </button>
+                ) :
                 <div className="text-white">
                   <CheckMark />
                 </div>)
