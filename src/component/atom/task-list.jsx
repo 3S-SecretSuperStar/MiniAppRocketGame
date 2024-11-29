@@ -43,13 +43,14 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
     const [showButtonClicked, setShowButtonClicked] = useState(false);
     console.log(task.index)
     const showAd = async () => {
-      setShowButtonClicked(true);
       try {
         let result = false;
         if (task.status == 1) {
           await show_8549848();
+          setShowButtonClicked(true);
           result = await addPerformList([task.index]);
         } else {
+          setShowButtonClicked(true);
           result = await goClaim();
         }
         if (result) {
@@ -64,18 +65,18 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
       }
     };
 
-    return <button className={`rounded-lg w-[61px] py-1 px-0 h-7 text-center text-[14px] ${task.status ? 'bg-mainFocus text-white' : 'bg-white text-[#080888]'}`}
-      onClick={showAd} disabled={isPending}>
-      {
-        showButtonClicked ?
-          <LoadingSpinner className="w-4 h-4 mx-auto" /> :
-          (
+    return (
+      showButtonClicked ?
+        <LoadingSpinner className="w-4 h-4 mx-auto" /> :
+        (
+          <button className={`rounded-lg w-[61px] py-1 px-0 h-7 text-center text-[14px] ${task.status ? 'bg-mainFocus text-white' : 'bg-white text-[#080888]'}`}
+            onClick={showAd} disabled={isPending}>
             task.status == 1 ?
-              "Start" :
-              "Claim"
-          )
-      }
-    </button>
+            "Start" :
+            "Claim"
+          </button>
+        )
+    )
   }
 
   const ShowADgramButton = () => {
@@ -87,8 +88,10 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
         let result = false;
         if (task.status == 1) {
           await AdController.show();
+          setShowButtonClicked(true);
           result = await addPerformList([task.index]);
         } else {
+          setShowButtonClicked(true);
           result = await goClaim();
         }
         if (result) {
@@ -103,18 +106,18 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
       }
     };
 
-    return <button className={`rounded-lg w-[61px] py-1 px-0 h-7 text-center text-[14px] ${task.status ? 'bg-mainFocus text-white' : 'bg-white text-[#080888]'}`}
-      onClick={showAd} disabled={disableList.includes(task.index)}>
-      {
-        showButtonClicked ?
-          <LoadingSpinner className="w-4 h-4 mx-auto" /> :
-          (
+    return (
+      showButtonClicked ?
+        <LoadingSpinner className="w-4 h-4 mx-auto" /> :
+        (
+          <button className={`rounded-lg w-[61px] py-1 px-0 h-7 text-center text-[14px] ${task.status ? 'bg-mainFocus text-white' : 'bg-white text-[#080888]'}`}
+            onClick={showAd} disabled={isPending}>
             task.status == 1 ?
-              "Start" :
-              "Claim"
-          )
-      }
-    </button>
+            "Start" :
+            "Claim"
+          </button>
+        )
+    )
   }
 
   const ShowPromoLinkButton = () => {
@@ -127,6 +130,7 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
         if (task.status == 1) {
           await AdController.show();
           window.open(task.link, '_blank');
+          setShowButtonClicked(true);
           result = await addPerformList([task.index])
         } else {
           result = await goClaim();
@@ -143,18 +147,18 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
       }
     };
 
-    return <button className={`rounded-lg w-[61px] py-1 px-0 h-7 text-center text-[14px] ${task.status ? 'bg-mainFocus text-white' : 'bg-white text-[#080888]'}`}
-      onClick={showAd} disabled={disableList.includes(task.index)}>
-      {
-        showButtonClicked ?
-          <LoadingSpinner className="w-4 h-4 mx-auto" /> :
-          (
+    return (
+      showButtonClicked ?
+        <LoadingSpinner className="w-4 h-4 mx-auto" /> :
+        (
+          <button className={`rounded-lg w-[61px] py-1 px-0 h-7 text-center text-[14px] ${task.status ? 'bg-mainFocus text-white' : 'bg-white text-[#080888]'}`}
+            onClick={showAd} disabled={isPending}>
             task.status == 1 ?
-              "Start" :
-              "Claim"
-          )
-      }
-    </button>
+            "Start" :
+            "Claim"
+          </button>
+        )
+    )
   }
 
   const addPerformList = async (performTask) => {
@@ -163,6 +167,7 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
       headers.append('Content-Type', 'application/json')
       await fetch(`${serverUrl}/add_perform_list`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, performTask: performTask, isReal: isReal }), headers });
       if (!performTask.includes('32') && !performTask.includes('34') && !performTask.includes('36')) {
+        console.log("state task log");
         stateTask();
       } else {
         return true;
