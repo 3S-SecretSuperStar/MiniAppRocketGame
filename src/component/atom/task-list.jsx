@@ -168,11 +168,11 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
 
   const addPerformList = async (performTask) => {
     try {
-      console.log("state task log first");
+      console.log("state task log first", performTask);
       const headers = new Headers();
-      headers.append('Content-Type', 'application/json')
+      headers.append('Content-Type', 'application/json');
       await fetch(`${serverUrl}/add_perform_list`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, performTask: performTask, isReal: isReal }), headers });
-      if (!performTask.includes('32') && !performTask.includes('34') && !performTask.includes('36')) {
+      if (!performTask.includes(32) && !performTask.includes(34) && !performTask.includes(36)) {
         console.log("state task log second");
         stateTask();
       } else {
