@@ -57,7 +57,7 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
         }
         setTimeout(async () => {
           setShowButtonClicked(false);
-        }, 1000)
+        }, 10000)
       } catch (err) {
         console.log(err);
         setShowButtonClicked(false);
@@ -69,9 +69,11 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
       {
         showButtonClicked ?
           <LoadingSpinner className="w-4 h-4 mx-auto" /> :
-          task.status == 1 ?
-            "Start" :
-            "Claim"
+          (
+            task.status == 1 ?
+              "Start" :
+              "Claim"
+          )
       }
     </button>
   }
@@ -94,7 +96,7 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
         }
         setTimeout(async () => {
           setShowButtonClicked(false);
-        }, 1000)
+        }, 10000)
       } catch (err) {
         console.log(err);
         setShowButtonClicked(false);
@@ -106,9 +108,11 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
       {
         showButtonClicked ?
           <LoadingSpinner className="w-4 h-4 mx-auto" /> :
-          task.status == 1 ?
-            "Start" :
-            "Claim"
+          (
+            task.status == 1 ?
+              "Start" :
+              "Claim"
+          )
       }
     </button>
   }
@@ -132,7 +136,7 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
         }
         setTimeout(async () => {
           setShowButtonClicked(false);
-        }, 2000)
+        }, 10000)
       } catch (err) {
         console.log(err);
         setShowButtonClicked(false);
@@ -144,9 +148,11 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
       {
         showButtonClicked ?
           <LoadingSpinner className="w-4 h-4 mx-auto" /> :
-          task.status == 1 ?
-            "Start" :
-            "Claim"
+          (
+            task.status == 1 ?
+              "Start" :
+              "Claim"
+          )
       }
     </button>
   }
