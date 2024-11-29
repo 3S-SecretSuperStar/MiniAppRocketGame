@@ -72,7 +72,7 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
         </div> :
         (
           <button className={`rounded-lg w-[61px] py-1 px-0 h-7 text-center text-[14px] ${task.status ? 'bg-mainFocus text-white' : 'bg-white text-[#080888]'}`}
-            onClick={showAd} disabled={isPending}>
+            onClick={showAd}>
             {task.status == 1 ?
               "Start" :
               "Claim"}
@@ -115,7 +115,7 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
         </div> :
         (
           <button className={`rounded-lg w-[61px] py-1 px-0 h-7 text-center text-[14px] ${task.status ? 'bg-mainFocus text-white' : 'bg-white text-[#080888]'}`}
-            onClick={showAd} disabled={isPending}>
+            onClick={showAd}>
             {task.status == 1 ?
               "Start" :
               "Claim"}
@@ -157,7 +157,7 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
         </div> :
         (
           <button className={`rounded-lg w-[61px] py-1 px-0 h-7 text-center text-[14px] ${task.status ? 'bg-mainFocus text-white' : 'bg-white text-[#080888]'}`}
-            onClick={showAd} disabled={isPending}>
+            onClick={showAd}>
             {task.status == 1 ?
               "Start" :
               "Claim"}
@@ -168,13 +168,15 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
 
   const addPerformList = async (performTask) => {
     try {
+      console.log("state task log first");
       const headers = new Headers();
       headers.append('Content-Type', 'application/json')
       await fetch(`${serverUrl}/add_perform_list`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, performTask: performTask, isReal: isReal }), headers });
       if (!performTask.includes('32') && !performTask.includes('34') && !performTask.includes('36')) {
-        console.log("state task log");
+        console.log("state task log second");
         stateTask();
       } else {
+        console.log("state task log success");
         return true;
       }
     } catch (error) {
@@ -409,6 +411,7 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
                     </div> :
                     <button className="rounded-lg w-[61px] py-1 px-0 h-7 bg-mainFocus text-white text-center text-[14px]"
                       onClick={() => followHandle(task.index)} >
+                        Start
                     </button>
                 )
             ) :
@@ -424,7 +427,7 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
                       onClick={goClaim}
                       disabled={claimStateListData.includes(task.index)}
                     >
-                      "Claim"
+                      Claim
                     </button>
                 ) :
                 <div className="text-white">
