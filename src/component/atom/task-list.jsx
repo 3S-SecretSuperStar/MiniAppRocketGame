@@ -46,7 +46,7 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
       setShowButtonClicked(true);
       try {
         let result = false;
-        if (task.status == 0) {
+        if (task.status == 1) {
           await show_8549848();
           result = await addPerformList([task.index]);
         } else {
@@ -62,7 +62,7 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
       }
     };
 
-    return <button className={`rounded-lg w-[61px] py-1 px-0 h-7 bg-mainFocus text-white text-center text-[14px] ${showButtonClicked && 'bg-white'}`}
+    return <button className={`rounded-lg w-[61px] py-1 px-0 h-7 text-center text-[14px] ${task.status ? 'bg-mainFocus text-white' : 'bg-white text-[#080888]'}`}
       onClick={showAd} disabled={isPending}>
       {
         showButtonClicked ?
@@ -81,7 +81,7 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
       setShowButtonClicked(true);
       try {
         let result = false;
-        if (task.status == 0) {
+        if (task.status == 1) {
           await AdController.show();
           result = await addPerformList([task.index]);
         } else {
@@ -97,7 +97,7 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
       }
     };
 
-    return <button className={`rounded-lg w-[61px] py-1 px-0 h-7 bg-mainFocus text-white text-center text-[14px] ${showButtonClicked && 'bg-white'}`}
+    return <button className={`rounded-lg w-[61px] py-1 px-0 h-7 text-center text-[14px] ${task.status ? 'bg-mainFocus text-white' : 'bg-white text-[#080888]'}`}
       onClick={showAd} disabled={disableList.includes(task.index)}>
       {
         showButtonClicked ?
@@ -116,7 +116,7 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
       setShowButtonClicked(true);
       try {
         let result = false;
-        if (task.status == 0) {
+        if (task.status == 1) {
           await AdController.show();
           window.open(task.link, '_blank');
           result = await addPerformList([task.index])
@@ -135,7 +135,7 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
       }
     };
 
-    return <button className={`rounded-lg w-[61px] py-1 px-0 h-7 bg-mainFocus text-white text-center text-[14px] ${showButtonClicked && 'bg-white'}`}
+    return <button className={`rounded-lg w-[61px] py-1 px-0 h-7 text-center text-[14px] ${task.status ? 'bg-mainFocus text-white' : 'bg-white text-[#080888]'}`}
       onClick={showAd} disabled={disableList.includes(task.index)}>
       {
         showButtonClicked ?
@@ -333,7 +333,7 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
   const followHandle = (index) => {
     setIsPending(true)
     window.open(task.link, '_blank')
-      (task.index !== 32 || task.index !== 36) && fetch(`${serverUrl}/add_perform_list`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, performTask: [task.index,], isReal: isReal }), headers })
+    fetch(`${serverUrl}/add_perform_list`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, performTask: [task.index,], isReal: isReal }), headers })
     setTimeout(() => {
       fetchData()
     }, 1000 * 60)
