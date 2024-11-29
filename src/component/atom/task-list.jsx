@@ -55,7 +55,9 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
         if (result) {
           task.status = !task.status;
         }
-        setShowButtonClicked(false);
+        setTimeout(async () => {
+          setShowButtonClicked(false);
+        }, 1000)
       } catch (err) {
         console.log(err);
         setShowButtonClicked(false);
@@ -90,7 +92,9 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
         if (result) {
           task.status = !task.status;
         }
-        setShowButtonClicked(false);
+        setTimeout(async () => {
+          setShowButtonClicked(false);
+        }, 1000)
       } catch (err) {
         console.log(err);
         setShowButtonClicked(false);
