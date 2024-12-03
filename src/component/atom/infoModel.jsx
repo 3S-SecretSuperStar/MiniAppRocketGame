@@ -1,6 +1,7 @@
 import React, { useCallback, useState } from "react";
+import { cn } from "../../utils";
 
-const InfoModal = ({ children, icon, title, isOpen, setIsOpen, height }) => {
+const InfoModal = ({ children, icon, title, isOpen, setIsOpen, height, className }) => {
 
     const [isExiting, setIsExiting] = useState(false);
 
@@ -28,8 +29,8 @@ const InfoModal = ({ children, icon, title, isOpen, setIsOpen, height }) => {
         >
             <div
                 className={
-                    `absolute flex flex-col ${height}  top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 rounded-2xl  w-[calc(100vw-32px)] p-4 gap-6 bg-white
-                    ${isExiting ? 'animate-slide-out-bottom' : 'animate-slide-in-top'}`
+                    cn(`absolute flex flex-col ${height}  top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 rounded-2xl  w-[calc(100vw-32px)] p-4 gap-6 bg-white
+                    ${isExiting ? 'animate-slide-out-bottom' : 'animate-slide-in-top'}`, className)
                 }
             >
 
@@ -44,7 +45,6 @@ const InfoModal = ({ children, icon, title, isOpen, setIsOpen, height }) => {
                             className="w-[20px] h-[20px]"
                         />
                     </div>
-
                 </div>
 
                 <div className="flex flex-col gap-6">

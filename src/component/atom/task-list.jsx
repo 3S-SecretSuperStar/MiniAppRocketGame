@@ -12,6 +12,9 @@ import { useTonAddress, useTonConnectUI, useTonWallet } from "@tonconnect/ui-rea
 import { beginCell } from "@ton/ton";
 import WarnningIcon from "../svg/warning";
 import UserInfoSkeleton from "./userInfoSkeleton";
+import InfoModal from "./infoModel";
+import ShadowButton from "./shadow-btn";
+import { getReward } from "../../utils/globals";
 // import React from "react";
 
 const serverUrl = REACT_APP_SERVER;
@@ -19,8 +22,7 @@ const serverUrl = REACT_APP_SERVER;
 
 const AdController = window.Adsgram.init({ blockId: '5562' });
 
-
-const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claimStateList, setClaimStateList, disableList, setDisableList }) => {
+const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claimStateList, setClaimStateList, disableList, setDisableList, moneadshow }) => {
 
   const [isClaim, setIsClaim] = useState(false);
   const [isReal, setIsReal] = useAtom(realGameState);
@@ -51,7 +53,7 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
           result = await addPerformList([task.index]);
         } else {
           setShowButtonClicked(true);
-          result = await goClaim();
+          result = await goClaim(getReward(user.Balance));
         }
         if (result) {
           task.status = !task.status;
@@ -66,12 +68,12 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
     };
 
     return (
-      showButtonClicked ?
+      (showButtonClicked || moneadshow) ?
         <div className="flex w-fit items-center text-center justify-center gap-1">
           <LoadingSpinner className="w-4 h-4 my-auto mx-0 stroke-white" />
         </div> :
         (
-          <button className={`rounded-lg w-[61px] py-1 px-0 h-7 text-center text-[14px] ${task.status ? 'bg-mainFocus text-white' : 'bg-white text-[#080888]'}`}
+          <button className={`rounded-lg w-[61px] py-1 px-0 h-7 text-center text-[14px] ${task.status ? 'bg-mainYellow text-main' : 'bg-white text-[#080888]'}`}
             onClick={showAd}>
             {task.status == 1 ?
               "Start" :
@@ -94,7 +96,7 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
           result = await addPerformList([task.index]);
         } else {
           setShowButtonClicked(true);
-          result = await goClaim();
+          result = await goClaim(getReward(user.Balance));
         }
         if (result) {
           task.status = !task.status;
@@ -114,7 +116,7 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
           <LoadingSpinner className="w-4 h-4 my-auto mx-0 stroke-white" />
         </div> :
         (
-          <button className={`rounded-lg w-[61px] py-1 px-0 h-7 text-center text-[14px] ${task.status ? 'bg-mainFocus text-white' : 'bg-white text-[#080888]'}`}
+          <button className={`rounded-lg w-[61px] py-1 px-0 h-7 text-center text-[14px] ${task.status ? 'bg-mainYellow text-main' : 'bg-white text-[#080888]'}`}
             onClick={showAd}>
             {task.status == 1 ?
               "Start" :
@@ -136,7 +138,7 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
           setShowButtonClicked(true);
           result = await addPerformList([task.index])
         } else {
-          result = await goClaim();
+          result = await goClaim(getReward(user.Balance));
         }
         if (result) {
           task.status = !task.status;
@@ -156,7 +158,7 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
           <LoadingSpinner className="w-4 h-4 my-auto mx-0 stroke-white" />
         </div> :
         (
-          <button className={`rounded-lg w-[61px] py-1 px-0 h-7 text-center text-[14px] ${task.status ? 'bg-mainFocus text-white' : 'bg-white text-[#080888]'}`}
+          <button className={`rounded-lg w-[61px] py-1 px-0 h-7 text-center text-[14px] ${task.status ? 'bg-mainYellow text-main' : 'bg-white text-[#080888]'}`}
             onClick={showAd}>
             {task.status == 1 ?
               "Start" :
@@ -168,15 +170,12 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
 
   const addPerformList = async (performTask) => {
     try {
-      console.log("state task log first", performTask);
       const headers = new Headers();
       headers.append('Content-Type', 'application/json');
       await fetch(`${serverUrl}/add_perform_list`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, performTask: performTask, isReal: isReal }), headers });
       if (!performTask.includes(32) && !performTask.includes(34) && !performTask.includes(36)) {
-        console.log("state task log second");
         stateTask();
       } else {
-        console.log("state task log success");
         return true;
       }
     } catch (error) {
@@ -236,7 +235,6 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
               addPerformList([26]);
             }
             )
-
         }
       }
       else {
@@ -274,13 +272,13 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
     })
   };
 
-  const goClaim = async () => {
+  const goClaim = async (reward) => {
     setClaimStateList((prev) => [...prev, task.index])
     if (task.index !== dailytaskIndex) {
       if (task.index === 34 || task.index === 32 || task.index === 36) {
         try {
-          await fetch(`${serverUrl}/perform_dailyADS`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, isReal: isReal, amount: task.amount, task: task.index }), headers })
-          toast(`${task.amount} coins added to your balance`,
+          await fetch(`${serverUrl}/perform_dailyADS`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, isReal: isReal, amount: reward, task: task.index }), headers })
+          toast(`${reward} coins added to your balance`,
             {
               position: "top-center",
               icon: <CheckMark />,
@@ -292,7 +290,7 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
               },
             }
           )
-          updateBalance(task.amount)
+          updateBalance(reward)
           return true;
         } catch (error) {
           console.log(error);
@@ -363,12 +361,18 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
   }
 
   return (
-    <div className="bg-[#0000001A] rounded-lg flex justify-between items-center gap-2 py-2 pl-2 pr-4 text-[14px]">
+    <div className="bg-[url('/image/task-bg.png')] bg-cover rounded-lg flex justify-between items-center gap-2 py-2 pl-2 pr-4 text-[14px] border-2 border-[#FFD700]">
       <div className="flex gap-2 items-center">
         <img src={task.src} alt="" className="w-8 h-8 rounded-full" />
         <div className="flex flex-col">
-          <div className="text-white">{task.title}</div>
-          <div className="text-[#ffffff99] w-[210px]">+{task.amount}</div>
+          <div className="text-[#FAE66C]">{task.title}</div>
+          <div className="text-[#FAE66C99] w-[210px]">
+            +{
+              (task.index === 32 || task.index == 34 || task.index == 36) ?
+              getReward(user.Balance) : 
+              task.amount
+            }
+          </div>
         </div>
       </div>
       {
@@ -388,17 +392,17 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
                 (
                   (task.index === 25 || task.index === 26 && !wallet) ?
                     <Link to={'/wallet'}>
-                      <button className="rounded-lg w-[61px] py-1 px-0 h-7 bg-mainFocus text-white text-center text-[14px]" >
+                      <button className="rounded-lg w-[61px] py-1 px-0 h-7 bg-mainYellow text-main text-center text-[14px]" >
                         Start
                       </button>
                     </Link> :
                     (
                       (task.index === 26 && wallet) ?
-                        <button className="rounded-lg w-[61px] py-1 px-0 h-7 bg-mainFocus text-white text-center text-[14px]" onClick={() => sendTransaction(500)} >
+                        <button className="rounded-lg w-[61px] py-1 px-0 h-7 bg-mainYellow text-main text-center text-[14px]" onClick={() => sendTransaction(500)} >
                           Start
                         </button> :
                         <Link to={'/play'}>
-                          <button className="rounded-lg w-[61px] py-1 px-0 h-7 bg-mainFocus text-white text-center text-[14px]" >
+                          <button className="rounded-lg w-[61px] py-1 px-0 h-7 bg-mainYellow text-main text-center text-[14px]" >
                             Start
                           </button>
                         </Link>
@@ -409,9 +413,9 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
                     <div className="flex w-fit items-center text-center justify-center gap-1">
                       <LoadingSpinner className="w-4 h-4 my-auto mx-0 stroke-white" />
                     </div> :
-                    <button className="rounded-lg w-[61px] py-1 px-0 h-7 bg-mainFocus text-white text-center text-[14px]"
+                    <button className="rounded-lg w-[61px] py-1 px-0 h-7 bg-mainYellow text-main text-center text-[14px]"
                       onClick={() => followHandle(task.index)} >
-                        Start
+                      Start
                     </button>
                 )
             ) :
@@ -451,6 +455,8 @@ const TaskList = () => {
   const [fixedTaskData, setFixedTaskData] = useState([]);
   const [claimStateList, setClaimStateList] = useState([]);
   const [disableList, setDisableList] = useState([]);
+  const [adState, setAdState] = useState(true);
+  const [moneadshow, setMoneadshow] = useState(false);
   const headers = new Headers();
   headers.append('Content-Type', 'application/json')
 
@@ -592,6 +598,22 @@ const TaskList = () => {
     fetchData()
   }
 
+  const goToMoneAd = async () => {
+    try {
+      await show_8549848();
+      setMoneadshow(true);
+      const headers = new Headers();
+      headers.append('Content-Type', 'application/json');
+      await fetch(`${serverUrl}/add_perform_list`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, performTask: [32], isReal: isReal }), headers });
+      // await fetchData();
+      setAdState(false);
+      setMoneadshow(false);
+    } catch (error) {
+      console.log(error);
+      toast.error(error);
+    }
+  }
+
   return (
     <Suspense fallback={<fetchData />}>
       <div className="flex flex-col gap-2 text-[14px] overflow-auto pb-4" style={{ height: "calc(100vh - 215px)" }}>
@@ -608,17 +630,35 @@ const TaskList = () => {
                 fixedTaskData
                   .sort((a, b) => (a.sort - b.sort))
                   .map((_task, _index) => <GenerateTask task={_task} stateTask={stateTask} key={_index} index={_index} dailytaskIndex={dailytaskIndex}
-                    fetchData={fetchData} claimStateList={claimStateList} setClaimStateList={setClaimStateList} disableList={disableList} setDisableList={setDisableList} />)
+                    fetchData={fetchData} claimStateList={claimStateList} setClaimStateList={setClaimStateList} disableList={disableList} setDisableList={setDisableList} moneadshow={moneadshow} />)
               }
               {
                 otherTaskData
                   .sort((a, b) => (a.status - b.status || a.sort - b.sort))
                   .map((_task, _index) => <GenerateTask task={_task} stateTask={stateTask} key={_index + 1} index={_index + 1} dailytaskIndex={dailytaskIndex}
-                    claimStateList={claimStateList} setClaimStateList={setClaimStateList} fetchData={fetchData} disableList={disableList} setDisableList={setDisableList} />)
+                    claimStateList={claimStateList} setClaimStateList={setClaimStateList} fetchData={fetchData} disableList={disableList} setDisableList={setDisableList} moneadshow={moneadshow} />)
               }
             </>
         }
       </div>
+      <InfoModal title="Get Rewards Now!" isOpen={adState} setIsOpen={() => setAdState(false)} height={"h-fit"} className={'bg-[#FAD557]'}>
+        <div className="flex items-center justify-center gap-2">
+          <img
+            src={`image/coin-y.svg`}
+            className="w-8 h-8"
+            alt="coin"
+          />
+          <span className="font-bold text-[32px] text-black">{getReward(user.Balance)}</span>
+        </div>
+        <div className="text-black text-center text-[15px] font-normal leading-5 tracking-[-2%] -mt-2">
+          Watch partner’s ads for 15 seconds
+          and get rewarded!
+        </div>
+        <ShadowButton
+          action={goToMoneAd}
+          content={"OK"}
+        />
+      </InfoModal>
     </Suspense>
   )
 }

@@ -13,7 +13,8 @@ module.exports = {
         'gradient-border': 'linear-gradient(180deg, #FFFFFF 0%, #FAD557 100%)',
         'main': "#560D5E",
         'mainFocus': "#923f9bb5",
-        'mainOpactiy': "#560D5E4D"
+        'mainOpactiy': "#560D5E4D",
+        'mainYellow': "#FAE66C"
       },
       fontFamily: {
         roboto: ['Roboto', 'sans-serif'],

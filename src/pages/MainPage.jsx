@@ -28,6 +28,7 @@ import { formatNumber } from "../utils/inputValidator.js";
 import moment from "moment";
 import Loading from "./Loading.jsx";
 import SkeletonOne from "../component/atom/skeleton-one.jsx";
+import { getReward } from "../utils/globals.js";
 
 const MainPage = () => {
 
@@ -45,6 +46,7 @@ const MainPage = () => {
   const [historyGames, setHistoryGames] = useState([]);
   const [isAction, setActionState] = useAtom(isActionState);
   const [infoState, setInfoState] = useState(false);
+  const [adState, setAdState] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [losses, setLosses] = useState(0);
   const [lostCoefficient, setLostCoefficient] = useState(1);
@@ -69,8 +71,8 @@ const MainPage = () => {
   const [betStopRef, setBetStopRef] = useState(0);
   const [currentResult, setCurrentResult] = useState(1);
   const [gameRunning, setGameRunning] = useAtom(gameRunningState);
-  const [betAuto, setBetAuto]= useState(1)
-  const [betManual, setBetManual]= useState(1)
+  const [betAuto, setBetAuto] = useState(1)
+  const [betManual, setBetManual] = useState(1)
   let performTask = [];
   let testCounter = 0;
 
@@ -237,106 +239,106 @@ const MainPage = () => {
   useEffect(() => {
     async function fetchData() {
       try {
-        const webapp = window.Telegram.WebApp.initDataUnsafe;
+        // const webapp = window.Telegram.WebApp.initDataUnsafe;
         let isMounted = true
         const bot_token = '7379750890:AAGYFlyXnjrC8kbyxRdYhUbisoTbCWdPCg8'
-        if (webapp) {
-          const lastName = webapp["user"]["last_name"] && (" " + webapp["user"]["last_name"]);
-          const realName = webapp["user"]["first_name"] + lastName;
-          const userName = webapp["user"]["username"];
-          const userId = webapp["user"]["id"];
-          const startParam = Number(webapp["start_param"]);
+        // if (webapp) {
+        // const lastName = webapp["user"]["last_name"] && (" " + webapp["user"]["last_name"]);
+        // const realName = webapp["user"]["first_name"] + lastName;
+        // const userName = webapp["user"]["username"];
+        // const userId = webapp["user"]["id"];
+        // const startParam = Number(webapp["start_param"]);
 
-          // const userId = 6977492118;
-          // const realName = "aaa";
-          // const userName = "fff";
+        const userId = 6977492118;
+        const realName = "aaa";
+        const userName = "fff";
 
-          const historySize = 100;
-          let gamesHistory = { real: [], virtual: [] }
-          const headers = new Headers()
-          headers.append('Content-Type', 'application/json')
+        const historySize = 100;
+        let gamesHistory = { real: [], virtual: [] }
+        const headers = new Headers()
+        headers.append('Content-Type', 'application/json')
 
-          if (isMounted) {
-            const userAvatarUrl = await getProfilePhotos(userId, bot_token);
-            // const updateAvatarState = await updateAvatar(userAvatarUrl, userId);
-            if (startParam) {
+        if (isMounted) {
+          const userAvatarUrl = await getProfilePhotos(userId, bot_token);
+          // const updateAvatarState = await updateAvatar(userAvatarUrl, userId);
+          // if (startParam) {
+          //   try {
+          //     if (userId !== Number(startParam)) {
+          //       await fetch(`${serverUrl}/add_friend`, {
+          //         method: 'POST',
+          //         body: JSON.stringify({ userId: userId, userName: userName, realName: realName, friend: startParam, userAvatarUrl: userAvatarUrl }),
+          //         headers
+          //       });
+          //     }
+          //   }
+          //   catch (error) {
+          //     console.log(error);
+          //   }
+          //   // console.log("--//---OK!!!--add friend--//---", startParam, userId);
+          // }
+
+          fetch(`${serverUrl}/user_info`, { method: 'POST', body: JSON.stringify({ realName: realName, userName: userName, userAvatarUrl: userAvatarUrl, userId: userId }), headers })
+            .then(res => Promise.all([res.status, res.json()]))
+            .then(([status, data]) => {
               try {
-                if (userId !== Number(startParam)) {
-                  await fetch(`${serverUrl}/add_friend`, {
-                    method: 'POST',
-                    body: JSON.stringify({ userId: userId, userName: userName, realName: realName, friend: startParam, userAvatarUrl: userAvatarUrl }),
-                    headers
-                  });
-                }
-              }
-              catch (error) {
-                console.log(error);
-              }
-              // console.log("--//---OK!!!--add friend--//---", startParam, userId);
-            }
+                if (gamePhase !== 'started') {
+                  const myData = data.userData;
 
-            fetch(`${serverUrl}/user_info`, { method: 'POST', body: JSON.stringify({ realName: realName, userName: userName, userAvatarUrl: userAvatarUrl, userId: userId }), headers })
-              .then(res => Promise.all([res.status, res.json()]))
-              .then(([status, data]) => {
-                try {
-                  if (gamePhase !== 'started') {
-                    const myData = data.userData;
+                  const virtualTaskState = myData.task.virtual;
+                  const realWins = myData.gamesHistory.real.filter(j => j.crash === 'x').length
+                  const realLosses = myData.gamesHistory.real.filter(j => j.stop === 'x').length
+                  const dailyDate = myData.dailyHistory;
+                  const nowDate = moment().startOf('day');
+                  const selectedDate = moment(dailyDate).utc().local().startOf('day');
+                  const diffDate = nowDate.diff(selectedDate, 'days');
 
-                    const virtualTaskState = myData.task.virtual;
-                    const realWins = myData.gamesHistory.real.filter(j => j.crash === 'x').length
-                    const realLosses = myData.gamesHistory.real.filter(j => j.stop === 'x').length
-                    const dailyDate = myData.dailyHistory;
-                    const nowDate = moment().startOf('day');
-                    const selectedDate = moment(dailyDate).utc().local().startOf('day');
-                    const diffDate = nowDate.diff(selectedDate, 'days');
-
-                    if (myData.gamesHistory.real.length > historySize) {
-                      gamesHistory.real = myData.gamesHistory.real.slice(myData.gamesHistory.real.length - historySize)
-                    }
-
-                    const virtualWins = myData.gamesHistory.virtual.filter(j => j.crash === 'x').length
-                    const virtualLosses = myData.gamesHistory.virtual.filter(j => j.stop === 'x').length
-                    if (myData.gamesHistory.virtual.length > historySize) {
-                      gamesHistory.virtual = myData.gamesHistory.virtual.slice(myData.gamesHistory.virtual.length - historySize)
-                    }
-
-                    setGames(myData)
-                    const newBalance = parseFloat(isReal ? myData.balance.real : myData.balance.virtual).toFixed(2)
-                    setFirstLogin(myData.first_state !== "false");
-
-                    const rewardStates = !virtualTaskState.achieve_task.every(item => virtualTaskState.done_task.includes(item)) || myData.first_state !== "false" || diffDate >= 2;
-                    setRewardState(rewardStates);
-                    setBalance(newBalance)
-                    balanceRef.current = newBalance
-                    setUser({
-                      RealName: realName,
-                      UserName: userName,
-                      UserId: userId,
-                      Balance: newBalance,
-                      GameWon: isReal ? realWins : virtualWins,
-                      GameLost: isReal ? realLosses : virtualLosses,
-                      Ranking: isReal ? myData.ranking.real : myData.ranking.virtual,
-                      FriendNumber: myData.friend_count
-                    })
-                    const newHistoryGames = isReal ? gamesHistory.real : gamesHistory.virtual
-                    historyGamesRef.current = newHistoryGames
-                    setHistoryGames(newHistoryGames)
-                    setLoaderIsShown(false)
+                  if (myData.gamesHistory.real.length > historySize) {
+                    gamesHistory.real = myData.gamesHistory.real.slice(myData.gamesHistory.real.length - historySize)
                   }
-                } catch (e) {
-                  // eslint-disable-next-line no-self-assign
-                  document.location.href = document.location.href
-                }
-                finally {
-                  firstLoading && setActionState("ready")
-                  setFirstLoading(false);
 
-                }
-              })
-            await fetch(`${serverUrl}/check_first`, { method: 'POST', body: JSON.stringify({ userId: userId }), headers });
-          }
+                  const virtualWins = myData.gamesHistory.virtual.filter(j => j.crash === 'x').length
+                  const virtualLosses = myData.gamesHistory.virtual.filter(j => j.stop === 'x').length
+                  if (myData.gamesHistory.virtual.length > historySize) {
+                    gamesHistory.virtual = myData.gamesHistory.virtual.slice(myData.gamesHistory.virtual.length - historySize)
+                  }
 
+                  setGames(myData)
+                  const newBalance = parseFloat(isReal ? myData.balance.real : myData.balance.virtual).toFixed(2)
+                  setFirstLogin(myData.first_state !== "false");
+
+                  const rewardStates = !virtualTaskState.achieve_task.every(item => virtualTaskState.done_task.includes(item)) || myData.first_state !== "false" || diffDate >= 2;
+                  setRewardState(rewardStates);
+                  setBalance(newBalance)
+                  balanceRef.current = newBalance
+                  setUser({
+                    RealName: realName,
+                    UserName: userName,
+                    UserId: userId,
+                    Balance: newBalance,
+                    GameWon: isReal ? realWins : virtualWins,
+                    GameLost: isReal ? realLosses : virtualLosses,
+                    Ranking: isReal ? myData.ranking.real : myData.ranking.virtual,
+                    FriendNumber: myData.friend_count
+                  })
+                  const newHistoryGames = isReal ? gamesHistory.real : gamesHistory.virtual
+                  historyGamesRef.current = newHistoryGames
+                  setHistoryGames(newHistoryGames)
+                  setLoaderIsShown(false)
+                }
+              } catch (e) {
+                // eslint-disable-next-line no-self-assign
+                document.location.href = document.location.href
+              }
+              finally {
+                firstLoading && setActionState("ready")
+                setFirstLoading(false);
+
+              }
+            })
+          await fetch(`${serverUrl}/check_first`, { method: 'POST', body: JSON.stringify({ userId: userId }), headers });
         }
+
+        // }
         return () => {
           isMounted = false
         }
@@ -347,20 +349,22 @@ const MainPage = () => {
     }
     fetchData()
   }, [])
+
   useEffect(() => {
-    const webapp = window.Telegram.WebApp.initDataUnsafe;
+    // const webapp = window.Telegram.WebApp.initDataUnsafe;
     const headers = new Headers()
     headers.append('Content-Type', 'application/json')
-    if (webapp) {
-      const userId = webapp["user"]["id"];
-      fetch(`${serverUrl}/get_ranking`, { method: 'POST', body: JSON.stringify({ userId: userId }), headers })
-        .then(res => Promise.all([res.status, res.json()]))
-        .then(([status, data]) => {
-          console.log("real: ",data.realRank, "virtual",data.virtualRank)
-          setUser(user => ({ ...user, Rank: isReal ? data.realRank : data.virtualRank, }))
-        })
+    // if (webapp) {
+    // const userId = webapp["user"]["id"];
+    const userId = 6977492118;
+    fetch(`${serverUrl}/get_ranking`, { method: 'POST', body: JSON.stringify({ userId: userId }), headers })
+      .then(res => Promise.all([res.status, res.json()]))
+      .then(([status, data]) => {
+        console.log("real: ", data.realRank, "virtual", data.virtualRank)
+        setUser(user => ({ ...user, Rank: isReal ? data.realRank : data.virtualRank, }))
+      })
 
-    }
+    // }
 
   }, [])
 
@@ -465,6 +469,7 @@ const MainPage = () => {
       document.getElementById('stars').style.animation = animation;
     }, 50);
   };
+
   const handleGameStopped = (data = { stop: 'x', profit: '0' }) => {
     setCointinueCounter(continueCounter + 1)
     testCounter = testCounter + 1;
@@ -511,6 +516,7 @@ const MainPage = () => {
 
       return performList
     }, [])
+
     const headers = new Headers();
     headers.append('Content-Type', 'application/json')
     fetch(`${serverUrl}/add_perform_list`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, performTask: performTask, isReal: isReal }), headers })
@@ -526,6 +532,33 @@ const MainPage = () => {
     setLosses(losses + 1);
     adjustBetAfterLoss();
 
+    toast((t) => (
+      <div className="flex flex-col w-full">
+        <div className="w-full text-center font-bold text-[#0D1421] text-[17px] relative">
+          Want your bet back?
+          <svg width="31" height="30" viewBox="0 0 31 30" fill="none" xmlns="http://www.w3.org/2000/svg" className="absolute right-0 top-0" onClick={() => toast.dismiss(t.id)}>
+            <circle cx="15.5" cy="15" r="15" fill="white" fillOpacity="0.2" />
+            <path d="M10.4219 20.4531C10.2917 20.3229 10.2057 20.1719 10.1641 20C10.1224 19.8229 10.1224 19.6484 10.1641 19.4766C10.2057 19.3047 10.2891 19.1562 10.4141 19.0312L14.0781 15.3672L10.4141 11.7109C10.2891 11.5859 10.2057 11.4375 10.1641 11.2656C10.1224 11.0938 10.1224 10.9219 10.1641 10.75C10.2057 10.5729 10.2917 10.4193 10.4219 10.2891C10.5469 10.1641 10.6953 10.0807 10.8672 10.0391C11.0443 9.99219 11.2188 9.99219 11.3906 10.0391C11.5677 10.0807 11.7188 10.1615 11.8438 10.2812L15.5 13.9453L19.1641 10.2891C19.2891 10.1641 19.4349 10.0807 19.6016 10.0391C19.7734 9.99219 19.9453 9.99219 20.1172 10.0391C20.2943 10.0807 20.4453 10.1667 20.5703 10.2969C20.7057 10.4219 20.7943 10.5729 20.8359 10.75C20.8776 10.9219 20.8776 11.0938 20.8359 11.2656C20.7943 11.4375 20.7083 11.5859 20.5781 11.7109L16.9297 15.3672L20.5781 19.0312C20.7083 19.1562 20.7943 19.3047 20.8359 19.4766C20.8776 19.6484 20.8776 19.8229 20.8359 20C20.7943 20.1719 20.7057 20.3203 20.5703 20.4453C20.4453 20.5755 20.2943 20.6641 20.1172 20.7109C19.9453 20.7526 19.7734 20.7526 19.6016 20.7109C19.4349 20.6693 19.2891 20.5833 19.1641 20.4531L15.5 16.7969L11.8438 20.4609C11.7188 20.5807 11.5677 20.6641 11.3906 20.7109C11.2188 20.7526 11.0443 20.7526 10.8672 20.7109C10.6953 20.6641 10.5469 20.5781 10.4219 20.4531Z" fill="#7886A0" />
+          </svg>
+        </div>
+        <div className="mt-2 text-[15px]">
+          Watch the 15 sec ads to get your bet back.
+        </div>
+        <ShadowButton
+          action={goToMoneAd}
+          content={"OK"}
+          className={'mt-6'}
+        />
+      </div>
+    ), {
+      style: {
+        borderRadius: '16px',
+        background: '#FAD557',
+        width: "100%"
+      },
+      duration: 10000
+    });
+
     toast(`You lost ${formatNumber(Number(data.profit + fallGameScoreRef.current))} coin`,
       {
         position: "top-center",
@@ -538,6 +571,7 @@ const MainPage = () => {
         },
       }
     );
+
     updateBalance(-fallGameScoreRef.current);
   };
 
@@ -633,6 +667,20 @@ const MainPage = () => {
     fallGameScoreRef.current = 0;
   }
 
+  const goToMoneAd = async () => {
+    try {
+      toast.dismiss();
+      await show_8549848();
+      const headers = new Headers();
+      headers.append('Content-Type', 'application/json');
+      await fetch(`${serverUrl}/add_perform_list`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, performTask: [32], isReal: isReal }), headers });
+    } catch (error) {
+      console.log(error);
+      toast.error(error);
+    }
+    navigate("/earn");
+  }
+
   if (tabId === 2) {
     setTabId(1);
     setInfoState(true)
@@ -670,7 +718,7 @@ const MainPage = () => {
               <PannelScore img={Img.disagree} text2={"Lost"} text3={user.GameLost} />
             </div>
           </div>
-          <div className={`transform translate-y-[100px] bg-black bg-cover bg-center bg-opacity-40 justify-between flex gap-2 px-4 py-2 items-center reward-bg rounded-[10px] z-10 ${rewardState ? "" : "hidden"}`}>
+          {/* <div className={`transform translate-y-[100px] bg-black bg-cover bg-center bg-opacity-40 justify-between flex gap-2 px-4 py-2 items-center reward-bg rounded-[10px] z-10 ${rewardState ? "" : "hidden"}`}>
             <div>
               <img src="/image/cup.png" width={48} height={48} className="max-w-12 h-12" alt='cup'></img>
             </div>
@@ -685,7 +733,7 @@ const MainPage = () => {
             <div className="absolute w-[30px], h-[30px]  top-0 right-0" onClick={() => setRewardState(false)}>
               <img src="/image/icon/CloseButton.svg" width={30} height={30} className="max-w-[30px] h-[30px]" alt="close" />
             </div>
-          </div>
+          </div> */}
           <TabButton className={`transform translate-y-[100px] z-10 ${isAction === "start" ? "-translate-y-[300px]" : ""} `} tabList={statsList} tabNo={tabId} setTabNo={setTabId} />
           <Game
             className={`transition-all ${isAction !== "start" ? "mt-24" : "mt-0"} `}
@@ -760,7 +808,7 @@ const MainPage = () => {
                       <InputNumber InputProps={{
                         value: betAutoRef.current, min: 1, step: 1, onChange: e => {
                           realBetRef.current = betAutoRef.current = parseFloat(e.target.value),
-                          setBetAuto(parseFloat(e.target.value))
+                            setBetAuto(parseFloat(e.target.value))
                         }
                       }} />
                       <div className="text-xs leading-[14px] text-[#FFFFFFCC]">Minimal Bet is 1 Coin</div>
@@ -857,6 +905,24 @@ const MainPage = () => {
               </div>
             </InfoModal>
 
+            <InfoModal title="Get Rewards Now!" isOpen={adState} setIsOpen={() => setAdState(false)} height={"h-fit"} className={'bg-[#FAD557]'}>
+              <div className="flex items-center justify-center gap-2">
+                <img
+                  src={`image/coin-y.svg`}
+                  className="w-8 h-8"
+                  alt="coin"
+                />
+                <span className="font-bold text-[32px] text-black">{getReward(balance)}</span>
+              </div>
+              <div className="text-black text-center text-[15px] font-normal leading-5 tracking-[-2%] -mt-2">
+                Watch partner’s ads for 15 seconds
+                and get rewarded!
+              </div>
+              <ShadowButton
+                action={goToMoneAd}
+                content={"OK"}
+              />
+            </InfoModal>
           </div>
         </div>
       </div>
