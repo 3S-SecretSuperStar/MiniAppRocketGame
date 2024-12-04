@@ -641,7 +641,7 @@ const TaskList = () => {
             </>
         }
       </div>
-      <InfoModal title="Get Rewards Now!" isOpen={adState} setIsOpen={() => setAdState(false)} height={"h-fit"} className={'bg-[#FAD557]'}>
+      {/* <InfoModal title="Get Rewards Now!" isOpen={adState} setIsOpen={() => setAdState(false)} height={"h-fit"} className={'bg-[#FAD557]'}>
         <div className="flex items-center justify-center gap-2">
           <img
             src={`image/coin-y.svg`}
@@ -658,7 +658,7 @@ const TaskList = () => {
           action={goToMoneAd}
           content={"OK"}
         />
-      </InfoModal>
+      </InfoModal> */}
     </Suspense>
   )
 }

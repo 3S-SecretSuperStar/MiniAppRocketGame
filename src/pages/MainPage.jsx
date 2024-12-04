@@ -363,7 +363,6 @@ const MainPage = () => {
           console.log("real: ", data.realRank, "virtual", data.virtualRank)
           setUser(user => ({ ...user, Rank: isReal ? data.realRank : data.virtualRank, }))
         })
-
     }
   }, [])
 
