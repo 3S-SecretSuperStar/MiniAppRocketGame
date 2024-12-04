@@ -39,5 +39,5 @@ export const getReward = (balance) => {
 }
 
 export const taskFilter = [
-  "No Set", "Support us", "Collabs", "Game"
+  "All", "Support us", "Collabs", "Game"
 ]

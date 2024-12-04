@@ -73,8 +73,13 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
           <LoadingSpinner className="w-4 h-4 my-auto mx-0 stroke-white" />
         </div> :
         (
-          <button className={`rounded-lg w-[61px] py-1 px-0 h-7 text-center text-[14px] ${task.status ? 'bg-mainYellow text-main' : 'bg-white text-[#080888]'}`}
-            onClick={showAd}>
+          <button
+            className={`rounded-lg w-[61px] py-1 px-0 h-7 text-center text-[14px] 
+              ${task.status ?
+                task.highLight ? "bg-mainYellow text-main" : "bg-mainFocus text-white" :
+                'bg-white text-[#080888]'}`}
+            onClick={showAd}
+          >
             {task.status == 1 ?
               "Start" :
               "Claim"}
@@ -116,8 +121,13 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
           <LoadingSpinner className="w-4 h-4 my-auto mx-0 stroke-white" />
         </div> :
         (
-          <button className={`rounded-lg w-[61px] py-1 px-0 h-7 text-center text-[14px] ${task.status ? 'bg-mainYellow text-main' : 'bg-white text-[#080888]'}`}
-            onClick={showAd}>
+          <button
+            className={`rounded-lg w-[61px] py-1 px-0 h-7 text-center text-[14px] 
+              ${task.status ?
+                task.highLight ? "bg-mainYellow text-main" : "bg-mainFocus text-white" :
+                'bg-white text-[#080888]'}`}
+            onClick={showAd}
+          >
             {task.status == 1 ?
               "Start" :
               "Claim"}
@@ -158,8 +168,13 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
           <LoadingSpinner className="w-4 h-4 my-auto mx-0 stroke-white" />
         </div> :
         (
-          <button className={`rounded-lg w-[61px] py-1 px-0 h-7 text-center text-[14px] ${task.status ? 'bg-mainYellow text-main' : 'bg-white text-[#080888]'}`}
-            onClick={showAd}>
+          <button 
+            className={`rounded-lg w-[61px] py-1 px-0 h-7 text-center text-[14px] 
+              ${task.status ? 
+                task.highLight ? "bg-mainYellow text-main" : "bg-mainFocus text-white" : 
+                'bg-white text-[#080888]'}`}
+            onClick={showAd}
+          >
             {task.status == 1 ?
               "Start" :
               "Claim"}
@@ -361,16 +376,16 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
   }
 
   return (
-    <div className="bg-[url('/image/task-bg.png')] bg-cover rounded-lg flex justify-between items-center gap-2 py-2 pl-2 pr-4 text-[14px] border-2 border-[#FFD700]">
+    <div className={`${task.highLight && task.status === 1 ? "bg-[url('/image/task-bg.png')] border-2 border-[#FFD700]" : "bg-[#0000001A] border-0"} bg-cover rounded-lg flex justify-between items-center gap-2 py-2 pl-2 pr-4 text-[14px]`}>
       <div className="flex gap-2 items-center">
         <img src={task.src} alt="" className="w-8 h-8 rounded-full" />
         <div className="flex flex-col">
-          <div className="text-[#FAE66C]">{task.title}</div>
-          <div className="text-[#FAE66C99] w-[210px]">
+          <div className={`${task.highLight && task.status === 1 ? "text-[#FAE66C]" : "text-white"}`}>{task.title}</div>
+          <div className={`${task.highLight && task.status === 1 ? "text-[#FAE66C99]" : "text-[#ffffff99]"} w-[210px]`}>
             +{
               (task.index === 32 || task.index == 34 || task.index == 36) ?
-              getReward(user.Balance) : 
-              task.amount
+                getReward(user.Balance) :
+                task.amount
             }
           </div>
         </div>
@@ -392,17 +407,17 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
                 (
                   (task.index === 25 || task.index === 26 && !wallet) ?
                     <Link to={'/wallet'}>
-                      <button className="rounded-lg w-[61px] py-1 px-0 h-7 bg-mainYellow text-main text-center text-[14px]" >
+                      <button className={`${task.highLight && task.status === 1 ? "bg-mainYellow text-main" : "bg-mainFocus text-white"} rounded-lg w-[61px] py-1 px-0 h-7 text-center text-[14px]`} >
                         Start
                       </button>
                     </Link> :
                     (
                       (task.index === 26 && wallet) ?
-                        <button className="rounded-lg w-[61px] py-1 px-0 h-7 bg-mainYellow text-main text-center text-[14px]" onClick={() => sendTransaction(500)} >
+                        <button className={`rounded-lg w-[61px] py-1 px-0 h-7 ${task.highLight && task.status === 1 ? "bg-mainYellow text-main" : "bg-mainFocus text-white"} text-center text-[14px]`} onClick={() => sendTransaction(500)} >
                           Start
                         </button> :
                         <Link to={'/play'}>
-                          <button className="rounded-lg w-[61px] py-1 px-0 h-7 bg-mainYellow text-main text-center text-[14px]" >
+                          <button className={`${task.highLight && task.status === 1 ? "bg-mainYellow text-main" : "bg-mainFocus text-white"} rounded-lg w-[61px] py-1 px-0 h-7 text-center text-[14px]`} >
                             Start
                           </button>
                         </Link>
@@ -413,7 +428,7 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
                     <div className="flex w-fit items-center text-center justify-center gap-1">
                       <LoadingSpinner className="w-4 h-4 my-auto mx-0 stroke-white" />
                     </div> :
-                    <button className="rounded-lg w-[61px] py-1 px-0 h-7 bg-mainYellow text-main text-center text-[14px]"
+                    <button className={`${task.highLight && task.status === 1 ? "bg-mainYellow text-main" : "bg-mainFocus text-white"} rounded-lg w-[61px] py-1 px-0 h-7 text-center text-[14px]`}
                       onClick={() => followHandle(task.index)} >
                       Start
                     </button>
@@ -442,7 +457,7 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
   )
 }
 
-const TaskList = () => {
+const TaskList = ({ filter }) => {
   let taskState = [];
 
   const [otherTaskData, setOtherTaskData] = useState([]);
@@ -455,7 +470,7 @@ const TaskList = () => {
   const [fixedTaskData, setFixedTaskData] = useState([]);
   const [claimStateList, setClaimStateList] = useState([]);
   const [disableList, setDisableList] = useState([]);
-  const [adState, setAdState] = useState(true);
+  const [adState, setAdState] = useState(false);
   const [moneadshow, setMoneadshow] = useState(false);
   const headers = new Headers();
   headers.append('Content-Type', 'application/json')
@@ -471,6 +486,7 @@ const TaskList = () => {
     let isMounted = true
     if (isMounted) {
       stateTask();
+      !user.watchAd && setAdState(true);
     }
     return () => { isMounted = false }
   }, [])
@@ -553,7 +569,9 @@ const TaskList = () => {
                       status: taskState[item.index],
                       link: item.link_url,
                       index: item.index,
-                      sort: item.sort
+                      sort: item.sort,
+                      filter: item.filter,
+                      highLight: item.highLight
                     };
 
                   })
@@ -569,7 +587,9 @@ const TaskList = () => {
                       status: taskState[item.index],
                       link: item.link_url,
                       index: item.index,
-                      sort: item.sort
+                      sort: item.sort,
+                      filter: item.filter,
+                      highLight: item.highLight
                     };
                   });
 
@@ -629,19 +649,19 @@ const TaskList = () => {
               {
                 fixedTaskData
                   .sort((a, b) => (a.sort - b.sort))
-                  .map((_task, _index) => <GenerateTask task={_task} stateTask={stateTask} key={_index} index={_index} dailytaskIndex={dailytaskIndex}
+                  .map((_task, _index) => (_task.filter == filter || filter == 0) && <GenerateTask task={_task} stateTask={stateTask} key={_index} index={_index} dailytaskIndex={dailytaskIndex}
                     fetchData={fetchData} claimStateList={claimStateList} setClaimStateList={setClaimStateList} disableList={disableList} setDisableList={setDisableList} moneadshow={moneadshow} />)
               }
               {
                 otherTaskData
                   .sort((a, b) => (a.status - b.status || a.sort - b.sort))
-                  .map((_task, _index) => <GenerateTask task={_task} stateTask={stateTask} key={_index + 1} index={_index + 1} dailytaskIndex={dailytaskIndex}
+                  .map((_task, _index) => (_task.filter == filter || filter == 0) && <GenerateTask task={_task} stateTask={stateTask} key={_index + 1} index={_index + 1} dailytaskIndex={dailytaskIndex}
                     claimStateList={claimStateList} setClaimStateList={setClaimStateList} fetchData={fetchData} disableList={disableList} setDisableList={setDisableList} moneadshow={moneadshow} />)
               }
             </>
         }
       </div>
-      {/* <InfoModal title="Get Rewards Now!" isOpen={adState} setIsOpen={() => setAdState(false)} height={"h-fit"} className={'bg-[#FAD557]'}>
+      <InfoModal title="Get Rewards Now!" isOpen={adState} setIsOpen={() => setAdState(false)} height={"h-fit"} className={'bg-[#FAD557]'}>
         <div className="flex items-center justify-center gap-2">
           <img
             src={`image/coin-y.svg`}
@@ -658,7 +678,7 @@ const TaskList = () => {
           action={goToMoneAd}
           content={"OK"}
         />
-      </InfoModal> */}
+      </InfoModal>
     </Suspense>
   )
 }
