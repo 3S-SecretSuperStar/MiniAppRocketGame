@@ -8,7 +8,7 @@
  */
 export let db
 
-export function setDb (i) {
+export function setDb(i) {
   db = i
 }
 
@@ -18,9 +18,9 @@ const MAX_TIME = 100000
 
 export const ACCELERATION = (MAX_WIN - 1) / MAX_TIME / MAX_TIME * 2
 
-export const RANKINGDATA = [ 
+export const RANKINGDATA = [
   "Beginner", "Pilot", "Explorer", "Astronaut",
-  "Captain", "Commander", "Admiral", "Legend", 
+  "Captain", "Commander", "Admiral", "Legend",
   "Master of the Universe", "God of Space"
 ]
 
@@ -37,3 +37,7 @@ export const getReward = (balance) => {
     return 10000;
   }
 }
+
+export const taskFilter = [
+  "No Set", "Support us", "Collabs", "Game"
+]
