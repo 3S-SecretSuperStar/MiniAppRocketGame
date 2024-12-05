@@ -1,7 +1,12 @@
 import { Img } from "../assets/image";
 import Contact from "../component/molecules/contact";
+import { useEffect } from "react";
+import toast from "react-hot-toast";
 
 const Help = () => {
+  useEffect(() => {
+    toast.dismiss();
+  }, [])
   return (
     <div className="flex flex-col gap-8 items-center h-[calc(100vh-100px)] pb-4 overflow-y-auto">
       <div className="flex flex-col gap-4 items-center">

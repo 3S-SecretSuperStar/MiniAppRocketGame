@@ -21,6 +21,7 @@ import UserInfoSkeleton from "../component/atom/userInfoSkeleton.jsx";
 import { useInView } from 'react-intersection-observer'
 import InfiniteScroll from "react-infinite-scroll-component";
 import SkeletonOne from "../component/atom/skeleton-one.jsx";
+import toast from "react-hot-toast";
 
 const UserInfo = () => {
   const itemPerPage = 20;
@@ -41,8 +42,6 @@ const UserInfo = () => {
   const [items, setItems] = useState([]);
   const [hasMore, setHasMore] = useState(true)
   const [page, setPage] = useState(0)
-
-
 
   const statsList = [
     {
@@ -78,6 +77,7 @@ const UserInfo = () => {
 
   // eslint-disable-next-line no-self-assign
   useEffect(() => {
+    toast.dismiss();
     const webapp = window.Telegram.WebApp.initDataUnsafe;
     let isMounted = true
     if (webapp) {

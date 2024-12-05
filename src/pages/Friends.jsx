@@ -41,6 +41,7 @@ const Friends = () => {
   }
 
   useEffect(() => {
+    toast.dismiss();
     let isMounted = true
     const headers = new Headers()
     headers.append('Content-Type', 'application/json')

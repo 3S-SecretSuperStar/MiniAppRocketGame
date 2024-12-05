@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAtom } from "jotai";
 import TabButton from "../component/atom/tab-button";
 import StatList from "../component/molecules/stat-list";
 import { isActionState, userData } from "../store";
 import InfoModal from "../component/atom/infoModel.jsx";
 import Contact from "../component/molecules/contact.jsx";
+import toast from "react-hot-toast";
 
 const Stats = () => {
   const [tabId, setTabId] = useState(1);
@@ -28,6 +29,10 @@ const Stats = () => {
     setInfoState(true)
   }
   setActionState('stop');
+
+  useEffect(() => {
+    toast.dismiss();
+  },[])
   return (
     <div className="flex flex-col">
       <div className="mt-2">
