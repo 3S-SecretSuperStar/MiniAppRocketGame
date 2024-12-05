@@ -686,7 +686,7 @@ const MainPage = () => {
       await show_8549848();
       const headers = new Headers();
       headers.append('Content-Type', 'application/json');
-      await fetch(`${serverUrl}/task_balance`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, amount: realBetRef.current, task: 32, isReal: isReal }), headers });
+      await fetch(`${serverUrl}/perform_dailyADS`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, amount: realBetRef.current, task: 32, isReal: isReal }), headers });
       toast(`${realBetRef.current} coins added to your balance`,
         {
           position: "top-center",
