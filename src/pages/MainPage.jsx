@@ -29,6 +29,7 @@ import moment from "moment";
 import Loading from "./Loading.jsx";
 import SkeletonOne from "../component/atom/skeleton-one.jsx";
 import { getReward } from "../utils/globals.js";
+import CheckMark from "../component/svg/check-mark.jsx";
 
 const MainPage = () => {
 
