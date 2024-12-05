@@ -76,7 +76,7 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
           <button
             className={`rounded-lg w-[61px] py-1 px-0 h-7 text-center text-[14px] 
               ${task.status == 1 ?
-                (task.highLight ? "bg-mainYellow text-main" : "bg-mainFocus text-white") :
+                (task.highLight == 1 ? "bg-mainYellow text-main" : "bg-mainFocus text-white") :
                 'bg-white text-[#080888]'}`}
             onClick={showAd}
           >
@@ -124,7 +124,7 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
           <button
             className={`rounded-lg w-[61px] py-1 px-0 h-7 text-center text-[14px] 
               ${task.status == 1 ?
-                (task.highLight ? "bg-mainYellow text-main" : "bg-mainFocus text-white") :
+                (task.highLight == 1 ? "bg-mainYellow text-main" : "bg-mainFocus text-white") :
                 'bg-white text-[#080888]'}`}
             onClick={showAd}
           >
@@ -168,10 +168,10 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
           <LoadingSpinner className="w-4 h-4 my-auto mx-0 stroke-white" />
         </div> :
         (
-          <button 
+          <button
             className={`rounded-lg w-[61px] py-1 px-0 h-7 text-center text-[14px] 
-              ${task.status == 1 ? 
-                (task.highLight ? "bg-mainYellow text-main" : "bg-mainFocus text-white") : 
+              ${task.status == 1 ?
+                (task.highLight == 1 ? "bg-mainYellow text-main" : "bg-mainFocus text-white") :
                 'bg-white text-[#080888]'}`}
             onClick={showAd}
           >
@@ -486,7 +486,7 @@ const TaskList = ({ filter }) => {
     let isMounted = true
     if (isMounted) {
       stateTask();
-      user.watchAd == 0 && setAdState(true);
+      user.watchAd < 2 && setAdState(true);
     }
     return () => { isMounted = false }
   }, [])
@@ -626,12 +626,13 @@ const TaskList = ({ filter }) => {
       headers.append('Content-Type', 'application/json');
       await fetch(`${serverUrl}/add_perform_list`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, performTask: [32], isReal: isReal }), headers });
       // await fetchData();
-      setAdState(false);
-      setMoneadshow(false);
     } catch (error) {
       console.log(error);
       toast.error(error);
     }
+    setAdState(false);
+    setMoneadshow(false);
+    setUser({ ...user, watchAd: 2 });
   }
 
   return (
@@ -661,7 +662,7 @@ const TaskList = ({ filter }) => {
             </>
         }
       </div>
-      <InfoModal title="Get Rewards Now!" isOpen={adState} setIsOpen={() => setAdState(false)} height={"h-fit"} className={'bg-[#FAD557]'}>
+      <InfoModal title="Get Rewards Now!" isOpen={adState} setIsOpen={() => {setAdState(false);setUser({...user, watchAd: 2})}} height={"h-fit"} className={'bg-[#FAD557]'}>
         <div className="flex items-center justify-center gap-2">
           <img
             src={`image/coin-y.svg`}

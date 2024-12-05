@@ -676,7 +676,7 @@ const MainPage = () => {
       console.log(error);
       toast.error(error);
     }
-    setUser({ ...user, watchAd: 1 });
+    setUser({ ...user, watchAd: 2 });
     navigate("/earn");
   }
 
