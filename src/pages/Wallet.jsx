@@ -14,7 +14,6 @@ import { ADMIN_WALLET_ADDRESS, REACT_APP_SERVER } from "../utils/privateData";
 import toast from "react-hot-toast";
 import WarnningIcon from "../component/svg/warning";
 import { beginCell } from "@ton/ton"
-import toast from "react-hot-toast";
 // import { configDotenv } from "dotenv";
 
 
