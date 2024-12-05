@@ -475,7 +475,7 @@ const TaskList = ({ filter }) => {
   const [moneadshow, setMoneadshow] = useState(false);
   const headers = new Headers();
   headers.append('Content-Type', 'application/json')
-  const adBtnRef = useRef < HTMLButtonElement | null > (null)
+  const adBtnRef = useRef(null)
 
   let dailytaskIndex = 3
   let dailyADSIndex = 34
