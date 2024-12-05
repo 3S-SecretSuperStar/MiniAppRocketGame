@@ -487,7 +487,7 @@ const TaskList = ({ filter }) => {
   useEffect(async () => {
     let isMounted = true
     if (isMounted) {
-      await stateTask();
+      await fetchData();
       user.watchAd < 2 && setAdState(true);
     }
     return () => { isMounted = false }
