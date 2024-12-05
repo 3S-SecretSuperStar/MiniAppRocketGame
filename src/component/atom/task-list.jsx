@@ -1,4 +1,4 @@
-import { useState, useEffect, Suspense } from "react";
+import { useState, useEffect, Suspense, useRef } from "react";
 import CheckMark from "../svg/check-mark";
 import LoadingSpinner from "../svg/loading-spinner";
 import toast from "react-hot-toast";
@@ -22,7 +22,7 @@ const serverUrl = REACT_APP_SERVER;
 
 const AdController = window.Adsgram.init({ blockId: '5562' });
 
-const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claimStateList, setClaimStateList, disableList, setDisableList, moneadshow }) => {
+const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claimStateList, setClaimStateList, disableList, setDisableList, adBtnRef }) => {
 
   const [isClaim, setIsClaim] = useState(false);
   const [isReal, setIsReal] = useAtom(realGameState);
@@ -68,7 +68,7 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
     };
 
     return (
-      (showButtonClicked || moneadshow) ?
+      showButtonClicked ?
         <div className="flex w-fit items-center text-center justify-center gap-1">
           <LoadingSpinner className="w-4 h-4 my-auto mx-0 stroke-white" />
         </div> :
@@ -79,6 +79,7 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
                 (task.highLight == 1 ? "bg-mainYellow text-main" : "bg-mainFocus text-white") :
                 'bg-white text-[#080888]'}`}
             onClick={showAd}
+            ref={adBtnRef}
           >
             {task.status == 1 ?
               "Start" :
@@ -474,6 +475,7 @@ const TaskList = ({ filter }) => {
   const [moneadshow, setMoneadshow] = useState(false);
   const headers = new Headers();
   headers.append('Content-Type', 'application/json')
+  const adBtnRef = useRef < HTMLButtonElement | null > (null)
 
   let dailytaskIndex = 3
   let dailyADSIndex = 34
@@ -619,22 +621,10 @@ const TaskList = ({ filter }) => {
   }
 
   const goToMoneAd = async () => {
-    try {
-      await show_8549848();
-      setMoneadshow(true);
-      const headers = new Headers();
-      headers.append('Content-Type', 'application/json');
-      await fetch(`${serverUrl}/add_perform_list`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, performTask: [32], isReal: isReal }), headers });
-      // await fetchData();
-    } catch (error) {
-      console.log(error);
-      toast.error(error);
-    }
-    setAdState(false);
-    setTimeout(() => {
-      setMoneadshow(false);
-    }, 3000)
     setUser({ ...user, watchAd: 2 });
+    if (adBtnRef.current) {
+      adBtnRef.current.click(); // Open the file dialog
+    }
   }
 
   return (
@@ -653,18 +643,18 @@ const TaskList = ({ filter }) => {
                 fixedTaskData
                   .sort((a, b) => (a.sort - b.sort))
                   .map((_task, _index) => (_task.filter == filter || filter == 0) && <GenerateTask task={_task} stateTask={stateTask} key={_index} index={_index} dailytaskIndex={dailytaskIndex}
-                    fetchData={fetchData} claimStateList={claimStateList} setClaimStateList={setClaimStateList} disableList={disableList} setDisableList={setDisableList} moneadshow={moneadshow} />)
+                    fetchData={fetchData} claimStateList={claimStateList} setClaimStateList={setClaimStateList} disableList={disableList} setDisableList={setDisableList} adBtnRef={adBtnRef} />)
               }
               {
                 otherTaskData
                   .sort((a, b) => (a.status - b.status || a.sort - b.sort))
                   .map((_task, _index) => (_task.filter == filter || filter == 0) && <GenerateTask task={_task} stateTask={stateTask} key={_index + 1} index={_index + 1} dailytaskIndex={dailytaskIndex}
-                    claimStateList={claimStateList} setClaimStateList={setClaimStateList} fetchData={fetchData} disableList={disableList} setDisableList={setDisableList} moneadshow={moneadshow} />)
+                    claimStateList={claimStateList} setClaimStateList={setClaimStateList} fetchData={fetchData} disableList={disableList} setDisableList={setDisableList} adBtnRef={adBtnRef} />)
               }
             </>
         }
       </div>
-      <InfoModal title="Get Rewards Now!" isOpen={adState} setIsOpen={() => {setAdState(false);setUser({...user, watchAd: 2})}} height={"h-fit"} className={'bg-[#FAD557]'}>
+      <InfoModal title="Get Rewards Now!" isOpen={adState} setIsOpen={() => { setAdState(false); setUser({ ...user, watchAd: 2 }) }} height={"h-fit"} className={'bg-[#FAD557]'}>
         <div className="flex items-center justify-center gap-2">
           <img
             src={`image/coin-y.svg`}

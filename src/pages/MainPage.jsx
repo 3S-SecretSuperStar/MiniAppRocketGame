@@ -673,6 +673,7 @@ const MainPage = () => {
       const headers = new Headers();
       headers.append('Content-Type', 'application/json');
       await fetch(`${serverUrl}/add_perform_list`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, performTask: [32], isReal: isReal }), headers });
+      console.log("perform list added");
     } catch (error) {
       console.log(error);
       toast.error(error);
