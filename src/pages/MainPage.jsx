@@ -555,7 +555,6 @@ const MainPage = () => {
         background: '#FAD557',
         width: "100%"
       },
-      duration: 10000
     });
 
     toast(`You lost ${formatNumber(Number(data.profit + fallGameScoreRef.current))} coin`,
@@ -687,21 +686,17 @@ const MainPage = () => {
       const headers = new Headers();
       headers.append('Content-Type', 'application/json');
       await fetch(`${serverUrl}/task_balance`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, amount: realBetRef.current, task: 32, isReal: isReal }), headers });
-      toast(`${formatNumber(Number(realBetRef.current))} coins added to your balance`,
+      toast(`${realBetRef.current} coins added to your balance`,
         {
           position: "top-center",
-          icon: "🥳",
+          icon: <CheckMark />,
           style: {
             borderRadius: '8px',
-            background: '#84CB69',
-            color: '#0D1421',
-            width: '90vw',
-            textAlign: 'start',
-            justifyContent: 'start',
-            justifyItems: 'start'
+            background: '#7886A0',
+            color: '#fff',
+            width: '90vw'
           },
-        }
-      );
+        })
       updateBalance(Number(realBetRef.current))
     } catch (error) {
       console.log(error);
