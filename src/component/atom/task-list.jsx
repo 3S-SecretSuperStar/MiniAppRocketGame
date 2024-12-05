@@ -623,7 +623,7 @@ const TaskList = ({ filter }) => {
 
   const goToMoneAd = async () => {
     try {
-      if (moneAdState == 0 && adBtnRef.current) {
+      if (moneAdState == 1 && adBtnRef.current) {
         adBtnRef.current.click();
       } else {
         await show_8549848();
