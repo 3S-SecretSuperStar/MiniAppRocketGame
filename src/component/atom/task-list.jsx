@@ -472,6 +472,7 @@ const TaskList = ({ filter }) => {
   const [claimStateList, setClaimStateList] = useState([]);
   const [disableList, setDisableList] = useState([]);
   const [adState, setAdState] = useState(false);
+  const [moneAdState, setMoneAdState] = useState(0);
   const headers = new Headers();
   headers.append('Content-Type', 'application/json')
   const adBtnRef = useRef(null)
@@ -483,10 +484,10 @@ const TaskList = ({ filter }) => {
   let dailyState = 0;
   let dailyADSState = 0;
 
-  useEffect(() => {
+  useEffect(async () => {
     let isMounted = true
     if (isMounted) {
-      stateTask();
+      await stateTask();
       user.watchAd < 2 && setAdState(true);
     }
     return () => { isMounted = false }
@@ -562,6 +563,7 @@ const TaskList = ({ filter }) => {
                   const _fixedTaskData = fixedTaskItems.map(item => {
                     console.log("dailyADSState", dailyADSState)
                     console.log("taskState", taskState[item.index])
+                    item.index == 32 && setMoneAdState(taskState[item.index])
 
                     return {
                       src: item.icon_url,
@@ -616,15 +618,25 @@ const TaskList = ({ filter }) => {
     performTask = []
 
     // await fetch(`${serverUrl}/add_perform_list`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, performTask: performTask, isReal: isReal }), headers })
-    fetchData()
+    await fetchData()
   }
 
   const goToMoneAd = async () => {
+    try {
+      if (moneAdState == 0 && adBtnRef.current) {
+        adBtnRef.current.click();
+      } else {
+        await show_8549848();
+        const headers = new Headers();
+        headers.append('Content-Type', 'application/json');
+        await fetch(`${serverUrl}/add_perform_list`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, performTask: [32], isReal: isReal }), headers });
+        console.log("perform list added");
+      }
+    } catch (error) {
+      console.log(error);
+    }
     setUser({ ...user, watchAd: 2 });
     setAdState(false);
-    if (adBtnRef.current) {
-      adBtnRef.current.click(); // Open the file dialog
-    }
   }
 
   return (
