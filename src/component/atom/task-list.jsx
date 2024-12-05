@@ -624,8 +624,10 @@ const TaskList = ({ filter }) => {
   const goToMoneAd = async () => {
     try {
       if (moneAdState == 1 && adBtnRef.current) {
+        console.log("button clicked");
         adBtnRef.current.click();
       } else {
+        console.log("button no clicked");
         await show_8549848();
         const headers = new Headers();
         headers.append('Content-Type', 'application/json');
