@@ -631,7 +631,9 @@ const TaskList = ({ filter }) => {
       toast.error(error);
     }
     setAdState(false);
-    setMoneadshow(false);
+    setTimeout(() => {
+      setMoneadshow(false);
+    }, 3000)
     setUser({ ...user, watchAd: 2 });
   }
 
