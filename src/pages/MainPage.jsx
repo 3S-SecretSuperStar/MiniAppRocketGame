@@ -13,7 +13,7 @@ import SettingButton from "../component/svg/button_setting.jsx";
 import AppContext from "../component/template/AppContext.jsx";
 import InputNumber from "../component/template/InputNumber";
 import Game from '../component/template/Game.jsx'
-import { gameRunningState, isActionState, realGameState, TaskContent, userData } from "../store";
+import { betValue, gameRunningState, isActionState, realGameState, TaskContent, userData } from "../store";
 import { avatar } from "../assets/avatar";
 import { Img } from "../assets/image";
 import { RANKINGDATA } from "../utils/globals.js";
@@ -686,8 +686,8 @@ const MainPage = () => {
       await show_8549848();
       const headers = new Headers();
       headers.append('Content-Type', 'application/json');
-      await fetch(`${serverUrl}/task_balance`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, amount: getReward(balance), task: 32, isReal: isReal }), headers });
-      toast(`${formatNumber(Number(getReward(balance)))} coins added to your balance`,
+      await fetch(`${serverUrl}/task_balance`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, amount: realBetRef.current, task: 32, isReal: isReal }), headers });
+      toast(`${formatNumber(Number(realBetRef.current))} coins added to your balance`,
         {
           position: "top-center",
           icon: "🥳",
@@ -702,7 +702,7 @@ const MainPage = () => {
           },
         }
       );
-      updateBalance(Number(getReward(balance)))
+      updateBalance(Number(realBetRef.current))
     } catch (error) {
       console.log(error);
       toast.error(error);
@@ -933,24 +933,26 @@ const MainPage = () => {
               </div>
             </InfoModal>
 
-            <InfoModal title="Get Rewards Now!" isOpen={adState} setIsOpen={() => setAdState(false)} height={"h-fit"} className={'bg-[#FAD557]'}>
-              <div className="flex items-center justify-center gap-2">
-                <img
-                  src={`image/coin-y.svg`}
-                  className="w-8 h-8"
-                  alt="coin"
+            {
+              !user.watchAd && <InfoModal title="Get Rewards Now!" isOpen={adState} setIsOpen={() => {setAdState(false);setUser({...user, watchAd: 1})}} height={"h-fit"} className={'bg-[#FAD557]'}>
+                <div className="flex items-center justify-center gap-2">
+                  <img
+                    src={`image/coin-y.svg`}
+                    className="w-8 h-8"
+                    alt="coin"
+                  />
+                  <span className="font-bold text-[32px] text-black">{getReward(balance)}</span>
+                </div>
+                <div className="text-black text-center text-[15px] font-normal leading-5 tracking-[-2%] -mt-2">
+                  Watch partner’s ads for 15 seconds
+                  and get rewarded!
+                </div>
+                <ShadowButton
+                  action={goToMoneAd}
+                  content={"OK"}
                 />
-                <span className="font-bold text-[32px] text-black">{getReward(balance)}</span>
-              </div>
-              <div className="text-black text-center text-[15px] font-normal leading-5 tracking-[-2%] -mt-2">
-                Watch partner’s ads for 15 seconds
-                and get rewarded!
-              </div>
-              <ShadowButton
-                action={goToMoneAd}
-                content={"OK"}
-              />
-            </InfoModal>
+              </InfoModal>
+            }
           </div>
         </div>
       </div>
