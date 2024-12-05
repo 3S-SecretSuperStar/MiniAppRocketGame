@@ -336,7 +336,7 @@ const MainPage = () => {
                 }
               })
             await fetch(`${serverUrl}/check_first`, { method: 'POST', body: JSON.stringify({ userId: userId }), headers });
-            setAdState(true);
+            user.watchAd == 0 && setAdState(true);
           }
 
         }
@@ -934,7 +934,7 @@ const MainPage = () => {
             </InfoModal>
 
             {
-              user.watchAd == 0 && <InfoModal title="Get Rewards Now!" isOpen={adState} setIsOpen={() => { setAdState(false); setUser({ ...user, watchAd: 1 }) }} height={"h-fit"} className={'bg-[#FAD557]'}>
+              <InfoModal title="Get Rewards Now!" isOpen={adState} setIsOpen={() => { setAdState(false); setUser({ ...user, watchAd: 1 }) }} height={"h-fit"} className={'bg-[#FAD557]'}>
                 <div className="flex items-center justify-center gap-2">
                   <img
                     src={`image/coin-y.svg`}
