@@ -24,7 +24,7 @@ const InfoModal = ({ children, icon, title, isOpen, setIsOpen, height, className
 
     return (
         <div
-            className={`fixed inset-0 bg-black bg-opacity-30 z-10 duration-1000 ${isExiting ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
+            className="fixed inset-0 bg-black bg-opacity-30 animate-fade-out z-10"
             onClick={handleBackdropClick}
         >
             <div
