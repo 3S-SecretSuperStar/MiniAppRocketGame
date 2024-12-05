@@ -472,7 +472,6 @@ const TaskList = ({ filter }) => {
   const [claimStateList, setClaimStateList] = useState([]);
   const [disableList, setDisableList] = useState([]);
   const [adState, setAdState] = useState(false);
-  const [moneadshow, setMoneadshow] = useState(false);
   const headers = new Headers();
   headers.append('Content-Type', 'application/json')
   const adBtnRef = useRef(null)
@@ -622,6 +621,7 @@ const TaskList = ({ filter }) => {
 
   const goToMoneAd = async () => {
     setUser({ ...user, watchAd: 2 });
+    setAdState(false);
     if (adBtnRef.current) {
       adBtnRef.current.click(); // Open the file dialog
     }
