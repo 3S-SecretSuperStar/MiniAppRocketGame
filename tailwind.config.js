@@ -45,7 +45,7 @@ module.exports = {
         sparkle: {
           '0%': { opacity: '0.5' },
           '100%': { opacity: '1' },
-        },
+        }
       },
     },
   },

@@ -24,13 +24,13 @@ const InfoModal = ({ children, icon, title, isOpen, setIsOpen, height, className
 
     return (
         <div
-            className="fixed inset-0 bg-black bg-opacity-30 animate-fade-out z-10"
+            className={`fixed inset-0 bg-black bg-opacity-30 z-10 duration-1000 ${isExiting ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
             onClick={handleBackdropClick}
         >
             <div
                 className={
-                    cn(`absolute flex flex-col ${height}  top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 rounded-2xl  w-[calc(100vw-32px)] p-4 gap-6 bg-white
-                    ${isExiting ? 'animate-slide-out-bottom' : 'animate-slide-in-top'} ${isOpen ? 'scale-100' : 'scale-50'} duration-1000`, className)
+                    cn(`absolute flex flex-col ${height}  top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 rounded-2xl  w-[calc(100vw-32px)] p-4 gap-6 bg-white duration-1000
+                    ${isExiting ? 'scale-100' : 'scale-50'}`, className)
                 }
             >
 
