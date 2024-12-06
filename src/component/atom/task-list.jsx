@@ -486,138 +486,127 @@ const TaskList = ({ filter }) => {
   useEffect(() => {
     let isMounted = true
     if (isMounted) {
-      fetchData();
-      user.watchAd < 2 && setAdState(true);
+      stateTask();
     }
     return () => { isMounted = false }
   }, [])
 
   const fetchData = async () => {
-    fetch(`${serverUrl}/task_perform`, { method: 'POST', body: JSON.stringify({ userId: user.UserId }), headers })
-      .then(res => Promise.all([res.status, res.json()]))
-      .then(async ([status, data]) => {
-        try {
-          const userBalance = isReal ? parseFloat(data.balance.real.toFixed(2)) : parseFloat(data.balance.virtual.toFixed(2));
-          setUser(user => ({ ...user, Balance: userBalance }))
-          const performtask = isReal ? data.task.real.achieve_task : data.task.virtual.achieve_task
-          const doneTask = isReal ? data.task.real.done_task : data.task.virtual.done_task
-          taskState = new Array(taskList.length).fill(1)
-          performtask.forEach(item => {
-            taskState[item] = 0;
-          })
-          doneTask.forEach(item => {
-            taskState[item] = 2;
-          })
-          const res = await fetch(`${serverUrl}/check_dailyReward`, { method: 'POST', body: JSON.stringify({ userId: user.UserId }), headers });
-          const dailyData = await res.json();
-          const dailyDate = dailyData.dailyRewardInfo.date;
-          const dailyADSDate = dailyData.dailyADSInfo.date;
-          dailytaskIndex = taskList[taskList.findIndex(item => item.type === 'daily_reward')].index
-          dailyADSIndex = taskList[taskList.findIndex(item => item.index === 34)].index
-          console.log("daily ads index : ", dailyADSIndex)
-          dailyDays = dailyData.dailyRewardInfo.consecutive_days
-          setUser((user) => ({ ...user, DailyConsecutiveDays: dailyDays + 1 }));
-          const nowDate = moment().startOf('day');
-          if (dailyDate === "") dailyState = 0;
-          else {
-            const selectedDate = moment(dailyDate).utc().local().startOf('day');
-            const diffDate = nowDate.diff(selectedDate, 'days');
-            if (diffDate >= 1) dailyState = 0;
-            else dailyState = 2;
-            if (diffDate >= 2) {
-              setUser((user) => ({ ...user, DailyConsecutiveDays: 1 }))
-              dailyDays = 0;
-            };
+    const result = await fetch(`${serverUrl}/task_perform`, { method: 'POST', body: JSON.stringify({ userId: user.UserId }), headers });
+    const data = await result.json();
+    try {
+      const userBalance = isReal ? parseFloat(data.balance.real.toFixed(2)) : parseFloat(data.balance.virtual.toFixed(2));
+      setUser(user => ({ ...user, Balance: userBalance }))
+      const performtask = isReal ? data.task.real.achieve_task : data.task.virtual.achieve_task
+      const doneTask = isReal ? data.task.real.done_task : data.task.virtual.done_task
+      taskState = new Array(taskList.length).fill(1)
+      performtask.forEach(item => {
+        taskState[item] = 0;
+      })
+      doneTask.forEach(item => {
+        taskState[item] = 2;
+      })
+      const res = await fetch(`${serverUrl}/check_dailyReward`, { method: 'POST', body: JSON.stringify({ userId: user.UserId }), headers });
+      const dailyData = await res.json();
+      const dailyDate = dailyData.dailyRewardInfo.date;
+      const dailyADSDate = dailyData.dailyADSInfo.date;
+      dailytaskIndex = taskList[taskList.findIndex(item => item.type === 'daily_reward')].index
+      dailyADSIndex = taskList[taskList.findIndex(item => item.index === 34)].index
+      console.log("daily ads index : ", dailyADSIndex)
+      dailyDays = dailyData.dailyRewardInfo.consecutive_days
+      setUser((user) => ({ ...user, DailyConsecutiveDays: dailyDays + 1 }));
+      const nowDate = moment().startOf('day');
+      if (dailyDate === "") dailyState = 0;
+      else {
+        const selectedDate = moment(dailyDate).utc().local().startOf('day');
+        const diffDate = nowDate.diff(selectedDate, 'days');
+        if (diffDate >= 1) dailyState = 0;
+        else dailyState = 2;
+        if (diffDate >= 2) {
+          setUser((user) => ({ ...user, DailyConsecutiveDays: 1 }))
+          dailyDays = 0;
+        };
+      }
+      if (dailyADSDate === "") dailyADSState = 1;
+      else {
+        const selectedDate = moment(dailyADSDate).utc().local().startOf('day');
+        const diffDate = nowDate.diff(selectedDate, 'days');
+        if (diffDate > 0) dailyADSState = 1;
+        else dailyADSState = 2;
+      }
+
+      const res_task = await fetch(`${serverUrl}/get_task`, { method: 'POST', body: JSON.stringify({ userId: user.UserId }), headers })
+      const data_task = await res_task.json();
+      const taskItemData = data_task.task;
+      const fixedTaskItems = taskItemData.filter(item => (item.fixed === 1 && item.type !== "daily_reward"));
+      const otherTaskItems = taskItemData.filter(item => (item.fixed !== 1));
+      let dailyItemData = {}
+      if (fixedTaskItems.length > 0) {
+        const dailyData = taskItemData.find(item => item.type === "daily_reward");
+        if (dailyData) {
+          dailyItemData = {
+            src: dailyData.icon_url,
+            title: dailyData.title,
+            amount: (dailyData.amount + (20 * dailyDays) + " Coins " + dailyData.description),
+            status: dailyState,
+            link: dailyData.link_url,
+            index: dailyData.index,
+            sort: dailyData.sort
           }
-          if (dailyADSDate === "") dailyADSState = 1;
-          else {
-            const selectedDate = moment(dailyADSDate).utc().local().startOf('day');
-            const diffDate = nowDate.diff(selectedDate, 'days');
-            if (diffDate > 0) dailyADSState = 1;
-            else dailyADSState = 2;
-          }
-
-          fetch(`${serverUrl}/get_task`, { method: 'POST', body: JSON.stringify({ userId: user.UserId }), headers })
-            .then(res => Promise.all([res.status, res.json()]))
-            .then(([status, data]) => {
-              try {
-                const taskItemData = data.task;
-                const fixedTaskItems = taskItemData.filter(item => (item.fixed === 1 && item.type !== "daily_reward"));
-                const otherTaskItems = taskItemData.filter(item => (item.fixed !== 1));
-                let dailyItemData = {}
-                if (fixedTaskItems.length > 0) {
-                  const dailyData = taskItemData.find(item => item.type === "daily_reward");
-                  if (dailyData) {
-                    dailyItemData = {
-                      src: dailyData.icon_url,
-                      title: dailyData.title,
-                      amount: (dailyData.amount + (20 * dailyDays) + " Coins " + dailyData.description),
-                      status: dailyState,
-                      link: dailyData.link_url,
-                      index: dailyData.index,
-                      sort: dailyData.sort
-                    }
-                  }
-
-                  const _fixedTaskData = fixedTaskItems.map(item => {
-                    console.log("dailyADSState", dailyADSState)
-                    console.log("taskState", taskState[item.index])
-                    item.index == 32 && setMoneAdState(taskState[item.index])
-
-                    return {
-                      src: item.icon_url,
-                      title: item.title,
-                      amount: (item.amount + " Coins"),
-                      status: taskState[item.index],
-                      link: item.link_url,
-                      index: item.index,
-                      sort: item.sort,
-                      filter: item.filter,
-                      highLight: item.highLight
-                    };
-
-                  })
-                  setFixedTaskData([dailyItemData, ..._fixedTaskData])
-                }
-
-                if (otherTaskItems.length > 0) {
-                  const _otherTaskData = otherTaskItems.map(item => {
-                    return {
-                      src: item.icon_url,
-                      title: item.title,
-                      amount: (item.amount + " Coins"),
-                      status: taskState[item.index],
-                      link: item.link_url,
-                      index: item.index,
-                      sort: item.sort,
-                      filter: item.filter,
-                      highLight: item.highLight
-                    };
-                  });
-
-                  setOtherTaskData(_otherTaskData);
-                  setDisableList([]);
-                  setClaimStateList([]);
-                }
-              } catch (e) {
-                console.log(e)
-                setDisableList([]);
-                setClaimStateList([]);
-              }
-            })
-        } catch (e) {
-          // eslint-disable-next-line no-self-assign
-          console.log(e);
         }
 
-      })
+        const _fixedTaskData = fixedTaskItems.map(item => {
+          console.log("dailyADSState", dailyADSState)
+          console.log("taskState", taskState[item.index])
+          item.index == 32 && setMoneAdState(taskState[item.index])
+
+          return {
+            src: item.icon_url,
+            title: item.title,
+            amount: (item.amount + " Coins"),
+            status: taskState[item.index],
+            link: item.link_url,
+            index: item.index,
+            sort: item.sort,
+            filter: item.filter,
+            highLight: item.highLight
+          };
+
+        })
+        setFixedTaskData([dailyItemData, ..._fixedTaskData])
+      }
+
+      if (otherTaskItems.length > 0) {
+        const _otherTaskData = otherTaskItems.map(item => {
+          return {
+            src: item.icon_url,
+            title: item.title,
+            amount: (item.amount + " Coins"),
+            status: taskState[item.index],
+            link: item.link_url,
+            index: item.index,
+            sort: item.sort,
+            filter: item.filter,
+            highLight: item.highLight
+          };
+        });
+
+        setOtherTaskData(_otherTaskData);
+        setDisableList([]);
+        setClaimStateList([]);
+      }
+    } catch (e) {
+      // eslint-disable-next-line no-self-assign
+      console.log(e);
+    }
   }
 
   const stateTask = async () => {
     performTask = []
 
     // await fetch(`${serverUrl}/add_perform_list`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, performTask: performTask, isReal: isReal }), headers })
-    await fetchData()
+    await fetchData();
+    user.watchAd < 2 && setAdState(true);
   }
 
   const goToMoneAd = async () => {
