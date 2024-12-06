@@ -16,10 +16,8 @@ import InfoModal from "./infoModel";
 import ShadowButton from "./shadow-btn";
 import { getReward } from "../../utils/globals";
 const serverUrl = REACT_APP_SERVER;
-import { useNavigation } from "react-router-dom";
 
 const AdController = window.Adsgram.init({ blockId: '5562' });
-const navigate = useNavigation();
 
 const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claimStateList, setClaimStateList, disableList, setDisableList }) => {
 
@@ -405,23 +403,21 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
               (task.link === null || task.link === "") ?
                 (
                   (task.index === 25 || task.index === 26 && !wallet) ?
-                    <button
-                      className={`${(task.status != 2 && task.highLight == 1) ? "bg-mainYellow text-main" : "bg-mainFocus text-white"} rounded-lg w-[61px] py-1 px-0 h-7 text-center text-[14px]`}
-                      onClick={() => navigate('wallet')}
-                    >
-                      Start
-                    </button> :
+                    <Link to={'/wallet'}>
+                      <button className={`${(task.status != 2 && task.highLight == 1) ? "bg-mainYellow text-main" : "bg-mainFocus text-white"} rounded-lg w-[61px] py-1 px-0 h-7 text-center text-[14px]`} >
+                        Start
+                      </button>
+                    </Link> :
                     (
                       (task.index === 26 && wallet) ?
                         <button className={`rounded-lg w-[61px] py-1 px-0 h-7 ${(task.status != 2 && task.highLight == 1) ? "bg-mainYellow text-main" : "bg-mainFocus text-white"} text-center text-[14px]`} onClick={() => sendTransaction(500)} >
                           Start
                         </button> :
-                        <button
-                          className={`${(task.status != 2 && task.highLight == 1) ? "bg-mainYellow text-main" : "bg-mainFocus text-white"} rounded-lg w-[61px] py-1 px-0 h-7 text-center text-[14px]`}
-                          onClick={() => navigate('play')}
-                        >
-                          Start
-                        </button>
+                        <Link to={'/play'}>
+                          <button className={`${(task.status != 2 && task.highLight == 1) ? "bg-mainYellow text-main" : "bg-mainFocus text-white"} rounded-lg w-[61px] py-1 px-0 h-7 text-center text-[14px]`} >
+                            Start
+                          </button>
+                        </Link>
                     )
                 ) :
                 (
