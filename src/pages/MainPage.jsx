@@ -680,7 +680,9 @@ const MainPage = () => {
       toast.error(error);
     }
     setUser({ ...user, watchAd: 2 });
-    navigate("/earn");
+    setTimeout(() => {
+      navigate("/earn");
+    }, 1000)
   }
 
   const goToBackBet = async () => {
