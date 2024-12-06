@@ -483,10 +483,10 @@ const TaskList = ({ filter }) => {
   let dailyState = 0;
   let dailyADSState = 0;
 
-  useEffect(async () => {
+  useEffect(() => {
     let isMounted = true
     if (isMounted) {
-      await fetchData();
+      fetchData();
       user.watchAd < 2 && setAdState(true);
     }
     return () => { isMounted = false }
