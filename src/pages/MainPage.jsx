@@ -679,6 +679,7 @@ const MainPage = () => {
       console.log(error);
       toast.error(error);
     }
+    setAdState(false);
     setUser({ ...user, watchAd: 2 });
     setTimeout(() => {
       navigate("/earn");
