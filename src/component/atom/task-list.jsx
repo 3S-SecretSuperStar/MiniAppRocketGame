@@ -642,7 +642,7 @@ const TaskList = ({ filter }) => {
   }
 
   return (
-    <>
+    <Suspense fallback={<fetchData />}>
       <div className="flex flex-col gap-2 text-[14px] overflow-auto pb-4" style={{ height: "calc(100vh - 215px)" }}>
         {
           fixedTaskData.length === 0 && otherTaskData.length === 0
@@ -686,7 +686,7 @@ const TaskList = ({ filter }) => {
           content={"OK"}
         />
       </InfoModal>
-    </>
+    </Suspense>
   )
 }
 
