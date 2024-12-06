@@ -16,8 +16,6 @@ import WarnningIcon from "../component/svg/warning";
 import { beginCell } from "@ton/ton"
 // import { configDotenv } from "dotenv";
 
-
-
 const Wallet = () => {
   const serverUrl = REACT_APP_SERVER;
   const [user,] = useAtom(userData)

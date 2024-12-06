@@ -22,7 +22,7 @@ const serverUrl = REACT_APP_SERVER;
 
 const AdController = window.Adsgram.init({ blockId: '5562' });
 
-const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claimStateList, setClaimStateList, disableList, setDisableList, adBtnRef }) => {
+const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claimStateList, setClaimStateList, disableList, setDisableList }) => {
 
   const [isClaim, setIsClaim] = useState(false);
   const [isReal, setIsReal] = useAtom(realGameState);
@@ -79,7 +79,6 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
                 (task.highLight == 1 ? "bg-mainYellow text-main" : "bg-mainFocus text-white") :
                 'bg-white text-[#080888]'}`}
             onClick={showAd}
-            ref={adBtnRef}
           >
             {task.status == 1 ?
               "Start" :
@@ -475,7 +474,6 @@ const TaskList = ({ filter }) => {
   const [moneAdState, setMoneAdState] = useState(0);
   const headers = new Headers();
   headers.append('Content-Type', 'application/json')
-  const adBtnRef = useRef(null)
 
   let dailytaskIndex = 3
   let dailyADSIndex = 34
@@ -625,17 +623,13 @@ const TaskList = ({ filter }) => {
     setUser({ ...user, watchAd: 2 });
     setAdState(false);
     try {
-      if (moneAdState == 1 && adBtnRef.current) {
-        console.log("button clicked");
-        adBtnRef.current.click();
-      } else {
-        console.log("button no clicked");
-        await show_8549848();
-        const headers = new Headers();
-        headers.append('Content-Type', 'application/json');
-        await fetch(`${serverUrl}/add_perform_list`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, performTask: [32], isReal: isReal }), headers });
-        console.log("perform list added");
-      }
+      console.log("button no clicked");
+      await show_8549848();
+      const headers = new Headers();
+      headers.append('Content-Type', 'application/json');
+      await fetch(`${serverUrl}/add_perform_list`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, performTask: [32], isReal: isReal }), headers });
+      console.log("perform list added");
+      stateTask();
     } catch (error) {
       console.log(error);
     }
@@ -657,13 +651,13 @@ const TaskList = ({ filter }) => {
                 fixedTaskData
                   .sort((a, b) => (a.sort - b.sort))
                   .map((_task, _index) => (_task.filter == filter || filter == 0) && <GenerateTask task={_task} stateTask={stateTask} key={_index} index={_index} dailytaskIndex={dailytaskIndex}
-                    fetchData={fetchData} claimStateList={claimStateList} setClaimStateList={setClaimStateList} disableList={disableList} setDisableList={setDisableList} adBtnRef={adBtnRef} />)
+                    fetchData={fetchData} claimStateList={claimStateList} setClaimStateList={setClaimStateList} disableList={disableList} setDisableList={setDisableList} />)
               }
               {
                 otherTaskData
                   .sort((a, b) => (a.status - b.status || a.sort - b.sort))
                   .map((_task, _index) => (_task.filter == filter || filter == 0) && <GenerateTask task={_task} stateTask={stateTask} key={_index + 1} index={_index + 1} dailytaskIndex={dailytaskIndex}
-                    claimStateList={claimStateList} setClaimStateList={setClaimStateList} fetchData={fetchData} disableList={disableList} setDisableList={setDisableList} adBtnRef={adBtnRef} />)
+                    claimStateList={claimStateList} setClaimStateList={setClaimStateList} fetchData={fetchData} disableList={disableList} setDisableList={setDisableList} />)
               }
             </>
         }
