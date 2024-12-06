@@ -377,12 +377,12 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
   }
 
   return (
-    <div className={`${task.highLight == 1 ? "bg-[url('/image/task-bg.png')] border-2 border-[#FFD700]" : "bg-[#0000001A] border-0"} bg-cover rounded-lg flex justify-between items-center gap-2 py-2 pl-2 pr-4 text-[14px]`}>
+    <div className={`${(task.status != 2 && task.highLight == 1) ? "bg-[url('/image/task-bg.png')] border-2 border-[#FFD700]" : "bg-[#0000001A] border-0"} bg-cover rounded-lg flex justify-between items-center gap-2 py-2 pl-2 pr-4 text-[14px]`}>
       <div className="flex gap-2 items-center">
         <img src={task.src} alt="" className="w-8 h-8 rounded-full" />
         <div className="flex flex-col">
-          <div className={`${task.highLight == 1 ? "text-[#FAE66C]" : "text-white"}`}>{task.title}</div>
-          <div className={`${task.highLight == 1 ? "text-[#FAE66C99]" : "text-[#ffffff99]"} w-[210px]`}>
+          <div className={`${(task.status != 2 && task.highLight == 1) == 1 ? "text-[#FAE66C]" : "text-white"}`}>{task.title}</div>
+          <div className={`${(task.status != 2 && task.highLight == 1) == 1 ? "text-[#FAE66C99]" : "text-[#ffffff99]"} w-[210px]`}>
             +{
               (task.index === 32 || task.index == 34 || task.index == 36) ?
                 getReward(user.Balance) :
@@ -408,17 +408,17 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
                 (
                   (task.index === 25 || task.index === 26 && !wallet) ?
                     <Link to={'/wallet'}>
-                      <button className={`${task.highLight == 1 ? "bg-mainYellow text-main" : "bg-mainFocus text-white"} rounded-lg w-[61px] py-1 px-0 h-7 text-center text-[14px]`} >
+                      <button className={`${(task.status != 2 && task.highLight == 1) ? "bg-mainYellow text-main" : "bg-mainFocus text-white"} rounded-lg w-[61px] py-1 px-0 h-7 text-center text-[14px]`} >
                         Start
                       </button>
                     </Link> :
                     (
                       (task.index === 26 && wallet) ?
-                        <button className={`rounded-lg w-[61px] py-1 px-0 h-7 ${task.highLight == 1 ? "bg-mainYellow text-main" : "bg-mainFocus text-white"} text-center text-[14px]`} onClick={() => sendTransaction(500)} >
+                        <button className={`rounded-lg w-[61px] py-1 px-0 h-7 ${(task.status != 2 && task.highLight == 1) ? "bg-mainYellow text-main" : "bg-mainFocus text-white"} text-center text-[14px]`} onClick={() => sendTransaction(500)} >
                           Start
                         </button> :
                         <Link to={'/play'}>
-                          <button className={`${task.highLight == 1 ? "bg-mainYellow text-main" : "bg-mainFocus text-white"} rounded-lg w-[61px] py-1 px-0 h-7 text-center text-[14px]`} >
+                          <button className={`${(task.status != 2 && task.highLight == 1) ? "bg-mainYellow text-main" : "bg-mainFocus text-white"} rounded-lg w-[61px] py-1 px-0 h-7 text-center text-[14px]`} >
                             Start
                           </button>
                         </Link>
@@ -429,7 +429,7 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
                     <div className="flex w-fit items-center text-center justify-center gap-1">
                       <LoadingSpinner className="w-4 h-4 my-auto mx-0 stroke-white" />
                     </div> :
-                    <button className={`${task.highLight == 1 ? "bg-mainYellow text-main" : "bg-mainFocus text-white"} rounded-lg w-[61px] py-1 px-0 h-7 text-center text-[14px]`}
+                    <button className={`${(task.status != 2 && task.highLight == 1) ? "bg-mainYellow text-main" : "bg-mainFocus text-white"} rounded-lg w-[61px] py-1 px-0 h-7 text-center text-[14px]`}
                       onClick={() => followHandle(task.index)} >
                       Start
                     </button>
@@ -642,7 +642,7 @@ const TaskList = ({ filter }) => {
   }
 
   return (
-    <Suspense fallback={<fetchData />}>
+    <>
       <div className="flex flex-col gap-2 text-[14px] overflow-auto pb-4" style={{ height: "calc(100vh - 215px)" }}>
         {
           fixedTaskData.length === 0 && otherTaskData.length === 0
@@ -686,7 +686,7 @@ const TaskList = ({ filter }) => {
           content={"OK"}
         />
       </InfoModal>
-    </Suspense>
+    </>
   )
 }
 

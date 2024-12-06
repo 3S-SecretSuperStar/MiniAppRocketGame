@@ -9,7 +9,6 @@ import "../../css/Game.css"
 import { Link } from 'react-router-dom'
 import FallGame from '../atom/fallGame'
 import { REACT_APP_SERVER } from '../../utils/privateData';
-import toast from "react-hot-toast";
 
 export default memo(function Game({ gamePhase, finalResult, amount = 10.00,
   className, bet, autoStop, socketFlag, realGame, isWin, stopGame, startGame, autoMode, updateBalance, fallGameScore,

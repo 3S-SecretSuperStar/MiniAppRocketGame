@@ -595,6 +595,7 @@ const MainPage = () => {
   };
 
   const gameStartSignal = async () => {
+    toast.dismiss();
     const headers = new Headers();
     headers.append('Content-Type', 'application/json')
     try {
