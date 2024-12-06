@@ -622,6 +622,8 @@ const TaskList = ({ filter }) => {
   }
 
   const goToMoneAd = async () => {
+    setUser({ ...user, watchAd: 2 });
+    setAdState(false);
     try {
       if (moneAdState == 1 && adBtnRef.current) {
         console.log("button clicked");
@@ -637,8 +639,6 @@ const TaskList = ({ filter }) => {
     } catch (error) {
       console.log(error);
     }
-    setUser({ ...user, watchAd: 2 });
-    setAdState(false);
   }
 
   return (
