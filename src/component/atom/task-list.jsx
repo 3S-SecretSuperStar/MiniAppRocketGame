@@ -19,6 +19,7 @@ const serverUrl = REACT_APP_SERVER;
 import { useNavigation } from "react-router-dom";
 
 const AdController = window.Adsgram.init({ blockId: '5562' });
+const navigate = useNavigation();
 
 const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claimStateList, setClaimStateList, disableList, setDisableList }) => {
 
@@ -31,7 +32,6 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
   let wallet = useTonAddress();
   const tonwallet = useTonWallet()
   const [tonconnectUi] = useTonConnectUI();
-  const navigate = useNavigation();
   const Chain = {
     Mainnet: '-239',
     Testnet: '3'
