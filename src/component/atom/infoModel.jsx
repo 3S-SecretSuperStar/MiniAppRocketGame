@@ -30,7 +30,7 @@ const InfoModal = ({ children, icon, title, isOpen, setIsOpen, height, className
             <div
                 className={
                     cn(`absolute flex flex-col ${height}  top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 rounded-2xl  w-[calc(100vw-32px)] p-4 gap-6 bg-white duration-300
-                    ${isExiting ? 'scale-50' : 'scale-100'}`, className)
+                    ${isExiting ? 'animate-zoom-out' : 'animate-zoom-in'}`, className)
                 }
             >
 
