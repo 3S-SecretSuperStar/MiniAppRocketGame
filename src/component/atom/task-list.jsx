@@ -615,10 +615,6 @@ const TaskList = ({ filter }) => {
     setUser({ ...user, watchAd: 2 });
     setAdState(false);
     try {
-      if (moneAdState == 1 && moneBtnRef.current) {
-        moneBtnRef.current.click();
-        return;
-      }
       console.log("button no clicked");
       await show_8549848();
       const headers = new Headers();
