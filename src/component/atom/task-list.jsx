@@ -1,4 +1,4 @@
-import { useState, useEffect, Suspense } from "react";
+import { useState, useEffect, Suspense, useRef } from "react";
 import CheckMark from "../svg/check-mark";
 import LoadingSpinner from "../svg/loading-spinner";
 import toast from "react-hot-toast";
@@ -20,7 +20,7 @@ import { useNavigate } from "react-router-dom";
 
 const AdController = window.Adsgram.init({ blockId: '5562' });
 
-const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claimStateList, setClaimStateList, disableList, setDisableList }) => {
+const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claimStateList, setClaimStateList, disableList, setDisableList, moneBtnRef }) => {
 
   const [isClaim, setIsClaim] = useState(false);
   const [isReal, setIsReal] = useAtom(realGameState);
@@ -78,6 +78,7 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
                 (task.highLight == 1 ? "bg-mainYellow text-main" : "bg-mainFocus text-white") :
                 'bg-white text-[#080888]'}`}
             onClick={showAd}
+            ref={moneBtnRef}
           >
             {task.status == 1 ?
               "Start" :
@@ -473,6 +474,7 @@ const TaskList = ({ filter }) => {
   const [disableList, setDisableList] = useState([]);
   const [adState, setAdState] = useState(false);
   const [moneAdState, setMoneAdState] = useState(0);
+  const moneBtnRef = useRef();
   const headers = new Headers();
   headers.append('Content-Type', 'application/json')
 
@@ -613,6 +615,10 @@ const TaskList = ({ filter }) => {
     setUser({ ...user, watchAd: 2 });
     setAdState(false);
     try {
+      if (moneAdState == 1 && moneBtnRef.current) {
+        moneBtnRef.current.click();
+        return;
+      }
       console.log("button no clicked");
       await show_8549848();
       const headers = new Headers();
@@ -641,13 +647,13 @@ const TaskList = ({ filter }) => {
                 fixedTaskData
                   .sort((a, b) => (a.sort - b.sort))
                   .map((_task, _index) => (_task.filter == filter || filter == 0) && <GenerateTask task={_task} stateTask={stateTask} key={_index} index={_index} dailytaskIndex={dailytaskIndex}
-                    fetchData={fetchData} claimStateList={claimStateList} setClaimStateList={setClaimStateList} disableList={disableList} setDisableList={setDisableList} />)
+                    fetchData={fetchData} claimStateList={claimStateList} setClaimStateList={setClaimStateList} disableList={disableList} setDisableList={setDisableList} moneBtnRef={moneBtnRef}/>)
               }
               {
                 otherTaskData
                   .sort((a, b) => (a.status - b.status || a.sort - b.sort))
                   .map((_task, _index) => (_task.filter == filter || filter == 0) && <GenerateTask task={_task} stateTask={stateTask} key={_index + 1} index={_index + 1} dailytaskIndex={dailytaskIndex}
-                    claimStateList={claimStateList} setClaimStateList={setClaimStateList} fetchData={fetchData} disableList={disableList} setDisableList={setDisableList} />)
+                    claimStateList={claimStateList} setClaimStateList={setClaimStateList} fetchData={fetchData} disableList={disableList} setDisableList={setDisableList} moneBtnRef={moneBtnRef}/>)
               }
             </>
         }
