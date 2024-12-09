@@ -262,6 +262,13 @@ body #react-app .gif-loader {
   left: 50%;
 }
 
+.info-modal {
+  position: absolute; /* Fixed positioning to the viewport */
+  top: 50%; /* Position from the top of the viewport */
+  left: 50%; /* Position from the left of the viewport */
+  transform: translate(-50%, -50%);
+}
+
 @media (max-width: 1051px) {
   body {
     min-width: 100% !important;

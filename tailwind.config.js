@@ -28,8 +28,8 @@ module.exports = {
         'slide-out-bottom': 'slideOutBottom 0.5s ease-in forwards',
         "fade-out": 'fade-out 0.2s ease-out',
         sparkle: 'sparkle 1s infinite',
-        "zoom-in": 'zoom-in 0.3s ease-out',
-        "zoom-out": 'zoom-out 0.3s ease-out',
+        "zoom-in": 'zoom-in 0.3s ease-in-out forwards',
+        "zoom-out": 'zoom-out 0.3s ease-in-out forwards',
       },
       keyframes: {
         slideInTop: {
@@ -49,12 +49,12 @@ module.exports = {
           '100%': { opacity: '1' },
         },
         "zoom-in": {
-          '0%': { scale: 0.8 },
-          '100%': { scale: 1 }
+          '0%': { transform: 'translate(-50%, -50%) scale(0.8)' },
+          '100%': { transform: 'translate(-50%, -50%) scale(1)' }
         },
         "zoom-out": {
-          '0%': { scale: 1 },
-          '100%': { scale: 0.8 }
+          '0%': { transform: 'translate(-50%, -50%) scale(1)' },
+          '100%': { transform: 'translate(-50%, -50%) scale(0.8)' }
         }
       },
     },

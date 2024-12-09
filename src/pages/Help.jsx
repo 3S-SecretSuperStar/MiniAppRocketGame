@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { Img } from "../assets/image";
 import Contact from "../component/molecules/contact";
 import { useEffect } from "react";
@@ -11,6 +12,13 @@ const Help = () => {
     <div className="flex flex-col gap-8 items-center h-[calc(100vh-100px)] pb-4 overflow-y-auto">
       <div className="flex flex-col gap-4 items-center">
         <div className="text-[20px] text-blueFaded">🎲 <span className="text-[17px]">How to play</span></div>
+        <Link to="https://youtu.be/aCvMfkfCkB0?si=s7hAd2H5knFqeQVT">
+          <img
+            src="/image/youtube.png"
+            alt=""
+            className="w-full aspect-auto"
+          />
+        </Link>
         <div className="text-white text-[15px]">Place your bet and press the Start button to launch the rocket! As the rocket flies, a multiplier increases your bet. Press the Stop button to get your profit! But be careful, because the rocket can crash at any moment, and if it does, you'll lose your bet!</div>
         <div>
           <img src={Img.imgButtons} height="80px" className="h-20" alt="buttons" />
