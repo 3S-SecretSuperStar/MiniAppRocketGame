@@ -899,7 +899,13 @@ const MainPage = () => {
 
             <InfoModal title="Welcome, Recruit!" isOpen={firstLogin} setIsOpen={() => setFirstLogin(false)} height="h-[480px]">
               <div className="flex items-center justify-center">
-                <img src={avatar.avatarBeginner} width="128px" height="128px" className="max-w-[128px] h-[128px]" alt="avatar" />
+                <Link to="https://youtu.be/aCvMfkfCkB0?si=s7hAd2H5knFqeQVT" target="_blank">
+                  <img
+                    src="/image/youtube.png"
+                    alt=""
+                    className="w-full aspect-auto"
+                  />
+                </Link>
               </div>
               <div className="flex flex-col gap-6 text-black text-center text-[15px] font-normal leading-5 tracking-[-2%]">
                 <div>
