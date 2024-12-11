@@ -195,30 +195,34 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
         const { invoiceUrl } = await result.json();
         console.log(invoiceUrl);
         const webapp = window.Telegram.WebApp;
-        const starResult = await webapp.openInvoice(invoiceUrl);
-        console.log("starresult", starResult, ":", starResult.status);
-        if (starResult.status == "paid") {
-          await fetch(`${serverUrl}/perform_dailyADS`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, isReal: isReal, amount: task.reward, task: task.index }), headers })
-          toast(`${task.reward} coins added to your balance`,
-            {
-              position: "top-center",
-              icon: <CheckMark />,
-              style: {
-                borderRadius: '8px',
-                background: '#7886A0',
-                color: '#fff',
-                width: '90vw'
-              },
-            }
-          )
-          updateBalance(reward)
-        }
+        webapp.openInvoice(invoiceUrl, async (status) => {
+          console.log(status);
+          if (status == "paid") {
+            await fetch(`${serverUrl}/perform_dailyADS`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, isReal: isReal, amount: task.reward, task: task.index }), headers })
+            toast(`${task.reward} coins added to your balance`,
+              {
+                position: "top-center",
+                icon: <CheckMark />,
+                style: {
+                  borderRadius: '8px',
+                  background: '#7886A0',
+                  color: '#fff',
+                  width: '90vw'
+                },
+              }
+            )
+            updateBalance(reward)
+          }
+          setTimeout(async () => {
+            setShowButtonClicked(false);
+          }, 1000)
+        });
       } catch (error) {
         console.log(error);
+        setTimeout(async () => {
+          setShowButtonClicked(false);
+        }, 1000)
       }
-      setTimeout(async () => {
-        setShowButtonClicked(false);
-      }, 1000)
     }
 
     return (
