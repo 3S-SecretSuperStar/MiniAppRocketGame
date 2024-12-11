@@ -183,6 +183,46 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
     )
   }
 
+  const ShowStarButton = () => {
+    const [showButtonClicked, setShowButtonClicked] = useState(false);
+
+    const showAd = async () => {
+      setShowButtonClicked(true);
+      try {
+        const headers = new Headers();
+        headers.append('Content-Type', 'application/json');
+        const result = await fetch(`${serverUrl}/pay_telegramstar`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, isReal: isReal }), headers });
+        const data = await result.json();
+        console.log(data);
+      } catch (error) {
+        console.log(error);
+      }
+      setTimeout(async () => {
+        setShowButtonClicked(false);
+      }, 10000)
+    }
+
+    return (
+      showButtonClicked ?
+        <div className="flex w-fit items-center text-center justify-center gap-1">
+          <LoadingSpinner className="w-4 h-4 my-auto mx-0 stroke-white" />
+        </div> :
+        (
+          <button
+            className={`rounded-lg w-[61px] py-1 px-0 h-7 text-center text-[14px] 
+              ${task.status == 1 ?
+                (task.highLight == 1 ? "bg-mainYellow text-main" : "bg-mainFocus text-white") :
+                'bg-white text-[#080888]'}`}
+            onClick={showAd}
+          >
+            {task.status == 1 ?
+              "Start" :
+              "Claim"}
+          </button>
+        )
+    )
+  }
+
   const addPerformList = async (performTask) => {
     try {
       const headers = new Headers();
@@ -391,14 +431,18 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
         </div>
       </div>
       {
-        task.index === 32 || task.index == 34 || task.index == 36 ?
+        task.index === 32 || task.index == 34 || task.index == 36 || task.index == 41 ?
           (
             task.index == 32 ?
               <ShowAdButton /> :
               (
                 task.index == 34 ?
                   <ShowPromoLinkButton /> :
-                  <ShowADgramButton />
+                  (
+                    task.index == 36 ?
+                      <ShowADgramButton /> :
+                      <ShowStarButton />
+                  )
               )
           ) :
           task.status === 1 ?
@@ -643,13 +687,13 @@ const TaskList = ({ filter }) => {
                 fixedTaskData
                   .sort((a, b) => (a.sort - b.sort))
                   .map((_task, _index) => (_task.filter == filter || filter == 0) && <GenerateTask task={_task} stateTask={stateTask} key={_index} index={_index} dailytaskIndex={dailytaskIndex}
-                    fetchData={fetchData} claimStateList={claimStateList} setClaimStateList={setClaimStateList} disableList={disableList} setDisableList={setDisableList} moneBtnRef={moneBtnRef}/>)
+                    fetchData={fetchData} claimStateList={claimStateList} setClaimStateList={setClaimStateList} disableList={disableList} setDisableList={setDisableList} moneBtnRef={moneBtnRef} />)
               }
               {
                 otherTaskData
                   .sort((a, b) => (a.status - b.status || a.sort - b.sort))
                   .map((_task, _index) => (_task.filter == filter || filter == 0) && <GenerateTask task={_task} stateTask={stateTask} key={_index + 1} index={_index + 1} dailytaskIndex={dailytaskIndex}
-                    claimStateList={claimStateList} setClaimStateList={setClaimStateList} fetchData={fetchData} disableList={disableList} setDisableList={setDisableList} moneBtnRef={moneBtnRef}/>)
+                    claimStateList={claimStateList} setClaimStateList={setClaimStateList} fetchData={fetchData} disableList={disableList} setDisableList={setDisableList} moneBtnRef={moneBtnRef} />)
               }
             </>
         }
