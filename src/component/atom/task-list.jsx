@@ -192,17 +192,33 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
         const headers = new Headers();
         headers.append('Content-Type', 'application/json');
         const result = await fetch(`${serverUrl}/pay_telegramstar`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, isReal: isReal, amount: Math.round(task.reward / 10) }), headers });
-        const {invoiceUrl} = await result.json();
+        const { invoiceUrl } = await result.json();
         console.log(invoiceUrl);
         const webapp = window.Telegram.WebApp;
         const starResult = await webapp.openInvoice(invoiceUrl);
-        console.log(starResult);
+        console.log("starresult", starResult, ":", starResult.status);
+        if (starResult.status == "paid") {
+          await fetch(`${serverUrl}/perform_dailyADS`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, isReal: isReal, amount: task.reward, task: task.index }), headers })
+          toast(`${task.reward} coins added to your balance`,
+            {
+              position: "top-center",
+              icon: <CheckMark />,
+              style: {
+                borderRadius: '8px',
+                background: '#7886A0',
+                color: '#fff',
+                width: '90vw'
+              },
+            }
+          )
+          updateBalance(reward)
+        }
       } catch (error) {
         console.log(error);
       }
       setTimeout(async () => {
         setShowButtonClicked(false);
-      }, 10000)
+      }, 1000)
     }
 
     return (
