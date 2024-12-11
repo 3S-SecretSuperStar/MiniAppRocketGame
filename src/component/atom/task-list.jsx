@@ -193,7 +193,7 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
         headers.append('Content-Type', 'application/json');
         const result = await fetch(`${serverUrl}/pay_telegramstar`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, isReal: isReal, amount: 1 }), headers });
         const {invoiceUrl} = await result.json();
-        console.log(data);
+        console.log(invoiceUrl);
         const webapp = window.Telegram.WebApp.initDataUnsafe;
         webapp.openInvoice(invoiceUrl, (status) => {
           console.log(status);
