@@ -784,12 +784,12 @@ const MainPage = () => {
                 <div className="flex flex-col w-1/2 gap-1">
                   <div className="text-sm leading-5  z-10">Bet</div>
                   <InputNumber InputProps={{
-                    value: betManualRef.current, min: 1, step: 1, disabled: gamePhase === 'started', onChange: e => {
+                    value: betManualRef.current, min: 1, max: 1000, step: 1, disabled: gamePhase === 'started', onChange: e => {
                       realBetRef.current = betManualRef.current = parseFloat(e.target.value)
                       setBetManual(parseFloat(e.target.value))
                     }
                   }} />
-                  <div className="text-xs leading-[14px] text-[#FFFFFFCC]  z-10">Minimal Bet is 1 Coin</div>
+                  <div className="text-xs leading-[14px] text-[#FFFFFFCC]  z-10">Bet range is 1 — 1000 Coins</div>
                 </div>
                 <div className="flex flex-col w-1/2 gap-1">
                   <div className="text-sm leading-5">Auto Stop</div>
@@ -836,12 +836,12 @@ const MainPage = () => {
                     <div className="flex flex-col w-1/2 gap-1">
                       <div className="text-sm leading-5">Bet</div>
                       <InputNumber InputProps={{
-                        value: betAutoRef.current, min: 1, step: 1, onChange: e => {
+                        value: betAutoRef.current, min: 1, max: 1000, step: 1, onChange: e => {
                           realBetRef.current = betAutoRef.current = parseFloat(e.target.value),
                             setBetAuto(parseFloat(e.target.value))
                         }
                       }} />
-                      <div className="text-xs leading-[14px] text-[#FFFFFFCC]">Minimal Bet is 1 Coin</div>
+                      <div className="text-xs leading-[14px] text-[#FFFFFFCC]">Bet range is 1 — 1000 Coins</div>
                     </div>
                     <div className="flex flex-col w-1/2 gap-1">
                       <div className="text-sm leading-5">Auto Stop</div>
