@@ -272,7 +272,7 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
               type="number"
               value={rewardAmount}
               onChange={(e) => setRewardAmount(Number(e.target.value))}
-              className="w-full px-4 py-2 rounded-lg text-black"
+              className="w-full px-4 py-2 rounded-lg border-2 border-main text-black"
               min="0"
             />
             {rewardAmount}stars = {rewardAmount * 10} coins
