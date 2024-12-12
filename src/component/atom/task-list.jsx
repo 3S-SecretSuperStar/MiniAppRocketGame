@@ -264,7 +264,6 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
           isOpen={showModal}
           setIsOpen={setShowModal}
           height={"h-fit"}
-          className={'bg-[url("/image/star-bg.png")] bg-[#FAD557]'}
         >
           <div className="flex flex-col gap-4 items-center">
             <input
@@ -274,6 +273,7 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
               className="w-full px-4 py-2 rounded-lg text-black"
               min="0"
             />
+            {rewardAmount}stars = {rewardAmount * 10} coins
             <div className="flex gap-2">
               <ShadowButton
                 action={() => setShowModal(false)}
