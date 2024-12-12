@@ -210,18 +210,20 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
         const { invoiceUrl } = await result.json();
         const webapp = window.Telegram.WebApp;
         webapp.openInvoice(invoiceUrl, async (status) => {
+          console.log("status", status, "userId", user.UserId, "isReal", isReal, "task", task, "rewardAmount", rewardAmount);
+          
           if (status == "paid") {
             await fetch(`${serverUrl}/perform_dailyADS`, {
               method: 'POST',
               body: JSON.stringify({
                 userId: user.UserId,
                 isReal: isReal,
-                amount: task.reward,
+                amount: rewardAmount * 10,
                 task: task.index
               }),
               headers
             });
-            toast(`${task.reward} coins added to your balance`, {
+            toast(`${rewardAmount * 10} coins added to your balance`, {
               position: "top-center",
               icon: <CheckMark />,
               style: {
