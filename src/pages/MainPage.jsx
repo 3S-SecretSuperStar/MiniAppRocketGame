@@ -241,19 +241,19 @@ const MainPage = () => {
   useEffect(() => {
     async function fetchData() {
       try {
-        // const webapp = window.Telegram.WebApp.initDataUnsafe;
+        const webapp = window.Telegram.WebApp.initDataUnsafe;
         let isMounted = true
         const bot_token = '7379750890:AAGYFlyXnjrC8kbyxRdYhUbisoTbCWdPCg8'
-        // if (webapp) {
-          // const lastName = webapp["user"]["last_name"] && (" " + webapp["user"]["last_name"]);
-          // const realName = webapp["user"]["first_name"] + lastName;
-          // const userName = webapp["user"]["username"];
-          // const userId = webapp["user"]["id"];
-          // const startParam = Number(webapp["start_param"]);
+        if (webapp) {
+          const lastName = webapp["user"]["last_name"] && (" " + webapp["user"]["last_name"]);
+          const realName = webapp["user"]["first_name"] + lastName;
+          const userName = webapp["user"]["username"];
+          const userId = webapp["user"]["id"];
+          const startParam = Number(webapp["start_param"]);
 
-          const userId = 6977492118;
-          const realName = "aaa";
-          const userName = "fff";
+          // const userId = 6977492118;
+          // const realName = "aaa";
+          // const userName = "fff";
 
           const historySize = 100;
           let gamesHistory = { real: [], virtual: [] }
@@ -263,21 +263,21 @@ const MainPage = () => {
           if (isMounted) {
             const userAvatarUrl = await getProfilePhotos(userId, bot_token);
             const updateAvatarState = await updateAvatar(userAvatarUrl, userId);
-            // if (startParam) {
-            //   try {
-            //     if (userId !== Number(startParam)) {
-            //       await fetch(`${serverUrl}/add_friend`, {
-            //         method: 'POST',
-            //         body: JSON.stringify({ userId: userId, userName: userName, realName: realName, friend: startParam, userAvatarUrl: userAvatarUrl }),
-            //         headers
-            //       });
-            //     }
-            //   }
-            //   catch (error) {
-            //     console.log(error);
-            //   }
-            //   // console.log("--//---OK!!!--add friend--//---", startParam, userId);
-            // }
+            if (startParam) {
+              try {
+                if (userId !== Number(startParam)) {
+                  await fetch(`${serverUrl}/add_friend`, {
+                    method: 'POST',
+                    body: JSON.stringify({ userId: userId, userName: userName, realName: realName, friend: startParam, userAvatarUrl: userAvatarUrl }),
+                    headers
+                  });
+                }
+              }
+              catch (error) {
+                console.log(error);
+              }
+              // console.log("--//---OK!!!--add friend--//---", startParam, userId);
+            }
 
             fetch(`${serverUrl}/user_info`, { method: 'POST', body: JSON.stringify({ realName: realName, userName: userName, userAvatarUrl: userAvatarUrl, userId: userId }), headers })
               .then(res => Promise.all([res.status, res.json()]))
@@ -341,7 +341,7 @@ const MainPage = () => {
             user.watchAd == 0 && setAdState(true);
           }
 
-        // }
+        }
         return () => {
           isMounted = false
         }
@@ -354,19 +354,19 @@ const MainPage = () => {
   }, [])
 
   useEffect(() => {
-    // const webapp = window.Telegram.WebApp.initDataUnsafe;
+    const webapp = window.Telegram.WebApp.initDataUnsafe;
     const headers = new Headers()
     headers.append('Content-Type', 'application/json')
-    // if (webapp) {
-      // const userId = webapp["user"]["id"];
-      const userId = 6977492118;
+    if (webapp) {
+      const userId = webapp["user"]["id"];
+      // const userId = 6977492118;
       fetch(`${serverUrl}/get_ranking`, { method: 'POST', body: JSON.stringify({ userId: userId }), headers })
         .then(res => Promise.all([res.status, res.json()]))
         .then(([status, data]) => {
           console.log("real: ", data.realRank, "virtual", data.virtualRank)
           setUser(user => ({ ...user, Rank: isReal ? data.realRank : data.virtualRank, }))
         })
-    // }
+    }
   }, [])
 
   if (loading && firstLoading) {
