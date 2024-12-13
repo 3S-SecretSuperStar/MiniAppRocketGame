@@ -185,66 +185,112 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
 
   const ShowStarButton = () => {
     const [showButtonClicked, setShowButtonClicked] = useState(false);
+    const [showModal, setShowModal] = useState(false);
+    const [rewardAmount, setRewardAmount] = useState(Math.round(task.reward / 10));
+
+    const handleStartClick = () => {
+      setShowModal(true);
+    };
 
     const showAd = async () => {
       setShowButtonClicked(true);
+      setShowModal(false);
       try {
         const headers = new Headers();
         headers.append('Content-Type', 'application/json');
-        const result = await fetch(`${serverUrl}/pay_telegramstar`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, isReal: isReal, amount: Math.round(task.reward / 10) }), headers });
+        const result = await fetch(`${serverUrl}/pay_telegramstar`, {
+          method: 'POST',
+          body: JSON.stringify({
+            userId: user.UserId,
+            isReal: isReal,
+            amount: rewardAmount
+          }),
+          headers
+        });
         const { invoiceUrl } = await result.json();
-        console.log(invoiceUrl);
         const webapp = window.Telegram.WebApp;
         webapp.openInvoice(invoiceUrl, async (status) => {
-          console.log(status);
+          console.log("status", status, "userId", user.UserId, "isReal", isReal, "task", task, "rewardAmount", rewardAmount);
+          
           if (status == "paid") {
-            await fetch(`${serverUrl}/perform_dailyADS`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, isReal: isReal, amount: task.reward, task: task.index }), headers })
-            toast(`${task.reward} coins added to your balance`,
-              {
-                position: "top-center",
-                icon: <CheckMark />,
-                style: {
-                  borderRadius: '8px',
-                  background: '#7886A0',
-                  color: '#fff',
-                  width: '90vw'
-                },
-              }
-            )
-            updateBalance(reward)
+            await fetch(`${serverUrl}/perform_dailyADS`, {
+              method: 'POST',
+              body: JSON.stringify({
+                userId: user.UserId,
+                isReal: isReal,
+                amount: rewardAmount * 10,
+                task: task.index
+              }),
+              headers
+            });
+            toast(`${rewardAmount * 10} coins added to your balance`, {
+              position: "top-center",
+              icon: <CheckMark />,
+              style: {
+                borderRadius: '8px',
+                background: '#7886A0',
+                color: '#fff',
+                width: '90vw'
+              },
+            });
+            updateBalance(reward);
           }
-          setTimeout(async () => {
-            setShowButtonClicked(false);
-          }, 1000)
+          setTimeout(() => setShowButtonClicked(false), 1000);
         });
       } catch (error) {
         console.log(error);
-        setTimeout(async () => {
-          setShowButtonClicked(false);
-        }, 1000)
+        setTimeout(() => setShowButtonClicked(false), 1000);
       }
-    }
+    };
 
     return (
-      showButtonClicked ?
-        <div className="flex w-fit items-center text-center justify-center gap-1">
-          <LoadingSpinner className="w-4 h-4 my-auto mx-0 stroke-white" />
-        </div> :
-        (
+      <>
+        {showButtonClicked ? (
+          <div className="flex w-fit items-center text-center justify-center gap-1">
+            <LoadingSpinner className="w-4 h-4 my-auto mx-0 stroke-white" />
+          </div>
+        ) : (
           <button
             className={`rounded-lg w-[61px] py-1 px-0 h-7 text-center text-[14px] 
-              ${task.status == 1 ?
+                        ${task.status == 1 ?
                 (task.highLight == 1 ? "bg-mainYellow text-main" : "bg-mainFocus text-white") :
                 'bg-white text-[#080888]'}`}
-            onClick={showAd}
+            onClick={handleStartClick}
           >
-            {task.status == 1 ?
-              "Start" :
-              "Claim"}
+            {task.status == 1 ? "Start" : "Claim"}
           </button>
-        )
-    )
-  }
+        )}
+
+        <InfoModal
+          title="Set Reward Amount"
+          isOpen={showModal}
+          setIsOpen={setShowModal}
+          height={"h-fit"}
+        >
+          <div className="flex flex-col gap-4 items-center">
+            <input
+              type="number"
+              value={rewardAmount}
+              onChange={(e) => setRewardAmount(Number(e.target.value))}
+              className="w-full px-4 py-2 rounded-lg border-2 border-main text-black"
+              min="0"
+            />
+            {rewardAmount}stars = {rewardAmount * 10} coins
+            <div className="flex gap-2">
+              <ShadowButton
+                action={() => setShowModal(false)}
+                content="Cancel"
+              />
+              <ShadowButton
+                action={showAd}
+                content="Confirm"
+              />
+            </div>
+          </div>
+        </InfoModal>
+      </>
+    );
+  };
 
   const addPerformList = async (performTask) => {
     try {
