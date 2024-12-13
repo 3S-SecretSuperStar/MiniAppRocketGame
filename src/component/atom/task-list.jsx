@@ -13,6 +13,7 @@ import { beginCell } from "@ton/ton";
 import WarnningIcon from "../svg/warning";
 import UserInfoSkeleton from "./userInfoSkeleton";
 import InfoModal from "./infoModel";
+import FixModal from "./fixModal";
 import ShadowButton from "./shadow-btn";
 import { getReward } from "../../utils/globals";
 const serverUrl = REACT_APP_SERVER;
@@ -211,7 +212,7 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
         const webapp = window.Telegram.WebApp;
         webapp.openInvoice(invoiceUrl, async (status) => {
           console.log("status", status, "userId", user.UserId, "isReal", isReal, "task", task, "rewardAmount", rewardAmount);
-          
+
           if (status == "paid") {
             await fetch(`${serverUrl}/perform_dailyADS`, {
               method: 'POST',
@@ -233,7 +234,7 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
                 width: '90vw'
               },
             });
-            updateBalance(reward);
+            updateBalance(rewardAmount * 10);
           }
           setTimeout(() => setShowButtonClicked(false), 1000);
         });
@@ -261,21 +262,23 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
           </button>
         )}
 
-        <InfoModal
-          title="Set Reward Amount"
+        <FixModal
+          title="Set Stars Amount"
           isOpen={showModal}
           setIsOpen={setShowModal}
           height={"h-fit"}
         >
           <div className="flex flex-col gap-4 items-center">
-            <input
-              type="number"
-              value={rewardAmount}
-              onChange={(e) => setRewardAmount(Number(e.target.value))}
-              className="w-full px-4 py-2 rounded-lg border-2 border-main text-black"
-              min="0"
-            />
-            {rewardAmount}stars = {rewardAmount * 10} coins
+            <div className="flex gap-2 w-full items-center">
+              <input
+                type="number"
+                value={rewardAmount}
+                onChange={(e) => setRewardAmount(Number(e.target.value))}
+                className="w-full px-4 py-2 rounded-lg border-2 border-main text-black"
+                min="0"
+              />
+              <div className="whitespace-nowrap">{rewardAmount * 10} coins</div>
+            </div>
             <div className="flex gap-2">
               <ShadowButton
                 action={() => setShowModal(false)}
@@ -287,7 +290,7 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
               />
             </div>
           </div>
-        </InfoModal>
+        </FixModal>
       </>
     );
   };
