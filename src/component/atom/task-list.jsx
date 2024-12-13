@@ -580,8 +580,8 @@ const TaskList = ({ filter }) => {
       const dailyDate = dailyData.dailyRewardInfo.date;
       const dailyADSDate = dailyData.dailyADSInfo.date;
       dailytaskIndex = taskList[taskList.findIndex(item => item.type === 'daily_reward')].index
-      dailyADSIndex = taskList[taskList.findIndex(item => item.index === 34)].index
-      console.log("daily ads index : ", dailyADSIndex)
+      // dailyADSIndex = taskList[taskList.findIndex(item => item.index === 34)].index
+      // console.log("daily ads index : ", dailyADSIndex)
       dailyDays = dailyData.dailyRewardInfo.consecutive_days
       setUser((user) => ({ ...user, DailyConsecutiveDays: dailyDays + 1 }));
       const nowDate = moment().startOf('day');
