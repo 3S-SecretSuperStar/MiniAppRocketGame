@@ -401,8 +401,8 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
 
   const goClaim = async (reward) => {
     setClaimStateList((prev) => [...prev, task.index])
-    if (task.index !== dailytaskIndex) {
-      if (task.index === 34 || task.index === 32 || task.index === 36) {
+    if (task.index !== dailytaskIndex && task.index != 38) {
+      if (task.index === 34 || task.index === 32 || task.index === 36 || task.index == 26) {
         try {
           await fetch(`${serverUrl}/perform_dailyADS`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, isReal: isReal, amount: reward, task: task.index }), headers })
           toast(`${reward} coins added to your balance`,
@@ -450,7 +450,7 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
       }
     } else {
       let dailyAmount = parseFloat(task.amount.split(" ")[0])
-      fetch(`${serverUrl}/perform_dailyReward`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, isReal: isReal, amount: dailyAmount, consecutiveDays: user.DailyConsecutiveDays }), headers })
+      fetch(`${serverUrl}/perform_dailyReward`, { method: 'POST', body: JSON.stringify({ userId: user.UserId, isReal: isReal, amount: dailyAmount, consecutiveDays: user.DailyConsecutiveDays, task: task.index }), headers })
         .then(res => Promise.all([res.status, res.json()]))
         .then(() => {
           try {
@@ -645,20 +645,25 @@ const TaskList = ({ filter }) => {
           dailyDays = 0;
         };
       }
+
       if (dailyADSDate === "") dailyADSState = 1;
       else {
         const selectedDate = moment(dailyADSDate).utc().local().startOf('day');
         const diffDate = nowDate.diff(selectedDate, 'days');
-        if (diffDate > 0) dailyADSState = 1;
-        else dailyADSState = 2;
+        dailyADSState = taskState['38'];
+        console.log("dailyAdState", dailyADSState, taskState);
+        if (dailyADSState == 2 && diffDate > 1) {
+          dailyADSState = 1;
+        }
       }
 
       const res_task = await fetch(`${serverUrl}/get_task`, { method: 'POST', body: JSON.stringify({ userId: user.UserId }), headers })
       const data_task = await res_task.json();
       const taskItemData = data_task.task;
-      const fixedTaskItems = taskItemData.filter(item => (item.fixed === 1 && item.type !== "daily_reward"));
+      const fixedTaskItems = taskItemData.filter(item => (item.fixed === 1 && item.type !== "daily_reward" && item.index != 38));
       const otherTaskItems = taskItemData.filter(item => (item.fixed !== 1));
       let dailyItemData = {}
+      let dailyHitItemData = {}
       if (fixedTaskItems.length > 0) {
         const dailyData = taskItemData.find(item => item.type === "daily_reward");
         if (dailyData) {
@@ -673,6 +678,21 @@ const TaskList = ({ filter }) => {
           }
         }
 
+        const dailyHitData = taskItemData.find(item => item.index == 38);
+        console.log("hit data", dailyHitData, dailyADSState);
+        
+        if (dailyHitData) {
+          dailyHitItemData = {
+            src: dailyHitData.icon_url,
+            title: dailyHitData.title,
+            amount: dailyHitData.amount + " Coins",
+            status: dailyADSState,
+            link: dailyHitData.link_url,
+            index: dailyHitData.index,
+            sort: dailyHitData.sort
+          }
+        }
+
         const _fixedTaskData = fixedTaskItems.map(item => {
           console.log("dailyADSState", dailyADSState)
           console.log("taskState", taskState[item.index])
@@ -682,7 +702,7 @@ const TaskList = ({ filter }) => {
             src: item.icon_url,
             title: item.title,
             amount: (item.amount + " Coins"),
-            status: taskState[item.index],
+            status: taskState[item.index] || 1,
             link: item.link_url,
             index: item.index,
             sort: item.sort,
@@ -692,7 +712,7 @@ const TaskList = ({ filter }) => {
           };
 
         })
-        setFixedTaskData([dailyItemData, ..._fixedTaskData])
+        setFixedTaskData([dailyItemData, dailyHitItemData, ..._fixedTaskData])
       }
 
       if (otherTaskItems.length > 0) {
@@ -701,7 +721,7 @@ const TaskList = ({ filter }) => {
             src: item.icon_url,
             title: item.title,
             amount: (item.amount + " Coins"),
-            status: taskState[item.index],
+            status: taskState[item.index] || 1,
             link: item.link_url,
             index: item.index,
             sort: item.sort,
@@ -710,7 +730,7 @@ const TaskList = ({ filter }) => {
             reward: item.amount
           };
         });
-
+        
         setOtherTaskData(_otherTaskData);
         setDisableList([]);
         setClaimStateList([]);

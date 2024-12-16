@@ -65,8 +65,7 @@ const Wallet = () => {
   const disconnectFunction = async () => {
     await tonconnectUi.disconnect();
   }
-
-
+  
   const createTransaction = (tokenCount) => {
     const body = beginCell()
       .storeUint(0, 32)
