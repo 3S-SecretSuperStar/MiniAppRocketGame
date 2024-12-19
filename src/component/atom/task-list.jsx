@@ -43,7 +43,7 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
 
   const ShowAdButton = () => {
     const [showButtonClicked, setShowButtonClicked] = useState(false);
-    console.log(task.index)
+    console.log(task.index, ":", task.status)
     const showAd = async () => {
       try {
         let result = false;
@@ -624,13 +624,12 @@ const TaskList = ({ filter }) => {
       doneTask.forEach(item => {
         taskState[item] = 2;
       })
+      
       const res = await fetch(`${serverUrl}/check_dailyReward`, { method: 'POST', body: JSON.stringify({ userId: user.UserId }), headers });
       const dailyData = await res.json();
       const dailyDate = dailyData.dailyRewardInfo.date;
       const dailyADSDate = dailyData.dailyADSInfo.date;
       dailytaskIndex = taskList[taskList.findIndex(item => item.type === 'daily_reward')].index
-      // dailyADSIndex = taskList[taskList.findIndex(item => item.index === 34)].index
-      // console.log("daily ads index : ", dailyADSIndex)
       dailyDays = dailyData.dailyRewardInfo.consecutive_days
       setUser((user) => ({ ...user, DailyConsecutiveDays: dailyDays + 1 }));
       const nowDate = moment().startOf('day');
@@ -651,7 +650,6 @@ const TaskList = ({ filter }) => {
         const selectedDate = moment(dailyADSDate).utc().local().startOf('day');
         const diffDate = nowDate.diff(selectedDate, 'days');
         dailyADSState = taskState['38'];
-        console.log("dailyAdState", dailyADSState, taskState);
         if (dailyADSState == 2 && diffDate > 1) {
           dailyADSState = 1;
         }
@@ -679,7 +677,6 @@ const TaskList = ({ filter }) => {
         }
 
         const dailyHitData = taskItemData.find(item => item.index == 38);
-        console.log("hit data", dailyHitData, dailyADSState);
         
         if (dailyHitData) {
           dailyHitItemData = {
@@ -693,16 +690,12 @@ const TaskList = ({ filter }) => {
           }
         }
 
-        const _fixedTaskData = fixedTaskItems.map(item => {
-          console.log("dailyADSState", dailyADSState)
-          console.log("taskState", taskState[item.index])
-          item.index == 32 && setMoneAdState(taskState[item.index])
-
+        const _fixedTaskData = fixedTaskItems.map(item => {          
           return {
             src: item.icon_url,
             title: item.title,
             amount: (item.amount + " Coins"),
-            status: taskState[item.index] || 1,
+            status: taskState[item.index] === undefined ? 1 : taskState[item.index],
             link: item.link_url,
             index: item.index,
             sort: item.sort,
@@ -710,8 +703,7 @@ const TaskList = ({ filter }) => {
             highLight: item.highLight,
             reward: item.amount
           };
-
-        })
+        })        
         setFixedTaskData([dailyItemData, dailyHitItemData, ..._fixedTaskData])
       }
 
