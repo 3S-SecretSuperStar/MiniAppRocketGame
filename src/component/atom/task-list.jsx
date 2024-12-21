@@ -418,6 +418,9 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
             }
           )
           updateBalance(reward)
+          if (task.index == 26) {
+            stateTask();
+          }
           return true;
         } catch (error) {
           console.log(error);
@@ -561,8 +564,7 @@ const GenerateTask = ({ task, stateTask, index, dailytaskIndex, fetchData, claim
                     </div> :
                     <button
                       className="rounded-lg w-[61px] py-1 px-0 h-7 bg-white text-[#080888] text-center text-[14px]"
-                      onClick={goClaim}
-                      disabled={claimStateListData.includes(task.index)}
+                      onClick={() => goClaim(task.amount)}
                     >
                       Claim
                     </button>
@@ -713,7 +715,7 @@ const TaskList = ({ filter }) => {
             src: item.icon_url,
             title: item.title,
             amount: (item.amount + " Coins"),
-            status: taskState[item.index] || 1,
+            status: taskState[item.index] === undefined ? 1 : taskState[item.index],
             link: item.link_url,
             index: item.index,
             sort: item.sort,
