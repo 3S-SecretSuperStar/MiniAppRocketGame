@@ -27,14 +27,14 @@ export const RANKINGDATA = [
 export const getReward = (balance) => {
   if (balance < 10) {
     return 50;
-  } else if (balance < 1000) {
+  } else if (balance < 5000) {
     return 100;
-  } else if (balance < 10000) {
-    return 500;
+  } else if (balance < 50000) {
+    return 250;
   } else if (balance < 100000) {
-    return 1000;
+    return 500;
   } else {
-    return 10000;
+    return 1000;
   }
 }
 
