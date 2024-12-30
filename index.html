@@ -1,23 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    
-    <link rel="icon" type="image/svg+xml" href="/token.png" />
-    <!-- <link href="./output.css" rel="stylesheet"> -->
-    <meta name="viewport" content="width=device-width, maximum-scale=1.0, user-scalable=no, interactive-widget=resizes-content,shrink-to-fit=no,viewport-fit=cover" />
-    <meta name="theme-color" content="#000000" />
-    <meta
-      name="description"
-      content="Web site created using create-react-app"
-    />
-    <link rel="apple-touch-icon" href="/logo192.png" />
-    <!--
+
+<head>
+  <meta charset="utf-8" />
+
+  <link rel="icon" type="image/svg+xml" href="/token.png" />
+  <!-- <link href="./output.css" rel="stylesheet"> -->
+  <meta name="viewport"
+    content="width=device-width, maximum-scale=1.0, user-scalable=no, interactive-widget=resizes-content,shrink-to-fit=no,viewport-fit=cover" />
+  <meta name="theme-color" content="#000000" />
+  <meta name="description" content="Web site created using create-react-app" />
+  <link rel="apple-touch-icon" href="/logo192.png" />
+  <!--
       manifest.json provides metadata used when your web app is installed on a
       user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
     -->
-    <link rel="manifest" href="/manifest.json" />
-    <!--
+  <link rel="manifest" href="/manifest.json" />
+  <!--
       Notice the use of %PUBLIC_URL% in the tags above.
       It will be replaced with the URL of the `public` folder during the build.
       Only files inside the `public` folder can be referenced from the HTML.
@@ -26,31 +25,40 @@
       work correctly both with client-side routing and a non-root public URL.
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
-    <title>MiniApp Rocket Game</title>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700&display=swap" rel="stylesheet">
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <script src='//jagnaimsee.net/vignette.min.js' data-zone='8549848' data-sdk='show_8549848'></script>
-    <script src="https://richinfo.co/richpartners/telegram/js/rp-ob.js?pub_id=949869&widget_id=354116" async data-cfasync="false"></script>
-    <script src="https://sad.adsgram.ai/js/sad.min.js"></script>
-    <script>
-      window.global = window;
-    </script>
-    <script type="module">
-      import process from "process";
-      import EventEmitter from "events";
-      import {Buffer} from "buffer";
-      window.Buffer = Buffer;
-      window.process = process;
-      window.EventEmitter = EventEmitter;
-    </script>
-  
-    
-  </head>
-  <body>
-    <noscript>You need to enable JavaScript to run this app.</noscript>
-    <div id="root"></div>
-    <script type="module" src="/src/index.jsx"></script>
-    <!--
+  <title>MiniApp Rocket Game</title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700&display=swap" rel="stylesheet">
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <script src='//jagnaimsee.net/vignette.min.js' data-zone='8549848' data-sdk='show_8549848'></script>
+  <script src="https://richinfo.co/richpartners/telegram/js/rp-ob.js?pub_id=949869&widget_id=354116" async
+    data-cfasync="false"></script>
+  <script src="https://sad.adsgram.ai/js/sad.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/TONSolutions/telemetree-pixel@main/telemetree-pixel.js"></script>
+  <script>
+    window.global = window;
+  </script>
+  <script type="module">
+    import process from "process";
+    import EventEmitter from "events";
+    import { Buffer } from "buffer";
+    window.Buffer = Buffer;
+    window.process = process;
+    window.EventEmitter = EventEmitter;
+    const telemetreeBuilder = telemetree({
+      projectId: "5b79a0cc-5339-4a10-8f6c-4b2cd0b16ca1",
+      apiKey: "a80875ee-75a0-4cc5-861a-412c07ef1d36",
+      appName: "RocketTON",
+      isTelegramContext: true, // use false, if a website is not in Telegram Web App context
+    });
+  </script>
+
+
+</head>
+
+<body>
+  <noscript>You need to enable JavaScript to run this app.</noscript>
+  <div id="root"></div>
+  <script type="module" src="/src/index.jsx"></script>
+  <!--
       This HTML file is a template.
       If you open it directly in the browser, you will see an empty page.
 
@@ -60,5 +68,6 @@
       To begin the development, run `npm start` or `yarn start`.
       To create a production bundle, use `npm run build` or `yarn build`.
     -->
-  </body>
+</body>
+
 </html>
